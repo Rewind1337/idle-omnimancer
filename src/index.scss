@@ -1,0 +1,87 @@
+:root {
+  /* Fonts */
+  --font-heading: 'Josefin Sans', sans-serif;
+  --font-text: 'Roboto Condensed', sans-serif;
+
+  /* General button colors */
+  --button-primary: hsla(210, 30%, 29%, 1);
+  --button-primary-hover: hsla(210, 34%, 35%, 1);
+  --button-primary-active: hsla(210, 35%, 23%, 1);
+  --button-primary-toggled: hsla(210, 38%, 39%, 1);
+
+  --button-secondary: hsla(35, 25%, 27%, 1);
+  --button-secondary-hover: hsla(35, 29%, 33%, 1);
+  --button-secondary-active: hsla(35, 30%, 21%, 1);
+  --button-secondary-toggled: hsla(35, 34%, 36%, 1);
+
+  /* Aspect Buttons */
+  --button-primal: hsla(255, 35%, 29%, 1);
+  --button-primal-hover: hsla(255, 40%, 35%, 1);
+  --button-primal-active: hsla(255, 42%, 22%, 1);
+  --button-primal-toggled: hsla(255, 44%, 39%, 1);
+
+  --button-life: hsla(148, 36%, 24%, 1);
+  --button-life-hover: hsla(148, 41%, 30%, 1);
+  --button-life-active: hsla(148, 43%, 19%, 1);
+  --button-life-toggled: hsla(148, 45%, 34%, 1);
+
+  --button-death: hsla(346, 39%, 29%, 1);
+  --button-death-hover: hsla(346, 44%, 35%, 1);
+  --button-death-active: hsla(346, 46%, 22%, 1);
+  --button-death-toggled: hsla(346, 48%, 39%, 1);
+
+  /* Aspect Colors */
+  --aspect-primal-muted: hsla(255, 24%, 59%, 1);
+  --aspect-primal: hsla(255, 45%, 70%, 1);
+  --aspect-primal-strong: hsla(255, 80%, 80%, 1);
+  --aspect-primal-bg: hsla(255, 38%, 17%, 1);
+  --aspect-primal-soft: hsla(255, 70%, 70%, 0.14);
+
+  --aspect-life-muted: hsla(145, 25%, 48%, 1);
+  --aspect-life: hsla(145, 45%, 58%, 1);
+  --aspect-life-strong: hsla(145, 76%, 70%, 1);
+  --aspect-life-bg: hsla(145, 38%, 15%, 1);
+  --aspect-life-soft: hsla(145, 65%, 60%, 0.14);
+
+  --aspect-death-muted: hsla(348, 26%, 55%, 1);
+  --aspect-death: hsla(348, 48%, 65%, 1);
+  --aspect-death-strong: hsla(348, 80%, 76%, 1);
+  --aspect-death-bg: hsla(348, 38%, 17%, 1);
+  --aspect-death-soft: hsla(348, 70%, 65%, 0.14);
+
+  /* Main backgrounds */
+  --background: hsla(220, 41%, 4%, 1);
+  --paper-0: hsla(220, 38%, 7%, 1);
+  --paper-1: hsla(220, 35%, 10%, 1);
+  --paper-2: hsla(220, 32%, 13%, 1);
+  --paper-3: hsla(220, 28%, 17%, 1);
+  --paper-hover: hsla(220, 25%, 20%, 1);
+  --paper-border: hsla(220, 19%, 31%, 0.66);
+}
+
+/* Hard Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: fit-content;
+  user-select: none;
+  color: white;
+}
+
+/* Fonts */
+h1, h2, h3, h4, h5, h6 {font-family: var(--font-heading)}
+p, a, div, span {font-family: var(--font-text)}
+
+html,
+body {
+  background-color: var(--background);
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 8px;
+}

@@ -1,0 +1,28 @@
+/* Paper Component Styles */
+.paper {
+  padding: 8px;
+  border-radius: 8px;
+  outline: 1px solid var(--paper-border);
+  transition: background-color 0.2s ease-out;
+
+  &[data-layer="0"] {
+    background-color: var(--paper-0);
+  }
+
+  &[data-layer="1"] {
+    background-color: var(--paper-1);
+  }
+
+  &[data-layer="2"] {
+    background-color: var(--paper-2);
+  }
+
+  &[data-layer="3"] {
+    background-color: var(--paper-3);
+  }
+
+  &.paper-interactive:hover {
+    background-color: var(--paper-hover);
+    cursor: pointer;
+  }
+}

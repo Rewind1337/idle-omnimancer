@@ -1,0 +1,15 @@
+/* Navigation Component Styles */
+.navigation-top {}
+
+.navigation-side {
+  flex-shrink: 0;
+  height: 100vh;
+  max-width: 240px;
+
+  .button {
+    width: 100%;
+  }
+}
+
+.navigation-mobile {
+}

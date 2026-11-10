@@ -1,0 +1,125 @@
+/* Button Component Styles */
+.button {
+  display: flex;
+  font-family: var(--font-heading);
+  border: 0;
+  padding: 4px 6px;
+  gap: 8px;
+  border-radius: 8px;
+  background: transparent;
+  transition: background-color 0.2s ease-out;
+  width: auto;
+
+  .button-prefix { text-align: left; display: grid; place-items: center; width: fit-content; }
+  .button-text {flex-grow: 1;}
+  .button-suffix { text-align: right; display: grid; place-items: center; width: fit-content; }
+
+  * {font-family: inherit;}
+
+  &[data-variant="primary"] {
+    background: var(--button-primary);
+
+    &:hover {
+      background-color: var(--button-primary-hover);
+      cursor: pointer;
+
+      &:active {
+        background-color: var(--button-primary-active);
+      }
+    }
+
+    &.button-toggled {
+      background: var(--button-primary-toggled);
+    }
+  }
+
+  &[data-variant="secondary"] {
+    background: var(--button-secondary);
+
+    &:hover {
+      background-color: var(--button-secondary-hover);
+      cursor: pointer;
+
+      &:active {
+        background-color: var(--button-secondary-active);
+      }
+    }
+
+    &.button-toggled {
+      background: var(--button-secondary-toggled);
+    }
+  }
+
+  &[data-variant="primal"] {
+    background: var(--button-primal);
+
+    &:hover {
+      background-color: var(--button-primal-hover);
+      cursor: pointer;
+
+      &:active {
+        background-color: var(--button-primal-active);
+      }
+    }
+
+    &.button-toggled {
+      background: var(--button-primal-toggled);
+    }
+  }
+
+  &[data-variant="life"] {
+    background: var(--button-life);
+
+    &:hover {
+      background-color: var(--button-life-hover);
+      cursor: pointer;
+
+      &:active {
+        background-color: var(--button-life-active);
+      }
+    }
+
+    &.button-toggled {
+      background: var(--button-life-toggled);
+    }
+  }
+
+  &[data-variant="death"] {
+    background: var(--button-death);
+
+    &:hover {
+      background-color: var(--button-death-hover);
+      cursor: pointer;
+
+      &:active {
+        background-color: var(--button-death-active);
+      }
+    }
+
+    &.button-toggled {
+      background: var(--button-death-toggled);
+    }
+  }
+
+  &[data-size="small"] {
+    font-size: 14px;
+  }
+
+  &[data-size="medium"] {
+    font-size: 20px;
+
+    svg {
+      width: 32px;
+      height: 32px;
+      align-self: center;
+    }
+  }
+
+  &[data-size="large"] {
+    font-size: 24px;
+  }
+
+  &:not(:disabled):hover {
+
+  }
+}

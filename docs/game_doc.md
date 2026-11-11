@@ -586,76 +586,83 @@ These are initial balancing values for the example actions. The same starting re
 
 The higher-tier Research values continue the existing 1.5 progression between tiers. The eventual curves and scalars remain subject to playtesting.
 
-### 8.3 Skill-level and action-level bonuses
-
-Skill levels and action levels can both provide bonuses. They serve different purposes and should be tracked separately.
-
-#### Skill-level passive bonuses
+### 8.3 Skill-level passive bonuses
 
 A skill may have a passive effect that improves with every level gained in that skill.
 
 For example, Spellcraft may increase maximum Mana by a fixed amount for every Spellcraft level. This is a linear bonus: each level adds the same amount of capacity.
 
-Other skills may have other per-level effects. These are independent of the skill's milestone rewards and should be defined individually for each skill.
+These bonuses are awarded by the skill's ordinary level progression. They are not milestone rewards, and they do not replace or consume either action milestones or skill milestones.
 
-#### Individual action leveling bonuses
+Other skills may have different per-level passive effects. The exact effect for each skill is not yet defined.
 
-Every action should also improve itself as it levels.
+### 8.4 Action-level bonuses and action milestones
 
-The current proposed baseline is:
+Every action has its own independent level progression and its own action-level rewards. **Action milestones belong to the individual action that reaches them.** They are tracked separately for every action and do not depend on the overall level of the skill.
+
+The proposed baseline action-level bonuses are:
 
 - **Every 2 action levels:** +0.5% action speed for this action.
 - **Every 5 action levels:** +1% resource output for this action.
 - **Every 10 action levels:** +1% chance to avoid consuming required input resources when completing this action.
-- **Action level 25:** +25% action speed for this action.
-- **Action level 50:** +100% resource output for this action.
-- **Action level 100:** No additional special individual action bonus is defined yet.
 
-These bonuses belong to the individual action. Leveling Research I improves Research I; it does not directly grant the same individual bonus to Research II.
+These recurring bonuses are based on the action's own level. They apply only to that action and continue to accumulate as it levels.
 
-The regular interval bonuses still apply at levels 25, 50 and 100. The level 25 and 50 bonuses are additional effects on top of those regular bonuses.
+In addition to those recurring bonuses, individual actions can receive special action milestone rewards at selected levels:
+
+| Action milestone | Proposed reward | Applies to |
+|---|---|---|
+| 25 | +25% action speed | The action that reached level 25 |
+| 50 | +100% resource output | The action that reached level 50 |
+| 100 | No special reward defined yet | To be decided |
+
+The recurring bonuses still apply at levels 25, 50 and 100. The special milestone rewards are additional effects.
+
+Every action tracks its own milestones independently. For example, Research I reaching action level 25 grants its own level-25 reward. Research II reaching action level 25 can grant the same milestone reward separately. Neither event requires the Research skill itself to reach skill level 25.
+
+Likewise, a skill milestone does not automatically trigger an action milestone. The two systems can happen at different times and must never be treated as the same progression track.
 
 The resource-saving bonus is relevant for actions that consume input materials, such as Transmutation. It gives the action a chance to complete without consuming the required inputs. For actions with no input cost, the bonus has no practical effect unless a future system introduces one.
 
 Fractional expected output should be handled through a suitable fractional carry-over or chance-based additional output system rather than discarding fractions.
 
-### 8.4 Skill-wide and global milestones
+### 8.5 Skill milestones
 
-Every skill will have milestone rewards at every 10 skill levels:
+Every skill has its own independent milestone rewards at every 10 skill levels:
 
 **Level 10, 20, 30, 40, 50, 60, 70, 80, 90 and 100.**
 
-Each skill has its own independent set of milestones. Reaching a milestone in Research does not automatically grant the corresponding Spellcraft or Transmutation milestone.
+These milestones are triggered by the **overall skill level**, not by the level of an individual action. Each skill has its own milestone track. Reaching a milestone in Research does not automatically grant the corresponding Spellcraft or Transmutation milestone.
 
 The exact rewards are **not defined yet**. There may be repeating patterns across skills, but the milestone at a given level does not need to be identical for every skill.
 
-Milestones can serve several different purposes:
+Skill milestones can serve several different purposes:
 
 **A. Improve the skill they belong to**
 
 A milestone can provide a skill-wide bonus that improves every action in the skill that awarded it.
 
-For example, a Research milestone could increase the output of all Research actions, not just one individual Research action.
+For example, a Research skill milestone could increase the output of all Research actions, not just one individual Research action.
 
 **B. Improve a different skill**
 
 A milestone can improve another skill, creating connections between the progression systems.
 
-For example, a Research milestone could improve the experience gain or action speed of all Spellcraft actions.
+For example, a Research skill milestone could improve the experience gain or action speed of all Spellcraft actions.
 
 **C. Provide a global bonus**
 
 A milestone can improve every skill and therefore affect essentially all actions in the game.
 
-Levels 50 and 100 are examples of levels that may be used for particularly important global boosts. This is a potential repeating pattern, not a finalized reward schedule.
+Skill levels 50 and 100 are examples of levels that may be used for particularly important global boosts. This is a potential repeating pattern, not a finalized reward schedule.
 
 **D. Provide a unique bonus**
 
 A milestone can grant a special effect that does not fit into a normal action-wide category.
 
-For example, a Spellcraft milestone could increase maximum Mana.
+For example, a Spellcraft skill milestone could increase maximum Mana.
 
-Potential milestone bonus categories include:
+Potential skill milestone bonus categories include:
 
 - Action speed.
 - Resource output.
@@ -666,11 +673,13 @@ Potential milestone bonus categories include:
 - Unlock cost reduction.
 - Other unique effects introduced by future systems.
 
-A milestone may affect one skill, another skill, all skills or a special system. The purpose is to make skill levels meaningful beyond simply increasing a number.
+A skill milestone may affect its own skill, another skill, all skills or a special system. The purpose is to make overall skill progression meaningful beyond simply increasing a number.
+
+Action milestones and skill milestones are separate systems. An action can reach its own milestone without its skill reaching the same numbered level, and a skill can reach a milestone without every action reaching that level.
 
 The exact level-to-reward mapping and the rewards for each skill remain intentionally undecided.
 
-### 8.5 Bonus stacking
+### 8.6 Bonus stacking
 
 For the current design, bonuses stack **additively**.
 
@@ -679,7 +688,6 @@ For example, an action with +20% individual action speed and +20% global action 
 The same general additive approach applies to bonuses of the same type from different sources, including action speed, resource output and experience gain.
 
 This is the default rule for the current game design. A future mechanic may have a specific reason to behave differently, but exceptions should be explicitly defined rather than assumed.
-
 ---
 
 ## 9. Gold and Unlock Economy
@@ -904,8 +912,8 @@ The following principles should guide future development:
 - **Independent action levels:** Every action has its own level and experience progression. Performing one action does not directly level another action.
 - **Derived skill levels:** Every skill has its own level from 1 to 100, derived from the progression of all actions within that skill. Reaching skill level 100 requires every action in that skill to reach level 100.
 - **Different progression scalars:** Skills can have different numbers of actions and their own skill and action experience scaling. Individual actions also have tier-dependent scalars.
-- **Meaningful levels:** Action levels improve the action itself, while skill levels can provide per-level passive benefits and unlock skill milestones.
-- **Milestones matter:** Every skill has its own independent milestones every ten skill levels. Rewards may improve the current skill, another skill, all skills or a unique system.
+- **Meaningful levels:** Action levels improve their own actions and can award independent action milestones. Skill levels can provide per-level passive benefits and separate skill milestones.
+- **Independent action and skill milestones:** Each action has its own milestone track, separate from its skill's milestone track. Action milestones affect the action that reaches them; skill milestones can affect their own skill, another skill, all skills or a unique system.
 - **Additive bonuses:** Bonuses from different sources stack additively by default. Exceptions must be explicitly defined.
 - **Distinct Primary Elements:** Earth, Wind and Water have separate identities, spells and elemental resources.
 - **Aspects are future-facing:** The possible invoke/channel and run-based Aspect system is only a draft concept and is not part of the initial implementation.
@@ -931,7 +939,8 @@ The following details remain open for balancing, implementation or future design
 - The final names and descriptions of higher-tier elemental essences.
 - The exact Mana costs, starting capacity, regeneration rate and maximum-Mana increase per Spellcraft level.
 - Whether skill-level passive bonuses will be used by every skill and what each skill's bonus will be.
-- The exact individual action-level bonus values after playtesting.
+- The exact recurring individual action-level bonus values after playtesting.
+- The exact action milestone rewards and their level thresholds.
 - The milestone rewards for each skill at levels 10 through 100.
 - Which milestones will affect their own skill, another skill, all skills or a unique system.
 - The final Transmutation action names, resource names, recipes and input quantities.

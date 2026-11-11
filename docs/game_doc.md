@@ -9,7 +9,7 @@
 The initial game introduces three skills:
 
 1. **Research** — developing general magical knowledge and producing research materials.
-2. **Spellcraft** — learning and casting spells connected to the three Primary Elements: Earth, Wind and Water.
+2. **Spellcraft** — learning and casting spells connected to the three Primary Elements: Earth, Air and Water.
 3. **Transmutation** — combining materials from the earlier skills to create more refined resources.
 
 These three skills are the first layer of a much larger game. They establish the core progression, resource and economy systems, but they are deliberately not intended to represent the full complexity or direction of the late game. Later skills and systems will expand on these foundations and introduce more involved interactions.
@@ -29,7 +29,7 @@ The game is designed around long-term progression and offline gains. A period aw
 The initial elemental system consists of three Primary Elements:
 
 - **Earth**
-- **Wind**
+- **Air**
 - **Water**
 
 These are the elements used by the initial Spellcraft and Transmutation systems. They are not called Order, Life or Death, and those former categories are no longer part of the current design.
@@ -40,11 +40,11 @@ Earth represents solidity, material, structure, weight and endurance.
 
 It is associated with stone, dust, minerals, crystals, mountains and the deeper physical foundations of the world. Early Earth magic should feel simple and tangible, while higher-tier magic can affect enormous geological structures or the substance of the world itself.
 
-### 2.2 Wind
+### 2.2 Air
 
-Wind represents movement, air, pressure, speed and the forces of the atmosphere.
+Air represents movement, air, pressure, speed and the forces of the atmosphere.
 
-It is associated with breath, breezes, gusts, gales, storms and increasingly powerful atmospheric phenomena. Early Wind magic should be subtle and easy to control, while advanced magic can command immense storms and forces on a much greater scale.
+It is associated with breath, breezes, gusts, gales, storms and increasingly powerful atmospheric phenomena. Early Air magic should be subtle and easy to control, while advanced magic can command immense storms and forces on a much greater scale.
 
 ### 2.3 Water
 
@@ -83,7 +83,7 @@ Each skill contains its own collection of actions. The number of actions does no
 Examples:
 
 - Research contains its own research activities, from simple introductory research to extremely advanced discoveries.
-- Spellcraft contains Earth, Wind and Water spells across multiple tiers.
+- Spellcraft contains Earth, Air and Water spells across multiple tiers.
 - Transmutation contains activities that combine resources from other skills into increasingly refined materials.
 
 Every action has an independent level from **1 to 100**. It tracks its own experience, experience requirement, base duration, base output and individual leveling bonuses.
@@ -96,7 +96,7 @@ Every action levels independently.
 
 For example, performing Research II awards action experience to Research II. It does not award action experience to Research I, Research III or any Spellcraft or Transmutation action.
 
-Likewise, casting an Earth spell does not directly level a Wind or Water spell. Each spell action has its own progression.
+Likewise, casting an Earth spell does not directly level a Air or Water spell. Each spell action has its own progression.
 
 There is no shared action-experience pool. Progression can still be connected through skill levels, skill milestones, resources and bonuses, but the individual action levels remain separate.
 
@@ -296,7 +296,7 @@ Each action has its own level, experience curve, base duration, output and indiv
 
 ## 6. Skill Two — Spellcraft
 
-**Purpose:** Learn and cast spells associated with Earth, Wind and Water.
+**Purpose:** Learn and cast spells associated with Earth, Air and Water.
 
 Spellcraft introduces the three Primary Elements and provides elemental resources for later activities. Each spell is an independent action with its own level, experience requirements, duration, Mana cost and resource output.
 
@@ -304,19 +304,19 @@ Spellcraft should develop both the player's knowledge of individual spells and t
 
 ### 6.1 Initial elemental spells
 
-The initial spell actions are divided into Earth, Wind and Water.
+The initial spell actions are divided into Earth, Air and Water.
 
 | Element | Initial spell | Description |
 |---|---|---|
 | Earth | **Shape Pebble** | Manipulates a small amount of earth or stone. |
-| Wind | **Stir Breeze** | Produces a small and controlled movement of air. |
+| Air | **Stir Breeze** | Produces a small and controlled movement of air. |
 | Water | **Gather Droplet** | Gathers or manipulates a tiny amount of water. |
 
 The player starts with the first available Spellcraft action when the skill is unlocked. The other initial elemental actions can be unlocked separately.
 
 Higher tiers should follow the same progression from small, easy-to-control effects toward powerful elemental manipulation. Example naming directions include:
 
-| Tier | Earth | Wind | Water |
+| Tier | Earth | Air | Water |
 |---|---|---|---|
 | I | Shape Pebble | Stir Breeze | Gather Droplet |
 | II | Shape Stone | Create Gust | Form Ripple |
@@ -353,7 +353,7 @@ Each spell produces an essence associated with its element and tier. These essen
 
 The essence names should be unique and should communicate a progression from weak, common traces of an element to concentrated, exceptional forms of elemental power.
 
-| Tier | Earth essence | Wind essence | Water essence |
+| Tier | Earth essence | Air essence | Water essence |
 |---|---|---|---|
 | I | **Dust** | **Breath** | **Droplet** |
 | II | **Pebble** | **Breeze** | **Ripple** |
@@ -368,7 +368,7 @@ These names are the essence item names, not new elements or separate skill level
 
 Higher-tier essences should feel significantly more potent than the early materials. They should also have greater value and more demanding uses in later recipes.
 
-Elemental essences are separate inventory items. Earth Dust, Wind Breath and Water Droplet are not interchangeable simply because they share the same tier.
+Elemental essences are separate inventory items. Earth Dust, Air Breath and Water Droplet are not interchangeable simply because they share the same tier.
 
 ### 6.4 Spell progression and elemental knowledge
 
@@ -376,7 +376,7 @@ Each spell action has its own independent level from 1 to 100.
 
 Leveling a spell represents gaining experience with that specific spell. Spellcraft's overall skill level represents broader development across all its spell actions.
 
-Spellcraft progression and its milestones can deepen the player's general knowledge of the spells and elements. However, **separate Earth, Wind and Water level tracks are not currently part of the planned system**.
+Spellcraft progression and its milestones can deepen the player's general knowledge of the spells and elements. However, **separate Earth, Air and Water level tracks are not currently part of the planned system**.
 
 A spell's individual action level, the overall Spellcraft skill level and any future elemental mastery system must remain distinct concepts.
 
@@ -398,23 +398,23 @@ The initial Transmutation system is not yet intended to create equipment, combat
 
 ### 7.1 Transmutation actions
 
-Transmutation actions are organized around Earth, Wind and Water. Each action has its own independent level, experience curve, duration, input requirements and output.
+Transmutation actions are organized around Earth, Air and Water. Each action has its own independent level, experience curve, duration, input requirements and output.
 
 The three elemental paths should remain distinct:
 
 - **Earth Transmutation** works with Earth materials and produces refined earth-based resources.
-- **Wind Transmutation** works with Wind materials and produces refined wind-based resources.
+- **Air Transmutation** works with Air materials and produces refined air-based resources.
 - **Water Transmutation** works with Water materials and produces refined water-based resources.
 
 An example structure is:
 
-| Tier | Earth action | Wind action | Water action |
+| Tier | Earth action | Air action | Water action |
 |---|---|---|---|
-| I | Earth Transmutation I | Wind Transmutation I | Water Transmutation I |
-| II | Earth Transmutation II | Wind Transmutation II | Water Transmutation II |
-| III | Earth Transmutation III | Wind Transmutation III | Water Transmutation III |
-| IV | Earth Transmutation IV | Wind Transmutation IV | Water Transmutation IV |
-| V | Earth Transmutation V | Wind Transmutation V | Water Transmutation V |
+| I | Earth Transmutation I | Air Transmutation I | Water Transmutation I |
+| II | Earth Transmutation II | Air Transmutation II | Water Transmutation II |
+| III | Earth Transmutation III | Air Transmutation III | Water Transmutation III |
+| IV | Earth Transmutation IV | Air Transmutation IV | Water Transmutation IV |
+| V | Earth Transmutation V | Air Transmutation V | Water Transmutation V |
 
 These are structural labels, not necessarily the final displayed action names. More descriptive names can be introduced when the individual recipes and outputs are finalized.
 
@@ -427,7 +427,7 @@ The current working resource family is **Catalysts**, with a separate elemental 
 | Element | Resource family |
 |---|---|
 | Earth | Earth Catalyst |
-| Wind | Wind Catalyst |
+| Air | Air Catalyst |
 | Water | Water Catalyst |
 
 Each tier produces a more refined form of its elemental Catalyst. The item name and tier should make this progression clear, while the exact tier-specific names can be finalized alongside the recipes.
@@ -447,10 +447,10 @@ For example:
 - Earth Dust.
 - Produces an Earth Catalyst.
 
-**Wind Transmutation I**
+**Air Transmutation I**
 - A Research material.
-- Wind Breath.
-- Produces a Wind Catalyst.
+- Air Breath.
+- Produces a Air Catalyst.
 
 **Water Transmutation I**
 - A Research material.
@@ -465,7 +465,7 @@ The exact quantities, resource combinations and tier-specific recipes remain to 
 
 Every Transmutation action has its own level from 1 to 100.
 
-Performing Earth Transmutation II does not grant action experience to Earth Transmutation I or to any Wind or Water action.
+Performing Earth Transmutation II does not grant action experience to Earth Transmutation I or to any Air or Water action.
 
 The overall Transmutation skill level is derived from the progression of its actions, just like the other skills. Transmutation can also have its own skill-level scalar and milestones.
 
@@ -512,7 +512,7 @@ Spellcraft starts at 5 seconds for Tier I spells. Each subsequent spell tier inc
 | IV | 11 sec | 67.5 XP |
 | V | 13 sec | 101.25 XP |
 
-These values apply independently to Earth, Wind and Water spells within the same tier. They are example values for the initial tiers, not a limit on the eventual number of spells.
+These values apply independently to Earth, Air and Water spells within the same tier. They are example values for the initial tiers, not a limit on the eventual number of spells.
 
 Spellcraft actions also have a Mana cost. Mana costs are balanced separately from action duration and base action XP.
 
@@ -528,7 +528,7 @@ Transmutation starts at 6 seconds for Tier I. Each subsequent tier increases the
 | IV | 15 sec | 101.25 XP |
 | V | 18 sec | 151.875 XP |
 
-These values apply independently to Earth, Wind and Water Transmutation actions within the same tier. They are example values for the initial tiers, not a final limit on the skill's size.
+These values apply independently to Earth, Air and Water Transmutation actions within the same tier. They are example values for the initial tiers, not a final limit on the skill's size.
 
 #### General pattern
 
@@ -754,7 +754,7 @@ The bag starts with a limited number of slots.
 
 Each distinct item type occupies one slot, while multiple copies of the same item can stack together.
 
-For example, Loose Notes occupy one slot whether the player owns one copy or fifty copies. Earth Dust, Wind Breath and Water Droplet are different item types and each occupies its own slot.
+For example, Loose Notes occupy one slot whether the player owns one copy or fifty copies. Earth Dust, Air Breath and Water Droplet are different item types and each occupies its own slot.
 
 Different elements and tiers remain separate items. Research materials, elemental essences and Catalysts also occupy their own item slots.
 
@@ -830,7 +830,7 @@ The first three skills establish the initial progression loop:
 | Skill or system | Purpose | Main outputs or role |
 |---|---|---|
 | Research | Develop general magical knowledge | Research materials |
-| Spellcraft | Learn and cast Earth, Wind and Water spells | Elemental essences; uses Mana |
+| Spellcraft | Learn and cast Earth, Air and Water spells | Elemental essences; uses Mana |
 | Transmutation | Combine research materials and elemental essences | Catalysts |
 | Bag | Store and manage resources | Inventory capacity |
 | Selling | Turn items into gold | Gold for unlocks and expansion |
@@ -848,7 +848,7 @@ A possible early progression is:
 3. Unlock additional Research actions with gold and develop their independent levels.
 4. Gather the Research materials required to unlock Spellcraft.
 5. Spend gold and the required Research materials to unlock Spellcraft.
-6. Use Mana to cast the available Earth, Wind and Water spells.
+6. Use Mana to cast the available Earth, Air and Water spells.
 7. Produce elemental essences and decide which ones to retain or sell.
 8. Gather the Research materials and elemental essences required to unlock Transmutation.
 9. Unlock Transmutation and begin combining resources from the earlier skills.
@@ -915,7 +915,7 @@ The following principles should guide future development:
 - **Meaningful levels:** Action levels improve their own actions and can award independent action milestones. Skill levels can provide per-level passive benefits and separate skill milestones.
 - **Independent action and skill milestones:** Each action has its own milestone track, separate from its skill's milestone track. Action milestones affect the action that reaches them; skill milestones can affect their own skill, another skill, all skills or a unique system.
 - **Additive bonuses:** Bonuses from different sources stack additively by default. Exceptions must be explicitly defined.
-- **Distinct Primary Elements:** Earth, Wind and Water have separate identities, spells and elemental resources.
+- **Distinct Primary Elements:** Earth, Air and Water have separate identities, spells and elemental resources.
 - **Aspects are future-facing:** The possible invoke/channel and run-based Aspect system is only a draft concept and is not part of the initial implementation.
 - **Mana supports Spellcraft:** Spells require Mana, Mana regenerates passively, and Spellcraft skill levels may increase maximum Mana.
 - **Resources matter:** Every resource should have a potential purpose in another skill, an unlock, a recipe or a future system.

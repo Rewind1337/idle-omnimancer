@@ -7,6 +7,7 @@
     transition: background-color 0.2s ease-out;
 
     svg {
+        transform: translateY(2px);
         width: 24px;
         height: 24px;
     }
@@ -26,6 +27,60 @@
 
         &.badge-interactive:hover {
             background-color: var(--button-secondary-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="earth"] {
+        background: var(--button-earth);
+
+        &.badge-interactive:hover {
+            background-color: var(--button-earth-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="air"] {
+        background: var(--button-air);
+
+        &.badge-interactive:hover {
+            background-color: var(--button-air-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="water"] {
+        background: var(--button-water);
+
+        &.badge-interactive:hover {
+            background-color: var(--button-water-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="research"] {
+        background: var(--tab-research);
+
+        &.badge-interactive:hover {
+            background-color: var(--tab-research-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="spellcraft"] {
+        background: var(--tab-spellcraft);
+
+        &.badge-interactive:hover {
+            background-color: var(--tab-spellcraft-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="transmutation"] {
+        background: var(--tab-transmutation);
+
+        &.badge-interactive:hover {
+            background-color: var(--tab-transmutation-hover);
             cursor: pointer;
         }
     }
@@ -57,29 +112,11 @@
         }
     }
 
-    &[data-variant="research"] {
-        background: var(--tab-research);
+    &[data-variant="transparent"] {
+        background: transparent;
 
         &.badge-interactive:hover {
-            background-color: var(--tab-research-hover);
-            cursor: pointer;
-        }
-    }
-
-    &[data-variant="spellcraft"] {
-        background: var(--tab-spellcraft);
-
-        &.badge-interactive:hover {
-            background-color: var(--tab-spellcraft-hover);
-            cursor: pointer;
-        }
-    }
-
-    &[data-variant="transmutation"] {
-        background: var(--tab-transmutation);
-
-        &.badge-interactive:hover {
-            background-color: var(--tab-transmutation-hover);
+            background-color: var(--paper-hover);
             cursor: pointer;
         }
     }

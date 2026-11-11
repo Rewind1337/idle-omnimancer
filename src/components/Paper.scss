@@ -33,16 +33,16 @@
     border-color: var(--button-secondary);
   }
 
-  &[data-variant="primal"] {
-    border-color: var(--button-primal);
+  &[data-variant="earth"] {
+    border-color: var(--button-earth);
   }
 
-  &[data-variant="life"] {
-    border-color: var(--button-life);
+  &[data-variant="air"] {
+    border-color: var(--button-air);
   }
 
-  &[data-variant="death"] {
-    border-color: var(--button-death);
+  &[data-variant="water"] {
+    border-color: var(--button-water);
   }
 
   &[data-variant="research"] {
@@ -55,6 +55,18 @@
 
   &[data-variant="transmutation"] {
     border-color: var(--tab-transmutation);
+  }
+
+  &[data-variant="primal"] {
+    border-color: var(--button-primal);
+  }
+
+  &[data-variant="life"] {
+    border-color: var(--button-life);
+  }
+
+  &[data-variant="death"] {
+    border-color: var(--button-death);
   }
 
   &[data-variant="transparent"] {

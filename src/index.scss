@@ -14,7 +14,7 @@
   --button-secondary-active: hsla(35, 30%, 21%, 1);
   --button-secondary-toggled: hsla(35, 34%, 36%, 1);
 
-  /* Aspect Buttons */
+  /* Old Element Buttons Colors */
   --button-primal: hsla(255, 35%, 29%, 1);
   --button-primal-hover: hsla(255, 40%, 35%, 1);
   --button-primal-active: hsla(255, 42%, 22%, 1);
@@ -30,24 +30,59 @@
   --button-death-active: hsla(346, 46%, 22%, 1);
   --button-death-toggled: hsla(346, 48%, 39%, 1);
 
-  /* Aspect Colors */
-  --aspect-primal-muted: hsla(255, 24%, 59%, 1);
-  --aspect-primal: hsla(255, 45%, 70%, 1);
-  --aspect-primal-strong: hsla(255, 80%, 80%, 1);
-  --aspect-primal-bg: hsla(255, 38%, 17%, 1);
-  --aspect-primal-soft: hsla(255, 70%, 70%, 0.14);
+  /* Element Button Colors */
+  --button-earth: hsla(82, 30%, 25%, 1);
+  --button-earth-hover: hsla(82, 35%, 31%, 1);
+  --button-earth-active: hsla(82, 37%, 20%, 1);
+  --button-earth-toggled: hsla(82, 40%, 36%, 1);
 
-  --aspect-life-muted: hsla(145, 25%, 48%, 1);
-  --aspect-life: hsla(145, 45%, 58%, 1);
-  --aspect-life-strong: hsla(145, 76%, 70%, 1);
-  --aspect-life-bg: hsla(145, 38%, 15%, 1);
-  --aspect-life-soft: hsla(145, 65%, 60%, 0.14);
+  --button-air: hsla(270, 35%, 29%, 1);
+  --button-air-hover: hsla(270, 40%, 35%, 1);
+  --button-air-active: hsla(270, 42%, 22%, 1);
+  --button-air-toggled: hsla(270, 44%, 39%, 1);
 
-  --aspect-death-muted: hsla(348, 26%, 55%, 1);
-  --aspect-death: hsla(348, 48%, 65%, 1);
-  --aspect-death-strong: hsla(348, 80%, 76%, 1);
-  --aspect-death-bg: hsla(348, 38%, 17%, 1);
-  --aspect-death-soft: hsla(348, 70%, 65%, 0.14);
+  --button-water: hsla(222, 38%, 29%, 1);
+  --button-water-hover: hsla(222, 43%, 35%, 1);
+  --button-water-active: hsla(222, 45%, 22%, 1);
+  --button-water-toggled: hsla(222, 47%, 39%, 1);
+
+  /* Old Element Colors Colors */
+  --element-primal-muted: hsla(255, 24%, 59%, 1);
+  --element-primal: hsla(255, 45%, 70%, 1);
+  --element-primal-strong: hsla(255, 80%, 80%, 1);
+  --element-primal-bg: hsla(255, 38%, 17%, 1);
+  --element-primal-soft: hsla(255, 70%, 70%, 0.14);
+
+  --element-life-muted: hsla(145, 25%, 48%, 1);
+  --element-life: hsla(145, 45%, 58%, 1);
+  --element-life-strong: hsla(145, 76%, 70%, 1);
+  --element-life-bg: hsla(145, 38%, 15%, 1);
+  --element-life-soft: hsla(145, 65%, 60%, 0.14);
+
+  --element-death-muted: hsla(348, 26%, 55%, 1);
+  --element-death: hsla(348, 48%, 65%, 1);
+  --element-death-strong: hsla(348, 80%, 76%, 1);
+  --element-death-bg: hsla(348, 38%, 17%, 1);
+  --element-death-soft: hsla(348, 70%, 65%, 0.14);
+
+  /* Element Colors */
+  --element-earth-muted: hsla(82, 24%, 55%, 1);
+  --element-earth: hsla(82, 45%, 65%, 1);
+  --element-earth-strong: hsla(82, 76%, 78%, 1);
+  --element-earth-bg: hsla(82, 38%, 15%, 1);
+  --element-earth-soft: hsla(82, 65%, 60%, 0.14);
+
+  --element-air-muted: hsla(270, 24%, 59%, 1);
+  --element-air: hsla(270, 45%, 70%, 1);
+  --element-air-strong: hsla(270, 80%, 80%, 1);
+  --element-air-bg: hsla(270, 38%, 17%, 1);
+  --element-air-soft: hsla(270, 70%, 70%, 0.14);
+
+  --element-water-muted: hsla(222, 26%, 56%, 1);
+  --element-water: hsla(222, 48%, 66%, 1);
+  --element-water-strong: hsla(222, 80%, 78%, 1);
+  --element-water-bg: hsla(222, 38%, 16%, 1);
+  --element-water-soft: hsla(222, 70%, 65%, 0.14);
 
   /* Tab Colors */
   --tab-research: hsla(185, 42%, 29%, 1);
@@ -89,6 +124,7 @@
 /* Fonts */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+  white-space: nowrap;
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
 }
 
@@ -108,6 +144,28 @@ svg {
 .align-start {align-self: flex-start;}
 .align-end {align-self: flex-end;}
 
+.w-fit {width: fit-content;}
+.w-min {width: min-content;}
+.w-max {width: max-content;}
+
+.h-fit {height: fit-content;}
+.h-min {height: min-content;}
+.h-max {height: max-content;}
+
+.w-0 {flex-basis: 1px;}
+.w-10 {flex-basis: 10%;}
+.w-20 {flex-basis: 20%;}
+.w-30 {flex-basis: 30%;}
+.w-40 {flex-basis: 40%;}
+.w-50 {flex-basis: 50%;}
+.w-60 {flex-basis: 60%;}
+.w-70 {flex-basis: 70%;}
+.w-80 {flex-basis: 80%;}
+.w-90 {flex-basis: 90%;}
+.w-100 {flex-basis: 100%; width: 100%;}
+
+.flex-grow {flex-grow: 1;}
+.flex-shrink {flex-shrink: 1;}
 
 
 .flex {display: flex;}

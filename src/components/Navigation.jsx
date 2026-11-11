@@ -54,7 +54,7 @@ export function Navigation({
             {NAVIGATION_BUTTONS}
           </Flex>
         :
-          <Grid columns={mode === "compact" ? { small: 4, medium: 6, large: 8 } : { small: 3, medium: 4, large: 5 }}>
+          <Grid columns={mode === "compact" ? { xsmall: 4, small: 5, medium: 6, large: 8 } : { xsmall: 2, small: 3, medium: 4, large: 5 }}>
             {NAVIGATION_BUTTONS}
           </Grid>
         }

@@ -32,6 +32,7 @@ const RESEARCH_ACTION_DATA = Array.from(
     id: `research-${i + 1}`,
     tier: i + 1,
     name: `Research ${i + 1}`,
+    level: (i === 0 ? 1 : 0),
 
     baseDurationSeconds:
       RESEARCH_CONFIG.baseDuration + i * RESEARCH_CONFIG.durationPerTier,
@@ -120,8 +121,9 @@ function ActionResources({
 
 function ResearchAction({
   className = '',
-  tier,
   name,
+  level,
+  tier,
   baseDurationSeconds,
   baseXpPerCompletion,
 }) {
@@ -131,7 +133,7 @@ function ResearchAction({
         <Flex direction="row">
           <Icon><BookOpen/></Icon>
           <Flex direction="column">
-            <ActionHeader name={name} level={1} tier={tier}/>
+            <ActionHeader name={name} level={level} tier={tier}/>
             <ActionProgress/>
           </Flex>
         </Flex>
@@ -151,7 +153,7 @@ function SkillSummary({
       <Flex direction="column">
         <Flex>
           <h1>{text}</h1>
-          <h3 className="align-right">Total Levels: 0 of 793</h3>
+          <h3 className="align-right">Total Levels: 0 of 69420</h3>
         </Flex>
         <Flex className={cx('skill-progress', className)}>
           <Paper layer={2}><h3 className="align-center">Fancy Progress Bar</h3></Paper>
@@ -168,7 +170,7 @@ export function ResearchPage() {
         <Flex direction="column">
           <SkillSummary text={"Research"}/>
           <Grid>
-            {RESEARCH_ACTION_DATA.map(action =>
+            {RESEARCH_ACTION_DATA.filter(action => action.level !== 0).map(action =>
               <ResearchAction key={action.id} {...action}></ResearchAction>
             )}
           </Grid>

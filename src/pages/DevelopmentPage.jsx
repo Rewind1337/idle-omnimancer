@@ -1,4 +1,4 @@
-import { ArrowUpRight, CircleDollarSign, GraduationCap, MapPin } from "lucide-react"
+import { BookOpenText, Scale, WandSparkles, Star, ArrowUpRight, CircleDollarSign, GraduationCap, MapPin } from "lucide-react"
 import { Badge } from "../components/Badge"
 import { Button } from "../components/Button"
 import { Flex } from "../components/Flex"
@@ -6,7 +6,7 @@ import { Paper } from "../components/Paper"
 
 /* Temp stuff for showcasing */
 const VARIANTS = ["primary", "secondary", "primal", "life", "death", "research", "spellcraft", "transmutation"]
-const ICONS = [<MapPin />, <CircleDollarSign />, <ArrowUpRight />, <GraduationCap />]
+const ICONS = [<BookOpenText/>, <Scale/>, <WandSparkles/>, <Star/>, <MapPin />, <CircleDollarSign />, <ArrowUpRight />, <GraduationCap />]
 
 function Showcase() {
   return (
@@ -17,9 +17,9 @@ function Showcase() {
           <h3>Buttons /w sizes and variants - Paper Layer 2</h3>
           <Flex wrap={true}>
             {VARIANTS.map((variant, index) => <>
-              <Button size="large" key={variant + "-large"} variant={variant} icon={ICONS[index%4]}>{variant.toLowerCase()}</Button>
-              <Button size="medium" key={variant + "-med"} variant={variant} icon={ICONS[index%4]}>{variant.toLowerCase()}</Button>
-              <Button size="small" key={variant + "-smol"} variant={variant} icon={ICONS[index%4]}>{variant.toLowerCase()}</Button>
+              <Button size="large" key={variant + "-large"} variant={variant} icon={ICONS[index%8]}>{variant.toLowerCase()}</Button>
+              <Button size="medium" key={variant + "-med"} variant={variant} icon={ICONS[index%8]}>{variant.toLowerCase()}</Button>
+              <Button size="small" key={variant + "-smol"} variant={variant} icon={ICONS[index%8]}>{variant.toLowerCase()}</Button>
               <hr/>
             </>
             )}

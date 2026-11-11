@@ -22,7 +22,7 @@ function ResponsivePage({
     return (
       <Flex direction="column" className={cx('page', className)}>
         <Navigation setActivePage={setActivePage} position="top" mode={navigationMode}/>
-        <ScrollArea maxHeight={window.innerHeight - (88 + 18)} padding={0}>
+        <ScrollArea padding={0}>
           {children}
         </ScrollArea>
       </Flex>

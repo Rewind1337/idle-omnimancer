@@ -75,8 +75,8 @@ function ActionHeader({
   return (
     <Flex className={cx('action-header', className)}>
       <h2>{name}</h2>
-      <h4 className="align-left align-start">Lv. {level} / 100</h4>
-      <h3 className="align-right align-start">Tier {tier} Research</h3>
+      <h4 className="align-left">Lv. {level} / 100</h4>
+      <h3 className="align-right">Tier {tier} Research</h3>
     </Flex>
   )
 }
@@ -101,7 +101,7 @@ function ActionProgress({
 }) {
   return (
     <Flex className={cx('action-progress', className)}>
-      <Paper layer={2}>Fancy Progress Bar or something</Paper>
+      <Paper layer={2}><h3 className="align-center">Fancy Progress Bar</h3></Paper>
       <Button variant={"research"}>Research</Button>
     </Flex>
   )
@@ -142,17 +142,38 @@ function ResearchAction({
   )
 }
 
+function SkillSummary({
+  className = '',
+  text
+}) {
+  return (
+    <Paper className={cx('skill-summary', className)} layer={1} variant={"research"}>
+      <Flex direction="column">
+        <Flex>
+          <h1>{text}</h1>
+          <h3 className="align-right">Total Levels: 0 of 793</h3>
+        </Flex>
+        <Flex className={cx('skill-progress', className)}>
+          <Paper layer={2}><h3 className="align-center">Fancy Progress Bar</h3></Paper>
+        </Flex>
+      </Flex>
+    </Paper>
+  )
+}
+
 export function ResearchPage() {
   return (
     <Flex direction="column">
-        <Paper layer={0} variant={"research"}>
-          <h1>Research</h1>
+      <Paper layer={0} variant={"research"}>
+        <Flex direction="column">
+          <SkillSummary text={"Research"}/>
           <Grid>
             {RESEARCH_ACTION_DATA.map(action =>
               <ResearchAction key={action.id} {...action}></ResearchAction>
             )}
           </Grid>
-        </Paper>
+        </Flex>
+      </Paper>
     </Flex>
   )
 }

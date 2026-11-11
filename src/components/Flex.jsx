@@ -16,7 +16,6 @@ export function Flex({
     <div
       className={cx('flex', className)}
       style={{
-        display: "flex",
         flexDirection: direction,
         alignItems: align,
         justifyContent: justify,

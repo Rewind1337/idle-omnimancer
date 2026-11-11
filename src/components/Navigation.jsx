@@ -5,7 +5,6 @@ import { Grid } from "./Grid"
 import { Button } from "./Button"
 
 import './Navigation.scss'
-import { Badge } from "./Badge"
 
 // Utility function that joins CSS classes after filtering for truthiness.
 const cx = (...values) => values.filter(Boolean).join(' ')
@@ -23,7 +22,7 @@ export function Navigation({
 
   const NAVIGATION_BUTTON_DATA = [
     { id: 0, name: "Research", icon: <BookOpenText />, level: 1 },
-    { id: 1, name: "Spellcraft", icon: <WandSparkles />, level: 0},
+    { id: 1, name: "Spellcraft", icon: <WandSparkles />, level: 1},
     { id: 2, name: "Transmutation", icon: <Scale />, level: 0},
     { id: 3, name: "Development", icon: <Star />, variant: "death"},
   ]
@@ -31,9 +30,10 @@ export function Navigation({
   const NAVIGATION_BUTTONS = NAVIGATION_BUTTON_DATA.map(data => (
     <Button
       key={`nav-${data.id}`}
+      size="large"
       variant={data.variant ? data.variant : data.name.toLowerCase()}
       icon={data.icon}
-      badge={data.level ? <Badge variant={data.name.toLowerCase()}>{data.level}</Badge> : null}
+      badge={data.level ? data.level : null}
       disabled={data.disabled ?? false}
       onClick={() => handleNavigationClick(data.id)}
     >

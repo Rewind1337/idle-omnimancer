@@ -1,14 +1,22 @@
 .badge {
-    border-radius: 8px;
-    padding: 4px 8px 0 8px;
-    outline: 1px solid rgba(255, 255, 255, 0.33);
+    display: grid;
+    align-items: center;
+    width: fit-content;
+    outline: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0 6px;
     transition: background-color 0.2s ease-out;
+
+    svg {
+        width: 24px;
+        height: 24px;
+    }
 
     &[data-variant="primary"] {
         background: var(--button-primary);
 
         &.badge-interactive:hover {
             background-color: var(--button-primary-hover);
+            outline-color: rgba(255, 255, 255, 0.4);
             cursor: pointer;
         }
     }
@@ -75,4 +83,8 @@
             cursor: pointer;
         }
     }
+}
+
+.button .badge .flex {
+    transform: translateY(2px);
 }

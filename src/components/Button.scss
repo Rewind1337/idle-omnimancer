@@ -10,9 +10,30 @@
   transition: background-color 0.2s ease-out;
   width: auto;
 
-  .button-icon { text-align: left; display: grid; place-items: center; width: fit-content; }
-  .button-text {flex-grow: 1; align-self: center; display: grid; place-items: center;}
-  .button-badge { text-align: right; display: grid; place-items: center; width: fit-content; }
+  .button-icon {
+    text-align: left;
+    display: grid;
+    place-items: center;
+    width: fit-content;
+  }
+
+  .button-content {
+    flex-grow: 1;
+    align-self: center;
+    display: grid;
+    place-items: center;
+  }
+
+  .button-badge {
+    text-align: right;
+    display: grid;
+    place-items: center;
+    width: fit-content;
+
+    &.badge {
+      border-radius: 8px;
+    }
+  }
 
   * {font-family: inherit;}
 
@@ -153,21 +174,42 @@
   }
 
   &[data-size="small"] {
-    font-size: 14px;
+    font-size: 16px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      align-self: center;
+    }
   }
 
   &[data-size="medium"] {
-    font-size: 20px;
+    font-size: 19px;
+
+    .button-content {
+      margin-top: 3px;
+    }
 
     svg {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       align-self: center;
     }
   }
 
   &[data-size="large"] {
     font-size: 24px;
+    line-height: 1.6;
+
+    .button-content {
+      transform: translateY(2px);
+    }
+
+    svg {
+      width: 36px;
+      height: 36px;
+      align-self: center;
+    }
   }
 
   &:disabled {

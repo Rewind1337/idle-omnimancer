@@ -3,22 +3,6 @@
   --font-heading: 'Josefin Sans', sans-serif;
   --font-text: 'Roboto Condensed', sans-serif;
 
-  /* Tab Colors */
-  --tab-research: hsla(185, 42%, 29%, 1);
-  --tab-research-hover: hsla(185, 47%, 35%, 1);
-  --tab-research-active: hsla(185, 49%, 23%, 1);
-  --tab-research-toggled: hsla(185, 52%, 39%, 1);
-
-  --tab-spellcraft: hsla(42, 42%, 29%, 1);
-  --tab-spellcraft-hover: hsla(42, 47%, 35%, 1);
-  --tab-spellcraft-active: hsla(42, 49%, 23%, 1);
-  --tab-spellcraft-toggled: hsla(42, 52%, 39%, 1);
-
-  --tab-transmutation: hsla(18, 42%, 29%, 1);
-  --tab-transmutation-hover: hsla(18, 47%, 35%, 1);
-  --tab-transmutation-active: hsla(18, 49%, 23%, 1);
-  --tab-transmutation-toggled: hsla(18, 52%, 39%, 1);
-
   /* General button colors */
   --button-primary: hsla(210, 30%, 29%, 1);
   --button-primary-hover: hsla(210, 34%, 35%, 1);
@@ -64,6 +48,22 @@
   --aspect-death-strong: hsla(348, 80%, 76%, 1);
   --aspect-death-bg: hsla(348, 38%, 17%, 1);
   --aspect-death-soft: hsla(348, 70%, 65%, 0.14);
+
+  /* Tab Colors */
+  --tab-research: hsla(185, 42%, 29%, 1);
+  --tab-research-hover: hsla(185, 47%, 35%, 1);
+  --tab-research-active: hsla(185, 49%, 23%, 1);
+  --tab-research-toggled: hsla(185, 52%, 39%, 1);
+
+  --tab-spellcraft: hsla(42, 42%, 29%, 1);
+  --tab-spellcraft-hover: hsla(42, 47%, 35%, 1);
+  --tab-spellcraft-active: hsla(42, 49%, 23%, 1);
+  --tab-spellcraft-toggled: hsla(42, 52%, 39%, 1);
+
+  --tab-transmutation: hsla(18, 42%, 29%, 1);
+  --tab-transmutation-hover: hsla(18, 47%, 35%, 1);
+  --tab-transmutation-active: hsla(18, 49%, 23%, 1);
+  --tab-transmutation-toggled: hsla(18, 52%, 39%, 1);
 
   /* Main backgrounds */
   --background: hsla(220, 41%, 4%, 1);

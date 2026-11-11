@@ -114,22 +114,24 @@ body {
 }
 
 #root {
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 8px;
+  padding: 4px;
   gap: 8px;
 }
 
 
 
+// in progress, will move out to actual file at some point
 .action {
-
   svg {
     width: 48px;
     height: 48px;
   }
 
   &.action-research {
-
   }
 }

@@ -64,6 +64,60 @@ function getResearchXpRequired(research, level) {
   return Math.ceil(startingXp * levelMultiplier)
 }
 
+// Will move into own file later
+
+function ActionHeader({
+  className = '',
+  tier,
+  name,
+  level,
+}) {
+  return (
+    <Flex className={cx('action-header', className)}>
+      <h2>{name}</h2>
+      <h4 className="align-left align-start">Lv. {level} / 100</h4>
+      <h3 className="align-right align-start">Tier {tier} Research</h3>
+    </Flex>
+  )
+}
+
+function ActionDetails({
+  className = '',
+  tier,
+  baseDurationSeconds,
+  baseXpPerCompletion
+}) {
+  return (
+    <Flex className={cx('action-details', className)}>
+      <span>{baseDurationSeconds.toFixed(1)} Seconds</span>
+      <span className="align-center">{baseXpPerCompletion.toFixed(1)} XP / Completition</span>
+      <span className="align-right">{getResearchXpRequired(RESEARCH_ACTION_DATA[tier - 1], 1).toFixed(1)} XP Needed</span>
+    </Flex>
+  )
+}
+
+function ActionProgress({
+  className = '',
+}) {
+  return (
+    <Flex className={cx('action-progress', className)}>
+      <Paper layer={2}>Fancy Progress Bar or something</Paper>
+      <Button variant={"research"}>Research</Button>
+    </Flex>
+  )
+}
+
+function ActionResources({
+  className = '',
+}) {
+  return (
+    <Flex className={cx('action-resources', className)}>
+      <Paper layer={2}>Requires:</Paper>
+      <Paper layer={2}>Gains:</Paper>
+    </Flex>
+  )
+}
+
 function ResearchAction({
   className = '',
   tier,
@@ -73,28 +127,16 @@ function ResearchAction({
 }) {
   return (
     <Paper layer={1} className={cx('action action-research', className)}>
-      <Flex direction="row" wrap={false}>
-        <Icon><BookOpen/></Icon>
-        <Flex direction="column">
-          <Flex>
-            <h2>{name}</h2>
-            <h4 className="align-left align-start">Lv. 1 / 100</h4>
-            <h3 className="align-right align-start">Tier {tier} Research</h3>
-          </Flex>
-          <Flex>
-            <Paper layer={2}>Fancy Progress Bar or something</Paper>
-            <Button variant={"research"}>Research</Button>
-          </Flex>
-          <Flex>
-            <span>{baseDurationSeconds.toFixed(1)} Seconds</span>
-            <span className="align-center">{baseXpPerCompletion.toFixed(1)} XP / Completition</span>
-            <span className="align-right">{getResearchXpRequired(RESEARCH_ACTION_DATA[tier - 1], 1).toFixed(1)} XP Needed</span>
-          </Flex>
-          <Flex>
-            <Paper layer={2}>Requires:</Paper>
-            <Paper layer={2}>Gains:</Paper>
+      <Flex direction="column">
+        <Flex direction="row">
+          <Icon><BookOpen/></Icon>
+          <Flex direction="column">
+            <ActionHeader name={name} level={1} tier={tier}/>
+            <ActionProgress/>
           </Flex>
         </Flex>
+        <ActionDetails tier={tier} baseDurationSeconds={baseDurationSeconds} baseXpPerCompletion={baseXpPerCompletion} />
+        <ActionResources/>
       </Flex>
     </Paper>
   )

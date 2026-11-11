@@ -2,11 +2,11 @@
 .paper {
   padding: 8px;
   border-radius: 8px;
-  outline: 1px solid var(--paper-border);
+  border: 1px solid var(--paper-border);
   transition: background-color 0.2s ease-out;
 
   * {
-    outline-color: inherit;
+    border-color: inherit;
   }
 
   &[data-layer="0"] {
@@ -26,40 +26,40 @@
   }
 
   &[data-variant="primary"] {
-    outline-color: var(--button-primary);
+    border-color: var(--button-primary);
   }
 
   &[data-variant="secondary"] {
-    outline-color: var(--button-secondary);
+    border-color: var(--button-secondary);
   }
 
   &[data-variant="primal"] {
-    outline-color: var(--button-primal);
+    border-color: var(--button-primal);
   }
 
   &[data-variant="life"] {
-    outline-color: var(--button-life);
+    border-color: var(--button-life);
   }
 
   &[data-variant="death"] {
-    outline-color: var(--button-death);
+    border-color: var(--button-death);
   }
 
   &[data-variant="research"] {
-    outline-color: var(--tab-research);
+    border-color: var(--tab-research);
   }
 
   &[data-variant="spellcraft"] {
-    outline-color: var(--tab-spellcraft);
+    border-color: var(--tab-spellcraft);
   }
 
   &[data-variant="transmutation"] {
-    outline-color: var(--tab-transmutation);
+    border-color: var(--tab-transmutation);
   }
 
   &[data-variant="transparent"] {
     background-color: transparent;
-    outline-color: transparent;
+    border-color: transparent;
   }
 
   &.paper-interactive:hover {

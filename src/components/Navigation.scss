@@ -1,23 +1,26 @@
 /* Navigation Component Styles */
 .navigation {
-}
+  &.navigation-top {
+    .button {
+      padding: 4px 12px;
+    }
+  }
 
-.navigation-top {
+  &.navigation-side {
+    flex-shrink: 0;
+    height: calc(100vh - 16px)s;
+    max-width: 240px;
 
-  .button {
-    padding: 4px 12px;
+    .button {
+      width: 100%;
+    }
   }
 }
 
-.navigation-side {
-  flex-shrink: 0;
-  height: calc(100vh - 16px)s;
-  max-width: 240px;
-
+.navigation-compact {
   .button {
-    width: 100%;
+    flex-grow: 1;
+    .button-icon {width: 100%;}
+    .button-content {display: none;}
   }
-}
-
-.navigation-mobile {
 }

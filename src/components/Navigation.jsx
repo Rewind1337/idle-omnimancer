@@ -13,6 +13,7 @@ const cx = (...values) => values.filter(Boolean).join(' ')
 export function Navigation({
   className = '',
   position = "top",
+  mode = "default",
   setActivePage,
   ...props
 }) {
@@ -22,17 +23,17 @@ export function Navigation({
 
   const NAVIGATION_BUTTON_DATA = [
     { id: 0, name: "Research", icon: <BookOpenText />, level: 1 },
-    { id: 1, name: "Spellcraft", icon: <WandSparkles />, level: 1},
-    { id: 2, name: "Transmutation", icon: <Scale />, level: 1},
-    { id: 3, name: "TBA", icon: <Star />, disabled: true },
+    { id: 1, name: "Spellcraft", icon: <WandSparkles />, level: 0},
+    { id: 2, name: "Transmutation", icon: <Scale />, level: 0},
+    { id: 3, name: "Development", icon: <Star />, variant: "death"},
   ]
 
   const NAVIGATION_BUTTONS = NAVIGATION_BUTTON_DATA.map(data => (
     <Button
       key={`nav-${data.id}`}
-      variant={data.name.toLowerCase()}
+      variant={data.variant ? data.variant : data.name.toLowerCase()}
       icon={data.icon}
-      badge={<Badge variant={data.name.toLowerCase()}>{data.level}</Badge>}
+      badge={data.level ? <Badge variant={data.name.toLowerCase()}>{data.level}</Badge> : null}
       disabled={data.disabled ?? false}
       onClick={() => handleNavigationClick(data.id)}
     >
@@ -45,12 +46,18 @@ export function Navigation({
       <Paper
         padding={0}
         variant={"transparent"}
-        className={cx('navigation navigation-top', className)}
+        className={cx('navigation navigation-top', 'navigation-' + mode, className)}
         {...props}
       >
-        <Grid columns={{ small: 3, medium: 4, large: 5 }}>
-          {NAVIGATION_BUTTONS}
-        </Grid>
+        {mode === "compact" ?
+          <Flex wrap={mode === "compact"}>
+            {NAVIGATION_BUTTONS}
+          </Flex>
+        :
+          <Grid columns={mode === "compact" ? { small: 4, medium: 6, large: 8 } : { small: 3, medium: 4, large: 5 }}>
+            {NAVIGATION_BUTTONS}
+          </Grid>
+        }
       </Paper>
     )
   }
@@ -60,25 +67,12 @@ export function Navigation({
       <Paper
         padding={0}
         variant={"transparent"}
-        className={cx('navigation navigation-side', className)}
+        className={cx('navigation navigation-side', 'navigation-' + mode, className)}
         {...props}
       >
         <Flex direction="column" wrap={false}>
           {NAVIGATION_BUTTONS}
         </Flex>
-      </Paper>
-    )
-  }
-
-  if (position === "mobile") {
-    return (
-      <Paper
-        className={cx('navigation navigation-mobile', className)}
-        {...props}
-      >
-        <Grid columns={{ small: 5, medium: 5, large: 5 }}>
-          {NAVIGATION_BUTTONS}
-        </Grid>
       </Paper>
     )
   }

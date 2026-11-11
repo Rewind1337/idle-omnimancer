@@ -1,9 +1,17 @@
 /* Navigation Component Styles */
-.navigation-top {}
+.navigation {
+}
+
+.navigation-top {
+
+  .button {
+    padding: 4px 12px;
+  }
+}
 
 .navigation-side {
   flex-shrink: 0;
-  height: 100vh;
+  height: calc(100vh - 16px)s;
   max-width: 240px;
 
   .button {

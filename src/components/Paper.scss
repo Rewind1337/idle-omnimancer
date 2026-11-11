@@ -5,6 +5,10 @@
   outline: 1px solid var(--paper-border);
   transition: background-color 0.2s ease-out;
 
+  * {
+    outline-color: inherit;
+  }
+
   &[data-layer="0"] {
     background-color: var(--paper-0);
   }
@@ -19,6 +23,43 @@
 
   &[data-layer="3"] {
     background-color: var(--paper-3);
+  }
+
+  &[data-variant="primary"] {
+    outline-color: var(--button-primary);
+  }
+
+  &[data-variant="secondary"] {
+    outline-color: var(--button-secondary);
+  }
+
+  &[data-variant="primal"] {
+    outline-color: var(--button-primal);
+  }
+
+  &[data-variant="life"] {
+    outline-color: var(--button-life);
+  }
+
+  &[data-variant="death"] {
+    outline-color: var(--button-death);
+  }
+
+  &[data-variant="research"] {
+    outline-color: var(--tab-research);
+  }
+
+  &[data-variant="spellcraft"] {
+    outline-color: var(--tab-spellcraft);
+  }
+
+  &[data-variant="transmutation"] {
+    outline-color: var(--tab-transmutation);
+  }
+
+  &[data-variant="transparent"] {
+    background-color: transparent;
+    outline-color: transparent;
   }
 
   &.paper-interactive:hover {

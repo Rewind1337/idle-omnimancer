@@ -3,6 +3,22 @@
   --font-heading: 'Josefin Sans', sans-serif;
   --font-text: 'Roboto Condensed', sans-serif;
 
+  /* Tab Colors */
+  --tab-research: hsla(185, 42%, 29%, 1);
+  --tab-research-hover: hsla(185, 47%, 35%, 1);
+  --tab-research-active: hsla(185, 49%, 23%, 1);
+  --tab-research-toggled: hsla(185, 52%, 39%, 1);
+
+  --tab-spellcraft: hsla(42, 42%, 29%, 1);
+  --tab-spellcraft-hover: hsla(42, 47%, 35%, 1);
+  --tab-spellcraft-active: hsla(42, 49%, 23%, 1);
+  --tab-spellcraft-toggled: hsla(42, 52%, 39%, 1);
+
+  --tab-transmutation: hsla(18, 42%, 29%, 1);
+  --tab-transmutation-hover: hsla(18, 47%, 35%, 1);
+  --tab-transmutation-active: hsla(18, 49%, 23%, 1);
+  --tab-transmutation-toggled: hsla(18, 52%, 39%, 1);
+
   /* General button colors */
   --button-primary: hsla(210, 30%, 29%, 1);
   --button-primary-hover: hsla(210, 34%, 35%, 1);
@@ -71,8 +87,26 @@
 }
 
 /* Fonts */
-h1, h2, h3, h4, h5, h6 {font-family: var(--font-heading)}
-p, a, div, span {font-family: var(--font-text)}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+p, a, div, span {
+  font-family: var(--font-text);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+svg {
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.8))
+}
+
+/* General Purpose Classes */
+.align-left {text-align: left;}
+.align-center {text-align: center; align-self: center;}
+.align-right {text-align: right;}
+.align-start {align-self: flex-start;}
+.align-end {align-self: flex-end;}
 
 html,
 body {
@@ -84,4 +118,18 @@ body {
   flex-direction: column;
   padding: 8px;
   gap: 8px;
+}
+
+
+
+.action {
+
+  svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  &.action-research {
+
+  }
 }

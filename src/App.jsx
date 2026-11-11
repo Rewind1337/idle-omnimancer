@@ -3,6 +3,8 @@ import { Navigation } from "./components/Navigation";
 
 import { useState } from "react";
 import { ResearchPage } from "./pages/ResearchPage";
+import { SpellcraftPage } from "./pages/SpellcraftPage";
+import { TransmutationPage } from "./pages/TransmutationPage";
 
 // utility function that joins the css classes after filtering for truthyness
 const cx = (...values) => values.filter(Boolean).join(' ')
@@ -43,10 +45,10 @@ function App() {
   const [activePage, setActivePage] = useState(PAGES.RESEARCH)
 
   return (
-    <ResponsivePage navigationPosition="side" setActivePage={setActivePage}>
+    <ResponsivePage navigationPosition="top" setActivePage={setActivePage}>
       {activePage === PAGES.RESEARCH && <ResearchPage/>}
-      {activePage === PAGES.SPELLCRAFT && <ResearchPage/>}
-      {activePage === PAGES.TRANSMUTATION && <ResearchPage/>}
+      {activePage === PAGES.SPELLCRAFT && <SpellcraftPage/>}
+      {activePage === PAGES.TRANSMUTATION && <TransmutationPage/>}
     </ResponsivePage>
   )
 }

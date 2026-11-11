@@ -7,7 +7,7 @@ export function Flex({
   direction = "row",
   align = 'center',
   justify = 'flex-start',
-  wrap = true,
+  wrap = false,
   gap = 8,
   padding = 0,
   ...props
@@ -20,7 +20,7 @@ export function Flex({
         flexDirection: direction,
         alignItems: align,
         justifyContent: justify,
-        flexWrap: wrap,
+        flexWrap: (wrap ? "wrap" : "nowrap"),
         gap: gap,
         padding: padding}}
       {...props}

@@ -1,0 +1,78 @@
+.badge {
+    border-radius: 8px;
+    padding: 4px 8px 0 8px;
+    outline: 1px solid rgba(255, 255, 255, 0.33);
+    transition: background-color 0.2s ease-out;
+
+    &[data-variant="primary"] {
+        background: var(--button-primary);
+
+        &.badge-interactive:hover {
+            background-color: var(--button-primary-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="secondary"] {
+        background: var(--button-secondary);
+
+        &.badge-interactive:hover {
+            background-color: var(--button-secondary-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="primal"] {
+        background: var(--button-primal);
+
+        &.badge-interactive:hover {
+            background-color: var(--button-primal-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="life"] {
+        background: var(--button-life);
+
+        &.badge-interactive:hover {
+            background-color: var(--button-life-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="death"] {
+        background: var(--button-death);
+
+        &.badge-interactive:hover {
+            background-color: var(--button-death-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="research"] {
+        background: var(--tab-research);
+
+        &.badge-interactive:hover {
+            background-color: var(--tab-research-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="spellcraft"] {
+        background: var(--tab-spellcraft);
+
+        &.badge-interactive:hover {
+            background-color: var(--tab-spellcraft-hover);
+            cursor: pointer;
+        }
+    }
+
+    &[data-variant="transmutation"] {
+        background: var(--tab-transmutation);
+
+        &.badge-interactive:hover {
+            background-color: var(--tab-transmutation-hover);
+            cursor: pointer;
+        }
+    }
+}

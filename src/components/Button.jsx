@@ -10,11 +10,11 @@ export function Button({
   className = '',
   variant = 'primary',
   size = 'medium',
-  prefix,
-  suffix,
+  icon,
+  badge,
   disabled = false,
   toggled = false,
-  onClick,
+  onClick = () => {},
   type = 'button',
   ...props
 }) {
@@ -28,10 +28,10 @@ export function Button({
       onClick={() => {onClick()}}
       {...props}
     >
-      <Flex wrap={false} justify="space-between" gap={0} padding={0}>
-        {prefix && <span className="button-prefix">{prefix}</span>}
+      <Flex wrap={false} justify="space-between" gap={8} padding={0}>
+        {icon && <span className="button-icon">{icon}</span>}
         {children ? <span className="button-content">{children}</span> : null}
-        {suffix && <span className="button-suffix">{suffix}</span>}
+        {badge && <span className="button-badge">{badge}</span>}
       </Flex>
     </button>
   )

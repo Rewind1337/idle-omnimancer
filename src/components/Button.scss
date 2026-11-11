@@ -10,16 +10,16 @@
   transition: background-color 0.2s ease-out;
   width: auto;
 
-  .button-prefix { text-align: left; display: grid; place-items: center; width: fit-content; }
-  .button-text {flex-grow: 1;}
-  .button-suffix { text-align: right; display: grid; place-items: center; width: fit-content; }
+  .button-icon { text-align: left; display: grid; place-items: center; width: fit-content; }
+  .button-text {flex-grow: 1; align-self: center; display: grid; place-items: center;}
+  .button-badge { text-align: right; display: grid; place-items: center; width: fit-content; }
 
   * {font-family: inherit;}
 
   &[data-variant="primary"] {
     background: var(--button-primary);
 
-    &:hover {
+    &:not(:disabled):hover {
       background-color: var(--button-primary-hover);
       cursor: pointer;
 
@@ -36,7 +36,7 @@
   &[data-variant="secondary"] {
     background: var(--button-secondary);
 
-    &:hover {
+    &:not(:disabled):hover {
       background-color: var(--button-secondary-hover);
       cursor: pointer;
 
@@ -53,7 +53,7 @@
   &[data-variant="primal"] {
     background: var(--button-primal);
 
-    &:hover {
+    &:not(:disabled):hover {
       background-color: var(--button-primal-hover);
       cursor: pointer;
 
@@ -70,7 +70,7 @@
   &[data-variant="life"] {
     background: var(--button-life);
 
-    &:hover {
+    &:not(:disabled):hover {
       background-color: var(--button-life-hover);
       cursor: pointer;
 
@@ -87,7 +87,7 @@
   &[data-variant="death"] {
     background: var(--button-death);
 
-    &:hover {
+    &:not(:disabled):hover {
       background-color: var(--button-death-hover);
       cursor: pointer;
 
@@ -98,6 +98,57 @@
 
     &.button-toggled {
       background: var(--button-death-toggled);
+    }
+  }
+
+  &[data-variant="research"] {
+    background: var(--tab-research);
+
+    &:not(:disabled):hover {
+      background-color: var(--tab-research-hover);
+      cursor: pointer;
+
+      &:active {
+        background-color: var(--tab-research-active);
+      }
+    }
+
+    &.button-toggled {
+      background: var(--tab-research-toggled);
+    }
+  }
+
+  &[data-variant="spellcraft"] {
+    background: var(--tab-spellcraft);
+
+    &:not(:disabled):hover {
+      background-color: var(--tab-spellcraft-hover);
+      cursor: pointer;
+
+      &:active {
+        background-color: var(--tab-spellcraft-active);
+      }
+    }
+
+    &.button-toggled {
+      background: var(--tab-spellcraft-toggled);
+    }
+  }
+
+  &[data-variant="transmutation"] {
+    background: var(--tab-transmutation);
+
+    &:not(:disabled):hover {
+      background-color: var(--tab-transmutation-hover);
+      cursor: pointer;
+
+      &:active {
+        background-color: var(--tab-transmutation-active);
+      }
+    }
+
+    &.button-toggled {
+      background: var(--tab-transmutation-toggled);
     }
   }
 
@@ -119,7 +170,8 @@
     font-size: 24px;
   }
 
-  &:not(:disabled):hover {
-
+  &:disabled {
+    background-color: rgb(22, 27, 32);
+    * {color: gray;}
   }
 }

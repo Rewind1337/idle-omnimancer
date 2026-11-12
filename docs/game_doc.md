@@ -22,7 +22,7 @@
 | Spellcraft | Active | Learn and cast Earth, Air and Water spells; produce elemental essences. |
 | Transmutation | Active | Combine research materials and elemental essences into refined resources. |
 | Exploration | Active | Explore named areas on a shared hex map, develop each area and discover resources and companion containers. |
-| Unveiling | Active | Sacrifice materials to gain insight; identify unidentified objects and open companion containers once the skill-level requirement is met. Working name. |
+| Unveiling | Active | Use Material Destruction actions to gain insight; unveil eligible unidentified objects and companion containers once the skill-level requirement is met. |
 | Combat | Passive | Continuously fight in a selected unlocked Exploration area; produce combat rewards, unidentified objects and chances at area artifacts. |
 | Companions | Collection system | Hatch elemental containers obtained through Exploration after meeting their Unveiling level requirements. Further progression and effects are undecided. |
 
@@ -395,7 +395,7 @@ Area milestones occur at selected action-level intervals (every X levels), like 
 - Container types reflect the element:
   - **Earth:** Geodes, containing Earth companions.
   - **Air:** Eggs, containing Air companions.
-  - **Water:** Container name and concept still to be decided; it should fit Water and contain Water companions.
+  - **Water:** **Tide Shells** (working name), containing Water companions.
 - Containers are obtained through Exploration and are later hatched to obtain companions.
 - Area action milestones may increase the chance to find containers.
 - Not every area needs its own unique companion or unique container type.
@@ -442,17 +442,17 @@ Combat must remain independent of the player's currently selected active action.
 
 ## 10. Companions
 
-**Purpose:** Collect elemental companions by hatching containers discovered through Exploration.
+**Purpose:** Collect elemental companions by unveiling containers discovered through Exploration.
 
 Companions are a collection system connected to Exploration. The working name for the system is **Companions**; its final interface placement and progression structure are not yet defined.
 
 ### 10.1 Containers and elemental identity
 
-- Companions are obtained by opening/hatching containers found through Exploration, using Unveiling's special action.
+- Companions are obtained by opening containers found through Exploration through Unveiling's **Unveil Artifact or Companion** action.
 - Each container has a minimum required Unveiling skill level based on its source area and map progression; early-area containers require a lower level than late-game containers.
 - Earth Geodes contain Earth companions.
 - Air Eggs contain Air companions.
-- The Water container type and name are undecided.
+- The Water container is currently called **Tide Shells**; this working name and its design can still be refined.
 - Containers are tied to their corresponding elemental type.
 - Not every Exploration area needs a unique companion or a unique container.
 
@@ -460,7 +460,7 @@ Companions are a collection system connected to Exploration. The working name fo
 
 The following are intentionally open:
 
-- The Water container's final name and design.
+- Whether **Tide Shells** remains the final Water container name and its exact design.
 - The number and variety of companions.
 - Hatching requirements, timing and duplicate handling.
 - Whether companions have levels, rarity, growth, upgrades or other progression.
@@ -472,20 +472,24 @@ Do not assume a companion rescue system; the current primary acquisition concept
 
 ---
 
-## 11. Skill Five — Unveiling (Working Name)
+## 11. Skill Five — Unveiling
 
 **Purpose:** Uncover hidden properties and secrets by sacrificing ordinary materials, then identify unidentified objects and open companion containers.
 
-Unveiling is an **active skill**. It has regular material-destruction actions and one special identification action. Every action follows the standard independent level 1–100 progression and contributes to the overall Unveiling skill level.
+Unveiling is an **active skill** with two action categories:
+- **Material Destruction:** regular actions that consume eligible items from other skill tabs.
+- **Unveil Artifact or Companion:** one special action that processes eligible unidentified objects and companion containers.
 
-### 11.1 Regular actions — Destroying materials
+Every action follows the standard independent level 1–100 progression and contributes to the overall Unveiling skill level.
 
-- Regular actions consume eligible physical items from other skill tabs in exchange for XP.
-- Each source tab has its own destruction action. These actions level independently and contribute to the overall Unveiling skill level.
-- The first regular action is **Destroy Research Books**.
+### 11.1 Material Destruction actions
+
+- Each Material Destruction action consumes eligible physical items from one other skill tab in exchange for XP.
+- Every source tab has its own Material Destruction action. These actions level independently and contribute to the overall Unveiling skill level.
+- The first action is **Destroy Research Books**.
 - The initial action structure is:
 
-| Source tab | Regular action | Eligible items |
+| Source tab | Material Destruction action | Eligible items |
 |---|---|---|
 | Research | **Destroy Research Books** | Eligible Research books and materials. |
 | Spellcraft | Destroy Spellcraft Materials | Eligible elemental essences and other Spellcraft materials. |
@@ -494,29 +498,32 @@ Unveiling is an **active skill**. It has regular material-destruction actions an
 | Combat | Destroy Combat Materials | Eligible identified Combat rewards and materials. |
 
 - The list establishes the intended one-action-per-other-tab structure; exact action names and eligible item groups can be refined.
-- Companion containers and unidentified objects are reserved for the special identification action, not the regular destruction actions.
+- Companion containers and unidentified objects are reserved for **Unveil Artifact or Companion**, not the Material Destruction actions.
 - Destroying an item removes it from the inventory. The player gives up its sale value and any other use it could have had in exchange for Unveiling progression.
 - Exact quantities consumed, XP values, action durations and further destruction actions remain undecided.
 
-### 11.2 Special action — Identifying and opening
+### 11.2 Unveil Artifact or Companion
 
-- Unlocking Unveiling also unlocks its special action immediately, alongside **Destroy Research Books**.
-- The special action can process both:
-  - Companion containers (Geodes, Eggs and the eventual Water container), opening them to reveal a companion.
+- Unlocking Unveiling also unlocks **Unveil Artifact or Companion** immediately, alongside the first Material Destruction action, **Destroy Research Books**.
+- **Unveil Artifact or Companion** can process both:
+  - Companion containers (Geodes, Eggs and Tide Shells), opening them to reveal a companion.
   - Unidentified objects obtained through Combat, revealing a chance at the artifact from their source area and potentially other valuable, sellable resources.
 - Each container or unidentified object has a minimum required **overall Unveiling skill level**. The player cannot process it until the skill reaches that requirement.
 - Requirements are assigned according to the item's source area and its place in map progression: early-area finds have low requirements; late-game finds have much higher requirements.
-- Successfully processing a container or unidentified object awards a substantial amount of XP to this special action.
-- The special action itself levels independently from 1 to 100. Its action-level progress contributes to the overall Unveiling skill level like every other Unveiling action.
+- Successfully processing a container or unidentified object awards a substantial amount of XP to **Unveil Artifact or Companion**.
+- Its XP reward should be high enough that the special action can reach higher action levels without requiring an excessive number of unveil/processing completions.
+- Because its action level contributes to the overall Unveiling skill level, this substantial XP reward should also make total Unveiling progression somewhat faster during the early game than if progression relied on Material Destruction alone.
+- This is an intended progression effect, not a finalized numerical bonus; exact XP values and scaling remain to be balanced.
+- **Unveil Artifact or Companion** levels independently from 1 to 100. Its action-level progress contributes to the overall Unveiling skill level like every other Unveiling action.
 - The requirement is checked against the overall Unveiling skill level, not the special action's individual level.
-- The exact special-action name, processing time, XP rewards, item requirements, artifact chances and revealed reward tables remain undecided.
+- The processing time, exact XP rewards and scaling, item requirements, artifact chances and revealed reward tables remain undecided.
 
 ### 11.3 Skill progression and unlock
 
-- Every regular destruction action and the special identification action has its own level from 1 to 100.
+- Every Material Destruction action and **Unveil Artifact or Companion** has its own level from 1 to 100.
 - Their combined progression contributes to the overall Unveiling skill level.
 - Unveiling skill level is the progression gate for opening higher-level companion containers and identifying higher-level unidentified objects.
-- Unlocking Unveiling grants both its first regular action (**Destroy Research Books**) and its special identification action. The player does not need to purchase either of those two actions separately.
+- Unlocking Unveiling grants both its first Material Destruction action (**Destroy Research Books**) and **Unveil Artifact or Companion**. The player does not need to purchase either action separately.
 - The skill's exact unlock requirements, including gold and any required resources, remain undecided.
 
 ---
@@ -823,7 +830,7 @@ A possible initial progression:
 10. Explore the starting areas and expand the map; develop individual area levels and discover resources or companion containers.
 11. Unlock and start passive Combat when its requirements are met; select an unlocked Exploration area and let Combat run independently.
 12. Unlock Unveiling when its requirements are met. Develop the skill by destroying eligible materials through its regular actions.
-13. Use Unveiling's special action to open companion containers and identify eligible unidentified objects once the overall skill-level requirements are met.
+13. Use **Unveil Artifact or Companion** to open companion containers and identify eligible unidentified objects once the overall skill-level requirements are met.
 14. Collect the revealed Companions, area artifacts and other valuable resources; retain or sell them as appropriate.
 15. Continue developing whichever actions, areas and systems best serve the player's current goals.
 
@@ -846,7 +853,7 @@ This is an example of how systems can connect, not a mandatory sequence. Exact C
 - Exploration area levels improve Combat output, Combat XP and artifact chance in their respective areas.
 - Combat produces unidentified objects and chances at area-specific artifacts.
 - Unveiling consumes eligible materials to gain XP; its overall skill level gates access to higher-level containers and unidentified objects.
-- Unveiling's special action opens elemental containers and identifies objects, potentially revealing Companions, area artifacts and other valuable resources.
+- **Unveil Artifact or Companion** opens elemental containers and identifies objects, potentially revealing Companions, area artifacts and other valuable resources.
 - Skill milestones can improve other skills or global systems.
 - Selling resources funds unlocks and bag expansion.
 
@@ -877,7 +884,7 @@ The general progression principle is **simple things leading to more complicated
 - **Exploration is active:** Areas are individual actions on a shared hex map.
 - **Combat is passive:** It continues in a selected unlocked Exploration area independently of the active action.
 - **Companions come from containers:** Elemental containers discovered through Exploration are opened through Unveiling to obtain companions.
-- **Unveiling gates discoveries:** Destruction actions build the skill; its special action identifies objects and opens containers according to their source-based skill-level requirements.
+- **Unveiling gates discoveries:** Material Destruction actions build the skill; **Unveil Artifact or Companion** identifies objects and opens containers according to their source-based skill-level requirements.
 - **Resources matter:** Resources connect skills through recipes, unlocks and future uses.
 - **Everything is sellable:** Every physical item has an individual sale value; selling trades future utility for immediate gold.
 - **Simple to complex:** Early content is straightforward; later systems add more powerful resources and interactions.
@@ -910,10 +917,9 @@ The following details remain open for design, balancing or implementation:
 - Exploration action durations, XP, resource tables and output values.
 - Area milestone thresholds and rewards, including exact container chance bonuses.
 - The exact Water companion-container type and name.
-- The final name and theme of Unveiling.
-- The exact list and names of Unveiling's regular destruction actions, including eligible items from each source tab.
+- The exact list and names of Unveiling's Material Destruction actions, including eligible items from each source tab.
 - Destruction quantities, action durations, XP values and progression curves.
-- The special identification action's final name, processing time and XP rewards.
+- The **Unveil Artifact or Companion** action's processing time, XP rewards and scaling.
 - The minimum Unveiling skill level assigned to each companion container and unidentified object, including the mapping from source area/map progression to requirement.
 - The reward tables, artifact chances and other valuable resources revealed by identification.
 - Unveiling's gold/resource unlock requirements and exact unlock timing.

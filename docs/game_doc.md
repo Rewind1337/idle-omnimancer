@@ -22,10 +22,11 @@
 | Spellcraft | Active | Learn and cast Earth, Air and Water spells; produce elemental essences. |
 | Transmutation | Active | Combine research materials and elemental essences into refined resources. |
 | Exploration | Active | Explore named areas on a shared hex map, develop each area and discover resources and companion containers. |
+| Unveiling | Active | Sacrifice materials to gain insight; identify unidentified objects and open companion containers once the skill-level requirement is met. Working name. |
 | Combat | Passive | Continuously fight in a selected unlocked Exploration area; produce combat rewards, unidentified objects and chances at area artifacts. |
-| Companions | Collection system | Hatch elemental containers obtained through Exploration. Further progression and effects are undecided. |
+| Companions | Collection system | Hatch elemental containers obtained through Exploration after meeting their Unveiling level requirements. Further progression and effects are undecided. |
 
-Research, Spellcraft and Transmutation establish the initial resource and progression loop. Exploration is planned as the fourth active skill. Combat is the first planned passive skill.
+Research, Spellcraft and Transmutation establish the initial resource and progression loop. Exploration is planned as the fourth active skill, followed by Unveiling as a fifth active skill. Combat is the first planned passive skill.
 
 ---
 
@@ -65,7 +66,7 @@ Aspects are a separate, early concept and are **not** part of the planned initia
 ### 3.1 Core terminology
 
 - **Skill:** A major progression category and its own tab or page.
-- **Action:** An activity within a skill, such as a Research activity, spell, Transmutation recipe or Exploration area.
+- **Action:** An activity within a skill, such as a Research activity, spell, Transmutation recipe, Exploration area, material-destruction task or special identification task.
 - **Action level:** The independent level of one action.
 - **Skill level:** The overall level derived from the progression of all actions within that skill.
 - **Milestone:** A reward earned through an action's or skill's separate milestone track.
@@ -80,6 +81,7 @@ The number of actions can differ between skills. Every skill and action has its 
 - Each skill can also have its own action-XP scalar, so actions from different skills may progress at different rates.
 - There is no shared action-XP pool.
 - Resource dependencies, skill levels, milestones and bonuses can connect progression without merging action levels.
+- Unveiling's regular destruction actions and its special identification action each have their own independent action level and XP progression. Successfully processing a companion container or unidentified object awards substantial XP to the special action.
 
 Passive skills or other future systems may use a different progression structure where appropriate; they do not have to imitate an active action model.
 
@@ -104,7 +106,7 @@ Skills level independently. Research progress does not automatically increase Sp
 - Unlocking a skill should normally include its first action, avoiding a separate first-action cost unless a skill has a specific reason to work differently.
 - Requirements should be approachable progression gates, not long checklists that force every earlier action to level 100.
 
-Exact prices and resource quantities are not yet defined; see Section 13.
+Exact prices and resource quantities are not yet defined; see Section 14.
 
 ### 3.5 Action duration and XP
 
@@ -127,7 +129,7 @@ Exact prices and resource quantities are not yet defined; see Section 13.
 - Future skills may introduce passive actions, automation or systems that progress independently.
 - Some actions may become self-sustaining; others may remain expensive or occasional activities.
 - Not every skill or action needs to be equally active or use the same progression mechanism.
-- **Exploration is an active skill. Combat is passive** and runs independently of the selected active action (see Sections 8–9).
+- **Exploration and Unveiling are active skills. Combat is passive** and runs independently of the selected active action (see Sections 8–9 and 11).
 
 ### 3.7 Offline progress
 
@@ -387,6 +389,9 @@ Area milestones occur at selected action-level intervals (every X levels), like 
 ### 8.4 Companion-container discoveries
 
 - Completing an Exploration action has a low chance to find a companion container associated with that area's element.
+- Every discovered container carries a minimum required **Unveiling skill level** before it can be opened.
+- The requirement is based on where the container is found and the area's place in map progression: containers from early areas have low requirements, while containers from later, more dangerous areas require a much higher Unveiling skill level.
+- Containers remain in the inventory until the player reaches the requirement and processes them through Unveiling's special action.
 - Container types reflect the element:
   - **Earth:** Geodes, containing Earth companions.
   - **Air:** Eggs, containing Air companions.
@@ -425,8 +430,10 @@ Each area has its own artifact.
 ### 9.3 Unidentified objects and artifacts
 
 - Combat can produce unidentified objects.
-- Identifying an object gives a chance to obtain the artifact associated with the area where it was found.
-- The exact relationship between object types, identification, artifact chances and area artifacts is not yet defined.
+- Every unidentified object carries a minimum required **Unveiling skill level** before it can be identified. Its requirement is based on the area where it was obtained and that area's place in map progression; early-area objects require less Unveiling progression than objects from later areas.
+- Identifying an eligible object through Unveiling's special action gives a chance to obtain the artifact associated with the area where it was found.
+- Identification can also reveal other valuable resources with meaningful gold sale values.
+- The exact relationship between object types, identification, artifact chances, other rewards and area artifacts is not yet defined.
 - Combat formulas, encounter details, reward tables, XP progression, identification costs and artifact rates remain undecided.
 
 Combat must remain independent of the player's currently selected active action. Its passive nature does not imply that its final progression model must be identical to an active skill's action structure.
@@ -441,7 +448,8 @@ Companions are a collection system connected to Exploration. The working name fo
 
 ### 10.1 Containers and elemental identity
 
-- Companions are obtained by hatching containers found through Exploration.
+- Companions are obtained by opening/hatching containers found through Exploration, using Unveiling's special action.
+- Each container has a minimum required Unveiling skill level based on its source area and map progression; early-area containers require a lower level than late-game containers.
 - Earth Geodes contain Earth companions.
 - Air Eggs contain Air companions.
 - The Water container type and name are undecided.
@@ -464,7 +472,56 @@ Do not assume a companion rescue system; the current primary acquisition concept
 
 ---
 
-## 11. Initial Numerical Balancing
+## 11. Skill Five — Unveiling (Working Name)
+
+**Purpose:** Uncover hidden properties and secrets by sacrificing ordinary materials, then identify unidentified objects and open companion containers.
+
+Unveiling is an **active skill**. It has regular material-destruction actions and one special identification action. Every action follows the standard independent level 1–100 progression and contributes to the overall Unveiling skill level.
+
+### 11.1 Regular actions — Destroying materials
+
+- Regular actions consume eligible physical items from other skill tabs in exchange for XP.
+- Each source tab has its own destruction action. These actions level independently and contribute to the overall Unveiling skill level.
+- The first regular action is **Destroy Research Books**.
+- The initial action structure is:
+
+| Source tab | Regular action | Eligible items |
+|---|---|---|
+| Research | **Destroy Research Books** | Eligible Research books and materials. |
+| Spellcraft | Destroy Spellcraft Materials | Eligible elemental essences and other Spellcraft materials. |
+| Transmutation | Destroy Transmutation Materials | Eligible Catalysts and other Transmutation materials. |
+| Exploration | Destroy Exploration Materials | Eligible resources obtained through Exploration. |
+| Combat | Destroy Combat Materials | Eligible identified Combat rewards and materials. |
+
+- The list establishes the intended one-action-per-other-tab structure; exact action names and eligible item groups can be refined.
+- Companion containers and unidentified objects are reserved for the special identification action, not the regular destruction actions.
+- Destroying an item removes it from the inventory. The player gives up its sale value and any other use it could have had in exchange for Unveiling progression.
+- Exact quantities consumed, XP values, action durations and further destruction actions remain undecided.
+
+### 11.2 Special action — Identifying and opening
+
+- Unlocking Unveiling also unlocks its special action immediately, alongside **Destroy Research Books**.
+- The special action can process both:
+  - Companion containers (Geodes, Eggs and the eventual Water container), opening them to reveal a companion.
+  - Unidentified objects obtained through Combat, revealing a chance at the artifact from their source area and potentially other valuable, sellable resources.
+- Each container or unidentified object has a minimum required **overall Unveiling skill level**. The player cannot process it until the skill reaches that requirement.
+- Requirements are assigned according to the item's source area and its place in map progression: early-area finds have low requirements; late-game finds have much higher requirements.
+- Successfully processing a container or unidentified object awards a substantial amount of XP to this special action.
+- The special action itself levels independently from 1 to 100. Its action-level progress contributes to the overall Unveiling skill level like every other Unveiling action.
+- The requirement is checked against the overall Unveiling skill level, not the special action's individual level.
+- The exact special-action name, processing time, XP rewards, item requirements, artifact chances and revealed reward tables remain undecided.
+
+### 11.3 Skill progression and unlock
+
+- Every regular destruction action and the special identification action has its own level from 1 to 100.
+- Their combined progression contributes to the overall Unveiling skill level.
+- Unveiling skill level is the progression gate for opening higher-level companion containers and identifying higher-level unidentified objects.
+- Unlocking Unveiling grants both its first regular action (**Destroy Research Books**) and its special identification action. The player does not need to purchase either of those two actions separately.
+- The skill's exact unlock requirements, including gold and any required resources, remain undecided.
+
+---
+
+## 12. Initial Numerical Balancing
 
 All values in this section are starting points for implementation and playtesting, not immutable final balance. Initial actions should be straightforward and quick; higher tiers should take longer while providing more XP and more valuable or useful resources.
 
@@ -566,7 +623,7 @@ The following table gives the starting number of completed actions required for 
 
 ---
 
-## 12. Levels, Milestones and Bonus Stacking
+## 13. Levels, Milestones and Bonus Stacking
 
 ### 12.1 Skill-level passive bonuses
 
@@ -639,7 +696,7 @@ Bonuses of the same type from different sources stack **additively** by default.
 
 ---
 
-## 13. Gold and Unlock Economy
+## 14. Gold and Unlock Economy
 
 Gold is a shared currency used for action unlocks, skill unlocks, inventory expansion and other progression costs. It is earned by selling physical items.
 
@@ -651,6 +708,7 @@ Gold is a shared currency used for action unlocks, skill unlocks, inventory expa
 | Spellcraft | Gold + a modest amount of Research materials, such as Bound Notes (Research II) or Arcane Manuscripts (Research III). |
 | Transmutation | Gold + Research materials + elemental essences produced by Spellcraft. |
 | Exploration | Unlocked after Transmutation in the intended skill order. Its unlock should follow a similar resource-and-gold approach, but use a different resource requirement and cost somewhat more gold than Transmutation. The exact resource and quantities are undecided. |
+| Unveiling | Active skill; unlocking it also unlocks its first regular action, Destroy Research Books, and its special identification action. Gold/resource requirements are undecided. |
 | Combat | Passive skill; unlock and start requirements are not yet defined. |
 
 - Unlocking a skill should normally include its first action.
@@ -678,7 +736,7 @@ Gold is a shared currency used for action unlocks, skill unlocks, inventory expa
 
 ---
 
-## 14. Bag and Inventory
+## 15. Bag and Inventory
 
 The bag stores produced resources and other physical items. It is central to progression because items may be needed for recipes or unlocks and can also be sold.
 
@@ -716,7 +774,7 @@ The player must not silently lose resources when the bag is full.
 
 ---
 
-## 15. Selling Items and Resource Values
+## 16. Selling Items and Resource Values
 
 **Every physical item should be sellable**, including Research materials, elemental essences, Catalysts, companion containers and resources from future skills.
 
@@ -739,7 +797,7 @@ The player must not silently lose resources when the bag is full.
 
 ---
 
-## 16. Overall Progression and Game Loop
+## 17. Overall Progression and Game Loop
 
 ### 16.1 Initial resource loop
 
@@ -764,10 +822,12 @@ A possible initial progression:
 9. Unlock Exploration after Transmutation using its eventual resource and gold requirements.
 10. Explore the starting areas and expand the map; develop individual area levels and discover resources or companion containers.
 11. Unlock and start passive Combat when its requirements are met; select an unlocked Exploration area and let Combat run independently.
-12. Hatch elemental containers to collect Companions.
-13. Continue developing whichever actions, areas and systems best serve the player's current goals.
+12. Unlock Unveiling when its requirements are met. Develop the skill by destroying eligible materials through its regular actions.
+13. Use Unveiling's special action to open companion containers and identify eligible unidentified objects once the overall skill-level requirements are met.
+14. Collect the revealed Companions, area artifacts and other valuable resources; retain or sell them as appropriate.
+15. Continue developing whichever actions, areas and systems best serve the player's current goals.
 
-This is an example of how systems can connect, not a mandatory sequence. Exact Combat and Companion unlock timing remains undecided.
+This is an example of how systems can connect, not a mandatory sequence. Exact Combat, Unveiling and Companion unlock timing remains undecided.
 
 ### 16.2 Open-ended progression
 
@@ -785,7 +845,8 @@ This is an example of how systems can connect, not a mandatory sequence. Exact C
 - Exploration provides area resources and elemental companion containers.
 - Exploration area levels improve Combat output, Combat XP and artifact chance in their respective areas.
 - Combat produces unidentified objects and chances at area-specific artifacts.
-- Companions come from hatching elemental containers found through Exploration.
+- Unveiling consumes eligible materials to gain XP; its overall skill level gates access to higher-level containers and unidentified objects.
+- Unveiling's special action opens elemental containers and identifies objects, potentially revealing Companions, area artifacts and other valuable resources.
 - Skill milestones can improve other skills or global systems.
 - Selling resources funds unlocks and bag expansion.
 
@@ -801,7 +862,7 @@ The general progression principle is **simple things leading to more complicated
 
 ---
 
-## 17. Design Principles
+## 18. Design Principles
 
 - **Open-ended progression:** Players choose what to develop; no rigid action-level-100 gate.
 - **Independent action levels:** Each action has its own XP and level progression.
@@ -815,7 +876,8 @@ The general progression principle is **simple things leading to more complicated
 - **Mana supports Spellcraft:** Spells consume Mana; Mana regenerates passively; Spellcraft levels may increase maximum Mana.
 - **Exploration is active:** Areas are individual actions on a shared hex map.
 - **Combat is passive:** It continues in a selected unlocked Exploration area independently of the active action.
-- **Companions come from containers:** Elemental containers discovered through Exploration are hatched to obtain companions.
+- **Companions come from containers:** Elemental containers discovered through Exploration are opened through Unveiling to obtain companions.
+- **Unveiling gates discoveries:** Destruction actions build the skill; its special action identifies objects and opens containers according to their source-based skill-level requirements.
 - **Resources matter:** Resources connect skills through recipes, unlocks and future uses.
 - **Everything is sellable:** Every physical item has an individual sale value; selling trades future utility for immediate gold.
 - **Simple to complex:** Early content is straightforward; later systems add more powerful resources and interactions.
@@ -825,7 +887,7 @@ The general progression principle is **simple things leading to more complicated
 
 ---
 
-## 18. Intentionally Undecided
+## 19. Intentionally Undecided
 
 The following details remain open for design, balancing or implementation:
 
@@ -848,6 +910,13 @@ The following details remain open for design, balancing or implementation:
 - Exploration action durations, XP, resource tables and output values.
 - Area milestone thresholds and rewards, including exact container chance bonuses.
 - The exact Water companion-container type and name.
+- The final name and theme of Unveiling.
+- The exact list and names of Unveiling's regular destruction actions, including eligible items from each source tab.
+- Destruction quantities, action durations, XP values and progression curves.
+- The special identification action's final name, processing time and XP rewards.
+- The minimum Unveiling skill level assigned to each companion container and unidentified object, including the mapping from source area/map progression to requirement.
+- The reward tables, artifact chances and other valuable resources revealed by identification.
+- Unveiling's gold/resource unlock requirements and exact unlock timing.
 - Companion variety, rarity, hatching requirements, timing and duplicate handling.
 - Companion levels, growth, upgrades, bonuses and use/equipment model.
 - Companion interface placement and any separate unlock conditions.
@@ -882,4 +951,4 @@ The initial foundation should establish:
 - Inventory expansion and selling.
 - Meaningful offline gains.
 
-Exploration, passive Combat and Companions are planned additions to the broader progression structure. Their defined high-level behavior should be preserved, while the exact formulas, content and balancing listed above remain open.
+Exploration, passive Combat, Companions and Unveiling are planned additions to the broader progression structure. Their defined high-level behavior should be preserved, while the exact formulas, content and balancing listed above remain open.

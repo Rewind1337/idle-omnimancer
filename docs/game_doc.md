@@ -1,320 +1,226 @@
 # Omnimancer Idle — Core Game Design
 
-*Working design document · Core progression, skills, resources and economy*
+*Working design document · Skills, progression, exploration, combat, resources and economy*
 
-## 1. Game Concept
+## 1. Game Overview
 
-**Omnimancer Idle** is an open-ended incremental idle game about a mage gradually learning, practicing and mastering an expanding collection of magical disciplines.
+**Omnimancer Idle** is an open-ended incremental idle game about a mage learning, practicing and mastering an expanding collection of magical disciplines.
 
-The initial game introduces three skills:
+- Skills are separate tabs or pages, each with its own progression and mechanics.
+- Actions within a skill level independently; their progress also contributes to that skill's overall level.
+- Players choose which skills, actions and systems to develop. Progression is not a rigid sequence.
+- Resources connect skills through unlocks, recipes and other systems. Every physical item can also be sold for gold.
+- Gold is used for skill and action unlocks, inventory expansion and other progression costs.
+- Long-term progression and substantial offline gains are core parts of the game.
+- The initial systems should be easy to understand while leaving room for much more complex skills and mechanics later.
 
-1. **Research** — developing general magical knowledge and producing research materials.
-2. **Spellcraft** — learning and casting spells connected to the three Primary Elements: Earth, Air and Water.
-3. **Transmutation** — combining materials from the earlier skills to create more refined resources.
+### Planned skills and systems
 
-These three skills are the first layer of a much larger game. They establish the core progression, resource and economy systems, but they are deliberately not intended to represent the full complexity or direction of the late game. Later skills and systems will expand on these foundations and introduce more involved interactions.
+| Skill / system | Type | Main purpose |
+|---|---|---|
+| Research | Active | Produce general magical knowledge and research materials. |
+| Spellcraft | Active | Learn and cast Earth, Air and Water spells; produce elemental essences. |
+| Transmutation | Active | Combine research materials and elemental essences into refined resources. |
+| Exploration | Active | Explore named areas on a shared hex map, develop each area and discover resources and companion containers. |
+| Combat | Passive | Continuously fight in a selected unlocked Exploration area; produce combat rewards, unidentified objects and chances at area artifacts. |
+| Companions | Collection system | Hatch elemental containers obtained through Exploration. Further progression and effects are undecided. |
 
-Each skill is its own tab or page and contains its own set of actions. Actions level independently, and their levels contribute to the level of the skill they belong to. Skills also have their own progression scaling, milestone rewards and potentially a passive bonus that improves with every skill level.
-
-The player chooses which part of the game to focus on. Progression is not intended to be a strict sequence in which one action must be completed before the next becomes useful. The player may concentrate on Research, develop Spellcraft, work on Transmutation, or move between them according to the resources and bonuses they need.
-
-The player earns gold primarily by selling resources. Gold and selected materials are used to unlock additional actions, unlock skills and expand the inventory. Every resource should have a use or a potential future use, so selling something is a decision rather than an automatic action.
-
-The game is designed around long-term progression and offline gains. A period away from the game should still produce meaningful progress in the currently active and eventually automated activities.
-
----
-
-## 2. The Three Primary Elements
-
-The initial elemental system consists of three Primary Elements:
-
-- **Earth**
-- **Air**
-- **Water**
-
-These are the elements used by the initial Spellcraft and Transmutation systems. They are not called Order, Life or Death, and those former categories are no longer part of the current design.
-
-### 2.1 Earth
-
-Earth represents solidity, material, structure, weight and endurance.
-
-It is associated with stone, dust, minerals, crystals, mountains and the deeper physical foundations of the world. Early Earth magic should feel simple and tangible, while higher-tier magic can affect enormous geological structures or the substance of the world itself.
-
-### 2.2 Air
-
-Air represents movement, air, pressure, speed and the forces of the atmosphere.
-
-It is associated with breath, breezes, gusts, gales, storms and increasingly powerful atmospheric phenomena. Early Air magic should be subtle and easy to control, while advanced magic can command immense storms and forces on a much greater scale.
-
-### 2.3 Water
-
-Water represents fluidity, flow, pressure, depth and transformation.
-
-It is associated with droplets, streams, waves, currents, torrents and the deepest bodies of water. Early Water magic should manipulate small quantities of water, while later magic can command enormous bodies of water and powerful tidal forces.
-
-The three elements should remain distinct in their identities, spells and resources. They can share a common progression structure without becoming interchangeable.
-
-### 2.4 Future concept: Aspects
-
-**Aspects are a separate, very early concept and are not part of the planned initial implementation.** They should not be confused with the three Primary Elements.
-
-A future system may allow the player to invoke or channel an Aspect, potentially as part of a prestige or run-starting mechanic. Choosing an Aspect could lock the player into that Aspect for the duration of the run and apply modifiers to several areas of the game.
-
-While an Aspect is active, actions performed throughout the game could also award experience toward that Aspect. The Aspect would therefore become another independently levelable progression layer, with its own experience and eventual bonuses.
-
-This is only a draft direction. The number of Aspects, their effects, how they are invoked, how runs work and how their experience is balanced are all undecided. None of this should be treated as a requirement for the initial game.
+Research, Spellcraft and Transmutation establish the initial resource and progression loop. Exploration is planned as the fourth active skill. Combat is the first planned passive skill.
 
 ---
 
-## 3. Shared Progression System
+## 2. Primary Elements and Aspects
 
-The progression system has three connected levels of organization:
+### 2.1 Primary Elements
 
-- **Skills** are the main tabs or pages, such as Research, Spellcraft and Transmutation.
-- **Actions** are the activities available within each skill.
-- **Levels** measure the progression of individual actions and the overall skill.
+The initial elemental system uses three distinct Primary Elements:
 
-Every skill and action has its own progression. Improving one does not automatically level another, although skill milestones and other bonuses can affect multiple actions.
+- **Earth:** solidity, material, structure, weight and endurance; associated with stone, dust, minerals, crystals and mountains.
+- **Air:** movement, airflow, pressure, speed and the atmosphere; associated with breath, breezes, gusts, gales and storms.
+- **Water:** fluidity, flow, pressure, depth and transformation; associated with droplets, streams, waves, currents and torrents.
 
-### 3.1 Skills and actions
+Design direction:
 
-Each skill contains its own collection of actions. The number of actions does not need to be the same for every skill.
+- Early elemental effects should be simple, tangible and easy to control.
+- Higher tiers should grow into immense geological, atmospheric and tidal forces.
+- Each element retains its own identity, spells, resources and companion types.
+- The elements can share progression structures without becoming interchangeable.
+- Order, Life and Death are not part of the current Primary Element system.
 
-Examples:
+### 2.2 Future concept: Aspects
 
-- Research contains its own research activities, from simple introductory research to extremely advanced discoveries.
-- Spellcraft contains Earth, Air and Water spells across multiple tiers.
-- Transmutation contains activities that combine resources from other skills into increasingly refined materials.
+Aspects are a separate, early concept and are **not** part of the planned initial implementation.
 
-Every action has an independent level from **1 to 100**. It tracks its own experience, experience requirement, base duration, base output and individual leveling bonuses.
+- A future system may let the player invoke or channel an Aspect, potentially when starting a run or prestige cycle.
+- Choosing an Aspect could lock the player into it for that run and apply modifiers to several parts of the game.
+- Actions performed while an Aspect is active could award Aspect XP.
+- Aspects could have their own levels, progression and bonuses.
+- The number of Aspects, their effects, invocation, run structure, XP and balancing are all undecided.
+- Aspects must remain distinct from the three Primary Elements.
 
-Each action also has an experience-curve scalar. This scalar stretches or compresses the underlying experience curve according to the action's tier. Higher-tier actions should generally require more experience to level than introductory actions, even when they belong to the same skill.
+---
+
+## 3. Shared Skill and Action Progression
+
+### 3.1 Core terminology
+
+- **Skill:** A major progression category and its own tab or page.
+- **Action:** An activity within a skill, such as a Research activity, spell, Transmutation recipe or Exploration area.
+- **Action level:** The independent level of one action.
+- **Skill level:** The overall level derived from the progression of all actions within that skill.
+- **Milestone:** A reward earned through an action's or skill's separate milestone track.
+
+The number of actions can differ between skills. Every skill and action has its own progression, and improving one does not automatically level an unrelated action or skill.
 
 ### 3.2 Independent action progression
 
-Every action levels independently.
+- Every normal active action has its own level from **1 to 100**, its own XP and XP requirement, base duration, base output and individual bonuses.
+- Completing an action awards XP to that action only. For example, Research II does not directly level Research I, Research III or a Spellcraft action.
+- Each action has a tier-based XP scalar. Higher-tier actions generally require more XP than introductory actions.
+- Each skill can also have its own action-XP scalar, so actions from different skills may progress at different rates.
+- There is no shared action-XP pool.
+- Resource dependencies, skill levels, milestones and bonuses can connect progression without merging action levels.
 
-For example, performing Research II awards action experience to Research II. It does not award action experience to Research I, Research III or any Spellcraft or Transmutation action.
-
-Likewise, casting an Earth spell does not directly level a Air or Water spell. Each spell action has its own progression.
-
-There is no shared action-experience pool. Progression can still be connected through skill levels, skill milestones, resources and bonuses, but the individual action levels remain separate.
+Passive skills or other future systems may use a different progression structure where appropriate; they do not have to imitate an active action model.
 
 ### 3.3 Skill progression
 
-Each skill also has its own level, with a maximum of **level 100**. This is separate from the level of any individual action.
+- Every skill has its own level, with a maximum of **100**.
+- Skill XP is derived from the combined progression of every action belonging to that skill.
+- Improving actions contributes to the overall skill, but one heavily developed action must not be enough to max out the skill.
+- Early skill levels should be achievable after relatively little action progression. Higher levels should require increasingly broad development across the skill.
+- Each skill has its own progression scalar. Skills can have different numbers of actions and different curves.
+- A skill **cannot reach level 100 until every action belonging to it has reached action level 100**.
+- The exact formula that converts action progression into skill XP remains undecided.
 
-A skill's level is derived from the combined progression of the actions that belong to that skill. Action-level progress contributes toward the skill's progression, so improving individual actions also develops the overall skill.
+Skills level independently. Research progress does not automatically increase Spellcraft, Transmutation or Exploration skill levels.
 
-The skill has its own experience scaling or scalar. This controls how much action-level progress is needed to advance the skill. Early skill levels should require only a small amount of action progression, potentially just a few action level-ups. The requirement should ramp up as the skill approaches higher levels.
+### 3.4 Unlocking skills and actions
 
-Skills can have different numbers of actions and do not need to use identical skill-level scaling. Their individual action levels also use their own tier-dependent experience scalars.
+- Actions are generally unlocked with gold. Unlocking a later action does not require the previous action to reach level 100.
+- An unlocked action becomes available but does not automatically become active.
+- Some unlocks can require resources from other actions or skills when this creates a meaningful progression connection.
+- Skill unlocks generally require gold plus resources from earlier skills.
+- Unlocking a skill should normally include its first action, avoiding a separate first-action cost unless a skill has a specific reason to work differently.
+- Requirements should be approachable progression gates, not long checklists that force every earlier action to level 100.
 
-A skill cannot reach level 100 while one or more of its actions remain below level 100. **Reaching skill level 100 requires every action belonging to that skill to reach action level 100 as well.** The exact calculation that converts the action levels into skill progression, including the skill-level experience curve, is still to be balanced.
+Exact prices and resource quantities are not yet defined; see Section 13.
 
-Skills progress independently from one another. Research progression does not automatically increase the Spellcraft level, and Spellcraft progression does not automatically increase the Transmutation level.
+### 3.5 Action duration and XP
 
-See Section 4 for the skill-level model and its implications.
+- Every action has a base duration and base XP reward.
+- Higher-tier actions generally take longer but should provide more XP and more valuable or useful resources.
+- Duration can be improved by:
+  - The action's own level bonuses.
+  - Milestones from its skill.
+  - Bonuses from other skills.
+  - Global bonuses and future progression systems.
+- XP is awarded when an action completes.
+- XP requirements increase with action level and are affected by the skill scalar and action-tier scalar.
+- Two actions at the same level can therefore require different amounts of XP.
+- Level 100 should be a substantial early-game goal, becoming more achievable as the player gains bonuses and upgrades. With a sufficiently developed setup, an action should eventually be capable of reaching level 100 over a long offline period or overnight.
 
-### 3.4 Unlocking additional actions
+### 3.6 Active actions and passive systems
 
-Actions are generally unlocked through gold. Unlocking an action does not require the previous action to reach level 100.
+- The initial operating model for active skills is one selected action at a time.
+- This is an initial limitation, **not a permanent rule for the entire game**.
+- Future skills may introduce passive actions, automation or systems that progress independently.
+- Some actions may become self-sustaining; others may remain expensive or occasional activities.
+- Not every skill or action needs to be equally active or use the same progression mechanism.
+- **Exploration is an active skill. Combat is passive** and runs independently of the selected active action (see Sections 8–9).
 
-The player should be able to choose which available actions to unlock and develop. Increasing prices can encourage investment in existing actions, but should not impose a rigid sequence of completing every earlier action first.
+### 3.7 Offline progress
 
-Unlocking an action makes it available; it does not automatically make it the active action.
+Offline activity should simulate eligible game activity rather than award an unrelated bonus.
 
-Some later systems may add material requirements to selected unlocks. These should create useful connections between skills rather than turn every action unlock into a long linear checklist.
+Offline progress can include:
 
-### 3.5 Unlocking entire skills
+- Completed active actions and action XP.
+- Skill XP and milestone progress.
+- Resources produced by eligible actions.
+- Passive or automated systems once unlocked.
+- Mana regeneration.
+- Other future systems that explicitly support offline progression.
 
-The player does not necessarily begin with every skill available.
+Design goals:
 
-Unlocking a skill should require both gold and one or more resources produced by an earlier skill or skills. The first such requirement should be approachable. For example, unlocking Spellcraft could require a modest quantity of Research II or Research III materials in addition to gold.
-
-Unlocking Transmutation could require research materials as well as elemental essences produced by Spellcraft.
-
-These requirements connect the skills and give earlier resources a purpose beyond selling them. They are intended as light progression gates, not proof that every action in an earlier skill must be completed before the player can move on.
-
-The exact required quantities and gold costs are not defined yet.
-
-### 3.6 Action duration
-
-Every action has a base duration. Higher-tier actions generally take longer to complete, but should also provide greater experience and more valuable or useful resources.
-
-Action duration can be improved by several sources:
-
-- The action's own individual leveling bonuses.
-- Bonuses from milestones belonging to its skill.
-- Bonuses from other skills.
-- Global bonuses and future progression systems.
-
-The exact effect of each bonus is not fixed here. For the current design, bonuses from different sources stack additively; see Section 8.5.
-
-### 3.7 Action experience
-
-Action experience is awarded when an action completes. Each action has its own base experience reward.
-
-The amount of experience required for an action's next level increases with its current level. The action's skill and tier also influence how demanding its experience curve is:
-
-- Each skill can have its own scalar for the action experience curve.
-- Each action has an additional scalar based on its tier.
-- The tier scalar stretches the curve further for more advanced actions.
-
-Consequently, two actions at the same level can require different amounts of experience to level up.
-
-Reaching action level 100 should be a substantial long-term goal in the early game. It should become a more realistic target later, once the player has accumulated suitable bonuses, upgrades and other progression advantages. A level-100 action should eventually be achievable in a long offline period or overnight with a sufficiently developed setup, but this should not be the expectation for a new player.
-
-### 3.8 Active actions and future automation
-
-The current starting assumption is that the player selects one action to actively work on at a time. This is a practical initial limitation, **not a permanent rule that the entire game must always obey**.
-
-Future systems may allow certain actions to progress automatically or passively. Some actions may become largely self-sustaining, while others may be expensive, late-game activities that the player performs infrequently or levels through a different mechanism.
-
-The game should leave room for these differences. Not every action needs to be equally active, equally affordable or leveled in exactly the same way.
-
-### 3.9 Offline progress
-
-Offline gains are an important part of the game.
-
-When the player leaves the game, eligible active and automated activities should continue to make progress according to the offline simulation. Returning after a long break, such as going to sleep and coming back the next morning, should be capable of providing a meaningful period of progress in the relevant skill or skills.
-
-Offline gains can include:
-
-- Completed actions and action experience.
-- Progress toward the skill level and its milestones.
-- Resources produced by those actions.
-- Gold earned when the player chooses to sell the resulting resources.
-- Progress from future passive or automated systems, when unlocked.
-
-Offline progress should feel substantial. A night away from the game may produce a large amount of resources and experience, and selling much of the output can provide a meaningful amount of gold.
-
-The exact offline duration rules, caps, handling of a full inventory and treatment of future automated actions remain to be determined. Offline progress should not be treated as a separate reward that ignores the normal action and resource rules; it should simulate eligible game activity while the player is away.
+- A long break, such as an overnight period, should produce meaningful progress.
+- Offline gains can accumulate substantial resources and XP.
+- Selling accumulated resources remains the player's decision; gold is not automatically earned from unsold resources.
+- Offline simulation should respect normal action and resource rules.
+- Exact offline duration limits, caps, full-inventory handling and future automation rules remain undecided.
 
 ---
 
-## 4. Skill Levels
+## 4. Skill Levels and Passive Bonuses
 
-A skill level is an overall measure of how developed that skill is. It is not a separate action and is not leveled by repeatedly performing one dedicated skill-level activity.
+### 4.1 Skill-level model
 
-### 4.1 Derived from the skill's actions
+- Skill level is an overall measure of development across that skill's actions, not a separate action.
+- A skill can begin gaining levels after a few action-level improvements; all actions do not need to progress equally from the start.
+- Its scalar determines how action progress translates into skill progress.
+- Early levels should be accessible; late levels should require broad, substantial development.
+- The formula must account for skills having different numbers of actions.
+- Level 100 requires every action in the skill to reach level 100.
 
-The skill level is derived from the progression of all actions belonging to that skill.
+### 4.2 Per-level passive effects
 
-Every action contributes to its skill's overall development. This means the skill level can begin increasing after only a few action-level improvements, rather than requiring every action to be developed equally from the very beginning.
+A skill may grant a passive bonus for every skill level, separate from milestone rewards.
 
-The skill's own progression scalar determines how quickly action-level progress translates into skill-level progress. Early levels should be accessible; later levels should require increasingly broad and substantial development across the skill.
-
-A skill with more actions can have a different progression curve from a skill with fewer actions. The skill-level system must account for the number of actions in that skill rather than assuming that every skill has the same structure.
-
-### 4.2 Maximum skill level
-
-The maximum skill level is **100**.
-
-Reaching skill level 100 requires every action in that skill to reach action level 100. A single highly developed action must not be enough to max out the skill while the other actions remain neglected.
-
-This makes skill level a measure of the entire skill's completion, not simply a reflection of the player's most-used action.
-
-The precise aggregation and experience formula is not locked in yet. It should support the intended behavior: early levels are gained from a relatively small amount of action progression, while the requirements become increasingly demanding and the final levels require development across all actions.
-
-### 4.3 Skill-level bonuses
-
-A skill may have a passive bonus that increases with every skill level, independently of its milestone rewards.
-
-For example, **Spellcraft may increase maximum Mana by a fixed amount for every Spellcraft level**. This is a linear increase, so each new skill level adds the same amount of maximum Mana.
-
-Other skills may have different per-level bonuses, or may use a different type of benefit. The exact bonus for each skill is not yet defined.
-
-These per-level effects are separate from milestone rewards. A skill can gain its regular per-level benefit at every level and still receive additional milestone rewards at selected levels.
+- Example: Spellcraft may increase maximum Mana by a fixed amount per Spellcraft level.
+- Such a bonus would be linear: each new level adds the same amount.
+- Other skills may have different per-level bonuses or no such bonus.
+- The effect for each skill is not finalized.
+- Per-level bonuses do not replace or consume action or skill milestone rewards.
 
 ---
 
 ## 5. Skill One — Research
 
-**Purpose:** Develop general magical knowledge and produce research materials that support other skills.
+**Purpose:** Develop general magical knowledge and produce research materials used by other skills.
 
-Research is the foundation of the mage's progression. It represents increasingly advanced study and discovery, independent of any one Primary Element.
+Research is the foundational, element-independent skill. Its actions progress from accessible study to rare, powerful and almost primordial discoveries.
 
-Research should begin with simple, common activities and gradually move toward rare, powerful and almost godlike forms of knowledge. Its resources provide materials for other skills, especially Spellcraft unlocks and Transmutation recipes.
+### 5.1 Actions and resources
 
-### 5.1 Research actions
+Research currently has eight planned actions. Each action produces its own item and levels independently from 1 to 100.
 
-The current Research skill contains eight actions. Each action has its own independent level from 1 to 100.
+| Tier | Action | Resource produced | Theme |
+|---|---|---|---|
+| I | **Read Books** | Loose Notes | Basic observations and introductory knowledge. |
+| II | **Study Ancient Notes** | Bound Notes | Organized knowledge and older research. |
+| III | **Examine Arcane Manuscripts** | Arcane Manuscript | Established magical theory. |
+| IV | **Decipher Sealed Tomes** | Sealed Grimoire | Restricted, difficult knowledge. |
+| V | **Explore Lost Archives** | Lost Archive Record | Rare discoveries from forgotten collections. |
+| VI | **Investigate Forbidden Lore** | Forbidden Codex | Dangerous and powerful knowledge. |
+| VII | **Unravel Primordial Mysteries** | Primordial Chronicle | Knowledge of the earliest foundations of existence. |
+| VIII | **Research the First Truth** | Genesis Testament | Legendary, creation-level knowledge. |
 
-The action names should communicate a clear progression from introductory study to extraordinary discoveries:
-
-| Tier | Action name | General theme |
-|---|---|---|
-| I | **Read Books** | Basic, accessible study and introductory knowledge. |
-| II | **Study Ancient Notes** | More organized knowledge and older research. |
-| III | **Examine Arcane Manuscripts** | Detailed study of established magical theory. |
-| IV | **Decipher Sealed Tomes** | Restricted and difficult-to-understand knowledge. |
-| V | **Explore Lost Archives** | Rare discoveries preserved in forgotten collections. |
-| VI | **Investigate Forbidden Lore** | Dangerous and unusually powerful knowledge. |
-| VII | **Unravel Primordial Mysteries** | Research into the earliest foundations of existence. |
-| VIII | **Research the First Truth** | An almost legendary level of discovery, approaching the origin of all knowledge. |
-
-The names describe the theme and power of each action. They do not imply that the player must literally read, own or find the objects named in the action.
-
-The player starts with Research I available. Further actions can be unlocked as the player progresses.
-
-### 5.2 Research resources
-
-Each Research action produces its own resource. These resources should also progress from simple, common written material to rare and exceptionally powerful records of knowledge.
-
-| Tier | Resource name | General theme |
-|---|---|---|
-| I | **Loose Notes** | Common observations and basic written knowledge. |
-| II | **Bound Notes** | Organized notes containing more complete information. |
-| III | **Arcane Manuscript** | A detailed written work containing established magical theory. |
-| IV | **Sealed Grimoire** | A protected collection of advanced knowledge. |
-| V | **Lost Archive Record** | Rare material recovered from forgotten research. |
-| VI | **Forbidden Codex** | Restricted knowledge of considerable power. |
-| VII | **Primordial Chronicle** | Records concerning the earliest forces and events. |
-| VIII | **Genesis Testament** | A legendary record of foundational or creation-level knowledge. |
-
-The resource names are intended as a coherent progression. They are individual items, not interchangeable quantities of a generic Research Folio.
-
-Research materials are used by other skills and may be required for selected unlocks. They are also sellable, so the player must decide whether to retain them for future recipes and progression or sell them for gold.
-
-### 5.3 Research action structure
-
-| Action | Resource produced |
-|---|---|
-| Read Books | Loose Notes |
-| Study Ancient Notes | Bound Notes |
-| Examine Arcane Manuscripts | Arcane Manuscript |
-| Decipher Sealed Tomes | Sealed Grimoire |
-| Explore Lost Archives | Lost Archive Record |
-| Investigate Forbidden Lore | Forbidden Codex |
-| Unravel Primordial Mysteries | Primordial Chronicle |
-| Research the First Truth | Genesis Testament |
-
-Each action has its own level, experience curve, base duration, output and individual bonuses. The eight actions are the current planned Research set; the broader skill structure should still allow future actions to be added.
+- The names describe each action's theme; they do not mean that the player must own or find the named objects.
+- Each resource is an individual item, not part of a generic Research Folio.
+- Research materials support other skills, unlocks and recipes, and can also be sold.
+- Research I is available from the start. Further actions are unlocked with gold.
+- The eight actions are the current planned set, not a limit on future expansion.
 
 ---
 
 ## 6. Skill Two — Spellcraft
 
-**Purpose:** Learn and cast spells associated with Earth, Air and Water.
+**Purpose:** Learn and cast spells associated with Earth, Air and Water, producing elemental essences.
 
-Spellcraft introduces the three Primary Elements and provides elemental resources for later activities. Each spell is an independent action with its own level, experience requirements, duration, Mana cost and resource output.
+Each spell is an independent action with its own level, XP, duration, Mana cost and resource output. Separate Earth, Air and Water skill-level tracks are **not** currently planned.
 
-Spellcraft should develop both the player's knowledge of individual spells and their broader understanding of the elements. A separate elemental level system is not currently planned.
+### 6.1 Spell actions
 
-### 6.1 Initial elemental spells
+The first available spells are:
 
-The initial spell actions are divided into Earth, Air and Water.
-
-| Element | Initial spell | Description |
+| Element | Tier I spell | Effect |
 |---|---|---|
-| Earth | **Shape Pebble** | Manipulates a small amount of earth or stone. |
-| Air | **Stir Breeze** | Produces a small and controlled movement of air. |
-| Water | **Gather Droplet** | Gathers or manipulates a tiny amount of water. |
+| Earth | **Shape Pebble** | Manipulate a small amount of earth or stone. |
+| Air | **Stir Breeze** | Create a small, controlled movement of air. |
+| Water | **Gather Droplet** | Gather or manipulate a tiny amount of water. |
 
-The player starts with the first available Spellcraft action when the skill is unlocked. The other initial elemental actions can be unlocked separately.
-
-Higher tiers should follow the same progression from small, easy-to-control effects toward powerful elemental manipulation. Example naming directions include:
+Example spell naming progression:
 
 | Tier | Earth | Air | Water |
 |---|---|---|---|
@@ -327,86 +233,62 @@ Higher tiers should follow the same progression from small, easy-to-control effe
 | VII | Continental Shift | Sky Rend | Awaken Maelstrom |
 | VIII | Worldshaper | Call of the Firmament | Primordial Tide |
 
-These names are thematic examples and can be refined later. They illustrate how the actions should grow from simple elemental tricks into extraordinary feats.
-
-Every spell remains an independent action. Unlocking a higher-tier spell should not require the previous spell to reach level 100.
+- Names are thematic examples and can be refined.
+- The progression should move from simple elemental tricks to extraordinary feats.
+- Higher-tier spells can be unlocked without first reaching level 100 in the preceding spell.
+- The initial spell actions become available through the Spellcraft unlock and subsequent action unlocks.
 
 ### 6.2 Mana and spellcasting
 
-Spellcraft uses **Mana** as the resource required to cast spells.
-
-Mana is a separate, regenerating resource. Casting a spell consumes Mana, and Mana regenerates passively over time. The player therefore needs sufficient Mana to perform a spell action, but does not need to gather Mana as an inventory item.
-
-Each spell has a Mana cost. Higher-tier spells will generally require more Mana than introductory spells, although exact costs are not defined yet.
-
-If the player does not have enough Mana for the next cast, that cast must wait until sufficient Mana has regenerated. The system should not consume Mana for an action that cannot be completed.
-
-Mana regeneration is passive and should continue while the player is away from the game, subject to the eventual offline-progress rules.
-
-The Spellcraft skill level may increase the maximum Mana capacity linearly. For example, each Spellcraft level could add the same fixed amount to maximum Mana. This per-level capacity bonus is separate from Spellcraft's milestone rewards.
-
-The starting Mana capacity, regeneration rate, spell costs and exact amount added per Spellcraft level remain to be balanced.
+- Mana is a separate regenerating resource, not an inventory item.
+- Casting a spell consumes its Mana cost.
+- Mana regenerates passively, including offline, subject to the final offline rules.
+- Each spell has its own Mana cost; higher-tier spells generally cost more.
+- If Mana is insufficient for the next cast, the cast waits. Mana must not be consumed for an action that cannot complete.
+- Spellcraft skill levels may increase maximum Mana by a fixed amount per level, separately from milestone rewards.
+- Starting capacity, regeneration rate, spell costs and the per-level capacity increase remain to be balanced.
 
 ### 6.3 Elemental essences
 
-Each spell produces an essence associated with its element and tier. These essences are used by Transmutation and may be required for future unlocks and systems.
-
-The essence names should be unique and should communicate a progression from weak, common traces of an element to concentrated, exceptional forms of elemental power.
+Every spell produces an essence matching its element and tier. These are distinct inventory items used by Transmutation and potentially by future unlocks or systems.
 
 | Tier | Earth essence | Air essence | Water essence |
 |---|---|---|---|
-| I | **Dust** | **Breath** | **Droplet** |
-| II | **Pebble** | **Breeze** | **Ripple** |
-| III | **Stone** | **Gust** | **Stream** |
-| IV | **Shard** | **Gale** | **Wave** |
-| V | **Crystal** | **Tempest** | **Torrent** |
-| VI | **Geode** | **Cyclone** | **Maelstrom** |
-| VII | **Mountain Heart** | **Skycore** | **Abyssal Heart** |
-| VIII | **Worldheart** | **Firmament Core** | **Primordial Tide** |
+| I | Dust | Breath | Droplet |
+| II | Pebble | Breeze | Ripple |
+| III | Stone | Gust | Stream |
+| IV | Shard | Gale | Wave |
+| V | Crystal | Tempest | Torrent |
+| VI | Geode | Cyclone | Maelstrom |
+| VII | Mountain Heart | Skycore | Abyssal Heart |
+| VIII | Worldheart | Firmament Core | Primordial Tide |
 
-These names are the essence item names, not new elements or separate skill levels. For clarity, the full item identity should also retain its element and tier. For example, Dust is the Tier I Earth Essence, while Droplet is the Tier I Water Essence.
+- The full item identity retains its element and tier; for example, Earth Dust is the Tier I Earth Essence.
+- Essences of different elements are not interchangeable, even when they share a tier.
+- Higher tiers should be more potent, valuable and useful in demanding recipes.
+- The player chooses whether to retain essences for progression or sell them for gold.
 
-Higher-tier essences should feel significantly more potent than the early materials. They should also have greater value and more demanding uses in later recipes.
+### 6.4 Spell and skill progression
 
-Elemental essences are separate inventory items. Earth Dust, Air Breath and Water Droplet are not interchangeable simply because they share the same tier.
-
-### 6.4 Spell progression and elemental knowledge
-
-Each spell action has its own independent level from 1 to 100.
-
-Leveling a spell represents gaining experience with that specific spell. Spellcraft's overall skill level represents broader development across all its spell actions.
-
-Spellcraft progression and its milestones can deepen the player's general knowledge of the spells and elements. However, **separate Earth, Air and Water level tracks are not currently part of the planned system**.
-
-A spell's individual action level, the overall Spellcraft skill level and any future elemental mastery system must remain distinct concepts.
-
-### 6.5 Spell resources and future connections
-
-Spellcraft produces elemental essences as part of normal spell progression. Those resources are not merely sale goods; they are also inputs for Transmutation and potentially other future skills.
-
-The player should regularly have to choose between retaining essences for recipes or unlock requirements and selling them for gold.
+- Each spell levels independently from 1 to 100.
+- A spell's level measures experience with that spell.
+- Spellcraft's skill level measures broader development across all Spellcraft actions.
+- Spellcraft milestones may improve general spell and elemental knowledge.
+- Any future elemental mastery system must remain separate from spell action levels and the overall Spellcraft skill level.
 
 ---
 
 ## 7. Skill Three — Transmutation
 
-**Purpose:** Combine research materials and elemental essences to produce more refined resources.
+**Purpose:** Combine Research materials and elemental essences into more refined resources.
 
-Transmutation connects Research and Spellcraft. It takes resources produced by those skills and turns them into more advanced materials.
+Transmutation connects Research and Spellcraft. Its initial purpose is resource progression, not equipment, combat items or a complete crafting catalogue.
 
-The initial Transmutation system is not yet intended to create equipment, combat items or a complete crafting catalogue. Its purpose is to establish a further layer of resource progression that later skills can build upon.
+### 7.1 Actions and elemental paths
 
-### 7.1 Transmutation actions
+Transmutation has separate Earth, Air and Water paths. Each action has its own level, XP curve, duration, input requirements and output.
 
-Transmutation actions are organized around Earth, Air and Water. Each action has its own independent level, experience curve, duration, input requirements and output.
-
-The three elemental paths should remain distinct:
-
-- **Earth Transmutation** works with Earth materials and produces refined earth-based resources.
-- **Air Transmutation** works with Air materials and produces refined air-based resources.
-- **Water Transmutation** works with Water materials and produces refined water-based resources.
-
-An example structure is:
+Example action structure:
 
 | Tier | Earth action | Air action | Water action |
 |---|---|---|---|
@@ -416,80 +298,183 @@ An example structure is:
 | IV | Earth Transmutation IV | Air Transmutation IV | Water Transmutation IV |
 | V | Earth Transmutation V | Air Transmutation V | Water Transmutation V |
 
-These are structural labels, not necessarily the final displayed action names. More descriptive names can be introduced when the individual recipes and outputs are finalized.
+- These are structural labels; descriptive names may replace them when recipes are finalized.
+- Higher tiers should require more advanced inputs and produce more potent materials.
+- Elements do not need to have the same final number of actions.
 
-Higher tiers should require more advanced inputs and produce more potent materials. There is no requirement that every element has exactly the same final number of Transmutation actions.
+### 7.2 Catalyst resources
 
-### 7.2 Transmutation resources
+The current resource family is **Catalysts**, with separate elemental identities:
 
-The current working resource family is **Catalysts**, with a separate elemental identity.
+- Earth Transmutation produces Earth Catalysts.
+- Air Transmutation produces Air Catalysts.
+- Water Transmutation produces Water Catalysts.
+- Higher tiers produce increasingly refined forms.
+- Final tier-specific names are undecided.
 
-| Element | Resource family |
-|---|---|
-| Earth | Earth Catalyst |
-| Air | Air Catalyst |
-| Water | Water Catalyst |
+A Catalyst represents a concentrated material created by combining research knowledge with an elemental essence. Catalysts can be retained for future uses or sold.
 
-Each tier produces a more refined form of its elemental Catalyst. The item name and tier should make this progression clear, while the exact tier-specific names can be finalized alongside the recipes.
+### 7.3 Inputs and example recipes
 
-A Catalyst is a concentrated material created by combining research knowledge with an elemental essence. It represents a step beyond the simpler materials produced by Research and Spellcraft.
+Each action consumes materials from earlier skills.
 
-Catalysts are also sellable. The player may retain them for future recipes or sell them when gold is more useful.
+- **Earth Transmutation I:** a Research material (such as Loose Notes or Bound Notes) + Earth Dust → Earth Catalyst.
+- **Air Transmutation I:** a Research material + Air Breath → Air Catalyst.
+- **Water Transmutation I:** a Research material + Water Droplet → Water Catalyst.
 
-### 7.3 Materials and recipes
+Higher tiers should require more advanced Research materials and elemental essences.
 
-A Transmutation action consumes materials from earlier skills.
-
-For example:
-
-**Earth Transmutation I**
-- A Research material, such as Loose Notes or Bound Notes.
-- Earth Dust.
-- Produces an Earth Catalyst.
-
-**Air Transmutation I**
-- A Research material.
-- Air Breath.
-- Produces a Air Catalyst.
-
-**Water Transmutation I**
-- A Research material.
-- Water Droplet.
-- Produces a Water Catalyst.
-
-Higher tiers should require more advanced research materials and elemental essences. Recipe requirements should grow with the complexity and value of the output.
-
-The exact quantities, resource combinations and tier-specific recipes remain to be balanced. The important structural rule is that Transmutation creates a meaningful connection between the resources of earlier skills.
-
-### 7.4 Independent progression
-
-Every Transmutation action has its own level from 1 to 100.
-
-Performing Earth Transmutation II does not grant action experience to Earth Transmutation I or to any Air or Water action.
-
-The overall Transmutation skill level is derived from the progression of its actions, just like the other skills. Transmutation can also have its own skill-level scalar and milestones.
-
-Catalysts can be stored, used in future systems or sold for gold.
+- Exact quantities, combinations and tier recipes remain undecided.
+- Recipes should create meaningful connections between earlier skills.
+- Each Transmutation action levels independently from 1 to 100.
+- The overall Transmutation skill level follows the shared skill-level rules.
+- Catalysts are physical items and can be sold.
 
 ---
 
-## 8. Initial Numerical Balancing
+## 8. Skill Four — Exploration
 
-The values in this section are starting points for implementation and playtesting, not immutable final balance.
+**Purpose:** Explore a growing world map, develop individual areas and discover resources and elemental companion containers.
 
-The first three skills should be straightforward to understand. Their early actions should complete quickly, while higher tiers should take longer, provide more experience and produce more valuable or useful resources.
+Exploration is an **active skill**. Each unlocked area is an individual Exploration action and uses the normal action-level rules.
 
-The game is expected to expand considerably beyond these initial skills. Numerical values should therefore leave room for later progression systems, stronger bonuses and substantially more valuable resources.
+### 8.1 Shared hex map and starting layout
 
-### 8.1 Base action values
+- Exploration is represented by a hexagonal map.
+- The map begins with a central, neutral hex tile and three immediately adjacent starting areas:
+  - **Neutral — The Crossroads**
+  - **Earth — The Mossbound Foothills**
+  - **Air — The Whispering Fields**
+  - **Water — The Stillwater Pools**
+- The Crossroads has no elemental alignment.
+- The three elemental areas establish the initial directions or branches of the map.
+- New areas branch from unlocked areas. Later branches may overlap, cross or connect; the map is not limited to three permanently separate paths.
+- The map is shared with Combat and other future systems that use locations.
+- No detailed map layout or fixed number of areas is defined yet.
 
-Each action has its own base duration and base experience reward.
+### 8.2 Area structure and progression
+
+Each area has:
+
+- A unique name.
+- An elemental alignment (Earth, Air, Water or none for the neutral starting tile).
+- Its own action level from 1 to 100.
+- Its own XP progression, duration and resource rewards.
+- A position and connection to other areas on the shared map.
+
+Progression rules:
+
+- Every area is an independent Exploration action.
+- Its level contributes to the overall Exploration skill level.
+- Exploration skill level 100 requires every Exploration area/action in the skill to reach level 100.
+- Different areas may share resource types, particularly within the same tier; every area does not need a unique resource.
+- The exact area count, names beyond the starting areas, rewards, durations and unlock conditions are undecided.
+
+### 8.3 Area levels and milestones
+
+An area's individual Exploration level should improve the corresponding area's Combat and discovery potential.
+
+Planned effects include:
+
+- Increased Combat output in that area.
+- Increased Combat XP in that area.
+- Increased chance to obtain that area's artifact.
+- Action milestone rewards, following the general action-milestone system.
+- Potentially increased chance to discover companion containers.
+
+Area milestones occur at selected action-level intervals (every X levels), like other action milestones. Their thresholds and rewards can be adjusted during balancing; no final schedule is fixed.
+
+### 8.4 Companion-container discoveries
+
+- Completing an Exploration action has a low chance to find a companion container associated with that area's element.
+- Container types reflect the element:
+  - **Earth:** Geodes, containing Earth companions.
+  - **Air:** Eggs, containing Air companions.
+  - **Water:** Container name and concept still to be decided; it should fit Water and contain Water companions.
+- Containers are obtained through Exploration and are later hatched to obtain companions.
+- Area action milestones may increase the chance to find containers.
+- Not every area needs its own unique companion or unique container type.
+
+---
+
+## 9. Passive Skill — Combat
+
+**Purpose:** Fight continuously in a selected Exploration area and produce combat rewards.
+
+Combat is the first planned **passive skill**. It runs independently of the active action selected in Research, Spellcraft, Transmutation or Exploration.
+
+### 9.1 Starting and selecting a location
+
+- Combat is unlocked and started once.
+- After it has been started, it remains active without requiring the player to repeatedly start it.
+- The player selects an already-unlocked Exploration area as the Combat location.
+- Combat runs continuously in that area while the player works on an unrelated active action.
+- Changing the Combat location does not interrupt or replace the current active-skill action.
+- Combat uses the shared Exploration map.
+
+### 9.2 Area progression and Combat rewards
+
+The individual Exploration level of the selected area improves Combat performance there:
+
+- Higher Combat output.
+- More Combat XP.
+- Higher chance to obtain that area's artifact.
+
+Each area has its own artifact.
+
+### 9.3 Unidentified objects and artifacts
+
+- Combat can produce unidentified objects.
+- Identifying an object gives a chance to obtain the artifact associated with the area where it was found.
+- The exact relationship between object types, identification, artifact chances and area artifacts is not yet defined.
+- Combat formulas, encounter details, reward tables, XP progression, identification costs and artifact rates remain undecided.
+
+Combat must remain independent of the player's currently selected active action. Its passive nature does not imply that its final progression model must be identical to an active skill's action structure.
+
+---
+
+## 10. Companions
+
+**Purpose:** Collect elemental companions by hatching containers discovered through Exploration.
+
+Companions are a collection system connected to Exploration. The working name for the system is **Companions**; its final interface placement and progression structure are not yet defined.
+
+### 10.1 Containers and elemental identity
+
+- Companions are obtained by hatching containers found through Exploration.
+- Earth Geodes contain Earth companions.
+- Air Eggs contain Air companions.
+- The Water container type and name are undecided.
+- Containers are tied to their corresponding elemental type.
+- Not every Exploration area needs a unique companion or a unique container.
+
+### 10.2 Undecided companion design
+
+The following are intentionally open:
+
+- The Water container's final name and design.
+- The number and variety of companions.
+- Hatching requirements, timing and duplicate handling.
+- Whether companions have levels, rarity, growth, upgrades or other progression.
+- Whether companions provide bonuses, and if so, what those bonuses affect.
+- How companions are displayed, equipped, assigned or otherwise used.
+- Whether companions can be obtained through any method besides Exploration containers.
+
+Do not assume a companion rescue system; the current primary acquisition concept is elemental containers discovered through Exploration and then hatched.
+
+---
+
+## 11. Initial Numerical Balancing
+
+All values in this section are starting points for implementation and playtesting, not immutable final balance. Initial actions should be straightforward and quick; higher tiers should take longer while providing more XP and more valuable or useful resources.
+
+### 11.1 Base action values
 
 #### Research
 
-Research starts at 4 seconds and increases by 1 second per tier. The current Research skill has eight actions.
+Research starts at 4 seconds and increases by 1 second per tier. Each action initially produces one resource per completion.
 
-| Action | Base duration | Base XP per action | Base output |
+| Action | Base duration | Base XP per completion | Base output |
 |---|---:|---:|---:|
 | Read Books | 4 sec | 10 XP | 1 Loose Notes |
 | Study Ancient Notes | 5 sec | 15 XP | 1 Bound Notes |
@@ -502,9 +487,9 @@ Research starts at 4 seconds and increases by 1 second per tier. The current Res
 
 #### Spellcraft
 
-Spellcraft starts at 5 seconds for Tier I spells. Each subsequent spell tier increases the base duration by 2 seconds.
+Tier I starts at 5 seconds. Each subsequent tier adds 2 seconds.
 
-| Spell tier | Base duration | Base XP per action |
+| Spell tier | Base duration | Base XP per completion |
 |---|---:|---:|
 | I | 5 sec | 20 XP |
 | II | 7 sec | 30 XP |
@@ -512,15 +497,15 @@ Spellcraft starts at 5 seconds for Tier I spells. Each subsequent spell tier inc
 | IV | 11 sec | 67.5 XP |
 | V | 13 sec | 101.25 XP |
 
-These values apply independently to Earth, Air and Water spells within the same tier. They are example values for the initial tiers, not a limit on the eventual number of spells.
-
-Spellcraft actions also have a Mana cost. Mana costs are balanced separately from action duration and base action XP.
+- Values apply independently to Earth, Air and Water spells of the same tier.
+- These are initial example tiers, not a limit on the eventual number of spells.
+- Mana costs are balanced separately.
 
 #### Transmutation
 
-Transmutation starts at 6 seconds for Tier I. Each subsequent tier increases the base duration by 3 seconds.
+Tier I starts at 6 seconds. Each subsequent tier adds 3 seconds.
 
-| Transmutation tier | Base duration | Base XP per action |
+| Transmutation tier | Base duration | Base XP per completion |
 |---|---:|---:|
 | I | 6 sec | 30 XP |
 | II | 9 sec | 45 XP |
@@ -528,40 +513,31 @@ Transmutation starts at 6 seconds for Tier I. Each subsequent tier increases the
 | IV | 15 sec | 101.25 XP |
 | V | 18 sec | 151.875 XP |
 
-These values apply independently to Earth, Air and Water Transmutation actions within the same tier. They are example values for the initial tiers, not a final limit on the skill's size.
+Values apply independently to Earth, Air and Water Transmutation actions of the same tier. These are initial example tiers, not a final limit on the skill.
 
-#### General pattern
-
-The starting base durations are therefore:
+#### Starting duration pattern
 
 - Research: 4, 5, 6, 7, 8, 9, 10, 11 seconds.
 - Spellcraft: 5, 7, 9, 11, 13 seconds for the initial example tiers.
 - Transmutation: 6, 9, 12, 15, 18 seconds for the initial example tiers.
+- The initial output for each action is one resource per completion, before bonuses.
 
-These are base durations before bonuses. The XP rewards also increase with each tier and from one skill to the next.
+Exploration and Combat values have not yet been established.
 
-The initial output of each action is one resource per completion. Leveling bonuses and other progression systems may increase the effective output.
+### 11.2 Initial action XP requirements
 
-### 8.2 Experience required per action level
+Every action has its own XP requirement curve. The requirement becomes more demanding as the action levels.
 
-Every action has its own experience requirement curve. The curve becomes more demanding as the action levels up.
-
-The experience requirement is influenced by:
+The curve is influenced by:
 
 - The action's base XP reward.
-- The starting requirement for that action.
-- The experience scalar assigned to its skill.
-- The additional experience scalar assigned to the action's tier.
+- Its starting XP requirement.
+- The XP scalar for its skill.
+- The additional XP scalar for its action tier.
 
-The skill scalar makes actions in different skills progress at different rates. The tier scalar stretches the curve further for higher-tier actions within a skill.
+The following table gives the starting number of completed actions required for the first action level-up (level 1 → 2):
 
-The first levels should be approachable, but reaching level 100 should require a substantial amount of progress. In the early game, this should be a long-term goal. As the player accumulates stronger bonuses and develops a better setup, the same level-100 goal should become increasingly achievable, including over long offline periods.
-
-#### Starting completion requirements
-
-The starting number of completed actions required for the first level-up differs by skill and tier.
-
-| Skill | Action tier | Completions for level 1 → 2 |
+| Skill | Action tier | Completions |
 |---|---|---:|
 | Research | I | 1 |
 | Research | II | 1.5 |
@@ -582,379 +558,328 @@ The starting number of completed actions required for the first level-up differs
 | Transmutation | IV | 10.125 |
 | Transmutation | V | 15.1875 |
 
-These are initial balancing values for the example actions. The same starting requirement applies to each element-specific action within the same Spellcraft or Transmutation tier.
+- These are initial balancing values, not final formulas.
+- The requirement is the same for each element-specific action within the same Spellcraft or Transmutation tier.
+- Research's values continue a 1.5 progression between tiers.
+- Fractional completion requirements are expected values; actual action completions remain whole actions.
+- Higher-tier curves and all eventual skill/action scalars remain subject to playtesting.
 
-The higher-tier Research values continue the existing 1.5 progression between tiers. The eventual curves and scalars remain subject to playtesting.
+---
 
-### 8.3 Skill-level passive bonuses
+## 12. Levels, Milestones and Bonus Stacking
 
-A skill may have a passive effect that improves with every level gained in that skill.
+### 12.1 Skill-level passive bonuses
 
-For example, Spellcraft may increase maximum Mana by a fixed amount for every Spellcraft level. This is a linear bonus: each level adds the same amount of capacity.
+A skill may award a passive effect at every skill level, such as the proposed fixed increase to maximum Mana per Spellcraft level. Such effects are separate from all milestone rewards.
 
-These bonuses are awarded by the skill's ordinary level progression. They are not milestone rewards, and they do not replace or consume either action milestones or skill milestones.
+### 12.2 Action-level bonuses and milestones
 
-Other skills may have different per-level passive effects. The exact effect for each skill is not yet defined.
+Each action has its own independent milestone track. Action milestones:
 
-### 8.4 Action-level bonuses and action milestones
+- Belong only to the action that reaches them.
+- Are separate from the overall skill's milestone track.
+- Can be earned independently by every action. For example, Research I and Research II each have their own level-25 milestone.
+- Do not require the overall skill to reach the same numbered level.
 
-Every action has its own independent level progression and its own action-level rewards. **Action milestones belong to the individual action that reaches them.** They are tracked separately for every action and do not depend on the overall level of the skill.
+Proposed recurring action-level bonuses:
 
-The proposed baseline action-level bonuses are:
-
-- **Every 2 action levels:** +0.5% action speed for this action.
-- **Every 5 action levels:** +1% resource output for this action.
-- **Every 10 action levels:** +1% chance to avoid consuming required input resources when completing this action.
-
-These recurring bonuses are based on the action's own level. They apply only to that action and continue to accumulate as it levels.
-
-In addition to those recurring bonuses, individual actions can receive special action milestone rewards at selected levels:
-
-| Action milestone | Proposed reward | Applies to |
+| Frequency | Proposed bonus | Scope |
 |---|---|---|
-| 25 | +25% action speed | The action that reached level 25 |
-| 50 | +100% resource output | The action that reached level 50 |
-| 100 | No special reward defined yet | To be decided |
+| Every 2 action levels | +0.5% action speed | That action |
+| Every 5 action levels | +1% resource output | That action |
+| Every 10 action levels | +1% chance to avoid consuming required input resources | That action |
 
-The recurring bonuses still apply at levels 25, 50 and 100. The special milestone rewards are additional effects.
+Additional proposed action milestones:
 
-Every action tracks its own milestones independently. For example, Research I reaching action level 25 grants its own level-25 reward. Research II reaching action level 25 can grant the same milestone reward separately. Neither event requires the Research skill itself to reach skill level 25.
+| Action level | Additional reward | Scope |
+|---|---|---|
+| 25 | +25% action speed | That action |
+| 50 | +100% resource output | That action |
+| 100 | Not defined | To be decided |
 
-Likewise, a skill milestone does not automatically trigger an action milestone. The two systems can happen at different times and must never be treated as the same progression track.
+- Recurring bonuses continue to apply at special milestones; the special rewards are additional.
+- Input-saving chance matters for actions that consume inputs, such as Transmutation. It has no practical effect on an action without input costs unless a future system adds them.
+- The recurring values and milestone schedule are proposals and may change after playtesting.
 
-The resource-saving bonus is relevant for actions that consume input materials, such as Transmutation. It gives the action a chance to complete without consuming the required inputs. For actions with no input cost, the bonus has no practical effect unless a future system introduces one.
+### 12.3 Skill milestones
 
-Fractional expected output should be handled through a suitable fractional carry-over or chance-based additional output system rather than discarding fractions.
+Every skill has its own milestone track at **skill levels 10, 20, 30, 40, 50, 60, 70, 80, 90 and 100**.
 
-### 8.5 Skill milestones
+Milestones are based on the overall skill level, not individual action levels. Reaching a Research milestone does not grant the corresponding Spellcraft or Transmutation reward.
 
-Every skill has its own independent milestone rewards at every 10 skill levels:
+Possible milestone purposes:
 
-**Level 10, 20, 30, 40, 50, 60, 70, 80, 90 and 100.**
+- **Improve the same skill:** e.g. increase output across all Research actions.
+- **Improve another skill:** e.g. a Research milestone improves Spellcraft XP gain or action speed.
+- **Provide a global bonus:** e.g. improve all skills. Levels 50 and 100 may be candidates for particularly important global boosts, but this is not a fixed schedule.
+- **Grant a unique effect:** e.g. increase maximum Mana or another special capacity.
 
-These milestones are triggered by the **overall skill level**, not by the level of an individual action. Each skill has its own milestone track. Reaching a milestone in Research does not automatically grant the corresponding Spellcraft or Transmutation milestone.
-
-The exact rewards are **not defined yet**. There may be repeating patterns across skills, but the milestone at a given level does not need to be identical for every skill.
-
-Skill milestones can serve several different purposes:
-
-**A. Improve the skill they belong to**
-
-A milestone can provide a skill-wide bonus that improves every action in the skill that awarded it.
-
-For example, a Research skill milestone could increase the output of all Research actions, not just one individual Research action.
-
-**B. Improve a different skill**
-
-A milestone can improve another skill, creating connections between the progression systems.
-
-For example, a Research skill milestone could improve the experience gain or action speed of all Spellcraft actions.
-
-**C. Provide a global bonus**
-
-A milestone can improve every skill and therefore affect essentially all actions in the game.
-
-Skill levels 50 and 100 are examples of levels that may be used for particularly important global boosts. This is a potential repeating pattern, not a finalized reward schedule.
-
-**D. Provide a unique bonus**
-
-A milestone can grant a special effect that does not fit into a normal action-wide category.
-
-For example, a Spellcraft skill milestone could increase maximum Mana.
-
-Potential skill milestone bonus categories include:
+Potential reward categories:
 
 - Action speed.
 - Resource output.
-- Experience gain.
+- XP gain.
 - Chance to avoid consuming input resources.
-- Maximum Mana or other skill-specific capacity.
+- Maximum Mana or another skill-specific capacity.
 - Sell value multiplier.
 - Unlock cost reduction.
-- Other unique effects introduced by future systems.
+- Other effects introduced by future systems.
 
-A skill milestone may affect its own skill, another skill, all skills or a special system. The purpose is to make overall skill progression meaningful beyond simply increasing a number.
+A skill milestone may affect its own skill, another skill, all skills or a unique system. Exact rewards and reward-to-level mapping remain undecided.
 
-Action milestones and skill milestones are separate systems. An action can reach its own milestone without its skill reaching the same numbered level, and a skill can reach a milestone without every action reaching that level.
+Action milestones and skill milestones are separate progression tracks and can be reached at different times.
 
-The exact level-to-reward mapping and the rewards for each skill remain intentionally undecided.
+### 12.4 Bonus stacking
 
-### 8.6 Bonus stacking
+Bonuses of the same type from different sources stack **additively** by default.
 
-For the current design, bonuses stack **additively**.
+- Example: +20% individual action speed and +20% global action speed = +40% total action speed.
+- The same default applies to action speed, resource output, XP gain and other same-type bonuses.
+- Any exception must be explicitly defined by the mechanic; exceptions are not assumed.
 
-For example, an action with +20% individual action speed and +20% global action speed receives a total of **+40% action speed**.
-
-The same general additive approach applies to bonuses of the same type from different sources, including action speed, resource output and experience gain.
-
-This is the default rule for the current game design. A future mechanic may have a specific reason to behave differently, but exceptions should be explicitly defined rather than assumed.
 ---
 
-## 9. Gold and Unlock Economy
+## 13. Gold and Unlock Economy
 
-Gold is a shared currency used to unlock additional actions, unlock entire skills and expand the player's inventory.
+Gold is a shared currency used for action unlocks, skill unlocks, inventory expansion and other progression costs. It is earned by selling physical items.
 
-It is earned by selling resources and items. The importance of selling changes as the game develops: the first three skills are primarily about progression and creating useful materials, while later skills are expected to provide much stronger sources of income.
+### 13.1 Initial skill unlock structure
 
-### 9.1 Unlocking Research actions
-
-Research is available from the beginning.
-
-The player starts with:
-
-- Research unlocked.
-- Research I available.
-- Loose Notes as the first Research output.
-
-Research I is free. Additional Research actions are unlocked with gold.
-
-Unlock prices should increase as the player progresses, but the exact price sequence is not defined here. It should be balanced against the action's production, the resources it creates, bag capacity and the other things the player could spend gold on.
-
-Unlocking a new Research action should not require the previous action to reach level 100.
-
-### 9.2 Unlocking additional skills
-
-Unlocking a skill should require both gold and resources from one or more earlier skills.
-
-The intended initial structure is:
-
-| Skill | Required progression resources |
+| Skill | Intended unlock requirement |
 |---|---|
-| Research | Available from the beginning. |
-| Spellcraft | Gold plus a modest quantity of Research materials, such as Bound Notes from Research II or Arcane Manuscripts from Research III. |
-| Transmutation | Gold plus Research materials and elemental essences produced by Spellcraft. |
+| Research | Available from the beginning; Research I is free. |
+| Spellcraft | Gold + a modest amount of Research materials, such as Bound Notes (Research II) or Arcane Manuscripts (Research III). |
+| Transmutation | Gold + Research materials + elemental essences produced by Spellcraft. |
+| Exploration | Unlocked after Transmutation in the intended skill order. Its unlock should follow a similar resource-and-gold approach, but use a different resource requirement and cost somewhat more gold than Transmutation. The exact resource and quantities are undecided. |
+| Combat | Passive skill; unlock and start requirements are not yet defined. |
 
-The first unlock requirements should be approachable and should demonstrate the relationship between skills without creating an unnecessarily long grind.
+- Unlocking a skill should normally include its first action.
+- Resource requirements should connect skills without demanding that every earlier action reach level 100.
+- The exact resource quantities and gold costs are undecided.
+- The Companion collection's separate unlock conditions, if any, are also undecided.
 
-Unlocking a skill should normally make its first action available as part of that unlock. The player should not have to pay an additional action-unlock cost for the initial action unless a future skill has a specific reason to work differently.
+### 13.2 Research actions and further action unlocks
 
-The exact required quantities and gold costs are undecided and should be balanced during implementation.
+- Research is available at the start with Research I and Loose Notes.
+- Research I is free; later Research actions cost gold.
+- Additional actions in an unlocked skill generally cost gold.
+- Action prices should rise with tier and expected value, encouraging investment in existing production.
+- Some actions may also require resources when this creates a meaningful connection.
+- No fixed starting price sequence is defined.
+- Gold is shared across the game, so players choose between new actions, new skills and inventory expansion.
 
-### 9.3 Additional actions within unlocked skills
+### 13.3 Economy direction
 
-Once a skill is unlocked, its additional actions can be purchased with gold.
-
-The price should rise with the action's tier and expected value. This creates a reason to improve existing production before immediately purchasing every available action.
-
-Some future actions may also require resources from other actions or skills. These resource requirements should be used where they create meaningful progression connections, not applied mechanically to every unlock.
-
-There is no fixed starting price sequence defined here. All gold is shared across the game, so the player chooses how to distribute it between new actions, new skills and inventory expansion.
+- The initial three skills — Research, Spellcraft and Transmutation — primarily establish progression and useful materials, rather than being the game's main money makers.
+- Their resources have sale value and can help fund unlocks.
+- Players should often choose between keeping materials for future requirements and selling them for immediate gold.
+- Later skills are expected to introduce much more valuable resources and stronger income opportunities.
+- Prices, production rates, bag capacity and item values must be balanced together.
 
 ---
 
-## 10. Bag and Inventory
+## 14. Bag and Inventory
 
-The game has a dedicated bag system for storing produced resources and other physical items.
+The bag stores produced resources and other physical items. It is central to progression because items may be needed for recipes or unlocks and can also be sold.
 
-The inventory is an important part of progression because resources are used by other skills, may be needed for future unlocks and can be sold for gold.
+### 14.1 Slots and stacking
 
-### 10.1 Inventory slots
+- The bag starts with limited capacity.
+- Each distinct item type occupies one slot; copies of the same item stack.
+- Example: one or fifty Loose Notes use one slot. Earth Dust, Air Breath and Water Droplet each use a separate slot.
+- Different elements and tiers remain separate items.
+- Research materials, essences, Catalysts and future resources each use their own item slots.
+- Gold and Mana are counters/currencies and do not occupy normal slots.
 
-The bag starts with a limited number of slots.
+### 14.2 Expansion
 
-Each distinct item type occupies one slot, while multiple copies of the same item can stack together.
+- Additional slots can be purchased with gold.
+- Cost should rise with bag size, making expansion a meaningful long-term gold sink without frustrating the early game.
+- Later expansions should also require specific resources, potentially from different skills.
+- Resource requirements should become more demanding as capacity grows.
+- Starting capacity, expansion increments, gold curve and resource requirements are undecided.
 
-For example, Loose Notes occupy one slot whether the player owns one copy or fifty copies. Earth Dust, Air Breath and Water Droplet are different item types and each occupies its own slot.
-
-Different elements and tiers remain separate items. Research materials, elemental essences and Catalysts also occupy their own item slots.
-
-Gold and Mana are tracked as currencies or resource counters and do not occupy normal bag slots.
-
-### 10.2 Expanding the bag
-
-The player can purchase additional bag slots using gold.
-
-The gold cost should increase as the bag becomes larger. The scaling needs to be balanced so that inventory expansion remains a meaningful long-term gold sink without making early progression unnecessarily frustrating.
-
-At some point, expanding the bag should also require specific resources in addition to gold. These requirements act as progression gates: the player may not yet have the required resource, so they must develop the relevant skill before purchasing further capacity.
-
-The resource requirements should become more demanding as the player expands the bag. They may draw from different skills as the game grows.
-
-The exact starting capacity, expansion increments, gold cost curve and resource requirements are all undecided.
-
-### 10.3 Item management
+### 14.3 Item management and full inventory
 
 The bag should support:
 
-- Viewing item quantities.
-- Sorting and filtering items by category, skill, element and tier.
-- Selling individual items or selected quantities.
-- Selling multiple items at once.
-- Seeing the current sale value of each item.
-- Seeing the total value of a selected quantity.
+- Item quantities.
+- Sorting and filtering by category, skill, element and tier.
+- Selling one item, selected quantities or multiple items.
+- Displaying each item's current sale value and the total value of a selected quantity.
 
-The player should not silently lose resources when the bag is full.
+The player must not silently lose resources when the bag is full.
 
-Production should either pause when there is no room or use a clearly visible overflow system. The preferred behavior is to prevent resource loss and clearly indicate why production has stopped.
-
----
-
-## 11. Selling Items and Resource Values
-
-**Every physical item should be sellable.** There should not be a category of resources that is permanently excluded from selling simply because it is used in a recipe or progression requirement.
-
-This includes Research materials, elemental essences, Catalysts and resources introduced by future skills.
-
-Selling is a player decision. A resource may be useful later, but the player can choose to sell it now when gold is more important. The player should be able to weigh immediate income against retaining materials for unlocks, recipes and future systems.
-
-### 11.1 Base selling values and progression
-
-Every item has its own base selling value.
-
-The sale value shown to the player can be increased by bonuses from skills, milestones and future upgrades. These bonuses should be applied to the item's base value according to the general bonus-stacking rules in Section 8.5.
-
-Better and higher-tier resources should generally be worth more than the simpler resources that came before them. The increase should make sense for the resource's place in progression: an advanced, potent material should normally be more valuable than a common introductory material.
-
-The base value is associated with the individual item, not determined solely by its tier. Different resources of the same tier may have different base values, especially when they come from different skills or require different inputs to produce.
-
-Later skills are expected to introduce resources that sell for substantially more gold than the materials from the first three skills. This is an important part of the long-term economy and should allow later progression to generate much larger amounts of money.
-
-Exact base selling values are not finalized and should be balanced alongside production rates, resource requirements, unlock costs and the value of later skills.
-
-### 11.2 Role of selling in early and later progression
-
-The first three skills — Research, Spellcraft and Transmutation — are primarily about progression, unlocking systems and producing materials for other activities.
-
-Their resources should have sale values, and selling them should help when the player needs gold. However, the initial three tabs are not intended to be the game's major money-making systems.
-
-The player will often have a reason to keep early resources for skill unlocks, Transmutation recipes and future requirements. Selling most of the output should be possible, but it should be a trade-off rather than the only obvious way to play.
-
-Later skills are expected to change the economic direction of the game. They should introduce more valuable resources and stronger opportunities to generate gold, making the economy expand as the player reaches more advanced content.
+- Preferred behavior: pause production when there is no room and clearly explain why.
+- A visible overflow system is an alternative, but resources should not be silently discarded.
+- Final full-inventory handling is undecided.
 
 ---
 
-## 12. Overall Game Loop
+## 15. Selling Items and Resource Values
 
-The first three skills establish the initial progression loop:
+**Every physical item should be sellable**, including Research materials, elemental essences, Catalysts, companion containers and resources from future skills.
 
-| Skill or system | Purpose | Main outputs or role |
+### 15.1 Base values and modifiers
+
+- Every item has its own base sale value.
+- Skills, milestones and future upgrades may increase sale value.
+- Apply sale-value bonuses using the additive stacking rule unless a specific exception is defined.
+- Higher-tier and more advanced resources should generally be worth more than introductory materials.
+- Value is based on the individual item, not tier alone; items in the same tier can have different values based on their source, purpose and production requirements.
+- Later skills should introduce resources worth substantially more than early-game materials.
+- Exact base values and sale modifiers remain undecided and must be balanced against production, inputs, unlocks and later economy.
+
+### 15.2 Selling as a choice
+
+- Selling converts resources into gold for unlocks and expansion.
+- Keeping resources preserves them for recipes, unlocks and future systems.
+- Early-game materials should be useful enough that selling everything is not always the obvious choice.
+- The first three skills are not intended to be the game's main income sources; later skills should expand earning potential.
+
+---
+
+## 16. Overall Progression and Game Loop
+
+### 16.1 Initial resource loop
+
+| Skill / system | Purpose | Main output or role |
 |---|---|---|
-| Research | Develop general magical knowledge | Research materials |
-| Spellcraft | Learn and cast Earth, Air and Water spells | Elemental essences; uses Mana |
-| Transmutation | Combine research materials and elemental essences | Catalysts |
-| Bag | Store and manage resources | Inventory capacity |
-| Selling | Turn items into gold | Gold for unlocks and expansion |
+| Research | General magical study | Research materials |
+| Spellcraft | Earth, Air and Water spells | Elemental essences; consumes Mana |
+| Transmutation | Refine earlier resources | Elemental Catalysts |
+| Bag | Store and manage items | Inventory capacity |
+| Selling | Convert items into currency | Gold for unlocks and expansion |
 
-These three initial tabs are the **tip of the iceberg**, not the complete game. They are deliberately straightforward and should introduce the fundamental systems without trying to showcase every type of progression the game will eventually contain.
+A possible initial progression:
 
-### 12.1 Starting progression
+1. Start with Research I and produce Loose Notes.
+2. Sell some materials for gold while retaining resources likely to be useful.
+3. Unlock and develop additional Research actions.
+4. Gather Research materials and gold to unlock Spellcraft.
+5. Cast Earth, Air and Water spells using Mana; produce elemental essences.
+6. Retain or sell essences as needed.
+7. Gather Research materials, elemental essences and gold to unlock Transmutation.
+8. Combine earlier resources into Catalysts; retain or sell the output.
+9. Unlock Exploration after Transmutation using its eventual resource and gold requirements.
+10. Explore the starting areas and expand the map; develop individual area levels and discover resources or companion containers.
+11. Unlock and start passive Combat when its requirements are met; select an unlocked Exploration area and let Combat run independently.
+12. Hatch elemental containers to collect Companions.
+13. Continue developing whichever actions, areas and systems best serve the player's current goals.
 
-The player begins with Research available and Research I unlocked.
+This is an example of how systems can connect, not a mandatory sequence. Exact Combat and Companion unlock timing remains undecided.
 
-A possible early progression is:
+### 16.2 Open-ended progression
 
-1. Perform Research I to produce Loose Notes.
-2. Sell some Loose Notes when gold is needed, while retaining materials that may be useful later.
-3. Unlock additional Research actions with gold and develop their independent levels.
-4. Gather the Research materials required to unlock Spellcraft.
-5. Spend gold and the required Research materials to unlock Spellcraft.
-6. Use Mana to cast the available Earth, Air and Water spells.
-7. Produce elemental essences and decide which ones to retain or sell.
-8. Gather the Research materials and elemental essences required to unlock Transmutation.
-9. Unlock Transmutation and begin combining resources from the earlier skills.
-10. Produce Catalysts, retain them for future uses or sell them when gold is needed.
-11. Continue developing whichever actions and skills are most useful for the player's current goals.
+- Players can focus on one skill, spread progress across several skills, gather materials, work toward milestones or unlock new systems.
+- Reaching action level 100 is not a prerequisite for moving forward.
+- A player could be roughly 50% through the available game progression without having any action at level 100.
+- Action level 100 is a long-term goal; meaningful progress should be possible through many systems without maxing every action.
+- Players should be encouraged to change focus: develop Research, build elemental essence supplies through Spellcraft, use them in Transmutation, then explore or work on other systems.
 
-This is an example of how the initial skills connect, not a mandatory order in which every player must complete each step before doing anything else.
+### 16.3 Interconnected resources and progression
 
-### 12.2 Open-ended progression
+- Research materials support Spellcraft unlocks and Transmutation recipes.
+- Spellcraft essences support Transmutation and potentially later systems.
+- Transmutation creates refined materials for future progression.
+- Exploration provides area resources and elemental companion containers.
+- Exploration area levels improve Combat output, Combat XP and artifact chance in their respective areas.
+- Combat produces unidentified objects and chances at area-specific artifacts.
+- Companions come from hatching elemental containers found through Exploration.
+- Skill milestones can improve other skills or global systems.
+- Selling resources funds unlocks and bag expansion.
 
-The game is **not intended to have a single linear progression path**.
+The general progression principle is **simple things leading to more complicated things**. Early activities and resources should be easy to understand; later skills should introduce greater potency, deeper interactions and larger economic opportunities. Not every skill must be a direct upgrade of the previous one.
 
-The player should be free to decide which area of the game to develop at a given time. They may focus on one skill, spread their effort across several skills, improve selected actions for their bonuses, gather materials for an unlock or work toward a particular milestone.
+### 16.4 Long-term and offline play
 
-Progression and completion are not the same thing as having an action at level 100.
-
-For example, a player could have completed roughly 50% of the game's available progression while not having a single action at level 100. This is expected, especially if the player has chosen to unlock many systems, pursue a variety of milestones or use a setup that is not optimized for a particular action.
-
-The action level-100 goal is deliberately long-term. The player should be able to make meaningful progress through many different systems without first maxing out every action in the current skill.
-
-The game should encourage experimentation and changing focus. A player may decide to develop Research for a needed resource, switch to Spellcraft to build up an elemental essence supply, and then return to Transmutation to use those materials.
-
-### 12.3 Interconnected skills and resource progression
-
-Each skill should connect to one or more other skills through resources, unlocks and bonuses.
-
-Examples in the initial game:
-
-- Research produces materials used by Spellcraft unlock requirements and Transmutation recipes.
-- Spellcraft produces elemental essences used by Transmutation and potentially future skills.
-- Spellcraft also develops knowledge of spells and the three Primary Elements.
-- Transmutation combines earlier resources into more refined materials.
-- Skill milestones can create bonuses that improve actions in other skills.
-- Selling resources provides gold for unlocks and inventory expansion.
-
-The resource progression should follow the principle of **simple things leading to more complicated things**.
-
-Early actions produce common, simple and relatively weak materials. Later actions produce increasingly refined, potent and valuable resources. Each new skill should build on what the player has already learned or produced, while also introducing its own new mechanics.
-
-This does not mean every skill must be a direct upgrade of the previous one. The connections should create choices and useful dependencies while leaving the player free to choose their preferred progression focus.
-
-### 12.4 Long-term and offline progression
-
-The game should provide meaningful progress over both active and offline play.
-
-During a long offline period, the active action and eligible automated systems should continue to produce resources and action experience. Those completions also contribute toward skill development and milestones.
-
-When the player returns, they may have accumulated a substantial amount of one resource, made considerable progress in a skill, and earned a large potential amount of gold by selling the output.
-
-The player should then decide how to use that progress: keep resources for other skills, sell them for gold, unlock new actions, expand the bag or focus on a different progression path.
-
-As the game grows, additional forms of automation and passive progression can reduce the need to manually operate every action.
+- Active actions and eligible passive/automated systems should make meaningful progress while the player is away.
+- Completed actions contribute resources, action XP, skill progress and milestones.
+- Mana regeneration and passive Combat should work independently of the selected active action, subject to final offline rules.
+- On return, players decide whether to keep resources, sell them, unlock actions, expand inventory or change focus.
+- Additional automation should gradually reduce the need to manually operate every system.
 
 ---
 
-## 13. Design Principles
+## 17. Design Principles
 
-The following principles should guide future development:
-
-- **Open-ended progression:** Players choose which skills, actions and systems to focus on. The game is not a strict sequence of actions that must each reach level 100 before the player can move forward.
-- **Independent action levels:** Every action has its own level and experience progression. Performing one action does not directly level another action.
-- **Derived skill levels:** Every skill has its own level from 1 to 100, derived from the progression of all actions within that skill. Reaching skill level 100 requires every action in that skill to reach level 100.
-- **Different progression scalars:** Skills can have different numbers of actions and their own skill and action experience scaling. Individual actions also have tier-dependent scalars.
-- **Meaningful levels:** Action levels improve their own actions and can award independent action milestones. Skill levels can provide per-level passive benefits and separate skill milestones.
-- **Independent action and skill milestones:** Each action has its own milestone track, separate from its skill's milestone track. Action milestones affect the action that reaches them; skill milestones can affect their own skill, another skill, all skills or a unique system.
-- **Additive bonuses:** Bonuses from different sources stack additively by default. Exceptions must be explicitly defined.
-- **Distinct Primary Elements:** Earth, Air and Water have separate identities, spells and elemental resources.
-- **Aspects are future-facing:** The possible invoke/channel and run-based Aspect system is only a draft concept and is not part of the initial implementation.
-- **Mana supports Spellcraft:** Spells require Mana, Mana regenerates passively, and Spellcraft skill levels may increase maximum Mana.
-- **Resources matter:** Every resource should have a potential purpose in another skill, an unlock, a recipe or a future system.
-- **Everything is sellable:** Every physical item has a base sale value. Selling is a choice between immediate gold and retaining resources for later.
-- **Simple to complex:** Early resources and activities should be straightforward. Later skills should introduce more potent resources, deeper interactions and larger economic opportunities.
-- **Offline progress is substantial:** Time away from the game should continue to produce meaningful progress in eligible actions and automated systems.
-- **Automation can evolve:** One active action is the initial operating model, not an unchangeable restriction on future systems.
-- **Expandable structure:** New skills, actions, tiers, resources, bonuses and mechanics should be possible without rewriting the foundations of the progression system.
+- **Open-ended progression:** Players choose what to develop; no rigid action-level-100 gate.
+- **Independent action levels:** Each action has its own XP and level progression.
+- **Derived skill levels:** Skill levels reflect all actions in the skill; level 100 requires every action at level 100.
+- **Different progression curves:** Skills can have different action counts and skill scalars; actions also have tier scalars.
+- **Meaningful levels:** Action levels improve their actions; skill levels may provide passive effects.
+- **Separate milestone tracks:** Action milestones belong to individual actions; skill milestones belong to the overall skill.
+- **Additive bonuses:** Same-type bonuses from different sources add together by default.
+- **Distinct Primary Elements:** Earth, Air and Water have separate identities, spells, resources and companion types.
+- **Aspects are future-facing:** The potential run-based invoke/channel concept is not part of initial implementation.
+- **Mana supports Spellcraft:** Spells consume Mana; Mana regenerates passively; Spellcraft levels may increase maximum Mana.
+- **Exploration is active:** Areas are individual actions on a shared hex map.
+- **Combat is passive:** It continues in a selected unlocked Exploration area independently of the active action.
+- **Companions come from containers:** Elemental containers discovered through Exploration are hatched to obtain companions.
+- **Resources matter:** Resources connect skills through recipes, unlocks and future uses.
+- **Everything is sellable:** Every physical item has an individual sale value; selling trades future utility for immediate gold.
+- **Simple to complex:** Early content is straightforward; later systems add more powerful resources and interactions.
+- **Substantial offline progress:** Eligible active and passive systems continue while the player is away.
+- **Automation can evolve:** One active action is the starting model, not a permanent restriction.
+- **Expandable foundations:** New skills, actions, areas, tiers, resources, companions and mechanics should fit without rewriting the core systems.
 
 ---
 
-## 14. Intentionally Undecided
+## 18. Intentionally Undecided
 
-The following details remain open for balancing, implementation or future design:
+The following details remain open for design, balancing or implementation:
 
-- The exact formula that converts action progression into a skill level.
-- The experience curve and scalar for each skill.
-- The exact tier-based experience scalar for every action.
-- The final action count for skills other than the current eight Research actions.
-- The final spell names and which spell tiers will be implemented.
-- The final names and descriptions of higher-tier elemental essences.
-- The exact Mana costs, starting capacity, regeneration rate and maximum-Mana increase per Spellcraft level.
-- Whether skill-level passive bonuses will be used by every skill and what each skill's bonus will be.
-- The exact recurring individual action-level bonus values after playtesting.
-- The exact action milestone rewards and their level thresholds.
-- The milestone rewards for each skill at levels 10 through 100.
-- Which milestones will affect their own skill, another skill, all skills or a unique system.
-- The final Transmutation action names, resource names, recipes and input quantities.
-- The final unlock requirements and gold prices for actions and skills.
-- The final bag starting capacity, gold expansion curve and additional resource requirements.
-- The base selling value of every item and the bonuses that increase sale values.
-- How fractional resource output is handled internally.
-- The exact offline progress rules, any offline cap and full-inventory behavior.
-- Which actions or systems eventually become automatic or passive.
-- Whether later systems allow more than one actively selected action to progress at once.
-- Future skills, resource categories and their connections to the initial three skills.
-- Whether the future Aspect concept becomes a prestige or run-based system, how many Aspects exist and how their experience and bonuses work.
-- Whether a separate elemental mastery system is ever introduced.
+### Progression and skills
+- The exact formula converting action progression into skill XP and skill level.
+- Skill-specific XP scalars and exact action-tier XP scalars.
+- Final action counts for skills other than the current eight Research actions.
+- Which skills use per-level passive bonuses and the exact effects.
+- Whether/how passive skills such as Combat use a distinct skill-level progression model.
 
-The initial implementation should establish the three Primary Elements, the first three skills, action and skill progression, Mana-based Spellcraft, resource production, resource-based skill unlocks, inventory expansion, selling and meaningful offline gains.
+### Research, Spellcraft and Transmutation
+- Final spell names and which spell tiers will be implemented.
+- Final descriptions and names for higher-tier essences.
+- Mana starting capacity, regeneration rate, spell costs and maximum-Mana gain per Spellcraft level.
+- Final Transmutation action names, Catalyst tier names, recipes, quantities and input combinations.
+- Final action unlock prices and skill unlock resource quantities.
 
-These foundations should remain simple enough to understand while allowing the game to grow into a much larger and more interconnected progression system.
+### Exploration, Combat and Companions
+- Exploration area count, map layout beyond the starting tiles, later area names, connections and unlock conditions.
+- Exploration action durations, XP, resource tables and output values.
+- Area milestone thresholds and rewards, including exact container chance bonuses.
+- The exact Water companion-container type and name.
+- Companion variety, rarity, hatching requirements, timing and duplicate handling.
+- Companion levels, growth, upgrades, bonuses and use/equipment model.
+- Companion interface placement and any separate unlock conditions.
+- Combat unlock requirements and timing.
+- Combat's XP/progression model, formulas, encounters, output, reward tables and identification system.
+- Unidentified object types, identification costs and artifact chances.
+- The artifact associated with each area and its exact effects or use.
+- Whether containers or companions have acquisition methods beyond the current Exploration concept.
+
+### Economy, inventory and systems
+- Exact unlock costs and gold curves.
+- Bag starting capacity, expansion increments, gold scaling and resource requirements.
+- Base sale value of each item and sale-value bonuses.
+- How fractional resource output is handled internally; proposed handling is fractional carry-over or chance-based additional output, not simply discarding fractions.
+- Exact offline rules, offline cap and full-inventory behavior.
+- Which actions become automatic or passive.
+- Whether future systems permit more than one active action at a time.
+- Future skills, resource categories and their connections to current skills.
+- Whether the future Aspect concept becomes a prestige/run system, its number of Aspects, invocation, XP and bonuses.
+- Whether a separate elemental mastery system is introduced.
+
+### Initial implementation priorities
+
+The initial foundation should establish:
+
+- Earth, Air and Water as the Primary Elements.
+- Research, Spellcraft and Transmutation with their initial action/resource structure.
+- Independent action progression and derived skill levels.
+- Spellcraft's Mana-based casting.
+- Transmutation's resource recipes.
+- Resource-based skill unlocks.
+- Inventory expansion and selling.
+- Meaningful offline gains.
+
+Exploration, passive Combat and Companions are planned additions to the broader progression structure. Their defined high-level behavior should be preserved, while the exact formulas, content and balancing listed above remain open.

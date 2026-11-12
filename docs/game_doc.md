@@ -395,7 +395,7 @@ Area milestones occur at selected action-level intervals (every X levels), like 
 - Container types reflect the element:
   - **Earth:** Geodes, containing Earth companions.
   - **Air:** Eggs, containing Air companions.
-  - **Water:** **Tide Shells** (working name), containing Water companions.
+  - **Water:** **Shells**, containing Water companions.
 - Containers are obtained through Exploration and are later hatched to obtain companions.
 - Area action milestones may increase the chance to find containers.
 - Not every area needs its own unique companion or unique container type.
@@ -452,7 +452,7 @@ Companions are a collection system connected to Exploration. The working name fo
 - Each container has a minimum required Unveiling skill level based on its source area and map progression; early-area containers require a lower level than late-game containers.
 - Earth Geodes contain Earth companions.
 - Air Eggs contain Air companions.
-- The Water container is currently called **Tide Shells**; this working name and its design can still be refined.
+- Water Shells contain Water companions.
 - Containers are tied to their corresponding elemental type.
 - Not every Exploration area needs a unique companion or a unique container.
 
@@ -460,7 +460,7 @@ Companions are a collection system connected to Exploration. The working name fo
 
 The following are intentionally open:
 
-- Whether **Tide Shells** remains the final Water container name and its exact design.
+- The exact appearance and design of Water Shells.
 - The number and variety of companions.
 - Hatching requirements, timing and duplicate handling.
 - Whether companions have levels, rarity, growth, upgrades or other progression.
@@ -506,7 +506,7 @@ Every action follows the standard independent level 1–100 progression and cont
 
 - Unlocking Unveiling also unlocks **Unveil Artifact or Companion** immediately, alongside the first Material Destruction action, **Destroy Research Books**.
 - **Unveil Artifact or Companion** can process both:
-  - Companion containers (Geodes, Eggs and Tide Shells), opening them to reveal a companion.
+  - Companion containers (Geodes, Eggs and Shells), opening them to reveal a companion.
   - Unidentified objects obtained through Combat, revealing a chance at the artifact from their source area and potentially other valuable, sellable resources.
 - Each container or unidentified object has a minimum required **overall Unveiling skill level**. The player cannot process it until the skill reaches that requirement.
 - Requirements are assigned according to the item's source area and its place in map progression: early-area finds have low requirements; late-game finds have much higher requirements.

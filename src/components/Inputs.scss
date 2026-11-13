@@ -1,0 +1,426 @@
+/* Input and Label Component Styles */
+$button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling;
+$skill-colors: research, spellcraft, transmutation, exploration, combat, unveiling;
+
+.input-label,
+.label-number-min, .label-range-min,
+.label-number-max, .label-range-max,
+.label-checkbox-text {
+    position: relative;
+    padding: 2px;
+    padding-inline: 4px;
+    border-radius: 8px;
+    margin-inline: auto;
+
+    @each $variant in $button-colors {
+        &[data-variant="#{$variant}"] {
+            border: 1px solid var(--button-#{$variant});
+        }
+    }
+
+    @each $variant in $skill-colors {
+        &[data-variant="#{$variant}"] {
+            border: 1px solid var(--skill-#{$variant});
+        }
+    }
+}
+
+.input-label {
+    z-index: 2;
+    width: fit-content;
+}
+
+.label-number-min, .label-range-min {
+    z-index: 2;
+    color: white;
+}
+
+.label-number-max, .label-range-max {
+    z-index: 2;
+    color: white;
+}
+
+.label-number-min, .label-range-min,
+.label-number-max, .label-range-max {
+    height: 20px;
+    padding-bottom: 19px;
+    transform: translateY(2px);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.label-checkbox-text {
+    z-index: 2;
+    font-family: var(--font-heading);
+    padding-top: 2px;
+    transform: translateY(-1.5px);
+
+    &.label-checkbox-text-disabled {
+        opacity: 0.6;
+    }
+}
+
+.input {
+    font-family: var(--font-heading);
+    padding: 4px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    outline-width: 0;
+    outline-color: transparent;
+    outline-style: solid;
+    outline-offset: 1px;
+    background: transparent;
+    transition: outline 0.15s ease-out, outline-offset 0.15s ease-out;
+
+    &.input-text,
+    &.input-number {
+        @each $variant in $button-colors {
+            &[data-variant="#{$variant}"] {
+                &:hover, &:focus {
+                    outline-width: 100vmax;
+                    outline-color: var(--button-#{$variant});
+                }
+            }
+        }
+
+        @each $variant in $skill-colors {
+            &[data-variant="#{$variant}"] {
+                &:hover, &:focus {
+                    outline: 100vmax solid var(--skill-#{$variant});
+                }
+            }
+        }
+    }
+
+    &.input-range {
+        @each $variant in $button-colors {
+            &[data-variant="#{$variant}"] {
+                &:hover {
+                    outline-offset: 2px;
+                    border-radius: 4px;
+                    outline: 100vmax solid var(--button-#{$variant});
+                }
+            }
+        }
+
+        @each $variant in $skill-colors {
+            &[data-variant="#{$variant}"] {
+                &:hover {
+                    outline-offset: 2px;
+                    border-radius: 4px;
+                    outline: 100vmax solid var(--skill-#{$variant});
+                }
+            }
+        }
+    }
+
+    &.input-checkbox,
+    &.input-radio {
+        outline-offset: 0;
+        @each $variant in $button-colors {
+            &[data-variant="#{$variant}"] {
+                &:hover {
+                    outline: 100vmax solid var(--button-#{$variant});
+                }
+            }
+        }
+
+        @each $variant in $skill-colors {
+            &[data-variant="#{$variant}"] {
+                &:hover {
+                    outline: 100vmax solid var(--skill-#{$variant});
+                }
+            }
+        }
+    }
+
+    &.input-number {
+        appearance: textfield;
+        -moz-appearance: textfield;
+
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    }
+
+    &.input-range {
+        appearance: none;
+        -webkit-appearance: none;
+
+        // Chrome, Edge and Safari track
+        &::-webkit-slider-runnable-track,
+        &::-moz-range-track {
+            height: 20px;
+            background: var(--paper-3);
+            border: 1px solid var(--paper-border);
+            transition: background 0.15s ease-out;
+        }
+
+        @each $variant in $button-colors {
+            &[data-variant="#{$variant}"] {
+                &::-webkit-slider-runnable-track,
+                &::-moz-range-track {
+                    background: var(--skill-#{$variant}-active);
+                }
+
+                &:hover {
+                    &::-webkit-slider-runnable-track,
+                    &::-moz-range-track {
+                        background: var(--skill-#{$variant});
+                    }
+
+                    &:active {
+                        &::-webkit-slider-runnable-track,
+                        &::-moz-range-track {
+                            background: var(--skill-#{$variant}-border);
+                        }
+                    }
+                }
+            }
+        }
+
+        @each $variant in $skill-colors {
+            &[data-variant="#{$variant}"] {
+                &::-webkit-slider-runnable-track,
+                &::-moz-range-track {
+                    background: var(--skill-#{$variant}-active);
+                }
+
+                &:hover {
+                    &::-webkit-slider-runnable-track,
+                    &::-moz-range-track {
+                        background: var(--skill-#{$variant});
+                    }
+
+                    &:active {
+                        &::-webkit-slider-runnable-track,
+                        &::-moz-range-track {
+                            background: var(--skill-#{$variant}-border);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Chrome, Edge and Safari thumb
+        &::-webkit-slider-thumb,
+        &::-moz-range-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+
+            width: 7px;
+            height: 24px;
+            margin-top: -6px;
+
+            background: var(--button-primary);
+            border: 2px solid var(--button-primary-border);
+            border-radius: 6px;
+
+            transition: background 0.15s ease-out, width 0.15s ease-out, border-radius 0.15s ease-out;
+        }
+
+        @each $variant in $button-colors {
+            &[data-variant="#{$variant}"] {
+                &::-webkit-slider-thumb,
+                &::-moz-range-thumb {
+                    background: var(--paper-0);
+                    border-color: var(--skill-#{$variant}-border);
+                }
+
+                &:hover {
+                    &::-webkit-slider-thumb,
+                    &::-moz-range-thumb {
+                        background: var(--paper-3);
+                    }
+                }
+
+                &:active {
+                    &::-webkit-slider-thumb,
+                    &::-moz-range-thumb {
+                        background: rgb(0, 0, 0);
+                        border-color: white;
+                    }
+                }
+            }
+        }
+
+        @each $variant in $skill-colors {
+            &[data-variant="#{$variant}"] {
+                &::-webkit-slider-thumb,
+                &::-moz-range-thumb {
+                    background: var(--paper-0);
+                    border-color: var(--skill-#{$variant}-border);
+                }
+
+                &:hover {
+                    &::-webkit-slider-thumb,
+                    &::-moz-range-thumb {
+                        background: var(--paper-3);
+                    }
+                }
+
+                &:active {
+                    &::-webkit-slider-thumb,
+                    &::-moz-range-thumb {
+                        background: rgb(0, 0, 0);
+                        border-color: white;
+                    }
+                }
+            }
+        }
+    }
+
+    &.input-radio,
+    &.input-checkbox {
+        appearance: none;
+        -webkit-appearance: none;
+
+        display: inline-grid;
+        place-content: center;
+        flex-shrink: 0;
+
+        width: 25px;
+        height: 25px;
+        margin-left: 1px;
+        margin-bottom: 3px;
+        padding: 0;
+
+        background: var(--paper-0);
+        border: 1px solid var(--paper-border);
+        border-radius: 6px;
+
+        cursor: pointer;
+
+        @each $variant in $button-colors {
+            &[data-variant="#{$variant}"] {
+                border-color: var(--button-#{$variant});
+
+                &:hover:not(:disabled) {
+                    border-color: var(--button-#{$variant}-hover);
+
+                    &:active {
+                        border-color: var(--button-#{$variant}-border);
+                    }
+                }
+            }
+        }
+
+        @each $variant in $skill-colors {
+            &[data-variant="#{$variant}"] {
+                border-color: var(--skill-#{$variant});
+
+                &:hover:not(:disabled) {
+                    border-color: var(--skill-#{$variant}-hover);
+
+                    &:active {
+                        border-color: var(--skill-#{$variant}-border);
+                    }
+                }
+            }
+        }
+
+        // Checkmark
+        &::before {
+            content: "";
+            width: 11px;
+            height: 6px;
+
+            border: solid white;
+            border-width: 0 0 2px 2px;
+
+            transform: rotate(-45deg) scale(0.0001);
+            transition: transform 0.15s ease-out;
+        }
+
+        // Checked state
+        &:checked {
+            transition: background 0.15s ease-out, outline 0.15s ease-out;
+            &::before {
+                transform: translate(0, -1px) rotate(-45deg) scale(1);
+            }
+
+            @each $variant in $button-colors {
+                &[data-variant="#{$variant}"] {
+                    background: var(--button-#{$variant});
+
+                    &:hover:not(:disabled) {
+                        background: var(--button-#{$variant}-hover);
+
+                        &:active {
+                            background: var(--button-#{$variant}-border);
+                        }
+                    }
+                }
+            }
+
+            @each $variant in $skill-colors {
+                &[data-variant="#{$variant}"] {
+                    background: var(--skill-#{$variant});
+
+                    &:hover:not(:disabled) {
+                        background: var(--skill-#{$variant}-hover);
+
+                        &:active {
+                            background: var(--skill-#{$variant}-border);
+                        }
+                    }
+                }
+            }
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--button-primary-border);
+            outline-offset: 3px;
+        }
+
+        &:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.input-range-wrapper {
+    position: relative;
+    width: 100%;
+
+    &:hover {
+        .input-range-tooltip {
+            transform: translate(-50%);
+        }
+    }
+}
+
+.input-paper-wrapper {
+    margin-top: 2px;
+}
+
+.input-range-tooltip {
+    z-index: 1000;
+    transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+    position: absolute;
+    bottom: 100%;
+    width: min-content;
+
+    transform: translate(-50%, 31px);
+
+    padding: 5px 7px 3px;
+    height: 24px;
+    border-radius: 4px;
+
+    background: var(--paper-3);
+    border: 1px solid inherit;
+
+    font-size: 13px;
+    white-space: nowrap;
+
+    pointer-events: none;
+
+    > * {
+        transform: translateY(-7px);
+    }
+}

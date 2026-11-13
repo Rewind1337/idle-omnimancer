@@ -1,0 +1,120 @@
+/* Progress Component Styles */
+$button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling;
+$skill-colors: research, spellcraft, transmutation, exploration, combat, unveiling;
+
+.progress-wrapper {
+    &[data-corners="sharp"] {
+        border-radius: 0;
+    }
+
+    &[data-corners="rounded"] {
+        border-radius: 8px;
+    }
+
+    &[data-size="small"] {
+        height: 20px;
+    }
+
+    &[data-size="medium"] {
+        height: 40px;
+    }
+
+    &[data-size="large"] {
+        height: 60px;
+    }
+
+    @each $variant in $button-colors {
+        &[data-variant="#{$variant}"] {
+            &:hover {
+                filter: brightness(110%);
+            }
+        }
+    }
+}
+
+.progress-bar {
+    border-top: 0;
+    border-left: 0;
+    border-bottom: 0;
+    height: 100%;
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+    border-radius: inherit;
+
+    &[data-animated="true"] {
+        @each $variant in $button-colors {
+            &[data-variant="#{$variant}"] {
+                background-color: var(--button-#{$variant});
+                outline-color: var(--button-#{$variant}-border);
+                background-image: repeating-linear-gradient(
+                -62.5deg,
+                var(--button-#{$variant}-hover) 0 12px,
+                var(--button-#{$variant}-border) 12px 19px,
+                var(--button-#{$variant}-hover) 19px 31px
+                );
+                background-size: 104.5px 100%;
+
+                animation: progress-bar-effect 2s linear infinite;
+
+                &:hover {
+                    filter: brightness(133%);
+                }
+            }
+        }
+
+        @each $variant in $skill-colors {
+            &[data-variant="#{$variant}"] {
+                background-color: var(--skill-#{$variant});
+                outline-color: var(--skill-#{$variant}-border);
+                background-image: repeating-linear-gradient(
+                -62.5deg,
+                var(--skill-#{$variant}-hover) 0 12px,
+                var(--skill-#{$variant}-border) 12px 19px,
+                var(--skill-#{$variant}-active) 19px 31px
+                );
+                background-size: 104.5px 100%;
+
+                animation: progress-bar-effect 2s linear infinite;
+
+                &:hover {
+                    filter: brightness(133%);
+                }
+            }
+        }
+    }
+
+    &[data-animated="false"] {
+        @each $variant in $button-colors {
+            &[data-variant="#{$variant}"] {
+                background-color: var(--button-#{$variant}-hover);
+                outline-color: var(--button-#{$variant}-border);
+
+                &:hover {
+                    filter: brightness(133%);
+                }
+            }
+        }
+
+        @each $variant in $skill-colors {
+            &[data-variant="#{$variant}"] {
+                background-color: var(--skill-#{$variant}-hover);
+                outline-color: var(--skill-#{$variant}-border);
+
+                &:hover {
+                    filter: brightness(133%);
+                }
+            }
+        }
+    }
+}
+
+@keyframes progress-bar-effect {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 104.5px 0;
+    }
+}

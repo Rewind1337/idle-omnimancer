@@ -7,16 +7,18 @@ export function Paper({
   children,
   layer = 0,
   className = '',
+  transparent = false,
   variant = null,
   interactive = false,
   selected = false,
+  style = {},
   padding = 8,
   ...props
 }) {
   return (
     <div
-      className={cx('paper', interactive && 'paper-interactive', selected && 'is-selected', className)}
-      style={{padding: padding}}
+      className={cx('paper', transparent && 'paper-transparent', interactive && 'paper-interactive', selected && 'is-selected', className)}
+      style={{padding: padding,...style}}
       data-variant={variant}
       data-layer={layer}
       {...props}

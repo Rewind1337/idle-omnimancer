@@ -169,7 +169,7 @@ export function ResearchPage() {
       <Paper layer={0} variant={"research"}>
         <Flex direction="column">
           <SkillSummary text={"Research"}/>
-          <Grid>
+          <Grid columns={{small: 1, medium: 2, large: 3}}>
             {RESEARCH_ACTION_DATA.filter(action => action.level !== 0).map(action =>
               <ResearchAction key={action.id} {...action}></ResearchAction>
             )}

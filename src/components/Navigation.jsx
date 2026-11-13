@@ -24,7 +24,7 @@ export function Navigation({
     { id: 0, name: "Research", icon: <BookOpenText />, level: 1 },
     { id: 1, name: "Spellcraft", icon: <WandSparkles />, level: 1},
     { id: 2, name: "Transmutation", icon: <Scale />, level: 0},
-    { id: 3, name: "Development", icon: <Star />, variant: "death"},
+    { id: 3, name: "Development", icon: <Star />, variant: "combat"},
   ]
 
   const NAVIGATION_BUTTONS = NAVIGATION_BUTTON_DATA.map(data => (

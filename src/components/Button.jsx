@@ -9,6 +9,7 @@ const cx = (...values) => values.filter(Boolean).join(' ')
 export function Button({
   children,
   className = '',
+  transparent = false,
   variant = 'primary',
   size = 'medium',
   icon,
@@ -21,7 +22,7 @@ export function Button({
 }) {
   return (
     <button
-      className={cx('button', toggled && 'button-toggled', className)}
+      className={cx('button', transparent && 'button-transparent', toggled && 'button-toggled', className)}
       data-variant={variant}
       data-size={size}
       disabled={disabled}

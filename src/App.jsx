@@ -20,7 +20,7 @@ function ResponsivePage({
 }) {
   if (navigationPosition === "top") {
     return (
-      <Flex direction="column" className={cx('page', className)}>
+      <Flex direction="column" gap={4} className={cx('page', className)}>
         <Navigation setActivePage={setActivePage} position="top" mode={navigationMode}/>
         <ScrollArea padding={0}>
           {children}

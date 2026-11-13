@@ -1,9 +1,12 @@
 /* Paper Component Styles */
+$button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling;
+$skill-colors: research, spellcraft, transmutation, exploration, combat, unveiling;
+
 .paper {
   padding: 8px;
   border-radius: 8px;
   border: 1px solid var(--paper-border);
-  transition: background-color 0.2s ease-out;
+  transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out, transform 0.1s ease-out;
 
   * {
     border-color: inherit;
@@ -25,57 +28,38 @@
     background-color: var(--paper-3);
   }
 
-  &[data-variant="primary"] {
-    border-color: var(--button-primary);
+  &[data-layer="4"] {
+    background-color: var(--paper-4);
   }
 
-  &[data-variant="secondary"] {
-    border-color: var(--button-secondary);
+  &[data-layer="5"] {
+    background-color: var(--paper-5);
   }
 
-  &[data-variant="earth"] {
-    border-color: var(--button-earth);
+  @each $variant in $button-colors {
+    &[data-variant="#{$variant}"] {
+      border-color: var(--button-#{$variant})
+    }
   }
 
-  &[data-variant="air"] {
-    border-color: var(--button-air);
+  @each $variant in $skill-colors {
+    &[data-variant="#{$variant}"] {
+      border-color: var(--skill-#{$variant})
+    }
   }
 
-  &[data-variant="water"] {
-    border-color: var(--button-water);
-  }
-
-  &[data-variant="research"] {
-    border-color: var(--tab-research);
-  }
-
-  &[data-variant="spellcraft"] {
-    border-color: var(--tab-spellcraft);
-  }
-
-  &[data-variant="transmutation"] {
-    border-color: var(--tab-transmutation);
-  }
-
-  &[data-variant="primal"] {
-    border-color: var(--button-primal);
-  }
-
-  &[data-variant="life"] {
-    border-color: var(--button-life);
-  }
-
-  &[data-variant="death"] {
-    border-color: var(--button-death);
-  }
-
-  &[data-variant="transparent"] {
+  &.paper-transparent {
     background-color: transparent;
-    border-color: transparent;
   }
 
   &.paper-interactive:hover {
     background-color: var(--paper-hover);
-    cursor: pointer;
+    transform: translateY(-1px);
+    &[data-layer="0"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.8);}
+    &[data-layer="1"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.7);}
+    &[data-layer="2"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.6);}
+    &[data-layer="3"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.5);}
+    &[data-layer="4"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.4);}
+    &[data-layer="5"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.3);}
   }
 }

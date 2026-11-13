@@ -1,8 +1,12 @@
+/* Badge Component Styles */
+$button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling;
+$skill-colors: research, spellcraft, transmutation, exploration, combat, unveiling;
+
 .badge {
     display: grid;
     align-items: center;
     width: fit-content;
-    outline: 1px solid rgba(255, 255, 255, 0.3);
+    outline: 1px solid transparent;
     padding: 0 6px;
     transition: background-color 0.2s ease-out;
 
@@ -12,111 +16,47 @@
         height: 24px;
     }
 
-    &[data-variant="primary"] {
-        background: var(--button-primary);
+    @each $variant in $button-colors {
+        &[data-variant="#{$variant}"] {
+            background: var(--button-#{$variant});
+            outline-color: var(--button-#{$variant}-active);
 
-        &.badge-interactive:hover {
-            background-color: var(--button-primary-hover);
-            outline-color: rgba(255, 255, 255, 0.4);
-            cursor: pointer;
+            &.badge-interactive:hover {
+                background: var(--button-#{$variant}-hover);
+                cursor: pointer;
+            }
+
+            &.button-toggled {
+                background: var(--button-#{$variant}-toggled);
+                outline-color: var(--button-#{$variant}-border);
+            }
         }
     }
 
-    &[data-variant="secondary"] {
-        background: var(--button-secondary);
+    @each $variant in $skill-colors {
+        &[data-variant="#{$variant}"] {
+            background: var(--skill-#{$variant});
+            outline-color: var(--skill-#{$variant}-active);
 
-        &.badge-interactive:hover {
-            background-color: var(--button-secondary-hover);
-            cursor: pointer;
-        }
-    }
+            &.badge-interactive:hover {
+                background: var(--skill-#{$variant}-hover);
+                cursor: pointer;
+            }
 
-    &[data-variant="earth"] {
-        background: var(--button-earth);
-
-        &.badge-interactive:hover {
-            background-color: var(--button-earth-hover);
-            cursor: pointer;
-        }
-    }
-
-    &[data-variant="air"] {
-        background: var(--button-air);
-
-        &.badge-interactive:hover {
-            background-color: var(--button-air-hover);
-            cursor: pointer;
-        }
-    }
-
-    &[data-variant="water"] {
-        background: var(--button-water);
-
-        &.badge-interactive:hover {
-            background-color: var(--button-water-hover);
-            cursor: pointer;
-        }
-    }
-
-    &[data-variant="research"] {
-        background: var(--tab-research);
-
-        &.badge-interactive:hover {
-            background-color: var(--tab-research-hover);
-            cursor: pointer;
-        }
-    }
-
-    &[data-variant="spellcraft"] {
-        background: var(--tab-spellcraft);
-
-        &.badge-interactive:hover {
-            background-color: var(--tab-spellcraft-hover);
-            cursor: pointer;
-        }
-    }
-
-    &[data-variant="transmutation"] {
-        background: var(--tab-transmutation);
-
-        &.badge-interactive:hover {
-            background-color: var(--tab-transmutation-hover);
-            cursor: pointer;
-        }
-    }
-
-    &[data-variant="primal"] {
-        background: var(--button-primal);
-
-        &.badge-interactive:hover {
-            background-color: var(--button-primal-hover);
-            cursor: pointer;
-        }
-    }
-
-    &[data-variant="life"] {
-        background: var(--button-life);
-
-        &.badge-interactive:hover {
-            background-color: var(--button-life-hover);
-            cursor: pointer;
-        }
-    }
-
-    &[data-variant="death"] {
-        background: var(--button-death);
-
-        &.badge-interactive:hover {
-            background-color: var(--button-death-hover);
-            cursor: pointer;
+            &.button-toggled {
+                background: var(--skill-#{$variant}-toggled);
+                outline-color: var(--skill-#{$variant}-border);
+            }
         }
     }
 
     &[data-variant="transparent"] {
         background: transparent;
+            outline-color: rgba(255, 255, 255, 0.15);
 
         &.badge-interactive:hover {
             background-color: var(--paper-hover);
+            outline-color: rgba(255, 255, 255, 0.35);
             cursor: pointer;
         }
     }

@@ -1,4 +1,7 @@
 /* Button Component Styles */
+$button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling;
+$skill-colors: research, spellcraft, transmutation, exploration, combat, unveiling;
+
 .button {
   display: flex;
   font-family: var(--font-heading);
@@ -7,7 +10,8 @@
   gap: 8px;
   border-radius: 8px;
   background: transparent;
-  transition: background-color 0.2s ease-out;
+  outline: 1px solid transparent;
+  transition: background-color 0.15s ease-out;
   width: auto;
 
   .button-icon {
@@ -37,195 +41,168 @@
 
   * {font-family: inherit;}
 
-  &[data-variant="primary"] {
-    background: var(--button-primary);
+  @each $variant in $button-colors {
+    &[data-variant="#{$variant}"] {
+      background: var(--button-#{$variant});
+      outline-color: var(--button-#{$variant}-active);
 
-    &:not(:disabled):hover {
-      background-color: var(--button-primary-hover);
-      cursor: pointer;
+      &:not(:disabled):hover {
+          background: var(--button-#{$variant}-hover);
+          cursor: pointer;
 
-      &:active {
-        background-color: var(--button-primary-active);
+          &:active {
+              background: var(--button-#{$variant}-active);
+              outline-color: var(--button-#{$variant}-border);
+          }
       }
-    }
 
-    &.button-toggled {
-      background: var(--button-primary-toggled);
+      &.button-toggled {
+        outline-color: var(--button-#{$variant}-border);
+        outline-width: 3px;
+        background-image: repeating-linear-gradient(
+          -36.5deg,
+          var(--button-#{$variant}) 0 12px,
+          var(--button-#{$variant}-border) 12px 19px,
+          var(--button-#{$variant}) 19px 31px
+        );
+        background-size: 104.5px 100%;
+
+        animation: button-toggle-effect 1s linear infinite;
+
+        &:hover {
+          background-image: repeating-linear-gradient(
+            -36.5deg,
+            var(--button-#{$variant}-hover) 0 12px,
+            var(--button-#{$variant}-border) 12px 19px,
+            var(--button-#{$variant}-hover) 19px 31px
+          );
+          background-size: 104.5px 100%;
+
+          &:active {
+            &:hover {
+              background-image: repeating-linear-gradient(
+                -36.5deg,
+                var(--button-#{$variant}-active) 0 12px,
+                var(--button-#{$variant}-border) 12px 19px,
+                var(--button-#{$variant}-active) 19px 31px
+              );
+            background-size: 104.5px 100%;
+            }
+          }
+        }
+      }
     }
   }
 
-  &[data-variant="secondary"] {
-    background: var(--button-secondary);
+  @each $variant in $skill-colors {
+    &[data-variant="#{$variant}"] {
+      background: var(--skill-#{$variant});
+      outline-color: var(--skill-#{$variant}-active);
 
-    &:not(:disabled):hover {
-      background-color: var(--button-secondary-hover);
-      cursor: pointer;
+      &:not(:disabled):hover {
+          background: var(--skill-#{$variant}-hover);
+          cursor: pointer;
 
-      &:active {
-        background-color: var(--button-secondary-active);
+          &:active {
+              background: var(--skill-#{$variant}-active);
+              outline-color: var(--skill-#{$variant}-border);
+          }
       }
-    }
 
-    &.button-toggled {
-      background: var(--button-secondary-toggled);
+      &.button-toggled {
+        outline-color: var(--skill-#{$variant}-border);
+        background-image: repeating-linear-gradient(
+          -36.5deg,
+          var(--skill-#{$variant}) 0 12px,
+          var(--skill-#{$variant}-border) 12px 19px,
+          var(--skill-#{$variant}) 19px 31px
+        );
+        background-size: 104.5px 100%;
+
+        animation: button-toggle-effect 1s linear infinite;
+
+        &:hover {
+          background-image: repeating-linear-gradient(
+            -36.5deg,
+            var(--skill-#{$variant}-hover) 0 12px,
+            var(--skill-#{$variant}-border) 12px 19px,
+            var(--skill-#{$variant}-hover) 19px 31px
+          );
+          background-size: 104.5px 100%;
+
+          &:active {
+            &:hover {
+              background-image: repeating-linear-gradient(
+                -36.5deg,
+                var(--skill-#{$variant}-active) 0 12px,
+                var(--skill-#{$variant}-border) 12px 19px,
+                var(--skill-#{$variant}-active) 19px 31px
+              );
+              background-size: 104.5px 100%;
+            }
+          }
+        }
+      }
     }
   }
 
-  &[data-variant="earth"] {
-    background: var(--button-earth);
+  &.button-transparent {
+    background: transparent;
+    outline-color: rgba(255, 255, 255, 0.15);
 
     &:not(:disabled):hover {
-      background-color: var(--button-earth-hover);
-      cursor: pointer;
+      background-color: var(--paper-hover);
+      outline-color: rgba(255, 255, 255, 0.2);
 
       &:active {
-        background-color: var(--button-earth-active);
+        background-color: var(--paper-active);
+        outline-color: rgba(255, 255, 255, 0.35);
       }
     }
 
     &.button-toggled {
-      background: var(--button-earth-toggled);
-    }
-  }
+      outline-color: rgba(255, 255, 255, 0.35);
+      background-image: repeating-linear-gradient(
+        -36.5deg,
+        transparent 0 12px,
+        var(--paper-border) 12px 19px,
+        transparent 19px 31px
+      );
+      background-size: 104.5px 100%;
 
-  &[data-variant="air"] {
-    background: var(--button-air);
+      animation: button-toggle-effect 1s linear infinite;
 
-    &:not(:disabled):hover {
-      background-color: var(--button-air-hover);
-      cursor: pointer;
+      &:hover {
+        outline-color: rgba(255, 255, 255, 0.45);
+          background-image: repeating-linear-gradient(
+            -36.5deg,
+            var(--paper-hover) 0 12px,
+            var(--paper-border) 12px 19px,
+            var(--paper-hover) 19px 31px
+          );
+          background-size: 104.5px 100%;
 
-      &:active {
-        background-color: var(--button-air-active);
-      }
-    }
-
-    &.button-toggled {
-      background: var(--button-air-toggled);
-    }
-  }
-
-  &[data-variant="water"] {
-    background: var(--button-water);
-
-    &:not(:disabled):hover {
-      background-color: var(--button-water-hover);
-      cursor: pointer;
-
-      &:active {
-        background-color: var(--button-water-active);
-      }
-    }
-
-    &.button-toggled {
-      background: var(--button-water-toggled);
-    }
-  }
-
-  &[data-variant="research"] {
-    background: var(--tab-research);
-
-    &:not(:disabled):hover {
-      background-color: var(--tab-research-hover);
-      cursor: pointer;
-
-      &:active {
-        background-color: var(--tab-research-active);
-      }
-    }
-
-    &.button-toggled {
-      background: var(--tab-research-toggled);
-    }
-  }
-
-  &[data-variant="spellcraft"] {
-    background: var(--tab-spellcraft);
-
-    &:not(:disabled):hover {
-      background-color: var(--tab-spellcraft-hover);
-      cursor: pointer;
-
-      &:active {
-        background-color: var(--tab-spellcraft-active);
-      }
-    }
-
-    &.button-toggled {
-      background: var(--tab-spellcraft-toggled);
-    }
-  }
-
-  &[data-variant="transmutation"] {
-    background: var(--tab-transmutation);
-
-    &:not(:disabled):hover {
-      background-color: var(--tab-transmutation-hover);
-      cursor: pointer;
-
-      &:active {
-        background-color: var(--tab-transmutation-active);
-      }
-    }
-
-    &.button-toggled {
-      background: var(--tab-transmutation-toggled);
-    }
-  }
-
-  &[data-variant="primal"] {
-    background: var(--button-primal);
-
-    &:not(:disabled):hover {
-      background-color: var(--button-primal-hover);
-      cursor: pointer;
-
-      &:active {
-        background-color: var(--button-primal-active);
-      }
-    }
-
-    &.button-toggled {
-      background: var(--button-primal-toggled);
-    }
-  }
-
-  &[data-variant="life"] {
-    background: var(--button-life);
-
-    &:not(:disabled):hover {
-      background-color: var(--button-life-hover);
-      cursor: pointer;
-
-      &:active {
-        background-color: var(--button-life-active);
-      }
-    }
-
-    &.button-toggled {
-      background: var(--button-life-toggled);
-    }
-  }
-
-  &[data-variant="death"] {
-    background: var(--button-death);
-
-    &:not(:disabled):hover {
-      background-color: var(--button-death-hover);
-      cursor: pointer;
-
-      &:active {
-        background-color: var(--button-death-active);
-      }
-    }
-
-    &.button-toggled {
-      background: var(--button-death-toggled);
+          &:active {
+            &:hover {
+              background-image: repeating-linear-gradient(
+                -36.5deg,
+                var(--paper-1) 0 12px,
+                var(--paper-border) 12px 19px,
+                var(--paper-1) 19px 31px
+              );
+              background-size: 104.5px 100%;
+            }
+          }
+        }
     }
   }
 
   &[data-size="small"] {
     font-size: 16px;
+
+    .button-content {
+      transform: translateY(2px);
+    }
 
     svg {
       width: 16px;
@@ -238,7 +215,7 @@
     font-size: 19px;
 
     .button-content {
-      margin-top: 3px;
+      transform: translateY(3px);
     }
 
     svg {
@@ -253,7 +230,7 @@
     line-height: 1.6;
 
     .button-content {
-      transform: translateY(2px);
+      transform: translateY(3px);
     }
 
     svg {
@@ -265,6 +242,17 @@
 
   &:disabled {
     background-color: rgb(22, 27, 32);
+    outline-color: rgba(255, 255, 255, 0.05);
     * {color: gray;}
   }
+}
+
+@keyframes button-toggle-effect {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 104.5px 0;
+    }
 }

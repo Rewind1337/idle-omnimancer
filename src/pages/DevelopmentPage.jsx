@@ -4,17 +4,60 @@ import { Button } from "../components/Button"
 import { Flex } from "../components/Flex"
 import { Paper } from "../components/Paper"
 import { Grid } from "../components/Grid"
+import { InputText } from "../components/InputText"
+import { InputNumber } from "../components/InputNumber"
+import { InputRange } from "../components/InputRange"
+import { InputCheckbox } from "../components/InputCheckbox"
+import { InputRadio } from "../components/InputRadio"
+
+import { useState } from "react"
+import { Progress } from "../components/Progress"
 
 /* Temp stuff for showcasing */
-const VARIANTS = ["primary", "secondary", "earth", "air", "water", "research", "spellcraft", "transmutation", "primal", "life", "death"]
+const VARIANTS = ["primary", "secondary", "earth", "air", "water", "research", "spellcraft", "transmutation", "exploration", "combat", "unveiling"]
+const SIZES = ["large", "medium", "small"]
 const ICONS = [<BookOpenText/>, <Scale/>, <WandSparkles/>, <Star/>, <MapPin />, <CircleDollarSign />, <ArrowUpRight />, <GraduationCap />]
 
 function Showcase() {
+  const [textInput, setTextInput] = useState('')
+  const [numberInput, setNumberInput] = useState(1)
+  const [clampedNumberInput, setClampedNumberInput] = useState(1)
+  const [rangeInput, setRangeInput] = useState(50)
+  const [checkbox, setCheckbox] = useState(false)
+  const [radioSelection, setRadioSelection] = useState('')
+
+  const handleTextInput = (e) => {
+    setTextInput(e.target.value)
+  }
+
+  const handleClampedNumberInput = (e) => {
+    let value = Number(e.target.value)
+    let min = e.target.min
+    let max = e.target.max
+    setClampedNumberInput(Math.min(max, Math.max(min, value)))
+  }
+
+  const handleNumberInput = (e) => {
+    let value = Number(e.target.value)
+    setNumberInput(value)
+  }
+
+  const handleRangeInput = (e) => {
+    let value = Number(e.target.value)
+    setRangeInput(value)
+  }
+
+  const handleCheckbox = (e) => {
+    let value = Boolean(e.target.checked)
+    setCheckbox(value)
+  }
+
   return (
     <Paper layer={1}>
       <h2>Showcase - Paper Layer 1</h2>
       <Flex direction="column">
         <Paper layer={2}>
+          <h3>Headings - Paper Layer 2</h3>
           <Flex wrap={true} padding={8} gap={16}>
             <h1 className="flex-grow w-min">Heading 1</h1>
             <h2 className="flex-grow w-min">Heading 2</h2>
@@ -25,21 +68,29 @@ function Showcase() {
           </Flex>
         </Paper>
         <Paper layer={2}>
-          <h3>Buttons /w sizes and variants - Paper Layer 2</h3>
+          <h3>Buttons /w sizes and variants</h3>
           <Grid columns={{xsmall: 3, small: 4, medium: 5, large: 6}} gap={8}>
-            {VARIANTS.map((variant, index) => <Flex direction="column" align="start">
-              <h5 className="align-center">{variant}</h5>
-              <Button size="large" className="w-100" key={"button-" + variant + "-large"} variant={variant} icon={ICONS[index%8]}>large</Button>
-              <Button size="medium" className="w-100" key={"button-" + variant + "-medium"} variant={variant} icon={ICONS[index%8]}>medium</Button>
-              <Button size="small" className="w-100" key={"button-" + variant + "-small"} variant={variant} icon={ICONS[index%8]}>small</Button>
-              <hr/>
-            </Flex>
+            {VARIANTS.map((variant, indexVar) =>
+              <Flex key={"flex-" + indexVar} direction="column" align="start">
+                <h5 className="align-center">{variant}</h5>
+                {SIZES.map((size, indexSize) =>
+                  <Button size={size} className="w-100" key={"button-" + indexSize + "-" + indexVar + "-" + variant + "-" + size} variant={variant} icon={ICONS[indexVar%8]}>{size.toUpperCase()}</Button>
+                )}
+                <Button size="medium" variant={variant} toggled={true} className="w-min" icon={ICONS[indexVar%8]}>Toggled</Button>
+              </Flex>
             )}
-            <Flex direction="column">
+            <Flex direction="column" align="start">
+              <h5 className="align-center">transparent</h5>
+              <Button size="large" transparent={true} className="w-100" icon={ICONS[3]}>Large</Button>
+              <Button size="medium" transparent={true} className="w-100" icon={ICONS[3]}>Medium</Button>
+              <Button size="small" transparent={true} className="w-100" icon={ICONS[3]}>Small</Button>
+              <Button size="medium" transparent={true} toggled={true} className="w-min" icon={ICONS[3]}>Toggled</Button>
+            </Flex>
+            <Flex direction="column" align="start">
               <h5 className="align-center">disabled state</h5>
-              <Button size="large" className="w-100" key={"button-disabled-large"} variant={"primary"} icon={ICONS[3]} disabled={true}>Disabled</Button>
-              <Button size="medium" className="w-100" key={"button-disabled-medium"} variant={"primary"} icon={ICONS[3]} disabled={true}>Disabled</Button>
-              <Button size="small" className="w-100" key={"button-disabled-small"} variant={"primary"} icon={ICONS[3]} disabled={true}>Disabled</Button>
+              <Button size="large" className="w-100" variant={"primary"} icon={ICONS[3]} disabled={true}>Large</Button>
+              <Button size="medium" className="w-100" variant={"primary"} icon={ICONS[3]} disabled={true}>Medium</Button>
+              <Button size="small" className="w-100" variant={"primary"} icon={ICONS[3]} disabled={true}>Small</Button>
             </Flex>
           </Grid>
         </Paper>
@@ -47,25 +98,61 @@ function Showcase() {
           <h3>Badges /w variants</h3>
           <Flex wrap={true} padding={8} gap={16}>
             {VARIANTS.map((variant, index) =>
-              <Badge interactive={index%2} key={"badge-" + variant} variant={variant} icon={ICONS[index%8]}>{variant.toLowerCase()}</Badge>
+              <Badge interactive={index%2} key={"badge-" + index + "-" + variant} variant={variant} icon={ICONS[index%8]}>{variant.toLowerCase()}</Badge>
             )}
-              <Badge interactive={true} key={"badge-transparent"} variant={"transparent"} icon={ICONS[3]}>transparent</Badge>
+            <Badge interactive={true} key={"badge-transparent"} variant={"transparent"} icon={ICONS[3]}>transparent</Badge>
           </Flex>
         </Paper>
         <Paper layer={2}>
           <h3>Papers /w variants</h3>
           <Grid columns={{xsmall: 4, small: 5, medium: 6, large: 8}} gap={8}>
-            {VARIANTS.map((variant) =>
-              <Paper variant={"transparent"} padding={8}>
+            {VARIANTS.map((variant, index) =>
+              <Paper key={"paper-" + index + "-" + variant} transparent={true} variant={variant} interactive={true} padding={8}>
               <h5 className="align-center">{variant}</h5>
                 <Flex wrap={true}>
-                  <Paper layer={0} className="w-30 flex-grow" key={"paper-" + variant} variant={variant} padding={16}></Paper>
-                  <Paper layer={1} className="w-30 flex-grow" key={"paper-" + variant} variant={variant} padding={16}></Paper>
-                  <Paper layer={2} className="w-30 flex-grow" key={"paper-" + variant} variant={variant} padding={16}></Paper>
-                  <Paper layer={3} className="w-30 flex-grow" key={"paper-" + variant} variant={variant} padding={16}></Paper>
+                  <Paper layer={0} className="w-30 flex-grow" variant={variant} padding={16}></Paper>
+                  <Paper layer={1} className="w-30 flex-grow" variant={variant} padding={16}></Paper>
+                  <Paper layer={2} className="w-30 flex-grow" variant={variant} padding={16}></Paper>
+                  <Paper layer={3} className="w-30 flex-grow" variant={variant} padding={16}></Paper>
+                  <Paper layer={4} className="w-30 flex-grow" variant={variant} padding={16}></Paper>
+                  <Paper layer={5} className="w-30 flex-grow" variant={variant} padding={16}></Paper>
                 </Flex>
               </Paper>
             )}
+            <Paper transparent={true} interactive={true} padding={8}>
+              <h5 className="align-center">default</h5>
+              <Flex wrap={true}>
+                <Paper  interactive={true} layer={0} className="w-30 flex-grow" padding={16}></Paper>
+                <Paper  interactive={true} layer={1} className="w-30 flex-grow" padding={16}></Paper>
+                <Paper  interactive={true} layer={2} className="w-30 flex-grow" padding={16}></Paper>
+                <Paper  interactive={true} layer={3} className="w-30 flex-grow" padding={16}></Paper>
+                <Paper  interactive={true} layer={4} className="w-30 flex-grow" padding={16}></Paper>
+                <Paper  interactive={true} layer={5} className="w-30 flex-grow" padding={16}></Paper>
+              </Flex>
+            </Paper>
+          </Grid>
+        </Paper>
+        <Paper layer={2}>
+          <h3>Input Stuff</h3>
+          <Grid columns={{xsmall: 1, small: 2, medium: 3, large: 4}} gap={8}>
+            <InputText variant="water" value={textInput} onChange={handleTextInput} label={"Example Text Input"}/>
+            <InputNumber variant="exploration" value={clampedNumberInput} onChange={handleClampedNumberInput} label={"Example Clamped Number Input"} min={1} max={420}/>
+            <InputNumber variant="earth" value={numberInput} onChange={handleNumberInput} label={"Example Number Input"}/>
+            <InputRange variant="combat" value={rangeInput} onChange={handleRangeInput} label={"Example Range Input"} min={1} max={67}/>
+            <InputCheckbox variant="research" checked={checkbox} onChange={handleCheckbox} label={"Example Checkbox"} checkboxLabel={"Some Checkbox"}/>
+            <InputRadio values={["Earth", "Air", "Water"]} value={radioSelection} onChange={setRadioSelection} variant="unveiling" label={"Example Radio Buttons"}/>
+          </Grid>
+        </Paper>
+        <Paper layer={2}>
+          <h3>Progressbars</h3>
+          <Grid columns={{xsmall: 1, small: 2, medium: 3, large: 4}} gap={8}>
+            {VARIANTS.map((variant, indexVar) =>
+              <Flex direction="column" gap={8} key={"progflex-" + indexVar}>
+                <Progress key={"prog-" + indexVar} size={"medium"} variant={variant} percentage={67}/>
+              </Flex>
+            )}
+            <Progress key={"prog-large"} size={"small"} animated="true" variant={"primary"} percentage={67}/>
+            <Progress key={"prog-small"} size={"large"} animated="true" variant={"primary"} percentage={67}/>
           </Grid>
         </Paper>
       </Flex>

@@ -9,12 +9,14 @@
   --button-primary-active: hsla(210, 35%, 23%, 1);
   --button-primary-toggled: hsla(210, 38%, 39%, 1);
   --button-primary-border: hsla(210, 42%, 46%, 1);
+  --button-primary-soft: hsla(210, 50%, 50%, 0.5);
 
   --button-secondary: hsla(35, 25%, 27%, 1);
   --button-secondary-hover: hsla(35, 29%, 33%, 1);
   --button-secondary-active: hsla(35, 30%, 21%, 1);
   --button-secondary-toggled: hsla(35, 34%, 36%, 1);
   --button-secondary-border: hsla(35, 42%, 44%, 1);
+  --button-secondary-soft: hsla(35, 50%, 50%, 0.5);
 
   /* Element Button Colors */
   --button-earth: hsla(82, 30%, 25%, 1);
@@ -22,18 +24,21 @@
   --button-earth-active: hsla(82, 37%, 20%, 1);
   --button-earth-toggled: hsla(82, 40%, 36%, 1);
   --button-earth-border: hsla(82, 43%, 42%, 1);
+  --button-earth-soft: hsla(82, 50%, 50%, 0.5);
 
   --button-air: hsla(270, 35%, 29%, 1);
   --button-air-hover: hsla(270, 40%, 35%, 1);
   --button-air-active: hsla(270, 42%, 22%, 1);
   --button-air-toggled: hsla(270, 44%, 39%, 1);
   --button-air-border: hsla(270, 48%, 47%, 1);
+  --button-air-soft: hsla(270, 50%, 50%, 0.5);
 
   --button-water: hsla(222, 38%, 29%, 1);
   --button-water-hover: hsla(222, 43%, 35%, 1);
   --button-water-active: hsla(222, 45%, 22%, 1);
   --button-water-toggled: hsla(222, 47%, 39%, 1);
   --button-water-border: hsla(222, 50%, 46%, 1);
+  --button-water-soft: hsla(222, 50%, 50%, 0.5);
 
   /* Tab Colors */
   --skill-research: hsla(185, 42%, 29%, 1);
@@ -41,36 +46,42 @@
   --skill-research-active: hsla(185, 49%, 23%, 1);
   --skill-research-toggled: hsla(185, 52%, 39%, 1);
   --skill-research-border: hsla(185, 50%, 44%, 1);
+  --skill-research-soft: hsla(185, 50%, 50%, 0.5);
 
   --skill-spellcraft: hsla(42, 42%, 29%, 1);
   --skill-spellcraft-hover: hsla(42, 47%, 35%, 1);
   --skill-spellcraft-active: hsla(42, 49%, 23%, 1);
   --skill-spellcraft-toggled: hsla(42, 52%, 39%, 1);
   --skill-spellcraft-border: hsla(42, 50%, 44%, 1);
+  --skill-spellcraft-soft: hsla(42, 50%, 50%, 0.5);
 
   --skill-transmutation: hsla(18, 42%, 29%, 1);
   --skill-transmutation-hover: hsla(18, 47%, 35%, 1);
   --skill-transmutation-active: hsla(18, 49%, 23%, 1);
   --skill-transmutation-toggled: hsla(18, 52%, 39%, 1);
   --skill-transmutation-border: hsla(18, 52%, 45%, 1);
+  --skill-transmutation-soft: hsla(18, 50%, 50%, 0.5);
 
   --skill-exploration: hsla(125, 42%, 29%, 1);
   --skill-exploration-hover: hsla(125, 47%, 35%, 1);
   --skill-exploration-active: hsla(125, 49%, 23%, 1);
   --skill-exploration-toggled: hsla(125, 52%, 39%, 1);
   --skill-exploration-border: hsla(125, 50%, 43%, 1);
+  --skill-exploration-soft: hsla(125, 50%, 50%, 0.5);
 
   --skill-unveiling: hsla(310, 42%, 29%, 1);
   --skill-unveiling-hover: hsla(310, 47%, 35%, 1);
   --skill-unveiling-active: hsla(310, 49%, 23%, 1);
   --skill-unveiling-toggled: hsla(310, 52%, 39%, 1);
   --skill-unveiling-border: hsla(310, 52%, 46%, 1);
+  --skill-unveiling-soft: hsla(310, 50%, 50%, 0.5);
 
   --skill-combat: hsla(346, 39%, 29%, 1);
   --skill-combat-hover: hsla(346, 44%, 35%, 1);
   --skill-combat-active: hsla(346, 46%, 22%, 1);
   --skill-combat-toggled: hsla(346, 48%, 39%, 1);
   --skill-combat-border: hsla(346, 52%, 46%, 1);
+  --skill-combat-soft: hsla(346, 50%, 50%, 0.5);
 
   /* Background and Papers */
   --background: hsla(220, 41%, 4%, 1);

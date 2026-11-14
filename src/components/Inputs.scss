@@ -94,7 +94,8 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
         }
     }
 
-    &.input-range {
+    &.input-range,
+    &.input-select {
         @each $variant in $button-colors {
             &[data-variant="#{$variant}"] {
                 &:hover {
@@ -117,7 +118,8 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
     }
 
     &.input-checkbox,
-    &.input-radio {
+    &.input-radio,
+    &.input-button {
         outline-offset: 0;
         @each $variant in $button-colors {
             &[data-variant="#{$variant}"] {
@@ -382,6 +384,12 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
             cursor: not-allowed;
         }
     }
+    
+    &.input-button {
+        outline-offset: 0;
+        margin-bottom: 3px;
+        flex-grow: 1;
+    }
 }
 
 .input-range-wrapper {
@@ -392,6 +400,15 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
         .input-range-tooltip {
             transform: translate(-50%);
         }
+    }
+}
+
+.input-radio-option {
+    position: relative;
+    z-index:2;
+
+    *:hover {
+        z-index: 1;
     }
 }
 
@@ -410,7 +427,7 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
 
     padding: 5px 7px 3px;
     height: 24px;
-    border-radius: 4px;
+    border-radius: 8px;
 
     background: var(--paper-3);
     border: 1px solid inherit;
@@ -421,6 +438,6 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
     pointer-events: none;
 
     > * {
-        transform: translateY(-7px);
+        transform: translateY(-30%);
     }
 }

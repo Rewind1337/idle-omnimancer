@@ -8,6 +8,8 @@ import { TransmutationPage } from "./pages/TransmutationPage";
 import { DevelopmentPage } from "./pages/DevelopmentPage";
 import { ScrollArea } from "./components/ScrollArea";
 
+import { ToastProvider } from "./components/ToastProvider"
+
 // utility function that joins the css classes after filtering for truthyness
 const cx = (...values) => values.filter(Boolean).join(' ')
 
@@ -45,12 +47,14 @@ function App() {
   const [activePage, setActivePage] = useState(PAGES.RESEARCH)
 
   return (
-    <ResponsivePage navigationPosition="top" navigationMode="default" setActivePage={setActivePage}>
-      {activePage === PAGES.RESEARCH && <ResearchPage />}
-      {activePage === PAGES.SPELLCRAFT && <SpellcraftPage />}
-      {activePage === PAGES.TRANSMUTATION && <TransmutationPage />}
-      {activePage === PAGES.DEVELOPMENT && <DevelopmentPage />}
-    </ResponsivePage>
+    <ToastProvider>
+      <ResponsivePage navigationPosition="top" navigationMode="default" setActivePage={setActivePage}>
+        {activePage === PAGES.RESEARCH && <ResearchPage />}
+        {activePage === PAGES.SPELLCRAFT && <SpellcraftPage />}
+        {activePage === PAGES.TRANSMUTATION && <TransmutationPage />}
+        {activePage === PAGES.DEVELOPMENT && <DevelopmentPage />}
+      </ResponsivePage>
+    </ToastProvider>
   )
 }
 

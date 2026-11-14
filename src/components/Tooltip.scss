@@ -1,0 +1,72 @@
+/* Tooltip Component Styles */
+
+.tooltip-trigger {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+
+    width: fit-content;
+    max-width: 100%;
+
+    > .tooltip-content {
+        position: absolute;
+        z-index: 1000;
+
+        left: 50%;
+        bottom: calc(100% + 8px);
+
+        width: max-content;
+        max-width: min(280px, calc(100vw - 32px));
+
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+
+        transform: translate(-50%, 4px);
+
+        transition:
+            opacity 0.15s ease-out,
+            transform 0.15s ease-out,
+            visibility 0.15s;
+    }
+
+    &:hover > .tooltip-content,
+    &:focus-within > .tooltip-content {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+    }
+
+    // Allow tooltip content to wrap instead of staying on one line.
+    .tooltip-content .text {
+        width: auto;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+
+// Full-width wrapper for components that should retain their width.
+.tooltip-block {
+    display: flex;
+    width: 100%;
+}
+
+// Display the tooltip underneath its trigger instead.
+.tooltip-bottom {
+    > .tooltip-content {
+        top: calc(100% + 8px);
+        bottom: auto;
+        transform: translate(-50%, -4px);
+    }
+
+    &:hover > .tooltip-content,
+    &:focus-within > .tooltip-content {
+        transform: translate(-50%, 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tooltip-content {
+        transition: none;
+    }
+}

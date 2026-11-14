@@ -1,4 +1,7 @@
 import { BookOpenText, Scale, WandSparkles, Star, ArrowUpRight, CircleDollarSign, GraduationCap, MapPin, FaceAngry } from "lucide-react"
+
+import { useState } from "react"
+
 import { Badge } from "../components/Badge"
 import { Button } from "../components/Button"
 import { Flex } from "../components/Flex"
@@ -9,13 +12,14 @@ import { InputNumber } from "../components/InputNumber"
 import { InputRange } from "../components/InputRange"
 import { InputCheckbox } from "../components/InputCheckbox"
 import { InputRadio } from "../components/InputRadio"
-
-import { useState } from "react"
 import { Progress } from "../components/Progress"
 import { InputSelect } from "../components/InputSelect"
 import { Heading } from "../components/Heading"
 import { Text } from "../components/Text"
 import { Modal } from "../components/Modal"
+
+import { useToast } from "../hooks/useToast"
+import { Tooltip } from "../components/Tooltip"
 
 /* Temp stuff for showcasing */
 const VARIANTS = ["primary", "secondary", "earth", "air", "water", "research", "spellcraft", "transmutation", "exploration", "combat", "unveiling"]
@@ -23,6 +27,42 @@ const SIZES = ["large", "medium", "small"]
 const ICONS = [<BookOpenText />, <Scale />, <WandSparkles />, <Star />, <MapPin />, <CircleDollarSign />, <GraduationCap />, <FaceAngry />]
 
 function Showcase() {
+  const { showToast, dismissToast, clearToasts } = useToast()
+
+  const exampleToastButtons = [
+    {
+      text: "Level increased", toast: () => {
+        showToast({
+          title: "Research level increased!", message: "Read Books has reached level 25.", type: "research"
+        })
+      }
+    },
+    {
+      text: "New discovery", toast: () => {
+        showToast({
+          title: "New discovery", message: "You discovered something interesting.", type: "unveiling"
+        })
+      }
+    },
+    {
+      text: "Bag warning", toast: () => {
+        showToast({
+          title: "Inventory almost full!", message: "Only one inventory slot remains.", type: "warning", duration: 8000
+        })
+      }
+    },
+    {
+      text: "Bag Full", toast: () => {
+        showToast({
+          title: "Inventory full!", message: "Production has paused because there is no available space.", type: "error", duration: 0, action: {
+            label: "Open Bag",
+            onClick: () => setBagModalVisible(true)
+          }
+        })
+      }
+    }
+  ]
+
   const [textInput, setTextInput] = useState('')
   const [numberInput, setNumberInput] = useState(1)
   const [selectionInput, setSelectionInput] = useState('')
@@ -78,7 +118,7 @@ function Showcase() {
           </Flex>
         </Paper>
         <Paper layer={2}>
-          <h3>Buttons /w sizes and variants</h3>
+          <h3>Buttons</h3>
           <Grid columns={{ xsmall: 3, small: 4, medium: 5, large: 6 }} gap={8}>
             {VARIANTS.map((variant, indexVar) =>
               <Flex key={"flex-" + indexVar} direction="column" align="start">
@@ -105,12 +145,23 @@ function Showcase() {
           </Grid>
         </Paper>
         <Paper layer={2}>
-          <h3>Badges /w variants</h3>
+          <h3>Badges</h3>
           <Flex wrap={true} padding={8} gap={16}>
             {VARIANTS.map((variant, index) =>
               <Badge interactive={index % 2} key={"badge-" + index + "-" + variant} variant={variant} icon={ICONS[index % 8]}>{variant.toLowerCase()}</Badge>
             )}
             <Badge interactive={true} key={"badge-transparent"} variant={"transparent"} icon={ICONS[3]}>transparent</Badge>
+          </Flex>
+        </Paper>
+        <Paper layer={2}>
+          <h3>Toasts & Tooltips</h3>
+          <Flex wrap={true} padding={8} gap={16}>
+            {exampleToastButtons.map((toast, index) =>
+              <Button key={"toastbutton-" + index} onClick={() => { toast.toast() }} icon={<ArrowUpRight />}>{toast.text}</Button>
+            )}
+          </Flex>
+          <Flex wrap={true} padding={8} gap={16}>
+            <Tooltip content="Unlock additional Research actions."><ArrowUpRight /></Tooltip>
           </Flex>
         </Paper>
         <Paper layer={2}>
@@ -157,13 +208,18 @@ function Showcase() {
         <Paper layer={2}>
           <h3>Modals</h3>
           <Flex>
-            <Modal variant="transmutation"
+            <Modal
               visible={bagModalVisible}
+              variant="transmutation"
+              onBackdropClick={() => { setBagModalVisible(false) }}
               header={<Heading h='1'>Bag Modal</Heading>}
-              footer={<Button variant={"primary"} onClick={() => { setBagModalVisible(false) }}>This also closes the Modal</Button>}
-            >
-            </Modal>
-            <Button size="medium" variant="transmutation" onClick={() => { setBagModalVisible(true) }} className="w-min" icon={<ArrowUpRight />}>Open Bag</Button>
+              content={<Flex direction="column">
+                Clicking outside of the Modal closes the Modal
+                <Button variant={"primary"} onClick={() => { setBagModalVisible(false) }}>This Button closes the Modal</Button>
+              </Flex>}
+              footer={<Button variant={"primary"} onClick={() => { setBagModalVisible(false) }}>This Button also closes the Modal</Button>}
+            />
+            <Button size="medium" variant="transmutation" toggled={bagModalVisible} onClick={() => { setBagModalVisible(true) }} className="w-min" icon={<ArrowUpRight />}>Open Bag</Button>
           </Flex>
         </Paper>
         <Paper layer={2}>

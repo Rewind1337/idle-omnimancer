@@ -468,7 +468,7 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
 }
 
 .input-range-tooltip {
-    z-index: 1000;
+    z-index: 50;
     transition: opacity 0.15s ease-out, transform 0.15s ease-out;
     position: absolute;
     bottom: 100%;

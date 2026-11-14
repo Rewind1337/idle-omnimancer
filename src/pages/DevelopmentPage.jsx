@@ -1,4 +1,4 @@
-import { BookOpenText, Scale, WandSparkles, Star, ArrowUpRight, CircleDollarSign, GraduationCap, MapPin } from "lucide-react"
+import { BookOpenText, Scale, WandSparkles, Star, ArrowUpRight, CircleDollarSign, GraduationCap, MapPin, FaceAngry } from "lucide-react"
 import { Badge } from "../components/Badge"
 import { Button } from "../components/Button"
 import { Flex } from "../components/Flex"
@@ -15,11 +15,12 @@ import { Progress } from "../components/Progress"
 import { InputSelect } from "../components/InputSelect"
 import { Heading } from "../components/Heading"
 import { Text } from "../components/Text"
+import { Modal } from "../components/Modal"
 
 /* Temp stuff for showcasing */
 const VARIANTS = ["primary", "secondary", "earth", "air", "water", "research", "spellcraft", "transmutation", "exploration", "combat", "unveiling"]
 const SIZES = ["large", "medium", "small"]
-const ICONS = [<BookOpenText />, <Scale />, <WandSparkles />, <Star />, <MapPin />, <CircleDollarSign />, <ArrowUpRight />, <GraduationCap />]
+const ICONS = [<BookOpenText />, <Scale />, <WandSparkles />, <Star />, <MapPin />, <CircleDollarSign />, <GraduationCap />, <FaceAngry />]
 
 function Showcase() {
   const [textInput, setTextInput] = useState('')
@@ -29,6 +30,8 @@ function Showcase() {
   const [rangeInput, setRangeInput] = useState(50)
   const [checkbox, setCheckbox] = useState(false)
   const [radioSelection, setRadioSelection] = useState('')
+
+  const [bagModalVisible, setBagModalVisible] = useState(false)
 
   const handleTextInput = (e) => {
     setTextInput(e.target.value)
@@ -144,12 +147,24 @@ function Showcase() {
           <Grid columns={{ xsmall: 1, small: 2, medium: 3, large: 4 }} gap={8}>
             <InputText variant="water" value={textInput} onChange={handleTextInput} label={"Example Text Input"} />
             <InputNumber variant="exploration" value={clampedNumberInput} onChange={handleClampedNumberInput} label={"Example Clamped Number Input"} min={1} max={420} />
-            <InputSelect values={["Earth", "Air", "Water"]} value={selectionInput} onChange={setSelectionInput} variant="air" label={"Example Select"} />
+            <InputSelect variant="air" values={["Earth", "Air", "Water"]} value={selectionInput} onChange={setSelectionInput} label={"Example Select"} />
             <InputNumber variant="earth" value={numberInput} onChange={handleNumberInput} label={"Example Number Input"} />
             <InputRange variant="combat" value={rangeInput} onChange={handleRangeInput} label={"Example Range Input"} min={1} max={67} />
-            <InputCheckbox renderButtons variant="research" checked={checkbox} onChange={setCheckbox} label={"Example Checkbox"} checkboxLabel={"Some Checkbox"} />
-            <InputRadio renderButtons values={["Earth", "Air", "Water"]} value={radioSelection} onChange={setRadioSelection} variant="unveiling" label={"Example Radio Buttons"} />
+            <InputCheckbox variant="transmutation" renderButtons checked={checkbox} onChange={setCheckbox} label={"Example Checkbox"} checkboxLabel={"Some Checkbox"} />
+            <InputRadio variant="spellcraft" renderButtons values={["Earth", "Air", "Water"]} value={radioSelection} onChange={setRadioSelection} label={"Example Radio Buttons"} />
           </Grid>
+        </Paper>
+        <Paper layer={2}>
+          <h3>Modals</h3>
+          <Flex>
+            <Modal variant="transmutation"
+              visible={bagModalVisible}
+              header={<Heading h='1'>Bag Modal</Heading>}
+              footer={<Button variant={"primary"} onClick={() => { setBagModalVisible(false) }}>This also closes the Modal</Button>}
+            >
+            </Modal>
+            <Button size="medium" variant="transmutation" onClick={() => { setBagModalVisible(true) }} className="w-min" icon={<ArrowUpRight />}>Open Bag</Button>
+          </Flex>
         </Paper>
         <Paper layer={2}>
           <h3>Progressbars</h3>

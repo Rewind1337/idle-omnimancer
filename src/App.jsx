@@ -21,7 +21,7 @@ function ResponsivePage({
   if (navigationPosition === "top") {
     return (
       <Flex direction="column" gap={4} className={cx('page', className)}>
-        <Navigation setActivePage={setActivePage} position="top" mode={navigationMode}/>
+        <Navigation setActivePage={setActivePage} position="top" mode={navigationMode} />
         <ScrollArea padding={0}>
           {children}
         </ScrollArea>
@@ -30,7 +30,7 @@ function ResponsivePage({
   } else if (navigationPosition === "side") {
     return (
       <Flex direction="row" align="start" className={cx('page', className)}>
-        <Navigation setActivePage={setActivePage} position="side" mode={navigationMode}/>
+        <Navigation setActivePage={setActivePage} position="side" mode={navigationMode} />
         <ScrollArea maxHeight={window.innerHeight - 8} padding={"0 8px 0 0"}>
           {children}
         </ScrollArea>
@@ -39,17 +39,17 @@ function ResponsivePage({
   }
 }
 
-const PAGES = {RESEARCH: 0, SPELLCRAFT: 1, TRANSMUTATION: 2, DEVELOPMENT: 3}
+const PAGES = { RESEARCH: 0, SPELLCRAFT: 1, TRANSMUTATION: 2, DEVELOPMENT: 3 }
 
 function App() {
   const [activePage, setActivePage] = useState(PAGES.RESEARCH)
 
   return (
     <ResponsivePage navigationPosition="top" navigationMode="default" setActivePage={setActivePage}>
-      {activePage === PAGES.RESEARCH && <ResearchPage/>}
-      {activePage === PAGES.SPELLCRAFT && <SpellcraftPage/>}
-      {activePage === PAGES.TRANSMUTATION && <TransmutationPage/>}
-      {activePage === PAGES.DEVELOPMENT && <DevelopmentPage/>}
+      {activePage === PAGES.RESEARCH && <ResearchPage />}
+      {activePage === PAGES.SPELLCRAFT && <SpellcraftPage />}
+      {activePage === PAGES.TRANSMUTATION && <TransmutationPage />}
+      {activePage === PAGES.DEVELOPMENT && <DevelopmentPage />}
     </ResponsivePage>
   )
 }

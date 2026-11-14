@@ -126,11 +126,11 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
                 &:hover {
                     outline: 100vmax solid var(--button-#{$variant});
                 }
-            }
 
-            &.button-transparent {
-                &:hover {
-                    outline: 100vmax solid var(--button-#{$variant});
+                &.button-transparent {
+                    &:hover {
+                        outline: 100vmax solid var(--button-#{$variant});
+                    }
                 }
             }
         }
@@ -140,11 +140,11 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
                 &:hover {
                     outline: 100vmax solid var(--skill-#{$variant});
                 }
-            }
 
-            &.button-transparent {
-                &:hover {
-                    outline: 100vmax solid var(--skill-#{$variant});
+                &.button-transparent {
+                    &:hover {
+                        outline: 100vmax solid var(--skill-#{$variant});
+                    }
                 }
             }
         }
@@ -459,6 +459,12 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
 
 .input-paper-wrapper {
     margin-top: 2px;
+
+    button {
+        &:not(:hover):not([data-checked="true"]) {
+            background-color: var(--paper-0);
+        }
+    }
 }
 
 .input-range-tooltip {

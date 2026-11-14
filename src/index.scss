@@ -280,6 +280,30 @@ body {
   }
 }
 
+/* Modal Styles */
+.modal-backdrop {
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+
+  .modal-wrapper {
+    max-width: 1200px;
+    margin-inline: auto;
+    box-shadow: 0 0 40px black;
+  }
+
+  .modal-flex {
+    max-width: 1200px;
+    margin-inline: auto;
+  }
+}
+
 
 
 // in progress, will move out to actual file at some point

@@ -49,9 +49,9 @@ export function InputRadio({
                 : option
 
               return (
-                <Flex key={`${name ?? 'radio'}-${index}`}>
+                <Flex key={`${name ?? 'radio'}-${index}`} className="input-radio-option">
                   {renderButtons ? (
-                    <Button variant={variant} toggled={value === optionValue} disabled={disabled} onClick={() => handleChange(optionValue)} className={cx('input input-button')}>
+                    <Button transparent={(value === optionValue) ? false : true} variant={(value === optionValue) ? variant : ''} checked={value === optionValue} disabled={disabled} onClick={() => handleChange(optionValue)} className={cx('input input-button')}>
                       {optionLabel}
                     </Button>
                   ) : (

@@ -1,3 +1,7 @@
+/* Button Component Styles */
+$button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling;
+$skill-colors: research, spellcraft, transmutation, exploration, combat, unveiling;
+
 :root {
   /* Fonts */
   --font-heading: 'Josefin Sans', sans-serif;
@@ -9,14 +13,18 @@
   --button-primary-active: hsla(210, 35%, 23%, 1);
   --button-primary-toggled: hsla(210, 38%, 39%, 1);
   --button-primary-border: hsla(210, 42%, 46%, 1);
-  --button-primary-soft: hsla(210, 50%, 50%, 0.5);
+  --button-primary-dark: hsla(210, 35%, 17%, 1);
+  --button-primary-text-on-dark: hsla(210, 30%, 84%, 1);
+  --button-primary-text-on-light: hsla(210, 30%, 18%, 1);
 
   --button-secondary: hsla(35, 25%, 27%, 1);
   --button-secondary-hover: hsla(35, 29%, 33%, 1);
   --button-secondary-active: hsla(35, 30%, 21%, 1);
   --button-secondary-toggled: hsla(35, 34%, 36%, 1);
   --button-secondary-border: hsla(35, 42%, 44%, 1);
-  --button-secondary-soft: hsla(35, 50%, 50%, 0.5);
+  --button-secondary-dark: hsla(35, 30%, 15%, 1);
+  --button-secondary-text-on-dark: hsla(35, 25%, 84%, 1);
+  --button-secondary-text-on-light: hsla(35, 25%, 18%, 1);
 
   /* Element Button Colors */
   --button-earth: hsla(82, 30%, 25%, 1);
@@ -24,21 +32,27 @@
   --button-earth-active: hsla(82, 37%, 20%, 1);
   --button-earth-toggled: hsla(82, 40%, 36%, 1);
   --button-earth-border: hsla(82, 43%, 42%, 1);
-  --button-earth-soft: hsla(82, 50%, 50%, 0.5);
+  --button-earth-dark: hsla(82, 37%, 14%, 1);
+  --button-earth-text-on-dark: hsla(82, 30%, 84%, 1);
+  --button-earth-text-on-light: hsla(82, 30%, 18%, 1);
 
   --button-air: hsla(270, 35%, 29%, 1);
   --button-air-hover: hsla(270, 40%, 35%, 1);
   --button-air-active: hsla(270, 42%, 22%, 1);
   --button-air-toggled: hsla(270, 44%, 39%, 1);
   --button-air-border: hsla(270, 48%, 47%, 1);
-  --button-air-soft: hsla(270, 50%, 50%, 0.5);
+  --button-air-dark: hsla(270, 42%, 16%, 1);
+  --button-air-text-on-dark: hsla(270, 35%, 84%, 1);
+  --button-air-text-on-light: hsla(270, 35%, 18%, 1);
 
   --button-water: hsla(222, 38%, 29%, 1);
   --button-water-hover: hsla(222, 43%, 35%, 1);
   --button-water-active: hsla(222, 45%, 22%, 1);
   --button-water-toggled: hsla(222, 47%, 39%, 1);
   --button-water-border: hsla(222, 50%, 46%, 1);
-  --button-water-soft: hsla(222, 50%, 50%, 0.5);
+  --button-water-dark: hsla(222, 45%, 16%, 1);
+  --button-water-text-on-dark: hsla(222, 38%, 84%, 1);
+  --button-water-text-on-light: hsla(222, 38%, 18%, 1);
 
   /* Tab Colors */
   --skill-research: hsla(185, 42%, 29%, 1);
@@ -46,42 +60,54 @@
   --skill-research-active: hsla(185, 49%, 23%, 1);
   --skill-research-toggled: hsla(185, 52%, 39%, 1);
   --skill-research-border: hsla(185, 50%, 44%, 1);
-  --skill-research-soft: hsla(185, 50%, 50%, 0.5);
+  --skill-research-dark: hsla(185, 49%, 17%, 1);
+  --skill-research-text-on-dark: hsla(185, 42%, 84%, 1);
+  --skill-research-text-on-light: hsla(185, 42%, 18%, 1);
 
   --skill-spellcraft: hsla(42, 42%, 29%, 1);
   --skill-spellcraft-hover: hsla(42, 47%, 35%, 1);
   --skill-spellcraft-active: hsla(42, 49%, 23%, 1);
   --skill-spellcraft-toggled: hsla(42, 52%, 39%, 1);
   --skill-spellcraft-border: hsla(42, 50%, 44%, 1);
-  --skill-spellcraft-soft: hsla(42, 50%, 50%, 0.5);
+  --skill-spellcraft-dark: hsla(42, 49%, 17%, 1);
+  --skill-spellcraft-text-on-dark: hsla(42, 42%, 84%, 1);
+  --skill-spellcraft-text-on-light: hsla(42, 42%, 18%, 1);
 
   --skill-transmutation: hsla(18, 42%, 29%, 1);
   --skill-transmutation-hover: hsla(18, 47%, 35%, 1);
   --skill-transmutation-active: hsla(18, 49%, 23%, 1);
   --skill-transmutation-toggled: hsla(18, 52%, 39%, 1);
   --skill-transmutation-border: hsla(18, 52%, 45%, 1);
-  --skill-transmutation-soft: hsla(18, 50%, 50%, 0.5);
+  --skill-transmutation-dark: hsla(18, 49%, 17%, 1);
+  --skill-transmutation-text-on-dark: hsla(18, 42%, 84%, 1);
+  --skill-transmutation-text-on-light: hsla(18, 42%, 18%, 1);
 
   --skill-exploration: hsla(125, 42%, 29%, 1);
   --skill-exploration-hover: hsla(125, 47%, 35%, 1);
   --skill-exploration-active: hsla(125, 49%, 23%, 1);
   --skill-exploration-toggled: hsla(125, 52%, 39%, 1);
   --skill-exploration-border: hsla(125, 50%, 43%, 1);
-  --skill-exploration-soft: hsla(125, 50%, 50%, 0.5);
+  --skill-exploration-dark: hsla(125, 49%, 17%, 1);
+  --skill-exploration-text-on-dark: hsla(125, 42%, 84%, 1);
+  --skill-exploration-text-on-light: hsla(125, 42%, 18%, 1);
 
   --skill-unveiling: hsla(310, 42%, 29%, 1);
   --skill-unveiling-hover: hsla(310, 47%, 35%, 1);
   --skill-unveiling-active: hsla(310, 49%, 23%, 1);
   --skill-unveiling-toggled: hsla(310, 52%, 39%, 1);
   --skill-unveiling-border: hsla(310, 52%, 46%, 1);
-  --skill-unveiling-soft: hsla(310, 50%, 50%, 0.5);
+  --skill-unveiling-dark: hsla(310, 49%, 17%, 1);
+  --skill-unveiling-text-on-dark: hsla(310, 42%, 84%, 1);
+  --skill-unveiling-text-on-light: hsla(310, 42%, 18%, 1);
 
   --skill-combat: hsla(346, 39%, 29%, 1);
   --skill-combat-hover: hsla(346, 44%, 35%, 1);
   --skill-combat-active: hsla(346, 46%, 22%, 1);
   --skill-combat-toggled: hsla(346, 48%, 39%, 1);
   --skill-combat-border: hsla(346, 52%, 46%, 1);
-  --skill-combat-soft: hsla(346, 50%, 50%, 0.5);
+  --skill-combat-dark: hsla(346, 46%, 16%, 1);
+  --skill-combat-text-on-dark: hsla(346, 39%, 84%, 1);
+  --skill-combat-text-on-light: hsla(346, 39%, 18%, 1);
 
   /* Background and Papers */
   --background: hsla(220, 41%, 4%, 1);
@@ -108,7 +134,8 @@
 }
 
 /* Fonts */
-h1, h2, h3, h4, h5, h6 {
+h0, h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
   font-family: var(--font-heading);
   white-space: nowrap;
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
@@ -208,6 +235,48 @@ body {
 
   &[data-layer="5"] {
       background-color: var(--paper-5);
+  }
+}
+
+
+/* Heading Styles */
+.heading {
+  &.heading-h1 {font-size: 2em;}
+  &.heading-h2 {font-size: 1.5em;}
+  &.heading-h3 {font-size: 1.17em;}
+  &.heading-h4 {font-size: 1em;}
+  &.heading-h5 {font-size: 0.83em;}
+  &.heading-h6 {font-size: 0.67em;}
+
+  @each $variant in $button-colors {
+    &[data-variant="#{$variant}"] {
+      color: var(--button-#{$variant}-text-on-dark);
+    }
+  }
+  @each $variant in $skill-colors {
+    &[data-variant="#{$variant}"] {
+      color: var(--skill-#{$variant}-text-on-dark);
+    }
+  }
+}
+
+/* Text Styles */
+.text {
+  &[data-size="xsmall"] {font-size: 0.7em;}
+  &[data-size="small"] {font-size: 0.95em;}
+  &[data-size="medium"] {font-size: 1.15em;}
+  &[data-size="large"] {font-size: 1.35em;}
+  &[data-size="xlarge"] {font-size: 1.65em;}
+
+  @each $variant in $button-colors {
+    &[data-variant="#{$variant}"] {
+      color: var(--button-#{$variant}-text-on-dark);
+    }
+  }
+  @each $variant in $skill-colors {
+    &[data-variant="#{$variant}"] {
+      color: var(--skill-#{$variant}-text-on-dark);
+    }
   }
 }
 

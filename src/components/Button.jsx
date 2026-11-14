@@ -16,7 +16,8 @@ export function Button({
   badge,
   disabled = false,
   toggled = false,
-  onClick = () => {},
+  checked = false,
+  onClick = () => { },
   type = 'button',
   ...props
 }) {
@@ -25,9 +26,10 @@ export function Button({
       className={cx('button', transparent && 'button-transparent', toggled && 'button-toggled', className)}
       data-variant={variant}
       data-size={size}
+      data-checked={checked}
       disabled={disabled}
       type={type}
-      onClick={() => {onClick()}}
+      onClick={() => { onClick() }}
       {...props}
     >
       <Flex wrap={false} justify="space-between" gap={8} padding={0}>

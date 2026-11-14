@@ -49,13 +49,13 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
                 outline-color: var(--button-#{$variant}-border);
                 background-image: repeating-linear-gradient(
                 -62.5deg,
-                var(--button-#{$variant}-hover) 0 12px,
-                var(--button-#{$variant}-border) 12px 19px,
-                var(--button-#{$variant}-hover) 19px 31px
+                var(--button-#{$variant}-hover) 0 0,
+                var(--button-#{$variant}-border) 10px 10px,
+                var(--button-#{$variant}-hover) 20px 31px
                 );
                 background-size: 104.5px 100%;
 
-                animation: progress-bar-effect 2s linear infinite;
+                animation: progress-bar-effect 1s linear infinite;
 
                 &:hover {
                     filter: brightness(133%);
@@ -69,13 +69,13 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
                 outline-color: var(--skill-#{$variant}-border);
                 background-image: repeating-linear-gradient(
                 -62.5deg,
-                var(--skill-#{$variant}-hover) 0 12px,
-                var(--skill-#{$variant}-border) 12px 19px,
-                var(--skill-#{$variant}-active) 19px 31px
+                var(--skill-#{$variant}-hover) 0 0,
+                var(--skill-#{$variant}-border) 10px 10px,
+                var(--skill-#{$variant}-active)209px311px
                 );
                 background-size: 104.5px 100%;
 
-                animation: progress-bar-effect 2s linear infinite;
+                animation: progress-bar-effect 1s linear infinite;
 
                 &:hover {
                     filter: brightness(133%);

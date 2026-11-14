@@ -151,6 +151,7 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
     outline-color: rgba(255, 255, 255, 0.15);
 
     &:not(:disabled):hover {
+      cursor: pointer;
       background-color: var(--paper-hover);
       outline-color: rgba(255, 255, 255, 0.2);
 
@@ -174,26 +175,26 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
 
       &:hover {
         outline-color: rgba(255, 255, 255, 0.45);
-          background-image: repeating-linear-gradient(
-            -36.5deg,
-            var(--paper-hover) 0 12px,
-            var(--paper-border) 12px 19px,
-            var(--paper-hover) 19px 31px
-          );
-          background-size: 104.5px 100%;
+        background-image: repeating-linear-gradient(
+          -36.5deg,
+          var(--paper-hover) 0 12px,
+          var(--paper-border) 12px 19px,
+          var(--paper-hover) 19px 31px
+        );
+        background-size: 104.5px 100%;
 
-          &:active {
-            &:hover {
-              background-image: repeating-linear-gradient(
-                -36.5deg,
-                var(--paper-1) 0 12px,
-                var(--paper-border) 12px 19px,
-                var(--paper-1) 19px 31px
-              );
-              background-size: 104.5px 100%;
-            }
+        &:active {
+          &:hover {
+            background-image: repeating-linear-gradient(
+              -36.5deg,
+              var(--paper-1) 0 12px,
+              var(--paper-border) 12px 19px,
+              var(--paper-1) 19px 31px
+            );
+            background-size: 104.5px 100%;
           }
         }
+      }
     }
   }
 

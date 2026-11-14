@@ -26,17 +26,17 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
 }
 
 .input-label {
-    z-index: 2;
+    z-index: 4;
     width: fit-content;
 }
 
 .label-number-min, .label-range-min {
-    z-index: 2;
+    z-index: 4;
     color: white;
 }
 
 .label-number-max, .label-range-max {
-    z-index: 2;
+    z-index: 4;
     color: white;
 }
 
@@ -51,7 +51,7 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
 }
 
 .label-checkbox-text {
-    z-index: 2;
+    z-index: 4;
     font-family: var(--font-heading);
     padding-top: 2px;
     transform: translateY(-1.5px);
@@ -127,10 +127,22 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
                     outline: 100vmax solid var(--button-#{$variant});
                 }
             }
+
+            &.button-transparent {
+                &:hover {
+                    outline: 100vmax solid var(--button-#{$variant});
+                }
+            }
         }
 
         @each $variant in $skill-colors {
             &[data-variant="#{$variant}"] {
+                &:hover {
+                    outline: 100vmax solid var(--skill-#{$variant});
+                }
+            }
+
+            &.button-transparent {
                 &:hover {
                     outline: 100vmax solid var(--skill-#{$variant});
                 }
@@ -384,11 +396,44 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
             cursor: not-allowed;
         }
     }
-    
+
     &.input-button {
         outline-offset: 0;
         margin-bottom: 3px;
         flex-grow: 1;
+
+        border-style: solid;
+        border-width: 1px;
+        padding-block: 6px;
+
+        @each $variant in $button-colors {
+            &[data-variant="#{$variant}"] {
+                border-color: var(--button-#{$variant}-border);
+                &[data-checked="true"] {
+                    padding-block: 4px;
+                    border-width: 3px;
+                    border-color: var(--button-#{$variant}-border);
+                }
+            }
+        }
+
+        @each $variant in $skill-colors {
+            &[data-variant="#{$variant}"] {
+                border-color: var(--skill-#{$variant}-border);
+                &[data-checked="true"] {
+                    padding-block: 4px;
+                    border-width: 3px;
+                    border-color: var(--skill-#{$variant}-border);
+                }
+            }
+        }
+            
+        &.button-transparent {
+            &[data-checked="true"] {
+                padding-block: 4px;
+                border-width: 3px;
+            }
+        }
     }
 }
 
@@ -405,10 +450,10 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
 
 .input-radio-option {
     position: relative;
-    z-index:2;
+    z-index: 3;
 
-    *:hover {
-        z-index: 1;
+    &:hover {
+        z-index: 0;
     }
 }
 

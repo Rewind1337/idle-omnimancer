@@ -36,7 +36,7 @@ export function InputCheckbox({
         <Paper layer={layer + 1} variant={variant} padding={"3px 2px 0 2px"} className="input-paper-wrapper">
           {renderButtons ? (
             <Flex padding={0}>
-              <Button variant={variant} toggled={checked} disabled={disabled} onClick={handleChange} className={cx('input input-button', className)} {...props}>
+              <Button transparent={!checked} variant={checked ? variant : ''} checked={checked} disabled={disabled} onClick={handleChange} className={cx('input input-button', className)} {...props}>
                 {checkboxLabel}
               </Button>
             </Flex>

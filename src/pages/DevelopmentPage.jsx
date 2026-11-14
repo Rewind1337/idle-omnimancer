@@ -13,6 +13,8 @@ import { InputRadio } from "../components/InputRadio"
 import { useState } from "react"
 import { Progress } from "../components/Progress"
 import { InputSelect } from "../components/InputSelect"
+import { Heading } from "../components/Heading"
+import { Text } from "../components/Text"
 
 /* Temp stuff for showcasing */
 const VARIANTS = ["primary", "secondary", "earth", "air", "water", "research", "spellcraft", "transmutation", "exploration", "combat", "unveiling"]
@@ -49,11 +51,6 @@ function Showcase() {
     setRangeInput(value)
   }
 
-  const handleCheckbox = (e) => {
-    let value = Boolean(e.target.checked)
-    setCheckbox(value)
-  }
-
   return (
     <Paper layer={1}>
       <h2>Showcase - Paper Layer 1</h2>
@@ -61,12 +58,20 @@ function Showcase() {
         <Paper layer={2}>
           <h3>Headings - Paper Layer 2</h3>
           <Flex wrap={true} padding={8} gap={16}>
-            <h1 className="flex-grow w-min">Heading 1</h1>
-            <h2 className="flex-grow w-min">Heading 2</h2>
-            <h3 className="flex-grow w-min">Heading 3</h3>
-            <h4 className="flex-grow w-min">Heading 4</h4>
-            <h5 className="flex-grow w-min">Heading 5</h5>
-            <h6 className="flex-grow w-min">Heading 6</h6>
+            <Heading className="flex-grow w-min" h="1" text={"Heading 1"} variant={"research"} />
+            <Heading className="flex-grow w-min" h="2" text={"Heading 2"} variant={"spellcraft"} />
+            <Heading className="flex-grow w-min" h="3" text={"Heading 3"} variant={"transmutation"} />
+            <Heading className="flex-grow w-min" h="4" text={"Heading 4"} variant={"combat"} />
+            <Heading className="flex-grow w-min" h="5" text={"Heading 5"} variant={"exploration"} />
+            <Heading className="flex-grow w-min" h="6" text={"Heading 6"} variant={"unveiling"} />
+          </Flex>
+          <h3>Texts</h3>
+          <Flex wrap={true} padding={8} gap={16}>
+            <Text className="flex-grow w-min" size="xsmall" text={"Test"} variant={"water"} />
+            <Text className="flex-grow w-min" size="small" text={"Test"} variant={"earth"} />
+            <Text className="flex-grow w-min" size="medium" text={"Test"} variant={"air"} />
+            <Text className="flex-grow w-min" size="large" text={"Test"} variant={"unveiling"} />
+            <Text className="flex-grow w-min" size="xlarge" text={"Test"} variant={"primary"} />
           </Flex>
         </Paper>
         <Paper layer={2}>

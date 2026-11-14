@@ -4,6 +4,7 @@ import './Button.scss'
 const cx = (...values) => values.filter(Boolean).join(' ')
 
 export function Text({
+    children,
     className = '',
     text,
     variant = '',
@@ -13,7 +14,7 @@ export function Text({
 
     return (
         <p data-variant={variant} data-size={size} className={cx('text', className)} {...props}>
-            {text}
+            {text} {children}
         </p>
     )
 }

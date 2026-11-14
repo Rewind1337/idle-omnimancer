@@ -4,6 +4,7 @@ import './Button.scss'
 const cx = (...values) => values.filter(Boolean).join(' ')
 
 export function Heading({
+    children,
     className = '',
     text,
     variant = '',
@@ -13,7 +14,7 @@ export function Heading({
     const Tag = `h${h}`
     return (
         <Tag data-variant={variant} className={cx('heading heading-h' + h, className)} {...props}>
-            {text}
+            {text} {children}
         </Tag>
     )
 }

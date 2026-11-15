@@ -1,7 +1,6 @@
 import './Button.scss'
 
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function Text({
     children,
@@ -13,8 +12,8 @@ export function Text({
 }) {
 
     return (
-        <p data-variant={variant} data-size={size} className={cx('text', className)} {...props}>
+        <span data-variant={variant} data-size={size} className={cx('text', className)} {...props}>
             {text} {children}
-        </p>
+        </span>
     )
 }

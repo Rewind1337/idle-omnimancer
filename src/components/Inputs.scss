@@ -1,7 +1,7 @@
-/* Input and Label Component Styles */
-$button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling;
-$skill-colors: research, spellcraft, transmutation, exploration, combat, unveiling;
+/* Color Tokens */
+@use '../scss/tokens.scss' as *;
 
+/* Input and Label Component Styles */
 .input-label,
 .label-number-min, .label-range-min,
 .label-number-max, .label-range-max,

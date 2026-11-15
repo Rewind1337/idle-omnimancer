@@ -1,5 +1,298 @@
+/* Icon Component Styles */
 .icon {
     display: grid;
     place-content: center;
-    width: min-content;
+    width: fit-content;
+
+    &.icon-frame {
+        --icon-size: 64px;
+
+        width: var(--icon-size);
+        aspect-ratio: 1;
+
+        position: relative;
+        top: -6px;
+        display: inline-grid;
+        place-content: initial;
+        place-items: center;
+
+        flex: 0 0 auto;
+        isolation: isolate;
+    }
+}
+
+/* Decoration Globals */
+.icon-outer-shape,
+.icon-outer-runes,
+.icon-inner-shape,
+.icon-inner-runes,
+.icon-content {
+    transform-origin: 50% 50%;
+    position: absolute;
+    z-index: 5;
+}
+
+/* Shape (Clip) Decorations */
+.icon-outer-shape {
+    z-index: 1;
+    background-color: var(--icon-accent-dark);
+    width: var(--icon-size);
+    height: var(--icon-size);
+    position: absolute;
+    top: 6px;
+
+    animation: fullOuterRotation 6s linear infinite;
+}
+
+.icon-inner-shape {
+    z-index: 3;
+    background-color: var(--icon-accent-border);
+    width: var(--icon-size);
+    height: var(--icon-size);
+
+    animation: fullInnerRotation 30s linear infinite;
+}
+
+/* Shape (Clip) Decorations */
+.icon-outer-shape,
+.icon-inner-shape {
+    &[data-inner-shape="bevel"],
+    &[data-outer-shape="bevel"] {
+        scale: 0.88;
+        clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+    }
+
+    &[data-inner-shape="rabbet"],
+    &[data-outer-shape="rabbet"] {
+        scale: 0.82;
+        clip-path: polygon(0% 15%, 15% 15%, 15% 0%, 85% 0%, 85% 15%, 100% 15%, 100% 85%, 85% 85%, 85% 100%, 15% 100%, 15% 85%, 0% 85%);
+    }
+
+    &[data-inner-shape="house"],
+    &[data-outer-shape="house"] {
+        scale: 0.75;
+        top: 5px;
+        clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
+    }
+
+    &[data-inner-shape="chevron"],
+    &[data-outer-shape="chevron"] {
+        scale: 0.74;
+        top: 5px;
+        transform-origin: 50% 51%;
+        clip-path: polygon(100% 0%, 75% 50%, 100% 100%, 25% 100%, 0% 50%, 25% 0%);
+    }
+
+    &[data-inner-shape="star"],
+    &[data-outer-shape="star"] {
+        scale: 1.07;
+        clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+    &[data-inner-shape="close"],
+    &[data-outer-shape="close"] {
+        scale: 0.89;
+        clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+    }
+
+    &[data-inner-shape="frame"],
+    &[data-outer-shape="frame"] {
+        scale: 0.75;
+        top: 6px;
+        background-color: transparent;
+        border: 4px solid var(--icon-accent);
+    }
+
+    &[data-inner-shape="3"],
+    &[data-outer-shape="3"] {
+        scale: 0.9;
+        top: -5px;
+        transform-origin: 50% 66.666%;
+        clip-path: polygon(50% 8%, 100% 100%, 0% 100%);
+    }
+
+    &[data-inner-shape="4"],
+    &[data-outer-shape="4"] {scale: 0.75;}
+
+    &[data-inner-shape="5"],
+    &[data-outer-shape="5"] {
+        top: 3px;
+        scale: 0.98;
+        transform-origin: 50% 55%;
+        clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    }
+
+    &[data-inner-shape="6"],
+    &[data-outer-shape="6"] {
+        top: 5px;
+        clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    }
+
+    &[data-inner-shape="7"],
+    &[data-outer-shape="7"] {
+        top: 5px;
+        scale: 0.94;
+        transform-origin: 50% 52.5%;
+        clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+    }
+
+    &[data-inner-shape="8"],
+    &[data-outer-shape="8"] {
+        scale: 0.93;
+        clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    }
+
+    &[data-inner-shape="9"],
+    &[data-outer-shape="9"] {
+        top: 6px;
+        scale: 0.95;
+        transform-origin: 50% 51%;
+        clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
+    }
+
+    &[data-inner-shape="10"],
+    &[data-outer-shape="10"] {
+        top: 6px;
+        clip-path: polygon(50% 0%, 80% 10%, 98% 35%, 98% 70%, 80% 90%, 50% 100%, 20% 90%, 2% 70%, 2% 35%, 20% 10%);
+    }
+
+    &.no-background {
+        background-color: transparent !important;
+    }
+}
+
+.icon:hover {
+    > * {
+        transition: background-color 0.3s ease-out, outline-color 0.3s ease-out, color 0.3s ease-out;
+    }
+    .icon-outer-shape {
+        background-color: var(--icon-accent-text-on-light);
+    }
+    .icon-inner-shape {
+        background-color: var(--icon-accent-text-on-dark);
+    }
+    .icon-outer-runes {
+        outline-color: var(--icon-accent-border);
+    }
+    .icon-inner-runes {
+        outline-color: var(--icon-accent-border);
+    }
+    .icon-content {
+        color: var(--icon-accent-dark);
+        > * {
+            filter: unset;
+        }
+    }
+}
+
+/* Rune (Border) Decorations */
+.icon-outer-runes {
+    z-index: 2;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    top: 6px;
+    outline-width: 2px;
+}
+
+.icon-inner-runes {
+    z-index: 4;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    top: 6px;
+    outline-width: 1px;
+}
+
+/* Rune (Border) Decorations */
+.icon-outer-runes,
+.icon-inner-runes {
+    background-color: transparent !important;
+    border-radius: 50%;
+
+    &[data-inner-runes="solid"],
+    &[data-outer-runes="solid"] {
+        outline-style: solid;
+    }
+
+    &[data-inner-runes="dashed"],
+    &[data-outer-runes="dashed"] {
+        outline-style: dashed;
+    }
+
+    &[data-inner-runes="dotted"],
+    &[data-outer-runes="dotted"] {
+        outline-style: dotted;
+    }
+
+    &[data-inner-runes="double"],
+    &[data-outer-runes="double"] {
+        outline-style: double;
+        outline-width: 3px;
+    }
+}
+
+.icon-outer-runes {
+    outline-color: var(--icon-accent-active);
+    border-color: var(--icon-accent-active);
+
+    animation: outerRunes 12s linear infinite;
+}
+
+.icon-inner-runes {
+    outline-color: var(--icon-accent-border);
+    border-color: var(--icon-accent-border);
+
+    animation: innerRunes 9s linear infinite;
+}
+
+@keyframes fullOuterRotation {
+    0% {transform: scale(1) rotate(0deg); filter: brightness(125%);}
+    50% {transform: scale(1) otate(180deg); filter: brightness(75%);}
+    100% {transform: scale(1) rotate(360deg); filter: brightness(125%);}
+}
+
+@keyframes fullInnerRotation {
+    0% {transform: scale(0.8) rotate(0deg); filter: brightness(100%);}
+    50% {transform: scale(0.8) otate(-180deg); filter: brightness(125%);}
+    100% {transform: scale(0.8) rotate(-360deg); filter: brightness(100%);}
+}
+
+@keyframes outerRunes {
+    0% {outline-offset: 0; transform: rotate(0deg); filter: brightness(100%);}
+    50% {outline-offset: 4px; transform: rotate(180deg); filter: brightness(200%);}
+    100% {outline-offset: 0; transform: rotate(360deg); filter: brightness(100%);}
+}
+
+@keyframes innerRunes {
+    0% {outline-offset: -10px; transform: rotate(0deg); filter: brightness(100%);}
+    50% {outline-offset: -4px; transform: rotate(180deg); filter: brightness(150%);}
+    100% {outline-offset: -10px; transform: rotate(360deg); filter: brightness(100%);}
+}
+
+@keyframes iconBob {
+    0% {transform: translateY(6px); filter: brightness(400%);}
+    50% {transform: translateY(10px); filter: brightness(300%);}
+    100% {transform: translateY(6px); filter: brightness(400%);}
+}
+
+.icon-content {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    z-index: 6;
+    color: var(--icon-accent);
+
+    > * {
+        max-width: 100%;
+        max-height: 100%;
+        isolation: isolate;
+
+        animation: iconBob 4s ease-in-out infinite alternate-reverse;
+    }
+
+    // Images and SVG icons automatically scale to fit.
+    :where(img, svg) {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 }

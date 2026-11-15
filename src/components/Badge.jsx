@@ -2,8 +2,7 @@ import { Flex } from './Flex'
 
 import './Badge.scss'
 
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function Badge({
   children,
@@ -12,7 +11,7 @@ export function Badge({
   size = 'medium',
   interactive = false,
   icon,
-  onClick = () => {},
+  onClick = () => { },
   ...props
 }) {
   return (
@@ -20,7 +19,7 @@ export function Badge({
       className={cx('badge', interactive && 'badge-interactive', className)}
       data-variant={variant}
       data-size={size}
-      onClick={() => {onClick()}}
+      onClick={() => { onClick() }}
       {...props}
     >
       <Flex wrap={false} justify="space-between" gap={8} padding={0}>

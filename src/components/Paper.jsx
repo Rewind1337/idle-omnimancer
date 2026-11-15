@@ -1,13 +1,13 @@
 import './Paper.scss'
 
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function Paper({
   children,
   layer = 0,
   className = '',
   transparent = false,
+  round = false,
   variant = null,
   interactive = false,
   selected = false,
@@ -17,8 +17,14 @@ export function Paper({
 }) {
   return (
     <div
-      className={cx('paper', transparent && 'paper-transparent', interactive && 'paper-interactive', selected && 'is-selected', className)}
-      style={{padding: padding,...style}}
+      className={cx(
+        'paper',
+        transparent && 'paper-transparent',
+        interactive && 'paper-interactive',
+        selected && 'is-selected',
+        round && 'paper-round',
+        className)}
+      style={{ padding: padding, ...style }}
       data-variant={variant}
       data-layer={layer}
       {...props}

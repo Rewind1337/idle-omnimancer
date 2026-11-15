@@ -3,8 +3,7 @@ import { Flex } from "./Flex"
 import './Button.scss'
 import { Badge } from "./Badge"
 
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function Button({
   children,

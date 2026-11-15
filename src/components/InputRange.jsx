@@ -3,8 +3,7 @@ import { Flex } from "./Flex"
 
 import './Inputs.scss'
 
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function InputRange({
   className = '',
@@ -27,9 +26,9 @@ export function InputRange({
         {label && <label data-layer={layer} data-variant={variant} className={cx('label input-label', className)}>{label}</label>}
         <Flex>
           <label data-layer={layer} data-variant={variant} className="label-range-min w-min">min. {min}</label>
-          <Paper className="input-range-wrapper input-paper-wrapper" layer={layer+1} variant={variant} padding={"3px 2px 0 2px"}>
+          <Paper className="input-range-wrapper input-paper-wrapper" layer={layer + 1} variant={variant} padding={"3px 2px 0 2px"}>
             <input type="range" value={value} onChange={onChange} min={min} max={max} step={1} data-variant={variant} className={cx('input input-range', className)}
-            {...props}/>
+              {...props} />
             <Paper className="input-range-tooltip" style={{ left: position }}>
               <h2>{value}</h2>
             </Paper>

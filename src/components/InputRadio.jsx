@@ -4,8 +4,7 @@ import { Button } from "./Button"
 
 import './Inputs.scss'
 
-// Utility function that joins CSS classes after filtering for truthiness.
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function InputRadio({
   className = '',

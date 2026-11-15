@@ -1,7 +1,6 @@
 import './Button.scss'
 
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function Heading({
     children,

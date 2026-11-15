@@ -2,8 +2,7 @@ import { Button } from './Button'
 import { Flex } from './Flex'
 import { Grid } from './Grid'
 
-// Utility function that joins CSS classes after filtering for truthiness.
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function Tabs({
     tabs = [],
@@ -32,6 +31,7 @@ export function Tabs({
             <Button
                 key={tabValue}
                 variant={option.variant ?? variant}
+                transparent={option.transparent ?? ''}
                 size={option.size ?? size}
                 icon={option.icon}
                 badge={option.badge ?? option.level ?? null}

@@ -1,12 +1,15 @@
-import { BookOpenText, Scale, WandSparkles, Star, ArrowUpRight, CircleDollarSign, GraduationCap, MapPin, FaceAngry } from "lucide-react"
+import { BookOpenText, Scale, WandSparkles, Star, ArrowUpRight, CircleDollarSign, GraduationCap, MapPin, FaceAngry, Sword, RatIcon, Trophy, TextQuote, ShieldBan, Bird, Dog } from "lucide-react"
 
 import { useState } from "react"
+
+import { useToast } from "../hooks/useToast"
 
 import { Badge } from "../components/Badge"
 import { Button } from "../components/Button"
 import { Flex } from "../components/Flex"
 import { Paper } from "../components/Paper"
 import { Grid } from "../components/Grid"
+import { Icon } from "../components/Icon"
 import { InputText } from "../components/InputText"
 import { InputNumber } from "../components/InputNumber"
 import { InputRange } from "../components/InputRange"
@@ -17,12 +20,11 @@ import { InputSelect } from "../components/InputSelect"
 import { Heading } from "../components/Heading"
 import { Text } from "../components/Text"
 import { Modal } from "../components/Modal"
-
-import { useToast } from "../hooks/useToast"
 import { Tooltip } from "../components/Tooltip"
 
-/* Temp stuff for showcasing */
-const VARIANTS = ["primary", "secondary", "earth", "air", "water", "research", "spellcraft", "transmutation", "exploration", "combat", "unveiling"]
+import "../data/skillConfig.js"
+
+const VARIANTS = ["primary", "secondary", "earth", "air", "water", "research", "spellcraft", "transmutation", "exploration", "combat", "unveiling", "companions"]
 const SIZES = ["large", "medium", "small"]
 const ICONS = [<BookOpenText />, <Scale />, <WandSparkles />, <Star />, <MapPin />, <CircleDollarSign />, <GraduationCap />, <FaceAngry />]
 
@@ -145,6 +147,96 @@ function Showcase() {
           </Grid>
         </Paper>
         <Paper layer={2}>
+          <h3>Fancy Icons</h3>
+          <Flex wrap={true} padding={8} gap={16}>
+            <Paper round layer="0" variant={VARIANTS[0]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[0]} innerShape={3}>
+                {<BookOpenText size={48} />}
+              </Icon>
+            </Paper>
+            <Paper layer="0" variant={VARIANTS[0]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[0]} outerShape={3}>
+                {<BookOpenText size={48} />}
+              </Icon>
+            </Paper>
+            <Paper round layer="0" variant={VARIANTS[0]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[0]} outerShape={3} innerShape={3} outerRunes={"solid"} innerRunes={"solid"}>
+                {<BookOpenText size={48} />}
+              </Icon>
+            </Paper>
+            <Paper layer="0" variant={VARIANTS[1]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[1]} outerShape={4} innerShape={3} outerRunes={"dashed"} innerRunes={"dashed"}>
+                {<Scale size={48} />}
+              </Icon>
+            </Paper>
+            <Paper round layer="0" variant={VARIANTS[2]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[2]} outerShape={5} innerShape={3} outerRunes={"dotted"} innerRunes={"dotted"}>
+                {<WandSparkles size={48} />}
+              </Icon>
+            </Paper>
+            <Paper layer="0" variant={VARIANTS[3]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[3]} outerShape={6} innerShape={3} outerRunes={"double"} innerRunes={"double"}>
+                {<Star size={48} />}
+              </Icon>
+            </Paper>
+            <Paper round layer="0" variant={VARIANTS[4]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[4]} outerShape={7} innerShape={3} outerRunes={"solid"} innerRunes={"dashed"}>
+                {<MapPin size={48} />}
+              </Icon>
+            </Paper>
+            <Paper layer="0" variant={VARIANTS[5]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[5]} outerShape={8} innerShape={3} outerRunes={"solid"} innerRunes={"dotted"}>
+                {<CircleDollarSign size={48} />}
+              </Icon>
+            </Paper>
+            <Paper round layer="0" variant={VARIANTS[6]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[6]} outerShape={9} innerShape={3} outerRunes={"solid"} innerRunes={"double"}>
+                {<GraduationCap size={48} />}
+              </Icon>
+            </Paper>
+            <Paper layer="0" variant={VARIANTS[7]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[7]} outerShape={10} innerShape={3} outerRunes={"dashed"} innerRunes={"dotted"}>
+                {<FaceAngry size={48} />}
+              </Icon>
+            </Paper>
+            <Paper round layer="0" variant={VARIANTS[8]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[8]} outerShape={"bevel"} innerShape={3} outerRunes={"dashed"} innerRunes={"double"}>
+                {<Sword size={48} />}
+              </Icon>
+            </Paper>
+            <Paper layer="0" variant={VARIANTS[9]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[9]} outerShape={"rabbet"} innerShape={3} outerRunes={"dotted"} innerRunes={"dashed"}>
+                {<RatIcon size={48} />}
+              </Icon>
+            </Paper>
+            <Paper round layer="0" variant={VARIANTS[10]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[10]} outerShape={"house"} innerShape={3} outerRunes={"dotted"} innerRunes={"double"}>
+                {<Trophy size={48} />}
+              </Icon>
+            </Paper>
+            <Paper layer="0" variant={VARIANTS[0]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[0]} outerShape={"chevron"} innerShape={3} outerRunes={"solid"} innerRunes={"dotted"}>
+                {<TextQuote size={48} />}
+              </Icon>
+            </Paper>
+            <Paper round layer="0" variant={VARIANTS[1]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[1]} outerShape={"star"} innerShape={3} outerRunes={"dashed"} innerRunes={"double"}>
+                {<ShieldBan size={48} />}
+              </Icon>
+            </Paper>
+            <Paper layer="0" variant={VARIANTS[2]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[2]} outerShape={"close"} innerShape={3} outerRunes={"double"} innerRunes={"solid"}>
+                {<Bird size={48} />}
+              </Icon>
+            </Paper>
+            <Paper round layer="0" variant={VARIANTS[3]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[3]} outerShape={"frame"} innerShape={3} outerRunes={"dotted"} innerRunes={"dashed"}>
+                {<Dog size={48} />}
+              </Icon>
+            </Paper>
+          </Flex>
+        </Paper>
+        <Paper layer={2}>
           <h3>Badges</h3>
           <Flex wrap={true} padding={8} gap={16}>
             {VARIANTS.map((variant, index) =>
@@ -162,7 +254,7 @@ function Showcase() {
           </Flex>
           <h3>Tooltips</h3>
           <Flex>
-            <Tooltip content="Basic Tooltip"><ArrowUpRight /></Tooltip>
+            <Tooltip content="Basic Tooltip"><Paper><ArrowUpRight /></Paper></Tooltip>
             <Tooltip content={
               <Flex direction="column">
                 <Heading h="3" className="align-center">More Complex</Heading>
@@ -170,7 +262,7 @@ function Showcase() {
                 <Badge variant={"primary"} icon={ICONS[3]}>Badge</Badge>
               </Flex>
             }>
-              <ArrowUpRight />
+              <Paper><ArrowUpRight /></Paper>
             </Tooltip>
           </Flex>
         </Paper>

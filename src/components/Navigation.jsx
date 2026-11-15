@@ -1,40 +1,61 @@
-import { BookOpenText, Scale, WandSparkles, Star } from "lucide-react"
-
 import { Paper } from "./Paper"
 import { Tabs } from "./Tabs"
+import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 
 import './Navigation.scss'
 
-// Utility function that joins CSS classes after filtering for truthiness.
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 // Navigation tab definitions.
 const NAVIGATION_TABS = [
   {
     id: 0,
     name: "Research",
-    icon: <BookOpenText />,
-    variant: "research",
-    level: 1
+    icon: SKILL_ICONS.RESEARCH,
+    variant: "research"
   },
   {
     id: 1,
     name: "Spellcraft",
-    icon: <WandSparkles />,
-    variant: "spellcraft",
-    level: 1
+    icon: SKILL_ICONS.SPELLCRAFT,
+    variant: "spellcraft"
   },
   {
     id: 2,
     name: "Transmutation",
-    icon: <Scale />,
+    icon: SKILL_ICONS.TRANSMUTATION,
     variant: "transmutation"
   },
   {
     id: 3,
-    name: "Development",
-    icon: <Star />,
+    name: "Exploration",
+    icon: SKILL_ICONS.EXPLORATION,
+    variant: "exploration"
+  },
+  {
+    id: 4,
+    name: "Unveiling",
+    icon: SKILL_ICONS.UNVEILING,
+    variant: "unveiling"
+  },
+  {
+    id: 5,
+    name: "Combat",
+    icon: SKILL_ICONS.COMBAT,
     variant: "combat"
+  },
+  {
+    id: 6,
+    name: "Companions",
+    icon: SKILL_ICONS.COMPANIONS,
+    variant: "companions"
+  },
+  {
+    id: 7,
+    name: "Development",
+    icon: OTHER_ICONS.STAR,
+    variant: "",
+    transparent: true,
   }
 ]
 

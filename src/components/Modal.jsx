@@ -3,8 +3,7 @@ import { Heading } from './Heading'
 import { Paper } from './Paper'
 import './Modal.scss'
 
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function Modal({
   visible,

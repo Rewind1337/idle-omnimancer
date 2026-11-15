@@ -1,17 +1,15 @@
+import { useState } from "react";
+
 import { Flex } from "./components/Flex";
 import { Navigation } from "./components/Navigation";
-
-import { useState } from "react";
-import { ResearchPage } from "./pages/ResearchPage";
-import { SpellcraftPage } from "./pages/SpellcraftPage";
-import { TransmutationPage } from "./pages/TransmutationPage";
-import { DevelopmentPage } from "./pages/DevelopmentPage";
 import { ScrollArea } from "./components/ScrollArea";
-
 import { ToastProvider } from "./components/ToastProvider"
 
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { ResearchPage } from "./pages/ResearchPage";
+import { SpellcraftPage } from "./pages/SpellcraftPage";
+import { DevelopmentPage } from "./pages/DevelopmentPage";
+
+import { cx } from './utility/helpers'
 
 function ResponsivePage({
   children,
@@ -42,7 +40,16 @@ function ResponsivePage({
   }
 }
 
-const PAGES = { RESEARCH: 0, SPELLCRAFT: 1, TRANSMUTATION: 2, DEVELOPMENT: 3 }
+const PAGES = {
+  RESEARCH: 0,
+  SPELLCRAFT: 1,
+  TRANSMUTATION: 2,
+  EXPLORATION: 3,
+  UNVEILING: 4,
+  COMBAT: 5,
+  COMPANIONS: 6,
+  DEVELOPMENT: 7
+}
 
 function App() {
   const [activePage, setActivePage] = useState(PAGES.RESEARCH)
@@ -52,7 +59,6 @@ function App() {
       <ResponsivePage activePage={activePage} navigationPosition="top" navigationMode="compact" setActivePage={setActivePage}>
         {activePage === PAGES.RESEARCH && <ResearchPage />}
         {activePage === PAGES.SPELLCRAFT && <SpellcraftPage />}
-        {activePage === PAGES.TRANSMUTATION && <TransmutationPage />}
         {activePage === PAGES.DEVELOPMENT && <DevelopmentPage />}
       </ResponsivePage>
     </ToastProvider>

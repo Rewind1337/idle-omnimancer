@@ -5,8 +5,7 @@ import { Text } from './Text'
 
 import './Tooltip.scss'
 
-// Utility function that joins CSS classes after filtering for truthiness.
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function Tooltip({
     children,

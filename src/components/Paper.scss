@@ -1,7 +1,7 @@
-/* Paper Component Styles */
-$button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling;
-$skill-colors: research, spellcraft, transmutation, exploration, combat, unveiling;
+/* Color Tokens */
+@use '../scss/tokens.scss' as *;
 
+/* Paper Component Styles */
 .paper {
   padding: 8px;
   border-radius: 8px;
@@ -38,13 +38,23 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
 
   @each $variant in $button-colors {
     &[data-variant="#{$variant}"] {
-      border-color: var(--button-#{$variant})
+      &:hover {
+        border-color: var(--button-#{$variant})
+      }
+      &:hover .paper {
+        border-color: var(--button-#{$variant})
+      }
     }
   }
 
   @each $variant in $skill-colors {
     &[data-variant="#{$variant}"] {
-      border-color: var(--skill-#{$variant})
+      &:hover {
+        border-color: var(--skill-#{$variant})
+      }
+      &:hover .paper {
+        border-color: var(--skill-#{$variant})
+      }
     }
   }
 
@@ -61,5 +71,14 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
     &[data-layer="3"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.5);}
     &[data-layer="4"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.4);}
     &[data-layer="5"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.3);}
+  }
+
+  &.paper-round {
+    aspect-ratio: 1 !important;
+    border-radius: 50%;
+
+    > .icon {
+      transform: translateY(2px);
+    }
   }
 }

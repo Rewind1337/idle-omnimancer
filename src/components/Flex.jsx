@@ -1,5 +1,4 @@
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function Flex({
   children,
@@ -21,7 +20,8 @@ export function Flex({
         justifyContent: justify,
         flexWrap: (wrap ? "wrap" : "nowrap"),
         gap: gap,
-        padding: padding}}
+        padding: padding
+      }}
       {...props}
     >
       {children}

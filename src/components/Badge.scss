@@ -1,7 +1,7 @@
-/* Badge Component Styles */
-$button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling;
-$skill-colors: research, spellcraft, transmutation, exploration, combat, unveiling;
+/* Color Tokens */
+@use '../scss/tokens.scss' as *;
 
+/* Badge Component Styles */
 .badge {
     display: grid;
     align-items: center;

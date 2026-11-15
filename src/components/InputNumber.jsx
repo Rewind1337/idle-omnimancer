@@ -3,8 +3,7 @@ import { Flex } from "./Flex"
 
 import './Inputs.scss'
 
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
+import { cx } from '../utility/helpers'
 
 export function InputNumber({
   className = '',
@@ -25,15 +24,15 @@ export function InputNumber({
     <Flex direction="column" padding={0}>
       <Paper layer={layer} variant={variant} interactive={true} padding={4} className="clip-overflow">
         {label && <label data-layer={layer} data-variant={variant} className={cx('label input-label', className)}>{label}</label>}
-          <Flex>
-            {hasMinimum && <label data-layer={layer} data-variant={variant} className="label-number-min w-min">min. {min}</label>}
-            <Paper layer={layer+1} variant={variant} padding={"3px 2px 0 2px"} className="input-paper-wrapper">
-              <input type="number" value={value} min={(hasMinimum ? min : 0)} max={(hasMaximum ? max : 1e300)} onChange={onChange} data-variant={variant} placeholder={placeholder} className={cx('input input-number', className)}
-              {...props}/>
-            </Paper>
-            {hasMaximum && <label data-layer={layer} data-variant={variant} className="label-number-max w-min">max. {max}</label>}
-          </Flex>
-        </Paper>
+        <Flex>
+          {hasMinimum && <label data-layer={layer} data-variant={variant} className="label-number-min w-min">min. {min}</label>}
+          <Paper layer={layer + 1} variant={variant} padding={"3px 2px 0 2px"} className="input-paper-wrapper">
+            <input type="number" value={value} min={(hasMinimum ? min : 0)} max={(hasMaximum ? max : 1e300)} onChange={onChange} data-variant={variant} placeholder={placeholder} className={cx('input input-number', className)}
+              {...props} />
+          </Paper>
+          {hasMaximum && <label data-layer={layer} data-variant={variant} className="label-number-max w-min">max. {max}</label>}
+        </Flex>
+      </Paper>
     </Flex>
   )
 }

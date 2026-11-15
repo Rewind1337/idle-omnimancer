@@ -2,6 +2,8 @@
 
 .tooltip-trigger {
     position: relative;
+    anchor-name: var(--tooltip-anchor-name);
+
     display: inline-flex;
     align-items: center;
 
@@ -9,24 +11,33 @@
     max-width: 100%;
 
     > .tooltip-content {
-        position: absolute;
+        position: fixed;
+        position-anchor: var(--tooltip-anchor-name);
+
+        // Position above the trigger and center it horizontally.
+        position-area: block-start;
+        justify-self: anchor-center;
+
+        margin-inline: 8px;
+        margin-block-end: 8px;
+        max-width: min(280px, calc(100vw - 16px));
+
         z-index: 1000;
 
-        left: 50%;
-        bottom: calc(100% + 8px);
-
         width: max-content;
-        max-width: min(280px, calc(100vw - 32px));
 
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
 
-        transform: translate(-50%, 4px);
+        translate: 0 4px;
+
+        // Flip to the opposite side if there isn't enough room.
+        position-try-fallbacks: flip-block;
 
         transition:
             opacity 0.15s ease-out,
-            transform 0.15s ease-out,
+            translate 0.15s ease-out,
             visibility 0.15s;
     }
 
@@ -34,7 +45,7 @@
     &:focus-within > .tooltip-content {
         opacity: 1;
         visibility: visible;
-        transform: translate(-50%, 0);
+        translate: 0 0;
     }
 
     // Allow tooltip content to wrap instead of staying on one line.
@@ -54,14 +65,16 @@
 // Display the tooltip underneath its trigger instead.
 .tooltip-bottom {
     > .tooltip-content {
-        top: calc(100% + 8px);
-        bottom: auto;
-        transform: translate(-50%, -4px);
+        position-area: block-end;
+        margin-block-end: 0;
+        margin-block-start: 8px;
+
+        translate: 0 -4px;
     }
 
     &:hover > .tooltip-content,
     &:focus-within > .tooltip-content {
-        transform: translate(-50%, 0);
+        translate: 0 0;
     }
 }
 

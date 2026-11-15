@@ -56,6 +56,17 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
           }
       }
 
+      &[data-checked="true"],
+      &[data-checked="true"]:not(:disabled):hover:active {
+        background: var(--button-#{$variant}-active);
+        outline-color: var(--button-#{$variant}-border);
+      }
+
+      &[data-checked="true"]:not(:disabled):hover {
+          background: var(--button-#{$variant}-hover);
+          outline-color: var(--button-#{$variant}-border);
+      }
+
       &.button-toggled {
         outline-color: var(--button-#{$variant}-border);
         outline-width: 3px;
@@ -109,6 +120,17 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
           }
       }
 
+      &[data-checked="true"],
+      &[data-checked="true"]:not(:disabled):hover:active {
+        background: var(--skill-#{$variant}-active);
+        outline-color: var(--skill-#{$variant}-border);
+      }
+
+      &[data-checked="true"]:not(:disabled):hover {
+          background: var(--skill-#{$variant}-hover);
+          outline-color: var(--skill-#{$variant}-border);
+      }
+
       &.button-toggled {
         outline-color: var(--skill-#{$variant}-border);
         background-image: repeating-linear-gradient(
@@ -159,6 +181,16 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
         background-color: var(--paper-active);
         outline-color: rgba(255, 255, 255, 0.35);
       }
+    }
+
+    &[data-checked="true"],
+    &[data-checked="true"]:not(:disabled):hover:active {
+        background-color: var(--paper-active);
+        outline-color: rgba(255, 255, 255, 0.35);
+    }
+
+    &[data-checked="true"]:not(:disabled):hover {
+        background-color: var(--paper-hover);
     }
 
     &.button-toggled {

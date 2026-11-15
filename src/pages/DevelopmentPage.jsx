@@ -27,7 +27,7 @@ const SIZES = ["large", "medium", "small"]
 const ICONS = [<BookOpenText />, <Scale />, <WandSparkles />, <Star />, <MapPin />, <CircleDollarSign />, <GraduationCap />, <FaceAngry />]
 
 function Showcase() {
-  const { showToast, dismissToast, clearToasts } = useToast()
+  const { showToast /*, dismissToast, clearToasts */ } = useToast()
 
   const exampleToastButtons = [
     {
@@ -154,14 +154,24 @@ function Showcase() {
           </Flex>
         </Paper>
         <Paper layer={2}>
-          <h3>Toasts & Tooltips</h3>
+          <h3>Toasts</h3>
           <Flex wrap={true} padding={8} gap={16}>
             {exampleToastButtons.map((toast, index) =>
               <Button key={"toastbutton-" + index} onClick={() => { toast.toast() }} icon={<ArrowUpRight />}>{toast.text}</Button>
             )}
           </Flex>
-          <Flex wrap={true} padding={8} gap={16}>
-            <Tooltip content="Unlock additional Research actions."><ArrowUpRight /></Tooltip>
+          <h3>Tooltips</h3>
+          <Flex>
+            <Tooltip content="Basic Tooltip"><ArrowUpRight /></Tooltip>
+            <Tooltip content={
+              <Flex direction="column">
+                <Heading h="3" className="align-center">More Complex</Heading>
+                <Heading h="5" className="align-center">Things</Heading>
+                <Badge variant={"primary"} icon={ICONS[3]}>Badge</Badge>
+              </Flex>
+            }>
+              <ArrowUpRight />
+            </Tooltip>
           </Flex>
         </Paper>
         <Paper layer={2}>
@@ -201,8 +211,10 @@ function Showcase() {
             <InputSelect variant="air" values={["Earth", "Air", "Water"]} value={selectionInput} onChange={setSelectionInput} label={"Example Select"} />
             <InputNumber variant="earth" value={numberInput} onChange={handleNumberInput} label={"Example Number Input"} />
             <InputRange variant="combat" value={rangeInput} onChange={handleRangeInput} label={"Example Range Input"} min={1} max={67} />
-            <InputCheckbox variant="transmutation" renderButtons checked={checkbox} onChange={setCheckbox} label={"Example Checkbox"} checkboxLabel={"Some Checkbox"} />
+            <InputCheckbox variant="transmutation" renderButtons checked={checkbox} onChange={setCheckbox} label={"Example Checkbox Buttons"} checkboxLabel={"Some Checkbox"} />
+            <InputCheckbox variant="transmutation" checked={checkbox} onChange={setCheckbox} label={"Example Checkbox"} checkboxLabel={"Some Checkbox"} />
             <InputRadio variant="spellcraft" renderButtons values={["Earth", "Air", "Water"]} value={radioSelection} onChange={setRadioSelection} label={"Example Radio Buttons"} />
+            <InputRadio variant="spellcraft" values={["Earth", "Air", "Water"]} value={radioSelection} onChange={setRadioSelection} label={"Example Radio"} />
           </Grid>
         </Paper>
         <Paper layer={2}>

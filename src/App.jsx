@@ -15,6 +15,7 @@ const cx = (...values) => values.filter(Boolean).join(' ')
 
 function ResponsivePage({
   children,
+  activePage,
   setActivePage,
   navigationPosition = "top",
   navigationMode = "default",
@@ -23,7 +24,7 @@ function ResponsivePage({
   if (navigationPosition === "top") {
     return (
       <Flex direction="column" gap={4} className={cx('page', className)}>
-        <Navigation setActivePage={setActivePage} position="top" mode={navigationMode} />
+        <Navigation activePage={activePage} setActivePage={setActivePage} position="top" mode={navigationMode} />
         <ScrollArea padding={0}>
           {children}
         </ScrollArea>
@@ -32,7 +33,7 @@ function ResponsivePage({
   } else if (navigationPosition === "side") {
     return (
       <Flex direction="row" align="start" className={cx('page', className)}>
-        <Navigation setActivePage={setActivePage} position="side" mode={navigationMode} />
+        <Navigation activePage={activePage} setActivePage={setActivePage} position="side" mode={navigationMode} />
         <ScrollArea maxHeight={window.innerHeight - 8} padding={"0 8px 0 0"}>
           {children}
         </ScrollArea>
@@ -48,7 +49,7 @@ function App() {
 
   return (
     <ToastProvider>
-      <ResponsivePage navigationPosition="top" navigationMode="default" setActivePage={setActivePage}>
+      <ResponsivePage activePage={activePage} navigationPosition="top" navigationMode="compact" setActivePage={setActivePage}>
         {activePage === PAGES.RESEARCH && <ResearchPage />}
         {activePage === PAGES.SPELLCRAFT && <SpellcraftPage />}
         {activePage === PAGES.TRANSMUTATION && <TransmutationPage />}

@@ -122,23 +122,23 @@ function ActionResources({
 function ResearchAction({
   className = '',
   name,
-  level,
   tier,
+  level,
   baseDurationSeconds,
   baseXpPerCompletion,
 }) {
   return (
-    <Paper layer={1} className={cx('action action-research', className)}>
+    <Paper layer={1} variant={"research"} className={cx('action action-research', className)}>
       <Flex direction="column">
         <Flex direction="row">
-          <Icon><BookOpen/></Icon>
+          <Icon><BookOpen /></Icon>
           <Flex direction="column">
-            <ActionHeader name={name} level={level} tier={tier}/>
-            <ActionProgress/>
+            <ActionHeader name={name} level={level} tier={tier} />
+            <ActionProgress />
           </Flex>
         </Flex>
         <ActionDetails tier={tier} baseDurationSeconds={baseDurationSeconds} baseXpPerCompletion={baseXpPerCompletion} />
-        <ActionResources/>
+        <ActionResources />
       </Flex>
     </Paper>
   )
@@ -166,10 +166,10 @@ function SkillSummary({
 export function ResearchPage() {
   return (
     <Flex direction="column">
-      <Paper layer={0} variant={"research"}>
+      <Paper layer={0}>
         <Flex direction="column">
-          <SkillSummary text={"Research"}/>
-          <Grid columns={{small: 1, medium: 2, large: 3}}>
+          <SkillSummary text={"Research"} />
+          <Grid columns={{ small: 1, medium: 2, large: 3 }}>
             {RESEARCH_ACTION_DATA.filter(action => action.level !== 0).map(action =>
               <ResearchAction key={action.id} {...action}></ResearchAction>
             )}

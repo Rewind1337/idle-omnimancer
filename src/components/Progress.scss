@@ -22,14 +22,6 @@
     &[data-size="large"] {
         height: 60px;
     }
-
-    @each $variant in $button-colors {
-        &[data-variant="#{$variant}"] {
-            &:hover {
-                filter: brightness(110%);
-            }
-        }
-    }
 }
 
 .progress-bar {
@@ -56,10 +48,6 @@
                 background-size: 104.5px 100%;
 
                 animation: progress-bar-effect 1s linear infinite;
-
-                &:hover {
-                    filter: brightness(133%);
-                }
             }
         }
 
@@ -76,10 +64,6 @@
                 background-size: 104.5px 100%;
 
                 animation: progress-bar-effect 1s linear infinite;
-
-                &:hover {
-                    filter: brightness(133%);
-                }
             }
         }
     }
@@ -89,10 +73,6 @@
             &[data-variant="#{$variant}"] {
                 background-color: var(--button-#{$variant}-hover);
                 outline-color: var(--button-#{$variant}-border);
-
-                &:hover {
-                    filter: brightness(133%);
-                }
             }
         }
 
@@ -100,10 +80,6 @@
             &[data-variant="#{$variant}"] {
                 background-color: var(--skill-#{$variant}-hover);
                 outline-color: var(--skill-#{$variant}-border);
-
-                &:hover {
-                    filter: brightness(133%);
-                }
             }
         }
     }

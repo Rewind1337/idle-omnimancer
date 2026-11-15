@@ -7,6 +7,7 @@ import {
 
 import { ToastContext } from '../contexts/ToastContext'
 import { TOAST_TYPES } from '../data/toastTypes'
+import { ToastContainer } from './ToastContainer'
 
 export function ToastProvider({
     children,

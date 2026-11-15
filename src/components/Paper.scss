@@ -6,7 +6,7 @@
   padding: 8px;
   border-radius: 8px;
   border: 1px solid var(--paper-border);
-  transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out, transform 0.1s ease-out;
+  transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out, transform 0.2s ease-out, border-color 0.2s ease-out;
 
   * {
     border-color: inherit;

@@ -1,50 +1,13 @@
-import { useEffect, useRef } from 'react'
-import {
-    CheckCircle,
-    Info,
-    AlertTriangle,
-    XCircle,
-    Sparkles,
-    CircleDot,
-    BookOpen,
-    WandSparkles,
-    FlaskConical,
-    Compass,
-    Eye,
-    Swords,
-    Mountain,
-    Wind,
-    Droplet,
-    X
-} from 'lucide-react'
+import { cloneElement, useEffect, useRef } from 'react'
+
+import { OTHER_ICONS } from '../data/iconLibrary'
+import { TOAST_TYPES } from '../data/toastTypes'
 
 import { Paper } from './Paper'
 import { Flex } from './Flex'
 import { Button } from './Button'
 import { Heading } from './Heading'
 import { Text } from './Text'
-
-// Notification types, their icons and their corresponding color variants.
-export const TOAST_TYPES = {
-    success: { icon: CheckCircle, variant: 'exploration' },
-    info: { icon: Info, variant: 'water' },
-    warning: { icon: AlertTriangle, variant: 'spellcraft' },
-    error: { icon: XCircle, variant: 'combat' },
-
-    primary: { icon: Sparkles, variant: 'primary' },
-    secondary: { icon: CircleDot, variant: 'secondary' },
-
-    research: { icon: BookOpen, variant: 'research' },
-    spellcraft: { icon: WandSparkles, variant: 'spellcraft' },
-    transmutation: { icon: FlaskConical, variant: 'transmutation' },
-    exploration: { icon: Compass, variant: 'exploration' },
-    unveiling: { icon: Eye, variant: 'unveiling' },
-    combat: { icon: Swords, variant: 'combat' },
-
-    earth: { icon: Mountain, variant: 'earth' },
-    air: { icon: Wind, variant: 'air' },
-    water: { icon: Droplet, variant: 'water' }
-}
 
 export function Toast({
     id,
@@ -56,8 +19,12 @@ export function Toast({
     onDismiss
 }) {
     const config = TOAST_TYPES[type] ?? TOAST_TYPES.info
-    const Icon = config.icon
     const variant = config.variant
+
+    const icon = cloneElement(config.icon, {
+        size: 22,
+        'aria-hidden': true,
+    })
 
     // Keep track of the remaining lifetime so hovering pauses the timer.
     const timerRef = useRef({
@@ -139,7 +106,7 @@ export function Toast({
             onMouseLeave={resumeTimer}
         >
             <Flex gap={8} align="flex-start" className="toast-layout">
-                <Icon size={22} aria-hidden="true" />
+                {icon}
 
                 <Flex
                     direction="column"
@@ -172,7 +139,7 @@ export function Toast({
                 <Button
                     size="small"
                     transparent
-                    icon={<X size={16} />}
+                    icon={cloneElement(OTHER_ICONS.CLOSE, { size: 16 })}
                     onClick={() => onDismiss?.(id)}
                     className="toast-dismiss"
                     aria-label="Dismiss notification"

@@ -1,8 +1,15 @@
-import { Activity, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, FlaskConical, GraduationCap, Haze, LayerArrowUp, Layers2, Mountain, MountainSnow, PawPrint, Shell, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp } from "lucide-react";
+import { Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, FlaskConical, GraduationCap, Haze, Info, LayerArrowUp, Layers2, Mountain, MountainSnow, PawPrint, Shell, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle } from "lucide-react";
 
 export const OTHER_ICONS = {
     STAR: <Star />,
-    GRADUATION_CAP: <GraduationCap />
+    GRADUATION_CAP: <GraduationCap />,
+    CHECK_CIRCLE: <CheckCircle />,
+    INFO: <Info />,
+    ALERT_TRIANGLE: <AlertTriangle />,
+    X_CIRCLE: <XCircle />,
+    SPARKLES: <Sparkles />,
+    CIRCLE_DOT: <CircleDot />,
+    CLOSE: <X />,
 }
 
 export const SKILL_ICONS = {

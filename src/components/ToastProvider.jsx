@@ -1,15 +1,12 @@
 import {
-    createContext,
     useCallback,
     useMemo,
     useRef,
     useState
 } from 'react'
 
-import { ToastContainer } from './ToastContainer'
-import { TOAST_TYPES } from './Toast'
-
-export const ToastContext = createContext(null)
+import { ToastContext } from '../contexts/ToastContext'
+import { TOAST_TYPES } from '../data/toastTypes'
 
 export function ToastProvider({
     children,

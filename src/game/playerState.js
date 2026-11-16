@@ -3,9 +3,10 @@ import {
     SKILL_CONFIGS,
     SKILL_CONFIG_BY_ID,
 } from "../data/skillConfig"
+import { SKILL_NAVIGATION } from "../data/skillNavigation"
 
 export const SAVE_KEY = "omnimancer-idle-save"
-export const SAVE_VERSION = 1
+export const SAVE_VERSION = 2
 
 // The save contains only serializable player data. Configurations, functions,
 // generated XP tables and derived skill levels are deliberately not stored.
@@ -35,9 +36,18 @@ export const createInitialPlayerState = () => {
 
     const spellcraft = SKILL_CONFIG_BY_ID["skill:spellcraft"]
 
+    const defaultUnlockedSkills = new Set(
+        SKILL_CONFIGS
+            .filter(skill => skill.unlockedByDefault)
+            .map(skill => skill.id)
+    )
+
     return {
         version: SAVE_VERSION,
         lastUpdatedAt: Date.now(),
+        unlockedSkills: SKILL_NAVIGATION
+            .filter(({ skillId }) => defaultUnlockedSkills.has(skillId))
+            .map(({ skillId }) => skillId),
         activeAction: null,
         skills,
         inventory: {},
@@ -57,6 +67,19 @@ export const normalizePlayerState = (savedState) => {
     const initial = createInitialPlayerState()
     if (!savedState || typeof savedState !== "object") return initial
 
+    const validSkillIds = new Set(SKILL_NAVIGATION.map(({ skillId }) => skillId))
+    const unlockedSkillIds = new Set(initial.unlockedSkills)
+
+    if (Array.isArray(savedState.unlockedSkills)) {
+        for (const skillId of savedState.unlockedSkills) {
+            if (validSkillIds.has(skillId)) unlockedSkillIds.add(skillId)
+        }
+    }
+
+    const unlockedSkills = SKILL_NAVIGATION
+        .filter(({ skillId }) => unlockedSkillIds.has(skillId))
+        .map(({ skillId }) => skillId)
+
     const skills = { ...initial.skills }
 
     for (const skill of SKILL_CONFIGS) {
@@ -74,7 +97,7 @@ export const normalizePlayerState = (savedState) => {
                 level: clampInteger(savedAction.level, 1, GLOBAL_CONFIG.maxActionLevel, 1),
                 xp: Math.max(0, finiteNumber(savedAction.xp, 0)),
                 progressMs: Math.max(0, finiteNumber(savedAction.progressMs, 0)),
-                running: Boolean(savedAction.running),
+                running: unlockedSkills.includes(skill.id) && Boolean(savedAction.running),
                 cycleStarted: Boolean(savedAction.cycleStarted),
             }
         }
@@ -82,14 +105,35 @@ export const normalizePlayerState = (savedState) => {
         skills[skill.id] = { actions }
     }
 
-    const activeAction = isKnownAction(savedState.activeAction)
+    const activeAction = isKnownAction(savedState.activeAction, unlockedSkills)
         ? savedState.activeAction
         : null
+
+    // Treat a saved action from a now-locked skill as stopped.
+    if (savedState.activeAction && !activeAction) {
+        const { skillId, actionId } = savedState.activeAction
+        const interruptedAction = skills[skillId]?.actions[actionId]
+
+        if (interruptedAction) {
+            skills[skillId] = {
+                ...skills[skillId],
+                actions: {
+                    ...skills[skillId].actions,
+                    [actionId]: {
+                        ...interruptedAction,
+                        progressMs: 0,
+                        cycleStarted: false,
+                    },
+                },
+            }
+        }
+    }
 
     return {
         ...initial,
         version: SAVE_VERSION,
         lastUpdatedAt: Math.max(0, finiteNumber(savedState.lastUpdatedAt, Date.now())),
+        unlockedSkills,
         activeAction,
         skills,
         inventory: normalizeNumberMap(savedState.inventory),
@@ -125,8 +169,9 @@ const normalizeNumberMap = (value) => {
     )
 }
 
-const isKnownAction = (selection) => {
+const isKnownAction = (selection, unlockedSkills) => {
     if (!selection || typeof selection !== "object") return false
+    if (!unlockedSkills.includes(selection.skillId)) return false
 
     const skill = SKILL_CONFIG_BY_ID[selection.skillId]
     return Boolean(skill?.actions.some(action => action.id === selection.actionId))

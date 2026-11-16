@@ -1,5 +1,6 @@
 export const RESEARCH_CONFIG = {
     id: "skill:research",
+    unlockedByDefault: true,
 
     skillXP: {
         firstLevelXP: 2

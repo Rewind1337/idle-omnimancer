@@ -1,5 +1,6 @@
 export const SPELLCRAFT_CONFIG = {
     id: "skill:spellcraft",
+    unlockedByDefault: false,
 
     mana: {
         base: 100,

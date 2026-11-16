@@ -1,63 +1,12 @@
 import { Paper } from "./Paper"
 import { Tabs } from "./Tabs"
-import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
+
+import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION } from "../data/skillNavigation"
+import { useGame } from "../hooks/useGame"
 
 import './Navigation.scss'
 
 import { cx } from '../utility/helpers'
-
-// Navigation tab definitions.
-const NAVIGATION_TABS = [
-  {
-    id: 0,
-    name: "Research",
-    icon: SKILL_ICONS.RESEARCH,
-    variant: "research"
-  },
-  {
-    id: 1,
-    name: "Spellcraft",
-    icon: SKILL_ICONS.SPELLCRAFT,
-    variant: "spellcraft"
-  },
-  {
-    id: 2,
-    name: "Transmutation",
-    icon: SKILL_ICONS.TRANSMUTATION,
-    variant: "transmutation"
-  },
-  {
-    id: 3,
-    name: "Exploration",
-    icon: SKILL_ICONS.EXPLORATION,
-    variant: "exploration"
-  },
-  {
-    id: 4,
-    name: "Unveiling",
-    icon: SKILL_ICONS.UNVEILING,
-    variant: "unveiling"
-  },
-  {
-    id: 5,
-    name: "Combat",
-    icon: SKILL_ICONS.COMBAT,
-    variant: "combat"
-  },
-  {
-    id: 6,
-    name: "Companions",
-    icon: SKILL_ICONS.COMPANIONS,
-    variant: "companions"
-  },
-  {
-    id: 7,
-    name: "Development",
-    icon: OTHER_ICONS.STAR,
-    variant: "",
-    transparent: true,
-  }
-]
 
 export function Navigation({
   className = '',
@@ -67,6 +16,22 @@ export function Navigation({
   setActivePage,
   ...props
 }) {
+  const { player } = useGame()
+  const unlockedSkills = new Set(player.unlockedSkills)
+  const nextLockedSkill = SKILL_NAVIGATION.find(
+    skill => !unlockedSkills.has(skill.skillId)
+  )
+
+  const tabs = [
+    ...SKILL_NAVIGATION
+      .filter(skill => unlockedSkills.has(skill.skillId) || skill === nextLockedSkill)
+      .map(skill => ({
+        ...skill,
+        disabled: !unlockedSkills.has(skill.skillId),
+      })),
+    DEVELOPMENT_NAVIGATION,
+  ]
+
   const columns = position === "top" && mode !== "compact"
     ? {
       xsmall: 2,
@@ -89,7 +54,7 @@ export function Navigation({
       {...props}
     >
       <Tabs
-        tabs={NAVIGATION_TABS}
+        tabs={tabs}
         value={activePage}
         onChange={setActivePage}
         size="large"

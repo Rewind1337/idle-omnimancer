@@ -172,16 +172,3 @@ body {
 .toast {
   width: fit-content;
 }
-
-
-
-// in progress, will move out to actual file at some point
-.action {
-  svg {
-    width: 48px;
-    height: 48px;
-  }
-
-  &.action-research {
-  }
-}

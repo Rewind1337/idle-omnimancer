@@ -1,4 +1,5 @@
 import { SKILL_CONFIG_BY_ID } from "../data/skillConfig"
+import { SKILL_NAVIGATION } from "../data/skillNavigation"
 import {
     advanceGame,
     canStartAction,
@@ -15,6 +16,8 @@ export const gameReducer = (state, action) => {
 
             if (activity === "passive") {
                 const current = state.skills[skillId].actions[actionId]
+                if (current.running) return state
+
                 return {
                     ...state,
                     skills: {
@@ -30,19 +33,51 @@ export const gameReducer = (state, action) => {
                 }
             }
 
-            // Starting a different active action replaces the previous one.
-            // The previous action's partial progress remains saved on its state.
-            return { ...state, activeAction: { skillId, actionId } }
+            if (
+                state.activeAction?.skillId === skillId &&
+                state.activeAction?.actionId === actionId
+            ) {
+                return state
+            }
+
+            // Replacing an active action is also a stop: discard its partial cycle.
+            let skills = state.skills
+            if (state.activeAction) {
+                const previous = state.activeAction
+                const previousState = state.skills[previous.skillId]?.actions[previous.actionId]
+
+                if (previousState) {
+                    skills = {
+                        ...state.skills,
+                        [previous.skillId]: {
+                            ...state.skills[previous.skillId],
+                            actions: {
+                                ...state.skills[previous.skillId].actions,
+                                [previous.actionId]: {
+                                    ...previousState,
+                                    progressMs: 0,
+                                    cycleStarted: false,
+                                },
+                            },
+                        },
+                    }
+                }
+            }
+
+            return {
+                ...state,
+                skills,
+                activeAction: { skillId, actionId },
+            }
         }
 
         case "STOP_ACTION": {
             const { skillId, actionId } = action
             const activity = getActionActivity(skillId, actionId)
+            const current = state.skills[skillId]?.actions[actionId]
+            if (!current) return state
 
             if (activity === "passive") {
-                const current = state.skills[skillId]?.actions[actionId]
-                if (!current) return state
-
                 return {
                     ...state,
                     skills: {
@@ -51,9 +86,12 @@ export const gameReducer = (state, action) => {
                             ...state.skills[skillId],
                             actions: {
                                 ...state.skills[skillId].actions,
-                                // Keep cycleStarted: its cost has already been
-                                // paid, so resuming must not charge it twice.
-                                [actionId]: { ...current, running: false },
+                                [actionId]: {
+                                    ...current,
+                                    running: false,
+                                    progressMs: 0,
+                                    cycleStarted: false,
+                                },
                             },
                         },
                     },
@@ -64,7 +102,24 @@ export const gameReducer = (state, action) => {
                 return state
             }
 
-            return { ...state, activeAction: null }
+            return {
+                ...state,
+                activeAction: null,
+                skills: {
+                    ...state.skills,
+                    [skillId]: {
+                        ...state.skills[skillId],
+                        actions: {
+                            ...state.skills[skillId].actions,
+                            [actionId]: {
+                                ...current,
+                                progressMs: 0,
+                                cycleStarted: false,
+                            },
+                        },
+                    },
+                },
+            }
         }
 
         case "TOGGLE_PASSIVE_ACTION": {
@@ -83,7 +138,11 @@ export const gameReducer = (state, action) => {
                         ...state.skills[skillId],
                         actions: {
                             ...state.skills[skillId].actions,
-                            [actionId]: { ...current, running },
+                            [actionId]: {
+                                ...current,
+                                running,
+                                ...(running ? {} : { progressMs: 0, cycleStarted: false }),
+                            },
                         },
                     },
                 },
@@ -91,6 +150,8 @@ export const gameReducer = (state, action) => {
         }
 
         case "UNLOCK_ACTION": {
+            if (!state.unlockedSkills.includes(action.skillId)) return state
+
             const skill = SKILL_CONFIG_BY_ID[action.skillId]
             const actionConfig = skill?.actions.find(entry => entry.id === action.actionId)
             const current = state.skills[action.skillId]?.actions[action.actionId]
@@ -108,6 +169,16 @@ export const gameReducer = (state, action) => {
                         },
                     },
                 },
+            }
+        }
+
+        case "UNLOCK_SKILL": {
+            const skillExists = SKILL_NAVIGATION.some(skill => skill.skillId === action.skillId)
+            if (!skillExists || state.unlockedSkills.includes(action.skillId)) return state
+
+            return {
+                ...state,
+                unlockedSkills: [...state.unlockedSkills, action.skillId],
             }
         }
 

@@ -85,13 +85,18 @@ export function GameProvider({ children }) {
         dispatch({ type: "UNLOCK_ACTION", skillId, actionId })
     }, [])
 
+    const unlockSkill = useCallback((skillId) => {
+        dispatch({ type: "UNLOCK_SKILL", skillId })
+    }, [])
+
     const contextValue = useMemo(() => ({
         player,
         startAction,
         stopAction,
         togglePassiveAction,
         unlockAction,
-    }), [player, startAction, stopAction, togglePassiveAction, unlockAction])
+        unlockSkill,
+    }), [player, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill])
 
     return (
         <GameContext.Provider value={contextValue}>

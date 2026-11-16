@@ -10,11 +10,13 @@ import { Heading } from "../components/Heading"
 
 import { humanize, cx } from "../utility/helpers"
 import { RESEARCH_CONFIG } from "../data/researchConfig"
+import { RESEARCH_ACTION_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
     getActionDurationMs,
     getActionProgress,
     getSkillProgress,
+    getVisibleActions,
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 import { Badge } from "../components/Badge"
@@ -111,6 +113,7 @@ function ResearchAction({ action, isActive, actionState, onToggle }) {
         ? null
         : xpTable[actionState.level - 1].neededXP
     const produces = action.produces ?? []
+    const actionIcon = RESEARCH_ACTION_ICONS[action.tier - 1] ?? RESEARCH_ACTION_ICONS[0]
 
     return (
         <Paper layer={1} variant="research" className="action action-research">
@@ -124,7 +127,7 @@ function ResearchAction({ action, isActive, actionState, onToggle }) {
                             innerRunes={"gap"}
                             innerShape={InnerShapeMap[action.tier - 1]}
                         >
-                            <BookOpen size={48} />
+                            {actionIcon}
                         </Icon>
                     </Paper>
                     <Flex direction="column">
@@ -155,9 +158,12 @@ function ResearchAction({ action, isActive, actionState, onToggle }) {
 }
 
 function SkillSummary({ skillProgress }) {
-    const percentage = skillProgress.maxXP > 0
+    const totalPercentage = skillProgress.maxXP > 0
         ? (skillProgress.totalXP / skillProgress.maxXP) * 100
         : 0
+    const levelPercentage = skillProgress.neededXP > 0
+        ? (skillProgress.xp / skillProgress.neededXP) * 100
+        : 100
 
     return (
         <Paper className="skill-summary" layer={1} variant="research" padding={16}>
@@ -178,8 +184,9 @@ function SkillSummary({ skillProgress }) {
                         <h1>Research</h1>
                         <h3 className="align-right">Level {skillProgress.level} / 100</h3>
                     </Flex>
-                    <Flex className="skill-progress">
-                        <Progress variant="research" percentage={percentage} />
+                    <Flex className="skill-progress" direction="column" gap={4}>
+                        <Progress size="small" variant="research" percentage={totalPercentage} />
+                        <Progress variant="research" percentage={levelPercentage} />
                     </Flex>
                 </Flex>
             </Flex>
@@ -200,7 +207,7 @@ export function ResearchPage() {
             <Paper layer={0}>
                 <Flex direction="column" gap={32}>
                     <Grid columns={{ small: 1, medium: 2, large: 3 }}>
-                        {RESEARCH_CONFIG.actions.map(action => {
+                        {getVisibleActions(player, skillId).map(action => {
                             const actionState = player.skills[skillId].actions[action.id]
                             const isActive = player.activeAction?.skillId === skillId &&
                                 player.activeAction?.actionId === action.id

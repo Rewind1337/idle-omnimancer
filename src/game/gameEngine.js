@@ -19,6 +19,23 @@ export const getActionXPReward = (skill, action) =>
 export const getActionProgress = (actionState, durationMs) =>
     Math.min(100, Math.max(0, (actionState.progressMs / durationMs) * 100))
 
+// Show unlocked actions and preview only the tier immediately beyond progression.
+export const getVisibleActions = (player, skillId) => {
+    const skill = SKILL_CONFIG_BY_ID[skillId]
+    if (!skill) return []
+
+    const actionStates = player.skills[skillId]?.actions ?? {}
+    const highestUnlockedTier = skill.actions.reduce((highestTier, action) => {
+        return actionStates[action.id]?.unlocked
+            ? Math.max(highestTier, action.tier)
+            : highestTier
+    }, 0)
+
+    return skill.actions.filter(action =>
+        actionStates[action.id]?.unlocked || action.tier === highestUnlockedTier + 1
+    )
+}
+
 export const getSkillProgress = (player, skillId) => {
     const skill = SKILL_CONFIG_BY_ID[skillId]
     const table = getSkillXPTable(skillId)
@@ -197,7 +214,7 @@ export const canStartAction = (player, skillId, actionId) => {
     const action = skill?.actions.find(entry => entry.id === actionId)
     const state = player.skills[skillId]?.actions[actionId]
 
-    if (!skill || !action || !state?.unlocked || state.level >= GLOBAL_CONFIG.maxActionLevel) {
+    if (!player.unlockedSkills?.includes(skillId) || !skill || !action || !state?.unlocked || state.level >= GLOBAL_CONFIG.maxActionLevel) {
         return false
     }
 

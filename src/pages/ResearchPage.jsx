@@ -20,6 +20,7 @@ import {
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 import { Badge } from "../components/Badge"
+import { cloneElement } from "react"
 
 const InnerShapeMap = ["close", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]

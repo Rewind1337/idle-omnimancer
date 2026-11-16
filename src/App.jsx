@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, CircleDollarSign, DollarSign, Grip } from "lucide-react";
 
 import { Button } from "./components/Button";
-import { FloatingButton } from "./components/FloatingButton";
 import { BagModal } from "./components/modals/BagModal";
 import { Flex } from "./components/Flex";
 import { Navigation } from "./components/Navigation";
@@ -15,6 +14,7 @@ import { SpellcraftPage } from "./pages/SpellcraftPage";
 import { DevelopmentPage } from "./pages/DevelopmentPage";
 
 import { cx } from './utility/helpers'
+import { Paper } from "./components/Paper";
 
 function ResponsivePage({
   children,
@@ -48,6 +48,38 @@ function ResponsivePage({
     </Flex>
   ) : null
 
+  const floatingButtonContainer =
+    <Paper transparent className="w-min" style={{
+      position: "absolute",
+      right: 8,
+      bottom: 8,
+    }}>
+      <Flex direction="row">
+        <Button
+          size="medium"
+          variant="spellcraft"
+          className="w-min"
+          badge={"7.12 Mil"}
+          badgeIcon={<DollarSign />}
+          icon={<CircleDollarSign />}
+        >
+          Visit Shop
+        </Button>
+        <Button
+          size="medium"
+          variant="transmutation"
+          toggled={bagModalVisible}
+          onClick={() => setBagModalVisible(true)}
+          className="w-min"
+          badge={"0 / 25"}
+          badgeIcon={<Grip />}
+          icon={<ArrowUpRight />}
+        >
+          Open Bag
+        </Button>
+      </Flex>
+    </Paper>
+
   return (
     <>
       {page}
@@ -56,16 +88,7 @@ function ResponsivePage({
         setVisible={setBagModalVisible}
         closeBagButton={closeBagButton}
       />
-      <FloatingButton
-        size="medium"
-        variant="transmutation"
-        toggled={bagModalVisible}
-        onClick={() => setBagModalVisible(true)}
-        className="w-min"
-        icon={<ArrowUpRight />}
-      >
-        Open Bag
-      </FloatingButton>
+      {floatingButtonContainer}
     </>
   )
 }

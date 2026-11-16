@@ -13,6 +13,7 @@ export function Button({
   size = 'medium',
   icon,
   badge,
+  badgeIcon,
   disabled = false,
   toggled = false,
   checked = false,
@@ -34,7 +35,7 @@ export function Button({
       <Flex wrap={false} justify="space-between" gap={8} padding={0}>
         {icon && <span className="button-icon">{icon}</span>}
         {children ? <span className="button-content">{children}</span> : null}
-        {badge && <Badge variant={variant} className="button-badge">{badge}</Badge>}
+        {badge && <Badge variant={variant} icon={badgeIcon} iconPosition="right" className="button-badge">{badge}</Badge>}
       </Flex>
     </button>
   )

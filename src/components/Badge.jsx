@@ -11,6 +11,7 @@ export function Badge({
   size = 'medium',
   interactive = false,
   icon,
+  iconPosition = "left",
   onClick = () => { },
   ...props
 }) {
@@ -23,8 +24,9 @@ export function Badge({
       {...props}
     >
       <Flex wrap={false} justify="space-between" gap={8} padding={0}>
-        {icon && <span className="badge-icon">{icon}</span>}
+        {(icon && iconPosition === "left") && <span className="badge-icon">{icon}</span>}
         {children ? <span className="badge-content">{children}</span> : null}
+        {(icon && iconPosition === "right") && <span className="badge-icon">{icon}</span>}
       </Flex>
     </div>
   )

@@ -22,7 +22,7 @@ import { useGame } from "../hooks/useGame"
 import { Badge } from "../components/Badge"
 import { cloneElement } from "react"
 
-const InnerShapeMap = ["close", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
+const InnerShapeMap = ["dot", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]
 
 function ActionHeader({ className = "", tier, name, level }) {
@@ -45,8 +45,9 @@ function ActionDetails({ actionTime, actionXP, neededXP, currentXP }) {
     )
 }
 
-function ActionProgress({ actionState, isActive, isUnlocked, onToggle, durationMs }) {
-    const percentage = getActionProgress(actionState, durationMs)
+function ActionProgress({ actionState, isActive, isUnlocked, onToggle, currentXP, neededXP, durationMs }) {
+    const actionCompletionPercentage = getActionProgress(actionState, durationMs)
+    const actionLevelPercentage = (currentXP / neededXP) * 100
 
     return (
         <Flex className="action-progress">
@@ -55,19 +56,29 @@ function ActionProgress({ actionState, isActive, isUnlocked, onToggle, durationM
                 size="medium"
                 layer={2}
                 variant="research"
-                percentage={percentage}
+                percentage={actionLevelPercentage}
                 animated={isActive}
             />
-            <Button
-                variant="research"
-                className="w-20"
-                size="medium"
-                toggled={isActive}
-                disabled={!isUnlocked || actionState.level >= 100}
-                onClick={onToggle}
-            >
-                {!isUnlocked ? "Locked" : isActive ? "Stop" : "Research"}
-            </Button>
+            <Flex direction="column" className="w-30">
+                <Button
+                    variant="research"
+                    className="w-100"
+                    size="medium"
+                    toggled={isActive}
+                    disabled={!isUnlocked || actionState.level >= 100}
+                    onClick={onToggle}
+                >
+                    {!isUnlocked ? "Locked" : isActive ? "Stop" : "Research"}
+                </Button>
+                {isActive ? <Progress
+                    className="relative-position"
+                    corners="sharp"
+                    size="small"
+                    layer={2}
+                    variant="research"
+                    percentage={actionCompletionPercentage}
+                /> : null}
+            </Flex>
         </Flex>
     )
 }
@@ -143,6 +154,8 @@ function ResearchAction({ action, isActive, actionState, onToggle }) {
                             isUnlocked={actionState.unlocked}
                             onToggle={onToggle}
                             durationMs={durationMs}
+                            neededXP={neededXP}
+                            currentXP={actionState.xp}
                         />
                     </Flex>
                 </Flex>

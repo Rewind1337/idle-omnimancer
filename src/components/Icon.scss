@@ -105,6 +105,13 @@
         border: 4px solid var(--icon-accent);
     }
 
+    &[data-inner-shape="dot"],
+    &[data-outer-shape="dot"] {
+        scale: 0.4;
+        top: 6px;
+        border-radius: 50%;
+    }
+
     &[data-inner-shape="3"],
     &[data-outer-shape="3"] {
         scale: 0.9;

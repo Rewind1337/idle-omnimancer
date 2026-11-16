@@ -26,8 +26,6 @@ export const createInitialPlayerState = () => {
                             // Passive actions remain active once started.
                             // Active actions use the single player.activeAction slot.
                             running: false,
-                            // Legacy saves use this to mark an already-paid Mana cycle.
-                            cycleStarted: false,
                         },
                     ])
                 ),
@@ -115,8 +113,6 @@ export const normalizePlayerState = (savedState) => {
                     ? Math.max(0, finiteNumber(savedAction.progressMs, 0))
                     : 0,
                 running: unlockedSkills.includes(skill.id) && Boolean(savedAction.running),
-                // Keep this only to finish Mana cycles paid by the previous save version.
-                cycleStarted: preserveProgress && Boolean(savedAction.cycleStarted),
             }
         }
 

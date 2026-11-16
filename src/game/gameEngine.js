@@ -63,10 +63,7 @@ export const getSkillProgress = (player, skillId) => {
     }
 }
 
-// Old saves may flag an in-progress cycle as already paid. New cycles defer
-// payment until completion, so this flag only preserves legacy paid casts.
-const canPayActionCost = (player, action, actionState) =>
-    Boolean(actionState?.cycleStarted) ||
+const canPayActionCost = (player, action) =>
     !action.manaCost ||
     player.mana.current >= action.manaCost
 
@@ -109,6 +106,9 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
     // Passive processes continue producing even after their progression level
     // reaches the cap. Active actions stop at their maximum level.
     while (remainingMs > 0 && (!isActive || actionState.level < GLOBAL_CONFIG.maxActionLevel)) {
+        // Check Mana before starting each cycle, including automatic repeats.
+        if (actionState.progressMs === 0 && !canPayActionCost(player, action)) break
+
         const durationMs = getActionDurationMs(skill, action)
         const timeLeft = Math.max(0, durationMs - actionState.progressMs)
         const consumedMs = Math.min(remainingMs, timeLeft)
@@ -118,21 +118,16 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
 
         if (actionState.progressMs + 0.0001 < durationMs) break
 
-        // Spellcraft only spends Mana when a cast successfully completes.
-        // A completed cast waits at 100% until its cost can be paid.
-        if (!canPayActionCost(player, action, actionState)) break
-
-        // A legacy cycle may already have paid at its start.
-        if (!actionState.cycleStarted) payActionCost(player, action)
+        // Check Mana again at completion, then deduct it only for a successful cast.
+        if (!canPayActionCost(player, action)) break
+        payActionCost(player, action)
 
         actionState.progressMs = 0
-        actionState.cycleStarted = false
         awardActionXP(player, skill, action, actionState)
     }
 
     if (actionState.level >= GLOBAL_CONFIG.maxActionLevel && isActive) {
         actionState.progressMs = 0
-        actionState.cycleStarted = false
     }
 }
 
@@ -215,8 +210,8 @@ export const canStartAction = (player, skillId, actionId) => {
         return false
     }
 
-    // Mana is checked when the action completes, not when the player selects it.
-    return true
+    // Require enough Mana to begin; completion checks and deducts it again.
+    return canPayActionCost(player, action)
 }
 
 export const getActionActivity = (skillId, actionId) => {

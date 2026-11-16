@@ -56,7 +56,6 @@ export const gameReducer = (state, action) => {
                                 [previous.actionId]: {
                                     ...previousState,
                                     progressMs: 0,
-                                    cycleStarted: false,
                                 },
                             },
                         },
@@ -97,7 +96,6 @@ export const gameReducer = (state, action) => {
                             [actionId]: {
                                 ...current,
                                 progressMs: 0,
-                                cycleStarted: false,
                             },
                         },
                     },

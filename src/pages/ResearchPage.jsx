@@ -201,33 +201,33 @@ export function ResearchPage() {
 
     return (
         <Flex direction="column" padding={32}>
-                <Paper layer={0}>
-                    <SkillSummary skillProgress={skillProgress} />
-                </Paper>
-                <Paper layer={0}>
-                    <Flex direction="column" gap={32}>
-                        <Grid columns={{ small: 1, medium: 2, large: 3 }}>
-                            {getVisibleActions(player, skillId).map(action => {
-                                const actionState = player.skills[skillId].actions[action.id]
-                                const isActive = player.activeAction?.skillId === skillId &&
-                                    player.activeAction?.actionId === action.id
+            <Paper layer={0}>
+                <SkillSummary skillProgress={skillProgress} />
+            </Paper>
+            <Paper layer={0}>
+                <Flex direction="column" gap={32}>
+                    <Grid columns={{ small: 1, medium: 2, large: 3 }}>
+                        {getVisibleActions(player, skillId).map(action => {
+                            const actionState = player.skills[skillId].actions[action.id]
+                            const isActive = player.activeAction?.skillId === skillId &&
+                                player.activeAction?.actionId === action.id
 
-                                return (
-                                    <ResearchAction
-                                        key={action.id}
-                                        action={action}
-                                        actionState={actionState}
-                                        isActive={isActive}
-                                        onToggle={() => {
-                                            if (isActive) stopAction(skillId, action.id)
-                                            else startAction(skillId, action.id)
-                                        }}
-                                    />
-                                )
-                            })}
-                        </Grid>
-                    </Flex>
-                </Paper>
+                            return (
+                                <ResearchAction
+                                    key={action.id}
+                                    action={action}
+                                    actionState={actionState}
+                                    isActive={isActive}
+                                    onToggle={() => {
+                                        if (isActive) stopAction(skillId, action.id)
+                                        else startAction(skillId, action.id)
+                                    }}
+                                />
+                            )
+                        })}
+                    </Grid>
+                </Flex>
+            </Paper>
         </Flex>
     )
 }

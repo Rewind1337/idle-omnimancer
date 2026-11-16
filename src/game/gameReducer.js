@@ -77,8 +77,8 @@ export const gameReducer = (state, action) => {
             const current = state.skills[skillId]?.actions[actionId]
             if (!current) return state
 
-            // Passive actions are permanent once started. Only their target
-            // selection may change; stopping the process is not supported.
+            // Passive work cannot be stopped. Future target changes must
+            // update the target separately without toggling the process off.
             if (activity === "passive") return state
 
             if (state.activeAction?.skillId !== skillId || state.activeAction?.actionId !== actionId) {

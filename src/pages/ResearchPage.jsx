@@ -1,4 +1,4 @@
-import { BookOpen } from "lucide-react"
+import { ArrowUpRight, BookOpen } from "lucide-react"
 
 import { Flex } from "../components/Flex"
 import { Grid } from "../components/Grid"
@@ -20,6 +20,9 @@ import {
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 import { Badge } from "../components/Badge"
+import { cloneElement, useState } from "react"
+import { FloatingButton } from "../components/FloatingButton"
+import { BagModal } from "../components/modals/BagModal"
 
 const InnerShapeMap = ["close", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]
@@ -120,14 +123,14 @@ function ResearchAction({ action, isActive, actionState, onToggle }) {
             <Flex direction="column">
                 <Flex direction="row">
                     <Paper round layer="0" interactive className="w-min" padding={4}>
-                        <Icon size={64}
+                        <Icon size={48}
                             variant="research"
                             outerRunes={OuterRunesMap[action.tier - 1]}
                             outerShape={3}
                             innerRunes={"gap"}
                             innerShape={InnerShapeMap[action.tier - 1]}
                         >
-                            {actionIcon}
+                            {cloneElement(actionIcon, { size: 48 })}
                         </Icon>
                     </Paper>
                     <Flex direction="column">
@@ -196,38 +199,60 @@ function SkillSummary({ skillProgress }) {
 
 export function ResearchPage() {
     const { player, startAction, stopAction } = useGame()
+    const [bagModalVisible, setBagModalVisible] = useState(false)
     const skillId = RESEARCH_CONFIG.id
     const skillProgress = getSkillProgress(player, skillId)
 
-    return (
-        <Flex direction="column" padding={32}>
-            <Paper layer={0}>
-                <SkillSummary skillProgress={skillProgress} />
-            </Paper>
-            <Paper layer={0}>
-                <Flex direction="column" gap={32}>
-                    <Grid columns={{ small: 1, medium: 2, large: 3 }}>
-                        {getVisibleActions(player, skillId).map(action => {
-                            const actionState = player.skills[skillId].actions[action.id]
-                            const isActive = player.activeAction?.skillId === skillId &&
-                                player.activeAction?.actionId === action.id
+    const closeBagButton = (<Button variant={"primary"} onClick={() => { setBagModalVisible(false) }}>This Button closes the Modal</Button>)
 
-                            return (
-                                <ResearchAction
-                                    key={action.id}
-                                    action={action}
-                                    actionState={actionState}
-                                    isActive={isActive}
-                                    onToggle={() => {
-                                        if (isActive) stopAction(skillId, action.id)
-                                        else startAction(skillId, action.id)
-                                    }}
-                                />
-                            )
-                        })}
-                    </Grid>
-                </Flex>
-            </Paper>
-        </Flex>
+    const bagModal = (<BagModal
+        visible={bagModalVisible}
+        setVisible={setBagModalVisible}
+        closeBagButton={closeBagButton}
+    />)
+
+    return (
+        <>
+            {bagModal}
+            <FloatingButton
+                size="medium"
+                variant="transmutation"
+                toggled={bagModalVisible}
+                onClick={() => { setBagModalVisible(true) }}
+                className="w-min"
+                icon={<ArrowUpRight />}
+            >
+                Open Bag
+            </FloatingButton>
+            <Flex direction="column" padding={32}>
+                <Paper layer={0}>
+                    <SkillSummary skillProgress={skillProgress} />
+                </Paper>
+                <Paper layer={0}>
+                    <Flex direction="column" gap={32}>
+                        <Grid columns={{ small: 1, medium: 2, large: 3 }}>
+                            {getVisibleActions(player, skillId).map(action => {
+                                const actionState = player.skills[skillId].actions[action.id]
+                                const isActive = player.activeAction?.skillId === skillId &&
+                                    player.activeAction?.actionId === action.id
+
+                                return (
+                                    <ResearchAction
+                                        key={action.id}
+                                        action={action}
+                                        actionState={actionState}
+                                        isActive={isActive}
+                                        onToggle={() => {
+                                            if (isActive) stopAction(skillId, action.id)
+                                            else startAction(skillId, action.id)
+                                        }}
+                                    />
+                                )
+                            })}
+                        </Grid>
+                    </Flex>
+                </Paper>
+            </Flex>
+        </>
     )
 }

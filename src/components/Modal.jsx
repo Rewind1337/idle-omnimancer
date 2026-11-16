@@ -1,5 +1,4 @@
 import { Flex } from './Flex'
-import { Heading } from './Heading'
 import { Paper } from './Paper'
 import './Modal.scss'
 
@@ -7,9 +6,9 @@ import { cx } from '../utility/helpers'
 
 export function Modal({
   visible,
-  header = <Heading h='1'>Sample Heading</Heading>,
-  content = <></>,
-  footer = <></>,
+  header,
+  content,
+  footer,
   variant = 'primary',
   onBackdropClick = () => { },
   padding = 8

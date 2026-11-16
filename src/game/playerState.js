@@ -6,7 +6,7 @@ import {
 import { SKILL_NAVIGATION } from "../data/skillNavigation"
 
 export const SAVE_KEY = "omnimancer-idle-save"
-export const SAVE_VERSION = 2
+export const SAVE_VERSION = 3
 
 // The save contains only serializable player data. Configurations, functions,
 // generated XP tables and derived skill levels are deliberately not stored.
@@ -23,9 +23,10 @@ export const createInitialPlayerState = () => {
                             level: 1,
                             xp: 0,
                             progressMs: 0,
-                            // Passive actions can run independently. Active
-                            // actions use the single player.activeAction slot.
+                            // Passive actions remain active once started.
+                            // Active actions use the single player.activeAction slot.
                             running: false,
+                            // Legacy saves use this to mark an already-paid Mana cycle.
                             cycleStarted: false,
                         },
                     ])
@@ -114,6 +115,7 @@ export const normalizePlayerState = (savedState) => {
                     ? Math.max(0, finiteNumber(savedAction.progressMs, 0))
                     : 0,
                 running: unlockedSkills.includes(skill.id) && Boolean(savedAction.running),
+                // Keep this only to finish Mana cycles paid by the previous save version.
                 cycleStarted: preserveProgress && Boolean(savedAction.cycleStarted),
             }
         }

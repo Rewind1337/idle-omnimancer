@@ -77,26 +77,9 @@ export const gameReducer = (state, action) => {
             const current = state.skills[skillId]?.actions[actionId]
             if (!current) return state
 
-            if (activity === "passive") {
-                return {
-                    ...state,
-                    skills: {
-                        ...state.skills,
-                        [skillId]: {
-                            ...state.skills[skillId],
-                            actions: {
-                                ...state.skills[skillId].actions,
-                                [actionId]: {
-                                    ...current,
-                                    running: false,
-                                    progressMs: 0,
-                                    cycleStarted: false,
-                                },
-                            },
-                        },
-                    },
-                }
-            }
+            // Passive actions are permanent once started. Only their target
+            // selection may change; stopping the process is not supported.
+            if (activity === "passive") return state
 
             if (state.activeAction?.skillId !== skillId || state.activeAction?.actionId !== actionId) {
                 return state
@@ -125,10 +108,10 @@ export const gameReducer = (state, action) => {
         case "TOGGLE_PASSIVE_ACTION": {
             const { skillId, actionId, running } = action
             if (getActionActivity(skillId, actionId) !== "passive") return state
-            if (running && !canStartAction(state, skillId, actionId)) return state
+            if (!running || !canStartAction(state, skillId, actionId)) return state
 
             const current = state.skills[skillId]?.actions[actionId]
-            if (!current) return state
+            if (!current || current.running) return state
 
             return {
                 ...state,
@@ -138,11 +121,7 @@ export const gameReducer = (state, action) => {
                         ...state.skills[skillId],
                         actions: {
                             ...state.skills[skillId].actions,
-                            [actionId]: {
-                                ...current,
-                                running,
-                                ...(running ? {} : { progressMs: 0, cycleStarted: false }),
-                            },
+                            [actionId]: { ...current, running: true },
                         },
                     },
                 },

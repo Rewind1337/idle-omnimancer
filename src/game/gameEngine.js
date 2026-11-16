@@ -97,7 +97,6 @@ const awardActionXP = (player, skill, action, actionState) => {
 // delayed browser ticks and offline time that span multiple action completions.
 const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive) => {
     let remainingMs = deltaMs
-    let changed = false
 
     while (remainingMs > 0 && actionState.level < GLOBAL_CONFIG.maxActionLevel) {
         if (!startCycle(player, actionState, action)) break
@@ -108,14 +107,12 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
 
         actionState.progressMs += consumedMs
         remainingMs -= consumedMs
-        changed = changed || consumedMs > 0
 
         if (actionState.progressMs + 0.0001 < durationMs) break
 
         actionState.progressMs = 0
         actionState.cycleStarted = false
         awardActionXP(player, skill, action, actionState)
-        changed = true
     }
 
     if (actionState.level >= GLOBAL_CONFIG.maxActionLevel) {
@@ -123,28 +120,9 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
         actionState.cycleStarted = false
         if (!isActive) actionState.running = false
     }
-
-    return changed
 }
 
-// Advance all eligible systems by the actual elapsed time. Passive regeneration
-// runs independently of the selected active action (e.g. Spellcraft Mana).
-export const advanceGame = (playerState, deltaMs, now = Date.now()) => {
-    if (!Number.isFinite(deltaMs) || deltaMs <= 0) {
-        return { ...playerState, lastUpdatedAt: now }
-    }
-
-    const player = structuredClone(playerState)
-
-    // Passive resource regeneration is independent of active action selection.
-    const spellcraft = SKILL_CONFIG_BY_ID["skill:spellcraft"]
-    if (spellcraft?.mana?.regen) {
-        player.mana.current = Math.min(
-            player.mana.max,
-            player.mana.current + spellcraft.mana.regen * (deltaMs / 1000)
-        )
-    }
-
+const advanceRunningActions = (player, deltaMs) => {
     // The game currently permits one selected active action globally.
     if (player.activeAction) {
         const { skillId, actionId } = player.activeAction
@@ -177,6 +155,36 @@ export const advanceGame = (playerState, deltaMs, now = Date.now()) => {
 
             advanceOneAction(player, skill, action, actionState, deltaMs, false)
         }
+    }
+}
+
+// Advance all eligible systems by the actual elapsed time. The 100ms online
+// tick is processed as-is. Long offline intervals are simulated in 1-second
+// slices so regenerated resources become available over time rather than all
+// being granted before every offline action is calculated.
+export const advanceGame = (playerState, deltaMs, now = Date.now()) => {
+    if (!Number.isFinite(deltaMs) || deltaMs <= 0) {
+        return { ...playerState, lastUpdatedAt: now }
+    }
+
+    const player = structuredClone(playerState)
+    const spellcraft = SKILL_CONFIG_BY_ID["skill:spellcraft"]
+    const maxSliceMs = deltaMs > 1000 ? 1000 : deltaMs
+    let remainingMs = deltaMs
+
+    while (remainingMs > 0) {
+        const sliceMs = Math.min(remainingMs, maxSliceMs)
+
+        // Passive resource regeneration is independent of active action selection.
+        if (spellcraft?.mana?.regen) {
+            player.mana.current = Math.min(
+                player.mana.max,
+                player.mana.current + spellcraft.mana.regen * (sliceMs / 1000)
+            )
+        }
+
+        advanceRunningActions(player, sliceMs)
+        remainingMs -= sliceMs
     }
 
     player.lastUpdatedAt = now

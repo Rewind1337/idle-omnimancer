@@ -54,9 +54,9 @@ function ActionProgress({
 }) {
   return (
     <Flex className={cx('action-progress', className)}>
-      <Progress corners="round" size="medium" layer={2} variant="research"
+      <Progress corners="rounded" size="medium" layer={2} variant="research"
         percentage={percentage} animated={isActive} />
-      <Button variant={"research"} onClick={() => { setActive(actionID) }}>Research</Button>
+      <Button variant={"research"} toggled={isActive} onClick={() => { setActive(actionID) }}>Research</Button>
     </Flex>
   )
 }

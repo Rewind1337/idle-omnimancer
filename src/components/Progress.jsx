@@ -10,13 +10,13 @@ export function Progress({
   percentage,
   size = "medium",
   corners = "sharp",
-  animated = String(false),
+  animated = false,
   variant = "primary",
 }) {
   return (
     <Paper layer={layer} variant={variant} data-size={size} data-corners={corners} padding={0} className={cx('progress-wrapper', className)}>
       {percentage >= 0.01 &&
-        <Paper data-variant={variant} data-animated={animated} padding={0} className={cx('progress-bar')} style={{ width: percentage + "%" }}>
+        <Paper data-variant={variant} data-animated={animated ? 'true' : 'false'} padding={0} className={cx('progress-bar')} style={{ width: percentage + "%" }}>
           <h3 className="align-center">{percentage}%</h3>
         </Paper>
       }

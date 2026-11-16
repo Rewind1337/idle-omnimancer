@@ -4,6 +4,7 @@ import { Flex } from "./components/Flex";
 import { Navigation } from "./components/Navigation";
 import { ScrollArea } from "./components/ScrollArea";
 import { ToastProvider } from "./components/ToastProvider"
+import { GameProvider } from "./contexts/GameProvider"
 
 import { ResearchPage } from "./pages/ResearchPage";
 import { SpellcraftPage } from "./pages/SpellcraftPage";
@@ -56,11 +57,13 @@ function App() {
 
   return (
     <ToastProvider>
-      <ResponsivePage activePage={activePage} navigationPosition="top" navigationMode="compact" setActivePage={setActivePage}>
-        {activePage === PAGES.RESEARCH && <ResearchPage />}
-        {activePage === PAGES.SPELLCRAFT && <SpellcraftPage />}
-        {activePage === PAGES.DEVELOPMENT && <DevelopmentPage />}
-      </ResponsivePage>
+      <GameProvider>
+        <ResponsivePage activePage={activePage} navigationPosition="top" navigationMode="compact" setActivePage={setActivePage}>
+          {activePage === PAGES.RESEARCH && <ResearchPage />}
+          {activePage === PAGES.SPELLCRAFT && <SpellcraftPage />}
+          {activePage === PAGES.DEVELOPMENT && <DevelopmentPage />}
+        </ResponsivePage>
+      </GameProvider>
     </ToastProvider>
   )
 }

@@ -1,14 +1,36 @@
-// utility function that joins the css classes after filtering for truthyness
+// Joins CSS classes after removing falsy values.
 export const cx = (...values) => values.filter(Boolean).join(' ')
 
-// converts a data-id to a human readable name
-export const humanize = value => String(value ?? "")
-    .replace("action:", " ")
-    .replace("skill:", " ")
-    .replace("item:", " ")
-    .replaceAll("_", " ")
+// Removes a known data-type prefix and turns an ID into a readable label.
+// Examples: "action:read_books" -> "Read Books", "item:loose_notes" -> "Loose Notes".
+export const humanize = (value) => String(value ?? "")
+    .replace(/^(?:skill|action|item):/i, "")
+    .replace(/[_-]+/g, " ")
+    .trim()
     .toLowerCase()
-    .replace(/\b\w/g, letter => letter.toUpperCase())
+    .replace(/\b\p{L}/gu, letter => letter.toUpperCase())
 
-// converts a name into the correct data-id
-export const normalize = (name, dataType) => dataType + ":" + (name.toLowerCase().replace(/[^a-z]/g, '_'))
+// Converts a readable label (or an already-prefixed ID) into a typed data ID.
+// The supplied dataType is deliberately explicit: normalize("Loose Notes", "item")
+// returns "item:loose_notes". This is reversible at the ID/label level, not a
+// lossless encoding of original capitalization or punctuation.
+export const normalize = (name, dataType) => {
+    const type = String(dataType ?? "").trim().toLowerCase()
+    const value = String(name ?? "").trim()
+
+    if (!type) {
+        throw new Error("normalize requires a dataType.")
+    }
+
+    // Avoid double-prefixing when the caller supplies an ID of the same type.
+    const unprefixed = value.replace(new RegExp("^" + type + ":"), "")
+
+    const normalized = unprefixed
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+
+    return type + ":" + normalized
+}

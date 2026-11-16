@@ -72,7 +72,7 @@ function ActionResources({
         <Flex direction="column" >
           <Heading h="2">Consumes:</Heading>
           <Flex wrap>
-            {consumes.map((C) => <Paper className="w-min flex-grow" layer="3">1x {C}</Paper>)}
+            {consumes.map((C) => <Paper className="w-min flex-grow" layer="3">1x {humanize(C)}</Paper>)}
           </Flex>
         </Flex>
       </Paper>}
@@ -80,7 +80,7 @@ function ActionResources({
         <Flex direction="column">
           <Heading h="2">Produces:</Heading>
           <Flex wrap>
-            {produces.map((P) => <Paper className="w-min flex-grow" layer="3">1x {P}</Paper>)}
+            {produces.map((P) => <Paper className="w-min flex-grow" layer="3">1x {humanize(P)}</Paper>)}
           </Flex>
         </Flex>
       </Paper>}

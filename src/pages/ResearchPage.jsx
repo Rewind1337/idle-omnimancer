@@ -1,4 +1,4 @@
-import { ArrowUpRight, BookOpen } from "lucide-react"
+import { BookOpen } from "lucide-react"
 
 import { Flex } from "../components/Flex"
 import { Grid } from "../components/Grid"
@@ -20,9 +20,6 @@ import {
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 import { Badge } from "../components/Badge"
-import { cloneElement, useState } from "react"
-import { FloatingButton } from "../components/FloatingButton"
-import { BagModal } from "../components/modals/BagModal"
 
 const InnerShapeMap = ["close", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]
@@ -199,32 +196,11 @@ function SkillSummary({ skillProgress }) {
 
 export function ResearchPage() {
     const { player, startAction, stopAction } = useGame()
-    const [bagModalVisible, setBagModalVisible] = useState(false)
     const skillId = RESEARCH_CONFIG.id
     const skillProgress = getSkillProgress(player, skillId)
 
-    const closeBagButton = (<Button variant={"primary"} onClick={() => { setBagModalVisible(false) }}>This Button closes the Modal</Button>)
-
-    const bagModal = (<BagModal
-        visible={bagModalVisible}
-        setVisible={setBagModalVisible}
-        closeBagButton={closeBagButton}
-    />)
-
     return (
-        <>
-            {bagModal}
-            <FloatingButton
-                size="medium"
-                variant="transmutation"
-                toggled={bagModalVisible}
-                onClick={() => { setBagModalVisible(true) }}
-                className="w-min"
-                icon={<ArrowUpRight />}
-            >
-                Open Bag
-            </FloatingButton>
-            <Flex direction="column" padding={32}>
+        <Flex direction="column" padding={32}>
                 <Paper layer={0}>
                     <SkillSummary skillProgress={skillProgress} />
                 </Paper>
@@ -252,7 +228,6 @@ export function ResearchPage() {
                         </Grid>
                     </Flex>
                 </Paper>
-            </Flex>
-        </>
+        </Flex>
     )
 }

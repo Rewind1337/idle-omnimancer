@@ -80,6 +80,10 @@ export const normalizePlayerState = (savedState) => {
         .filter(({ skillId }) => unlockedSkillIds.has(skillId))
         .map(({ skillId }) => skillId)
 
+    const activeAction = isKnownAction(savedState.activeAction, unlockedSkills)
+        ? savedState.activeAction
+        : null
+
     const skills = { ...initial.skills }
 
     for (const skill of SKILL_CONFIGS) {
@@ -91,42 +95,30 @@ export const normalizePlayerState = (savedState) => {
             if (!savedAction || typeof savedAction !== "object") continue
 
             const defaultAction = actions[action.id]
+            const isActiveAction = activeAction?.skillId === skill.id &&
+                activeAction?.actionId === action.id
+            const isRunningPassiveAction =
+                (action.activity ?? skill.activity ?? "active") === "passive" &&
+                unlockedSkills.includes(skill.id) &&
+                Boolean(savedAction.running)
+            const preserveProgress = savedState.version >= SAVE_VERSION ||
+                isActiveAction ||
+                isRunningPassiveAction
+
             actions[action.id] = {
                 ...defaultAction,
                 unlocked: Boolean(savedAction.unlocked) || defaultAction.unlocked,
                 level: clampInteger(savedAction.level, 1, GLOBAL_CONFIG.maxActionLevel, 1),
                 xp: Math.max(0, finiteNumber(savedAction.xp, 0)),
-                progressMs: Math.max(0, finiteNumber(savedAction.progressMs, 0)),
+                progressMs: preserveProgress
+                    ? Math.max(0, finiteNumber(savedAction.progressMs, 0))
+                    : 0,
                 running: unlockedSkills.includes(skill.id) && Boolean(savedAction.running),
-                cycleStarted: Boolean(savedAction.cycleStarted),
+                cycleStarted: preserveProgress && Boolean(savedAction.cycleStarted),
             }
         }
 
         skills[skill.id] = { actions }
-    }
-
-    const activeAction = isKnownAction(savedState.activeAction, unlockedSkills)
-        ? savedState.activeAction
-        : null
-
-    // Treat a saved action from a now-locked skill as stopped.
-    if (savedState.activeAction && !activeAction) {
-        const { skillId, actionId } = savedState.activeAction
-        const interruptedAction = skills[skillId]?.actions[actionId]
-
-        if (interruptedAction) {
-            skills[skillId] = {
-                ...skills[skillId],
-                actions: {
-                    ...skills[skillId].actions,
-                    [actionId]: {
-                        ...interruptedAction,
-                        progressMs: 0,
-                        cycleStarted: false,
-                    },
-                },
-            }
-        }
     }
 
     return {

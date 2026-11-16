@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom'
 import { Flex } from './Flex'
 import { Toast } from './Toast'
 
+import './Toast.scss'
+
 export function ToastContainer({
     toasts = [],
     onDismiss

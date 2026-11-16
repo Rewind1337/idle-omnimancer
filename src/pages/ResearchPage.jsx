@@ -5,65 +5,13 @@ import { Grid } from "../components/Grid"
 import { Paper } from "../components/Paper"
 import { Icon } from "../components/Icon";
 import { Button } from "../components/Button";
+import { Progress } from "../components/Progress";
+import { Heading } from "../components/Heading";
+import { humanize } from "../utility/helpers";
 
-// utility function that joins the css classes after filtering for truthyness
-const cx = (...values) => values.filter(Boolean).join(' ')
-
-const RESEARCH_CONFIG = {
-  maxTier: 8,
-
-  baseDuration: 4,
-  durationPerTier: 1,
-
-  baseXp: 2,
-  xpPerTier: 1.4,
-  xpPerLevel: 1.10,
-
-  baseCompletions: 1,
-  completionsPerTier: 1.5,
-
-  baseUnlockCost: 25,
-  unlockCostPerTier: 10,
-}
-
-const RESEARCH_ACTION_DATA = Array.from(
-  { length: RESEARCH_CONFIG.maxTier },
-  (_, i) => ({
-    id: `research-${i + 1}`,
-    tier: i + 1,
-    name: `Research ${i + 1}`,
-    level: (i === 0 ? 1 : 0),
-
-    baseDurationSeconds:
-      RESEARCH_CONFIG.baseDuration + i * RESEARCH_CONFIG.durationPerTier,
-
-    baseXpPerCompletion:
-      RESEARCH_CONFIG.baseXp * RESEARCH_CONFIG.xpPerTier ** i,
-
-    startingCompletionsRequired:
-      Math.round(RESEARCH_CONFIG.baseCompletions * RESEARCH_CONFIG.completionsPerTier ** i),
-
-    unlockCostGold:
-      i === 0 ? 0 : RESEARCH_CONFIG.baseUnlockCost * RESEARCH_CONFIG.unlockCostPerTier ** (i - 1),
-  })
-)
-
-function getResearchXpRequired(research, level) {
-  if (level < 1 || level >= 100) {
-    return null
-  }
-
-  const startingXp =
-    research.baseXpPerCompletion *
-    research.startingCompletionsRequired
-
-  const levelMultiplier = Math.pow(
-    RESEARCH_CONFIG.xpPerLevel,
-    level - 1
-  )
-
-  return Math.ceil(startingXp * levelMultiplier)
-}
+import { cx } from "../utility/helpers";
+import { RESEARCH_CONFIG } from "../data/researchConfig";
+import { useState } from "react";
 
 // Will move into own file later
 
@@ -84,61 +32,85 @@ function ActionHeader({
 
 function ActionDetails({
   className = '',
-  tier,
-  baseDurationSeconds,
-  baseXpPerCompletion
+  actionTime,
+  actionXP,
+  neededXP
 }) {
   return (
     <Flex className={cx('action-details', className)}>
-      <span>{baseDurationSeconds.toFixed(1)} Seconds</span>
-      <span className="align-center">{baseXpPerCompletion.toFixed(1)} XP / Completition</span>
-      <span className="align-right">{getResearchXpRequired(RESEARCH_ACTION_DATA[tier - 1], 1).toFixed(1)} XP Needed</span>
+      <span>{actionTime.toFixed(1)} Seconds</span>
+      <span className="align-center">{actionXP.toFixed(1)} XP / Completition</span>
+      <span className="align-right">{neededXP.toFixed(1)} XP Needed</span>
     </Flex>
   )
 }
 
 function ActionProgress({
   className = '',
+  percentage = 33,
+  actionID,
+  isActive,
+  setActive,
 }) {
   return (
     <Flex className={cx('action-progress', className)}>
-      <Paper layer={2}><h3 className="align-center">Fancy Progress Bar</h3></Paper>
-      <Button variant={"research"}>Research</Button>
+      <Progress corners="round" size="medium" layer={2} variant="research"
+        percentage={percentage} animated={isActive} />
+      <Button variant={"research"} onClick={() => { setActive(actionID) }}>Research</Button>
     </Flex>
   )
 }
 
 function ActionResources({
   className = '',
+  consumes,
+  produces
 }) {
   return (
-    <Flex className={cx('action-resources', className)}>
-      <Paper layer={2}>Requires:</Paper>
-      <Paper layer={2}>Gains:</Paper>
+    <Flex className={cx('action-resources', className)} align="start" justify="start">
+      {consumes.length > 0 && <Paper layer={2}>
+        <Flex direction="column" >
+          <Heading h="2">Consumes:</Heading>
+          <Flex wrap>
+            {consumes.map((C) => <Paper className="w-min flex-grow" layer="3">1x {C}</Paper>)}
+          </Flex>
+        </Flex>
+      </Paper>}
+      {produces.length > 0 && <Paper layer={2}>
+        <Flex direction="column">
+          <Heading h="2">Produces:</Heading>
+          <Flex wrap>
+            {produces.map((P) => <Paper className="w-min flex-grow" layer="3">1x {P}</Paper>)}
+          </Flex>
+        </Flex>
+      </Paper>}
     </Flex>
   )
 }
 
 function ResearchAction({
   className = '',
-  name,
-  tier,
+  actionID = 0,
+  isActive,
+  setActive = () => { },
   level,
-  baseDurationSeconds,
-  baseXpPerCompletion,
 }) {
+  const SKILL = RESEARCH_CONFIG
+  const ACTION = SKILL.actions[actionID]
+  const consumes = ACTION.consumes || []
+  const produces = ACTION.produces || []
   return (
     <Paper layer={1} variant={"research"} className={cx('action action-research', className)}>
       <Flex direction="column">
         <Flex direction="row">
           <Icon><BookOpen /></Icon>
           <Flex direction="column">
-            <ActionHeader name={name} level={level} tier={tier} />
-            <ActionProgress />
+            <ActionHeader name={humanize(ACTION.id)} level={level} tier={ACTION.tier} />
+            <ActionProgress isActive={isActive} setActive={setActive} actionID={actionID} />
           </Flex>
         </Flex>
-        <ActionDetails tier={tier} baseDurationSeconds={baseDurationSeconds} baseXpPerCompletion={baseXpPerCompletion} />
-        <ActionResources />
+        <ActionDetails tier={ACTION.tier} actionTime={SKILL.time.base} actionXP={SKILL.actionXP.base} neededXP={SKILL.neededXP.base} />
+        <ActionResources consumes={consumes} produces={produces} />
       </Flex>
     </Paper>
   )
@@ -164,15 +136,15 @@ function SkillSummary({
 }
 
 export function ResearchPage() {
+  const [activeActionID, setActiveActionID] = useState(null)
+
   return (
     <Flex direction="column">
       <Paper layer={0}>
         <Flex direction="column">
           <SkillSummary text={"Research"} />
           <Grid columns={{ small: 1, medium: 2, large: 3 }}>
-            {RESEARCH_ACTION_DATA.filter(action => action.level !== 0).map(action =>
-              <ResearchAction key={action.id} {...action}></ResearchAction>
-            )}
+            <ResearchAction actionID={0} isActive={activeActionID === 0} setActive={setActiveActionID} level={1}></ResearchAction>
           </Grid>
         </Flex>
       </Paper>

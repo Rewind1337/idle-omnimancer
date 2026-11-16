@@ -154,7 +154,7 @@ function Showcase() {
                 {<BookOpenText size={48} />}
               </Icon>
             </Paper>
-            <Paper layer="0" variant={VARIANTS[0]} interactive className="w-min">
+            <Paper round layer="0" variant={VARIANTS[0]} interactive className="w-min">
               <Icon size={64} variant={VARIANTS[0]} outerShape={3}>
                 {<BookOpenText size={48} />}
               </Icon>
@@ -164,7 +164,7 @@ function Showcase() {
                 {<BookOpenText size={48} />}
               </Icon>
             </Paper>
-            <Paper layer="0" variant={VARIANTS[1]} interactive className="w-min">
+            <Paper round layer="0" variant={VARIANTS[1]} interactive className="w-min">
               <Icon size={64} variant={VARIANTS[1]} outerShape={4} innerShape={3} outerRunes={"dashed"} innerRunes={"dashed"}>
                 {<Scale size={48} />}
               </Icon>
@@ -174,58 +174,58 @@ function Showcase() {
                 {<WandSparkles size={48} />}
               </Icon>
             </Paper>
-            <Paper layer="0" variant={VARIANTS[3]} interactive className="w-min">
-              <Icon size={64} variant={VARIANTS[3]} outerShape={6} innerShape={3} outerRunes={"double"} innerRunes={"double"}>
+            <Paper round layer="0" variant={VARIANTS[3]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[3]} outerShape={6} innerShape={3} outerRunes={"gap"} innerRunes={"gap"}>
                 {<Star size={48} />}
               </Icon>
             </Paper>
             <Paper round layer="0" variant={VARIANTS[4]} interactive className="w-min">
-              <Icon size={64} variant={VARIANTS[4]} outerShape={7} innerShape={3} outerRunes={"solid"} innerRunes={"dashed"}>
+              <Icon size={64} variant={VARIANTS[4]} outerShape={7} innerShape={3} outerRunes={"wide"} innerRunes={"dashed"}>
                 {<MapPin size={48} />}
               </Icon>
             </Paper>
-            <Paper layer="0" variant={VARIANTS[5]} interactive className="w-min">
+            <Paper round layer="0" variant={VARIANTS[5]} interactive className="w-min">
               <Icon size={64} variant={VARIANTS[5]} outerShape={8} innerShape={3} outerRunes={"solid"} innerRunes={"dotted"}>
                 {<CircleDollarSign size={48} />}
               </Icon>
             </Paper>
             <Paper round layer="0" variant={VARIANTS[6]} interactive className="w-min">
-              <Icon size={64} variant={VARIANTS[6]} outerShape={9} innerShape={3} outerRunes={"solid"} innerRunes={"double"}>
+              <Icon size={64} variant={VARIANTS[6]} outerShape={9} innerShape={3} outerRunes={"wide"} innerRunes={"gap"}>
                 {<GraduationCap size={48} />}
               </Icon>
             </Paper>
-            <Paper layer="0" variant={VARIANTS[7]} interactive className="w-min">
+            <Paper round layer="0" variant={VARIANTS[7]} interactive className="w-min">
               <Icon size={64} variant={VARIANTS[7]} outerShape={10} innerShape={3} outerRunes={"dashed"} innerRunes={"dotted"}>
                 {<FaceAngry size={48} />}
               </Icon>
             </Paper>
             <Paper round layer="0" variant={VARIANTS[8]} interactive className="w-min">
-              <Icon size={64} variant={VARIANTS[8]} outerShape={"bevel"} innerShape={3} outerRunes={"dashed"} innerRunes={"double"}>
+              <Icon size={64} variant={VARIANTS[8]} outerShape={"bevel"} innerShape={3} outerRunes={"dashed"} innerRunes={"gap"}>
                 {<Sword size={48} />}
               </Icon>
             </Paper>
-            <Paper layer="0" variant={VARIANTS[9]} interactive className="w-min">
+            <Paper round layer="0" variant={VARIANTS[9]} interactive className="w-min">
               <Icon size={64} variant={VARIANTS[9]} outerShape={"rabbet"} innerShape={3} outerRunes={"dotted"} innerRunes={"dashed"}>
                 {<RatIcon size={48} />}
               </Icon>
             </Paper>
             <Paper round layer="0" variant={VARIANTS[10]} interactive className="w-min">
-              <Icon size={64} variant={VARIANTS[10]} outerShape={"house"} innerShape={3} outerRunes={"dotted"} innerRunes={"double"}>
+              <Icon size={64} variant={VARIANTS[10]} outerShape={"house"} innerShape={3} outerRunes={"dotted"} innerRunes={"wide"}>
                 {<Trophy size={48} />}
               </Icon>
             </Paper>
-            <Paper layer="0" variant={VARIANTS[0]} interactive className="w-min">
+            <Paper round layer="0" variant={VARIANTS[0]} interactive className="w-min">
               <Icon size={64} variant={VARIANTS[0]} outerShape={"chevron"} innerShape={3} outerRunes={"solid"} innerRunes={"dotted"}>
                 {<TextQuote size={48} />}
               </Icon>
             </Paper>
             <Paper round layer="0" variant={VARIANTS[1]} interactive className="w-min">
-              <Icon size={64} variant={VARIANTS[1]} outerShape={"star"} innerShape={3} outerRunes={"dashed"} innerRunes={"double"}>
+              <Icon size={64} variant={VARIANTS[1]} outerShape={"star"} innerShape={3} outerRunes={"dashed"} innerRunes={"gap"}>
                 {<ShieldBan size={48} />}
               </Icon>
             </Paper>
-            <Paper layer="0" variant={VARIANTS[2]} interactive className="w-min">
-              <Icon size={64} variant={VARIANTS[2]} outerShape={"close"} innerShape={3} outerRunes={"double"} innerRunes={"solid"}>
+            <Paper round layer="0" variant={VARIANTS[2]} interactive className="w-min">
+              <Icon size={64} variant={VARIANTS[2]} outerShape={"close"} innerShape={3} outerRunes={"gap"} innerRunes={"solid"}>
                 {<Bird size={48} />}
               </Icon>
             </Paper>

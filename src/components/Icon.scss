@@ -4,6 +4,8 @@
     place-content: center;
     width: fit-content;
 
+    transition: background-color 0.3s ease-out, outline-color 0.3s ease-out, color 0.3s ease-out, scale 0.3s ease-out;
+
     &.icon-frame {
         --icon-size: 64px;
 
@@ -163,7 +165,7 @@
 
 .icon:hover {
     > * {
-        transition: background-color 0.3s ease-out, outline-color 0.3s ease-out, color 0.3s ease-out;
+        transition: background-color 0.3s ease-out, outline-color 0.3s ease-out, color 0.3s ease-out, scale 1s ease-out;
     }
     .icon-outer-shape {
         background-color: var(--icon-accent-text-on-light);
@@ -173,13 +175,15 @@
     }
     .icon-outer-runes {
         outline-color: var(--icon-accent-border);
+        scale: 1.4;
     }
     .icon-inner-runes {
         outline-color: var(--icon-accent-border);
+        scale: 1.1;
     }
     .icon-content {
-        color: var(--icon-accent-dark);
-        > * {
+        color: var(--icon-accent-text-on-light);
+        * {
             filter: unset;
         }
     }
@@ -191,7 +195,7 @@
     width: var(--icon-size);
     height: var(--icon-size);
     top: 6px;
-    outline-width: 2px;
+    animation: outerRunes 12s linear infinite;
 }
 
 .icon-inner-runes {
@@ -199,49 +203,14 @@
     width: var(--icon-size);
     height: var(--icon-size);
     top: 6px;
-    outline-width: 1px;
+    animation: innerRunes 9s linear infinite;
 }
 
 /* Rune (Border) Decorations */
 .icon-outer-runes,
 .icon-inner-runes {
-    background-color: transparent !important;
+    fill: transparent;
     border-radius: 50%;
-
-    &[data-inner-runes="solid"],
-    &[data-outer-runes="solid"] {
-        outline-style: solid;
-    }
-
-    &[data-inner-runes="dashed"],
-    &[data-outer-runes="dashed"] {
-        outline-style: dashed;
-    }
-
-    &[data-inner-runes="dotted"],
-    &[data-outer-runes="dotted"] {
-        outline-style: dotted;
-    }
-
-    &[data-inner-runes="double"],
-    &[data-outer-runes="double"] {
-        outline-style: double;
-        outline-width: 3px;
-    }
-}
-
-.icon-outer-runes {
-    outline-color: var(--icon-accent-active);
-    border-color: var(--icon-accent-active);
-
-    animation: outerRunes 12s linear infinite;
-}
-
-.icon-inner-runes {
-    outline-color: var(--icon-accent-border);
-    border-color: var(--icon-accent-border);
-
-    animation: innerRunes 9s linear infinite;
 }
 
 @keyframes fullOuterRotation {
@@ -257,15 +226,15 @@
 }
 
 @keyframes outerRunes {
-    0% {outline-offset: 0; transform: rotate(0deg); filter: brightness(100%);}
-    50% {outline-offset: 4px; transform: rotate(180deg); filter: brightness(200%);}
-    100% {outline-offset: 0; transform: rotate(360deg); filter: brightness(100%);}
+    0% {transform: scale(1.2) rotate(0deg); filter: brightness(100%);}
+    50% {transform: scale(1.2) rotate(180deg); filter: brightness(200%);}
+    100% {transform: scale(1.2) rotate(360deg); filter: brightness(100%);}
 }
 
 @keyframes innerRunes {
-    0% {outline-offset: -10px; transform: rotate(0deg); filter: brightness(100%);}
-    50% {outline-offset: -4px; transform: rotate(180deg); filter: brightness(150%);}
-    100% {outline-offset: -10px; transform: rotate(360deg); filter: brightness(100%);}
+    0% {transform: scale(1) rotate(0deg); filter: brightness(100%);}
+    50% {transform: scale(1) rotate(180deg); filter: brightness(150%);}
+    100% {transform: scale(1) rotate(360deg); filter: brightness(100%);}
 }
 
 @keyframes iconBob {

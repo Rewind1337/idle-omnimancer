@@ -9,6 +9,8 @@ import { Button } from './Button'
 import { Heading } from './Heading'
 import { Text } from './Text'
 
+import './Toast.scss'
+
 export function Toast({
     id,
     title,

@@ -17,9 +17,10 @@ export function Icon({
 }) {
   const hasShape = outerShape !== null || innerShape !== null
   const hasRunes = outerRunes !== null || innerRunes !== null
+  const isFancyIcon = (hasShape || hasRunes)
 
   // CSS variables
-  const iconStyle = (hasShape || hasRunes) ? {
+  const iconStyle = isFancyIcon ? {
     '--icon-size': typeof size === 'number' ? `${size}px` : size,
 
     '--icon-accent': `var(--skill-${variant}, var(--button-${variant}))`,
@@ -36,17 +37,38 @@ export function Icon({
 
   return (
     <div
-      className={cx('icon', hasShape && 'icon-frame', className)}
-      data-variant={hasShape ? variant : undefined}
+      className={cx('icon', isFancyIcon && 'icon-frame', className)}
+      data-variant={isFancyIcon ? variant : undefined}
       style={iconStyle}
       {...props}
     >
-      {hasShape ? (
+      {isFancyIcon ? (
         <>
-          <span className={cx("icon icon-outer-runes", outerRunes ? '' : "no-background")} data-outer-runes={outerRunes} />
+          {outerRunes &&
+            <svg className={cx("icon icon-outer-runes", outerRunes ? '' : "no-background")} data-outer-runes={outerRunes} viewBox="0 0 100 100" width="100" height="100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+              {outerRunes === "solid" && <circle cx="50" cy="50" r="50" style={{ strokeWidth: "5px", stroke: "var(--icon-accent-border)", background: "transparent" }} />}
+              {outerRunes === "dashed" && <circle strokeDasharray="6, 6" cx="50" cy="50" r="50" style={{ strokeWidth: "5px", stroke: "var(--icon-accent-border)", background: "transparent" }} />}
+              {outerRunes === "dotted" && <circle strokeDasharray="2, 4" cx="50" cy="50" r="50" style={{ strokeWidth: "5px", stroke: "var(--icon-accent-border)", background: "transparent" }} />}
+              {outerRunes === "gap" && <circle strokeDasharray="6, 18" cx="50" cy="50" r="50" style={{ strokeWidth: "5px", stroke: "var(--icon-accent-border)", background: "transparent" }} />}
+              {outerRunes === "wide" && <circle strokeDasharray="15, 16" cx="50" cy="50" r="50" style={{ strokeWidth: "5px", stroke: "var(--icon-accent-border)", background: "transparent" }} />}
+            </svg>
+          }
+
+
           <span className={cx("icon icon-outer-shape", outerShape ? '' : "no-background")} data-outer-shape={outerShape} />
-          <span className={cx("icon icon-inner-runes", innerRunes ? '' : "no-background")} data-inner-runes={innerRunes} />
+
+          {innerRunes &&
+            <svg className={cx("icon icon-inner-runes", innerRunes ? '' : "no-background")} data-inner-runes={innerRunes} viewBox="0 0 100 100" width="100" height="100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+              {innerRunes === "solid" && <circle cx="50" cy="50" r="50" style={{ strokeWidth: "2px", stroke: "var(--icon-accent-border)", background: "transparent" }} />}
+              {innerRunes === "dashed" && <circle strokeDasharray="6, 6" cx="50" cy="50" r="50" style={{ strokeWidth: "2px", stroke: "var(--icon-accent-border)", background: "transparent" }} />}
+              {innerRunes === "dotted" && <circle strokeDasharray="2, 4" cx="50" cy="50" r="50" style={{ strokeWidth: "2px", stroke: "var(--icon-accent-border)", background: "transparent" }} />}
+              {innerRunes === "gap" && <circle strokeDasharray="5, 15" cx="50" cy="50" r="50" style={{ strokeWidth: "2px", stroke: "var(--icon-accent-border)", background: "transparent" }} />}
+              {innerRunes === "wide" && <circle strokeDasharray="15, 15" cx="50" cy="50" r="50" style={{ strokeWidth: "2px", stroke: "var(--icon-accent-border)", background: "transparent" }} />}
+            </svg>
+          }
+
           <span className={cx("icon icon-inner-shape", innerShape ? '' : "no-background")} data-inner-shape={innerShape} />
+
           <span className={cx("icon icon-content")}>
             {children}
           </span>

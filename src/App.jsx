@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Flex } from "./components/Flex";
 import { Navigation } from "./components/Navigation";
 import { ScrollArea } from "./components/ScrollArea";
-import { ToastProvider } from "./components/ToastProvider"
+import { ToastProvider } from "./contexts/ToastProvider"
 import { GameProvider } from "./contexts/GameProvider"
 
 import { ResearchPage } from "./pages/ResearchPage";

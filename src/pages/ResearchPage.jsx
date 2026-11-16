@@ -17,6 +17,10 @@ import {
     getSkillProgress,
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
+import { Badge } from "../components/Badge"
+
+const InnerShapeMap = ["close", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
+const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]
 
 function ActionHeader({ className = "", tier, name, level }) {
     return (
@@ -31,9 +35,9 @@ function ActionHeader({ className = "", tier, name, level }) {
 function ActionDetails({ actionTime, actionXP, neededXP, currentXP }) {
     return (
         <Flex className="action-details">
-            <span>{actionTime.toFixed(1)} Seconds</span>
-            <span className="align-center">{actionXP.toFixed(1)} XP / Completion</span>
-            <span className="align-right">{neededXP === null ? "MAX LEVEL" : `${currentXP.toFixed(1)} / ${neededXP} XP`}</span>
+            <Badge variant="transparent" interactive>{actionTime.toFixed(1)} Seconds</Badge>
+            <Badge variant="transparent" interactive>{actionXP.toFixed(1)} XP / Completion</Badge>
+            <Badge variant="transparent" interactive>{neededXP === null ? "MAX LEVEL" : `${currentXP.toFixed(1)} / ${neededXP} XP`}</Badge>
         </Flex>
     )
 }
@@ -53,6 +57,8 @@ function ActionProgress({ actionState, isActive, isUnlocked, onToggle, durationM
             />
             <Button
                 variant="research"
+                className="w-20"
+                size="medium"
                 toggled={isActive}
                 disabled={!isUnlocked || actionState.level >= 100}
                 onClick={onToggle}
@@ -104,13 +110,23 @@ function ResearchAction({ action, isActive, actionState, onToggle }) {
     const neededXP = actionState.level >= 100
         ? null
         : xpTable[actionState.level - 1].neededXP
-    const produces = action.produces ?? action.outputItem ?? []
+    const produces = action.produces ?? []
 
     return (
         <Paper layer={1} variant="research" className="action action-research">
             <Flex direction="column">
                 <Flex direction="row">
-                    <Icon><BookOpen /></Icon>
+                    <Paper round layer="0" interactive className="w-min" padding={4}>
+                        <Icon size={64}
+                            variant="research"
+                            outerRunes={OuterRunesMap[action.tier - 1]}
+                            outerShape={3}
+                            innerRunes={"gap"}
+                            innerShape={InnerShapeMap[action.tier - 1]}
+                        >
+                            <BookOpen size={48} />
+                        </Icon>
+                    </Paper>
                     <Flex direction="column">
                         <ActionHeader
                             name={humanize(action.id)}
@@ -144,14 +160,27 @@ function SkillSummary({ skillProgress }) {
         : 0
 
     return (
-        <Paper className="skill-summary" layer={1} variant="research">
-            <Flex direction="column">
-                <Flex>
-                    <h1>Research</h1>
-                    <h3 className="align-right">Level {skillProgress.level} / 100</h3>
-                </Flex>
-                <Flex className="skill-progress">
-                    <Progress variant="research" percentage={percentage} />
+        <Paper className="skill-summary" layer={1} variant="research" padding={16}>
+            <Flex direction="row" gap={32}>
+                <Paper round layer="0" interactive className="w-min" padding={16}>
+                    <Icon size={64}
+                        variant="research"
+                        outerRunes={"solid"}
+                        outerShape={3}
+                        innerRunes={"gap"}
+                        innerShape={3}
+                    >
+                        <BookOpen size={48} />
+                    </Icon>
+                </Paper>
+                <Flex direction="column">
+                    <Flex>
+                        <h1>Research</h1>
+                        <h3 className="align-right">Level {skillProgress.level} / 100</h3>
+                    </Flex>
+                    <Flex className="skill-progress">
+                        <Progress variant="research" percentage={percentage} />
+                    </Flex>
                 </Flex>
             </Flex>
         </Paper>
@@ -164,10 +193,12 @@ export function ResearchPage() {
     const skillProgress = getSkillProgress(player, skillId)
 
     return (
-        <Flex direction="column">
+        <Flex direction="column" padding={32}>
             <Paper layer={0}>
-                <Flex direction="column">
-                    <SkillSummary skillProgress={skillProgress} />
+                <SkillSummary skillProgress={skillProgress} />
+            </Paper>
+            <Paper layer={0}>
+                <Flex direction="column" gap={32}>
                     <Grid columns={{ small: 1, medium: 2, large: 3 }}>
                         {RESEARCH_CONFIG.actions.map(action => {
                             const actionState = player.skills[skillId].actions[action.id]

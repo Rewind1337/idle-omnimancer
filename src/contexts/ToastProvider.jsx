@@ -5,9 +5,9 @@ import {
     useState
 } from 'react'
 
-import { ToastContext } from '../contexts/ToastContext'
+import { ToastContext } from './ToastContext'
 import { TOAST_TYPES } from '../data/toastTypes'
-import { ToastContainer } from './ToastContainer'
+import { ToastContainer } from '../components/ToastContainer'
 
 export function ToastProvider({
     children,

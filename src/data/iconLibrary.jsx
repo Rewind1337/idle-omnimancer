@@ -1,4 +1,4 @@
-import { ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, FlaskConical, GraduationCap, Haze, Info, LayerArrowUp, Layers2, Mountain, MountainSnow, PawPrint, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle } from "lucide-react";
+import { ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, GraduationCap, Haze, Info, LayerArrowUp, Layers2, Mountain, MountainSnow, PawPrint, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale } from "lucide-react";
 
 export const OTHER_ICONS = {
     STAR: <Star />,
@@ -25,7 +25,7 @@ export const SHOP_ICONS = {}
 export const SKILL_ICONS = {
     RESEARCH: <BookOpenText />,
     SPELLCRAFT: <WandSparkles />,
-    TRANSMUTATION: <FlaskConical />,
+    TRANSMUTATION: <Scale />,
     EXPLORATION: <Compass />,
     UNVEILING: <Eye />,
     COMBAT: <Swords />,

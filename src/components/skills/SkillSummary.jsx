@@ -1,6 +1,7 @@
-import { Flex } from "./Flex"
-import { Paper } from "./Paper"
-import { Progress } from "./Progress"
+import { Badge } from "../Badge"
+import { Flex } from "../Flex"
+import { Paper } from "../Paper"
+import { Progress } from "../Progress"
 
 export function SkillSummary({ title, skillProgress, variant, icon }) {
     const totalPercentage = skillProgress.maxXP > 0
@@ -19,7 +20,8 @@ export function SkillSummary({ title, skillProgress, variant, icon }) {
                 <Flex direction="column">
                     <Flex>
                         <h1>{title}</h1>
-                        <h3 className="align-right">Level {skillProgress.level} / 100</h3>
+                        <Badge variant={variant}>Next Level {skillProgress.xp} / {skillProgress.neededXP}</Badge>
+                        <Badge variant={variant}>Level {skillProgress.level} / 100</Badge>
                     </Flex>
                     <Flex className="skill-progress" direction="column" gap={4}>
                         <Progress size="small" variant={variant} percentage={totalPercentage} />

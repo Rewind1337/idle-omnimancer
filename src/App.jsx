@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ArrowUpRight, CircleDollarSign, DollarSign, Grip } from "lucide-react";
 
 import { Button } from "./components/Button";
 import { BagModal } from "./components/modals/BagModal";
@@ -14,10 +13,11 @@ import { SpellcraftPage } from "./pages/SpellcraftPage";
 import { DevelopmentPage } from "./pages/DevelopmentPage";
 
 import { cx } from './utility/helpers'
-import { Paper } from "./components/Paper";
 import { BagButton } from "./components/buttons/BagButton";
 import { ShopButton } from "./components/buttons/ShopButton";
 import { FloatingPanel } from "./components/FloatingPanel";
+
+import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION, SHOP_NAVIGATION } from "./data/skillNavigation";
 
 function ResponsivePage({
   children,
@@ -52,7 +52,10 @@ function ResponsivePage({
   ) : null
 
   const floatingButtons = <FloatingPanel>
-    <ShopButton active={false} />
+    <ShopButton
+      active={activePage === SHOP_NAVIGATION.id}
+      onClick={() => setActivePage(SHOP_NAVIGATION.id)}
+    />
     <BagButton active={bagModalVisible} onClick={() => { setBagModalVisible(true) }} />
   </FloatingPanel>
 
@@ -69,27 +72,19 @@ function ResponsivePage({
   )
 }
 
-const PAGES = {
-  RESEARCH: 0,
-  SPELLCRAFT: 1,
-  TRANSMUTATION: 2,
-  EXPLORATION: 3,
-  UNVEILING: 4,
-  COMBAT: 5,
-  COMPANIONS: 6,
-  DEVELOPMENT: 7
-}
-
 function App() {
-  const [activePage, setActivePage] = useState(PAGES.RESEARCH)
+  const [activePage, setActivePage] = useState(
+    SKILL_NAVIGATION.find(skill => skill.skillId === "skill:research").id
+  )
+  const activeSkill = SKILL_NAVIGATION.find(skill => skill.id === activePage)
 
   return (
     <ToastProvider>
       <GameProvider>
         <ResponsivePage activePage={activePage} navigationPosition="top" navigationMode="compact" setActivePage={setActivePage}>
-          {activePage === PAGES.RESEARCH && <ResearchPage />}
-          {activePage === PAGES.SPELLCRAFT && <SpellcraftPage />}
-          {activePage === PAGES.DEVELOPMENT && <DevelopmentPage />}
+          {activeSkill?.skillId === "skill:research" && <ResearchPage />}
+          {activeSkill?.skillId === "skill:spellcraft" && <SpellcraftPage />}
+          {activePage === DEVELOPMENT_NAVIGATION.id && <DevelopmentPage />}
         </ResponsivePage>
       </GameProvider>
     </ToastProvider>

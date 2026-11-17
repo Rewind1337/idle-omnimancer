@@ -18,3 +18,10 @@ export const DEVELOPMENT_NAVIGATION = {
     variant: "",
     transparent: true,
 }
+
+// Opened through the floating panel; intentionally excluded from the top navigation.
+export const SHOP_NAVIGATION = {
+    id: 8,
+    name: "Shop",
+    variant: "spellcraft",
+}

@@ -54,6 +54,27 @@ const getUnlockCostBalance = (player, itemId) => {
     return player.inventory?.[itemId] ?? 0
 }
 
+
+// Return the item IDs produced by an action, supporting both current and
+// legacy output config shapes.
+const getActionOutputs = (action) => {
+    const outputs = action.produces ?? action.outputItem ?? []
+    return Array.isArray(outputs) ? outputs : [outputs].filter(Boolean)
+}
+
+// Each distinct item type occupies one slot; additional copies stack.
+const canStoreActionOutputs = (player, action) => {
+    const inventory = player.inventory ?? {}
+    const occupiedSlots = Object.values(inventory).filter(amount => amount > 0).length
+    const newItemIds = [...new Set(getActionOutputs(action))]
+        .filter(itemId => !(inventory[itemId] > 0))
+    const inventorySlots = Number.isFinite(player.inventorySlots)
+        ? Math.max(0, player.inventorySlots)
+        : 25
+
+    return occupiedSlots + newItemIds.length <= inventorySlots
+}
+
 export const canUnlockAction = (player, skillId, actionId) => {
     if (!player.unlockedSkills?.includes(skillId)) return false
     const skill = SKILL_CONFIG_BY_ID[skillId]
@@ -121,10 +142,7 @@ const awardActionXP = (player, skill, action, actionState) => {
         actionState.xp = 0
     }
 
-    // Current action configs use either "produces" or "outputItem".
-    // Keep this compatibility layer here so configs can be standardized later.
-    const outputs = action.produces ?? action.outputItem ?? []
-    for (const itemId of outputs) {
+    for (const itemId of getActionOutputs(action)) {
         player.inventory[itemId] = (player.inventory[itemId] ?? 0) + 1
     }
 }
@@ -149,8 +167,10 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
 
         if (actionState.progressMs + 0.0001 < durationMs) break
 
-        // Check Mana again at completion, then deduct it only for a successful cast.
-        if (!canPayActionCost(player, action)) break
+        // Check Mana and bag capacity before completing the action. If a new
+        // item type would exceed capacity, hold the completed cycle until space
+        // becomes available rather than consuming Mana or discarding output.
+        if (!canPayActionCost(player, action) || !canStoreActionOutputs(player, action)) break
         payActionCost(player, action)
 
         actionState.progressMs = 0

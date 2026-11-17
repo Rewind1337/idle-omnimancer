@@ -20,7 +20,7 @@ export function Icon({
   const isFancyIcon = (hasShape || hasRunes)
 
   // CSS variables
-  const iconStyle = isFancyIcon ? {
+  const iconStyle = {
     '--icon-size': typeof size === 'number' ? `${size}px` : size,
 
     '--icon-accent': `var(--skill-${variant}, var(--button-${variant}))`,
@@ -33,12 +33,12 @@ export function Icon({
     '--icon-accent-text-on-dark': `var(--skill-${variant}-text-on-dark, var(--button-${variant}-text-on-dark))`,
 
     ...style,
-  } : style
+  }
 
   return (
     <div
       className={cx('icon', isFancyIcon && 'icon-frame', className)}
-      data-variant={isFancyIcon ? variant : undefined}
+      data-variant={variant}
       style={iconStyle}
       {...props}
     >
@@ -73,7 +73,7 @@ export function Icon({
             {children}
           </span>
         </>
-      ) : children}
+      ) : <div style={iconStyle}>{children}</div>}
     </div>
   )
 }

@@ -1,5 +1,7 @@
 import { BookOpenText, Scale, WandSparkles, Star, ArrowUpRight, CircleDollarSign, GraduationCap, MapPin, FaceAngry, Sword, RatIcon, Trophy, TextQuote, ShieldBan, Bird, Dog } from "lucide-react"
 
+import { RESEARCH_ACTION_ICONS } from "../data/iconLibrary.jsx"
+
 import { useState } from "react"
 
 import { useToast } from "../hooks/useToast"
@@ -21,8 +23,11 @@ import { Heading } from "../components/Heading"
 import { Text } from "../components/Text"
 import { Modal } from "../components/Modal"
 import { Tooltip } from "../components/Tooltip"
+import { Item } from "../components/Item"
 
 import "../data/skillConfig.js"
+import { RESEARCH_CONFIG } from "../data/researchConfig.js"
+import { humanize } from "../utility/helpers.js"
 
 const VARIANTS = ["primary", "secondary", "earth", "air", "water", "research", "spellcraft", "transmutation", "exploration", "combat", "unveiling", "companions", "shop"]
 const SIZES = ["large", "medium", "small"]
@@ -117,6 +122,21 @@ function Showcase() {
             <Text className="flex-grow w-min" size="medium" text={"Test"} variant={"air"} />
             <Text className="flex-grow w-min" size="large" text={"Test"} variant={"unveiling"} />
             <Text className="flex-grow w-min" size="xlarge" text={"Test"} variant={"primary"} />
+          </Flex>
+        </Paper>
+        <Paper layer={2}>
+          <h3>Items</h3>
+          <Flex wrap={true} justify="start" align="start" padding={8} gap={16}>
+            <Item variant="research" icon={RESEARCH_ACTION_ICONS[0]} amount={67} name={humanize(RESEARCH_CONFIG.actions[0].produces[0])} />
+            <Item variant="research" icon={RESEARCH_ACTION_ICONS[1]} amount={67} name={humanize(RESEARCH_CONFIG.actions[1].produces[0])} />
+            <Item variant="research" icon={RESEARCH_ACTION_ICONS[2]} amount={67} name={humanize(RESEARCH_CONFIG.actions[2].produces[0])} />
+            <Item variant="research" icon={RESEARCH_ACTION_ICONS[3]} amount={67} name={humanize(RESEARCH_CONFIG.actions[3].produces[0])} />
+            <Item variant="research" icon={RESEARCH_ACTION_ICONS[4]} amount={67} name={humanize(RESEARCH_CONFIG.actions[4].produces[0])} />
+            <Item variant="research" icon={RESEARCH_ACTION_ICONS[5]} amount={67} name={humanize(RESEARCH_CONFIG.actions[5].produces[0])} />
+            <Item variant="research" icon={RESEARCH_ACTION_ICONS[6]} amount={67} name={humanize(RESEARCH_CONFIG.actions[6].produces[0])} />
+            <Item variant="research" icon={RESEARCH_ACTION_ICONS[7]} amount={67} name={humanize(RESEARCH_CONFIG.actions[7].produces[0])} />
+            <Item variant="research" icon={RESEARCH_ACTION_ICONS[8]} amount={67} name={humanize(RESEARCH_CONFIG.actions[8].produces[0])} />
+            <Item variant="research" icon={RESEARCH_ACTION_ICONS[9]} amount={67} name={humanize(RESEARCH_CONFIG.actions[9].produces[0])} />
           </Flex>
         </Paper>
         <Paper layer={2}>

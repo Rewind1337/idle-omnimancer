@@ -23,6 +23,10 @@
     }
 }
 
+.item-icon svg {
+    color: var(--icon-accent) !important;
+}
+
 /* Decoration Globals */
 .icon-outer-shape,
 .icon-outer-runes,

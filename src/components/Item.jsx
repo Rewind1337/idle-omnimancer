@@ -17,6 +17,7 @@ export function Item({
     variant = 'primary',
     layer = 2,
     interactive = true,
+    selected = false,
     onClick = () => { }
 }) {
     if (mode === "compact") {
@@ -25,6 +26,7 @@ export function Item({
                 <Paper layer={layer} interactive={interactive}
                     className={cx('item item-compact', className)}
                     data-variant={variant}
+                    data-selected={selected ? "true" : "false"}
                     onClick={() => { onClick() }}
                 >
                     <Flex direction="column" padding={0}>
@@ -39,6 +41,7 @@ export function Item({
             <Paper layer={layer} interactive={interactive}
                 className={cx('item item-wide', className)}
                 data-variant={variant}
+                data-selected={selected ? "true" : "false"}
                 onClick={() => { onClick() }}
             >
                 <Flex direction="row" padding={0}>

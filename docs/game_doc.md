@@ -749,7 +749,7 @@ The bag stores produced resources and other physical items. It is central to pro
 
 ### 14.1 Slots and stacking
 
-- The bag starts with limited capacity.
+- The bag currently starts with 25 slots, configured through `GLOBAL_CONFIG.startingBagSpace`.
 - Each distinct item type occupies one slot; copies of the same item stack.
 - Example: one or fifty Loose Notes use one slot. Earth Dust, Air Breath and Water Droplet each use a separate slot.
 - Different elements and tiers remain separate items.
@@ -758,11 +758,11 @@ The bag stores produced resources and other physical items. It is central to pro
 
 ### 14.2 Expansion
 
-- Additional slots can be purchased with gold.
-- Cost should rise with bag size, making expansion a meaningful long-term gold sink without frustrating the early game.
+- Additional slots can be purchased with coins. The first additional slot costs 1,000 coins, the second costs 2,000, the third costs 4,000, and each subsequent slot doubles in price.
+- The starting capacity, first-slot price and price multiplier are configurable through `GLOBAL_CONFIG`.
 - Later expansions should also require specific resources, potentially from different skills.
 - Resource requirements should become more demanding as capacity grows.
-- Starting capacity, expansion increments, gold curve and resource requirements are undecided.
+- Expansion increments and later resource requirements are undecided. The current initial price curve is configurable in `GLOBAL_CONFIG`.
 
 ### 14.3 Item management and full inventory
 
@@ -793,7 +793,7 @@ The player must not silently lose resources when the bag is full.
 - Higher-tier and more advanced resources should generally be worth more than introductory materials.
 - Value is based on the individual item, not tier alone; items in the same tier can have different values based on their source, purpose and production requirements.
 - Later skills should introduce resources worth substantially more than early-game materials.
-- Exact base values and sale modifiers remain undecided and must be balanced against production, inputs, unlocks and later economy.
+- `ITEM_DATA` currently supplies a placeholder base sale value of 1 coin for each implemented item. Exact item values and sale modifiers remain undecided and must be balanced against production, inputs, unlocks and later economy.
 
 ### 15.2 Selling as a choice
 

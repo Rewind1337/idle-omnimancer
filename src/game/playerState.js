@@ -13,6 +13,12 @@ export const DEFAULT_INVENTORY_SLOTS = GLOBAL_CONFIG.startingBagSpace
 // The save contains only serializable player data. Configurations, functions,
 // generated XP tables and derived skill levels are deliberately not stored.
 export const createInitialPlayerState = () => {
+    const defaultUnlockedSkills = new Set(
+        SKILL_CONFIGS
+            .filter(skill => skill.unlockedByDefault)
+            .map(skill => skill.id)
+    )
+
     const skills = Object.fromEntries(
         SKILL_CONFIGS.map(skill => [
             skill.id,
@@ -21,7 +27,7 @@ export const createInitialPlayerState = () => {
                     skill.actions.map(action => [
                         action.id,
                         {
-                            unlocked: Boolean(action.unlockedByDefault),
+                            unlocked: defaultUnlockedSkills.has(skill.id) && Boolean(action.unlockedByDefault),
                             level: 1,
                             xp: 0,
                             progressMs: 0,
@@ -36,12 +42,6 @@ export const createInitialPlayerState = () => {
     )
 
     const spellcraft = SKILL_CONFIG_BY_ID["skill:spellcraft"]
-
-    const defaultUnlockedSkills = new Set(
-        SKILL_CONFIGS
-            .filter(skill => skill.unlockedByDefault)
-            .map(skill => skill.id)
-    )
 
     return {
         version: SAVE_VERSION,
@@ -109,7 +109,8 @@ export const normalizePlayerState = (savedState) => {
 
             actions[action.id] = {
                 ...defaultAction,
-                unlocked: Boolean(savedAction.unlocked) || defaultAction.unlocked,
+                unlocked: unlockedSkills.includes(skill.id) &&
+                    (Boolean(savedAction.unlocked) || defaultAction.unlocked),
                 level: clampInteger(savedAction.level, 1, GLOBAL_CONFIG.maxActionLevel, 1),
                 xp: Math.max(0, finiteNumber(savedAction.xp, 0)),
                 progressMs: preserveProgress

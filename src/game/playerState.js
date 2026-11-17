@@ -7,6 +7,7 @@ import { SKILL_NAVIGATION } from "../data/navigationData"
 
 export const SAVE_KEY = "omnimancer-idle-save"
 export const SAVE_VERSION = 3
+export const DEFAULT_INVENTORY_SLOTS = 25
 
 // The save contains only serializable player data. Configurations, functions,
 // generated XP tables and derived skill levels are deliberately not stored.
@@ -50,6 +51,7 @@ export const createInitialPlayerState = () => {
         activeAction: null,
         skills,
         inventory: {},
+        inventorySlots: DEFAULT_INVENTORY_SLOTS,
         currencies: {
             coins: 0,
         },
@@ -119,6 +121,13 @@ export const normalizePlayerState = (savedState) => {
         skills[skill.id] = { actions }
     }
 
+    const inventory = normalizeNumberMap(savedState.inventory)
+    const occupiedSlots = Object.values(inventory).filter(amount => amount > 0).length
+    const inventorySlots = Math.max(
+        occupiedSlots,
+        clampInteger(savedState.inventorySlots, 1, Number.MAX_SAFE_INTEGER, DEFAULT_INVENTORY_SLOTS)
+    )
+
     return {
         ...initial,
         version: SAVE_VERSION,
@@ -126,7 +135,8 @@ export const normalizePlayerState = (savedState) => {
         unlockedSkills,
         activeAction,
         skills,
-        inventory: normalizeNumberMap(savedState.inventory),
+        inventory,
+        inventorySlots,
         currencies: {
             coins: Math.max(0, finiteNumber(
                 savedState.currencies?.coins,

@@ -15,6 +15,9 @@ import { DevelopmentPage } from "./pages/DevelopmentPage";
 
 import { cx } from './utility/helpers'
 import { Paper } from "./components/Paper";
+import { BagButton } from "./components/buttons/BagButton";
+import { ShopButton } from "./components/buttons/ShopButton";
+import { FloatingPanel } from "./components/FloatingPanel";
 
 function ResponsivePage({
   children,
@@ -48,37 +51,10 @@ function ResponsivePage({
     </Flex>
   ) : null
 
-  const floatingButtonContainer =
-    <Paper transparent className="w-min" style={{
-      position: "absolute",
-      right: 8,
-      bottom: 8,
-    }}>
-      <Flex direction="row">
-        <Button
-          size="medium"
-          variant="spellcraft"
-          className="w-min"
-          badge={"7.12 Mil"}
-          badgeIcon={<DollarSign />}
-          icon={<CircleDollarSign />}
-        >
-          Visit Shop
-        </Button>
-        <Button
-          size="medium"
-          variant="transmutation"
-          toggled={bagModalVisible}
-          onClick={() => setBagModalVisible(true)}
-          className="w-min"
-          badge={"0 / 25"}
-          badgeIcon={<Grip />}
-          icon={<ArrowUpRight />}
-        >
-          Open Bag
-        </Button>
-      </Flex>
-    </Paper>
+  const floatingButtons = <FloatingPanel>
+    <ShopButton active={false} />
+    <BagButton active={bagModalVisible} onClick={() => { setBagModalVisible(true) }} />
+  </FloatingPanel>
 
   return (
     <>
@@ -88,7 +64,7 @@ function ResponsivePage({
         setVisible={setBagModalVisible}
         closeBagButton={closeBagButton}
       />
-      {floatingButtonContainer}
+      {floatingButtons}
     </>
   )
 }

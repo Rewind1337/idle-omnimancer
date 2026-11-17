@@ -6,6 +6,7 @@ import './Item.scss'
 import { cx } from '../utility/helpers'
 import { Text } from "./Text"
 import { Tooltip } from "./Tooltip"
+import { Icon } from "./Icon"
 
 export function Item({
     className = '',
@@ -25,7 +26,7 @@ export function Item({
                 onClick={() => { onClick() }}
             >
                 <Flex direction="column" padding={0}>
-                    {icon && <span className="item-icon">{icon}</span>}
+                    {icon && <Icon variant={variant} className="item-icon">{icon}</Icon>}
                     {amount && <Paper variant={variant} className="item-badge" padding={"2px 6px"}><Text variant={variant}>{amount}</Text></Paper>}
                 </Flex>
             </Paper>

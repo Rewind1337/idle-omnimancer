@@ -57,17 +57,23 @@ export const getNextBagSlotCost = (inventorySlots = GLOBAL_CONFIG.startingBagSpa
     return Number.isFinite(cost) ? Math.ceil(cost) : Infinity
 }
 
-// Show every unlocked action and only the next locked action in config order.
-// This keeps same-tier elemental actions sequential instead of revealing an
-// entire later tier as soon as the first action in it becomes available.
+// Resolve the next action in the configured progression order.
+const getNextLockedAction = (player, skillId) => {
+    const skill = SKILL_CONFIG_BY_ID[skillId]
+    if (!skill) return null
+
+    const actionStates = player.skills[skillId]?.actions ?? {}
+    return skill.actions.find(action => !actionStates[action.id]?.unlocked) ?? null
+}
+
+// Show every unlocked action and preview only the next locked action in config
+// order, even when multiple elemental actions share the same tier.
 export const getVisibleActions = (player, skillId) => {
     const skill = SKILL_CONFIG_BY_ID[skillId]
     if (!skill) return []
 
     const actionStates = player.skills[skillId]?.actions ?? {}
-    const nextLockedAction = skill.actions.find(action =>
-        !actionStates[action.id]?.unlocked
-    )
+    const nextLockedAction = getNextLockedAction(player, skillId)
 
     return skill.actions.filter(action =>
         actionStates[action.id]?.unlocked || action.id === nextLockedAction?.id
@@ -138,6 +144,11 @@ export const canUnlockAction = (player, skillId, actionId) => {
     const action = skill?.actions.find(entry => entry.id === actionId)
     const actionState = player.skills[skillId]?.actions[actionId]
     if (!action || !actionState || actionState.unlocked) return false
+
+    // Prevent skipping earlier actions, even if a caller dispatches an unlock
+    // directly instead of using the currently displayed action card.
+    if (getNextLockedAction(player, skillId)?.id !== actionId) return false
+
     const costs = getUnlockCostTotals(action.unlockCosts)
     if (!costs) return false
     return Object.entries(costs).every(([itemId, amount]) =>

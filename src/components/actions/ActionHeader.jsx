@@ -1,5 +1,6 @@
 import { Flex } from "../Flex"
 import { cx } from "../../utility/helpers"
+import { Badge } from "../Badge"
 
 export function ActionHeader({
     className = "",
@@ -12,8 +13,8 @@ export function ActionHeader({
     return (
         <Flex className={cx("action-header", className)}>
             <h2>{name}</h2>
-            {isUnlocked && <h4 className="align-left">Lv. {level} / 100</h4>}
-            <h3 className="align-right">Tier {tier} {skillName}</h3>
+            {isUnlocked && <Badge variant={skillName.toLowerCase()} interactive>Lv. {level} / 100</Badge>}
+            <Badge variant={skillName.toLowerCase()} interactive>Tier {tier} {skillName}</Badge>
         </Flex>
     )
 }

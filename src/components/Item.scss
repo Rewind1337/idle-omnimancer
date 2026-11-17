@@ -47,7 +47,8 @@
 
         > .item-empty-content,
         .tooltip-block,
-        .bag-buy-slot-button {
+        .bag-buy-slot-button,
+        .bag-buy-slot-button > .flex {
             width: 100%;
             height: 100%;
         }

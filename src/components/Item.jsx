@@ -7,6 +7,7 @@ import { cx } from '../utility/helpers'
 import { Text } from "./Text"
 import { Tooltip } from "./Tooltip"
 import { Icon } from "./Icon"
+import { Heading } from "./Heading"
 
 export function Item({
     className = '',
@@ -22,7 +23,7 @@ export function Item({
 }) {
     if (mode === "compact") {
         return (
-            <Tooltip layer={layer} variant={variant} content={name}>
+            <Tooltip layer={layer} variant={variant} content={<Heading h="5">{name}</Heading>}>
                 <Paper layer={layer} interactive={interactive}
                     className={cx('item item-compact', className)}
                     data-variant={variant}

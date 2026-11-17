@@ -16,6 +16,7 @@ import { ITEM_DATA_BY_ID } from '../../data/itemData'
 import { getNextBagSlotCost } from '../../game/gameEngine'
 import { humanize } from '../../utility/helpers'
 import { useGame } from '../../hooks/useGame'
+import { GLOBAL_CONFIG } from "../../data/skillConfig"
 
 const AMOUNT_PRESETS = [
     { label: "1%", ratio: 0.01 },
@@ -107,10 +108,9 @@ export function BagModal({
                             </EmptyItem>
                         )}
                         <EmptyItem variant="shop" className="bag-buy-slot" padding={0}>
-                            <Tooltip
+                            <Tooltip block
                                 variant="shop"
-                                content={`Cost: ${nextSlotCost.toLocaleString()} coins`}
-                                block
+                                content={<Heading h="5">{`Cost: ${nextSlotCost.toLocaleString()} coins`}</Heading>}
                             >
                                 <Button
                                     variant="shop"
@@ -139,28 +139,8 @@ export function BagModal({
                                     variant={selectedVariant}
                                 />
 
-                                <Flex direction="row" gap={8} wrap>
-                                    {AMOUNT_PRESETS.map(({ label, ratio }) => {
-                                        const presetAmount = Math.max(
-                                            1,
-                                            Math.min(selectedMax, Math.ceil(selectedMax * ratio))
-                                        )
-                                        return (
-                                            <Button
-                                                key={label}
-                                                variant={selectedVariant}
-                                                size="small"
-                                                checked={amountToSell === presetAmount}
-                                                onClick={() => handlePreset(ratio)}
-                                            >
-                                                {label}
-                                            </Button>
-                                        )
-                                    })}
-                                </Flex>
-
                                 <InputRange
-                                    variant={selectedVariant}
+                                    variant={"primary"}
                                     value={amountToSell}
                                     onChange={handleRangeChange}
                                     label="Amount"
@@ -172,14 +152,35 @@ export function BagModal({
                                     <span>Total sell value: {totalSellValue.toLocaleString()} coins</span>
                                     <span>{baseValue.toLocaleString()} coins each</span>
                                 </Flex>
-                                <Button
-                                    variant="shop"
-                                    className="w-100"
-                                    disabled={baseValue <= 0 || amountToSell < 1}
-                                    onClick={handleSell}
-                                >
-                                    Sell {amountToSell.toLocaleString()}
-                                </Button>
+
+                                <Flex direction="row" gap={8} wrap>
+                                    {AMOUNT_PRESETS.map(({ label, ratio }) => {
+                                        const presetAmount = Math.max(
+                                            1,
+                                            Math.min(selectedMax, Math.ceil(selectedMax * ratio))
+                                        )
+                                        return (
+                                            <Button
+                                                key={label}
+                                                variant={"primary"}
+                                                size="medium"
+                                                className="w-10 flex-grow"
+                                                checked={amountToSell === presetAmount}
+                                                onClick={() => handlePreset(ratio)}
+                                            >
+                                                {label}
+                                            </Button>
+                                        )
+                                    })}
+                                    <Button
+                                        variant="shop"
+                                        className="w-10 flex-grow"
+                                        disabled={baseValue <= 0 || amountToSell < 1}
+                                        onClick={handleSell}
+                                    >
+                                        Sell {amountToSell.toLocaleString()}
+                                    </Button>
+                                </Flex>
                             </Flex>
                         </Paper>
                     )}

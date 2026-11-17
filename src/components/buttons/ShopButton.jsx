@@ -8,7 +8,7 @@ export function ShopButton({
     return (
         <Button
             size="medium"
-            variant="spellcraft"
+            variant="shop"
             className="w-min"
             badge={"7.12 Mil"}
             badgeIcon={OTHER_ICONS.DOLLAR_SIGN}

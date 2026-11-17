@@ -23,5 +23,5 @@ export const DEVELOPMENT_NAVIGATION = {
 export const SHOP_NAVIGATION = {
     id: 8,
     name: "Shop",
-    variant: "spellcraft",
+    variant: "shop",
 }

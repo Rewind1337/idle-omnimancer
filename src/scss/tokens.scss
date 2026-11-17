@@ -1,6 +1,6 @@
 /* Color Tokens */
 $button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling, companions;
-$skill-colors: research, spellcraft, transmutation, exploration, combat, unveiling, companions;
+$skill-colors: research, spellcraft, shop, transmutation, exploration, combat, unveiling, companions;
 
 /* Root Definitions - Colors, Fonts, etc */
 :root {
@@ -73,6 +73,15 @@ $skill-colors: research, spellcraft, transmutation, exploration, combat, unveili
   --skill-spellcraft-dark: hsla(42, 49%, 17%, 1);
   --skill-spellcraft-text-on-dark: hsla(42, 42%, 84%, 1);
   --skill-spellcraft-text-on-light: hsla(42, 42%, 18%, 1);
+
+  --skill-shop: hsla(52, 48%, 29%, 1);
+  --skill-shop-hover: hsla(52, 53%, 35%, 1);
+  --skill-shop-active: hsla(52, 55%, 23%, 1);
+  --skill-shop-toggled: hsla(52, 57%, 39%, 1);
+  --skill-shop-border: hsla(52, 56%, 45%, 1);
+  --skill-shop-dark: hsla(52, 55%, 17%, 1);
+  --skill-shop-text-on-dark: hsla(52, 48%, 84%, 1);
+  --skill-shop-text-on-light: hsla(52, 48%, 18%, 1);
 
   --skill-transmutation: hsla(18, 42%, 29%, 1);
   --skill-transmutation-hover: hsla(18, 47%, 35%, 1);

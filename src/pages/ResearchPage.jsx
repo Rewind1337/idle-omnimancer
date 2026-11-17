@@ -143,7 +143,7 @@ export function ResearchPage() {
     const pageVariant = "research"
     const skillProgress = getSkillProgress(player, skillId)
     return (
-        <Flex direction="column" padding={32}>
+        <Flex direction="column" padding={32} gap={32}>
             <Paper layer={0}>
                 <SkillSummary
                     title={humanize(RESEARCH_CONFIG.id)}

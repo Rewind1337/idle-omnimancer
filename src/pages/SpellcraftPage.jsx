@@ -16,7 +16,7 @@ export function SpellcraftPage() {
     const pageVariant = "spellcraft"
 
     return (
-        <Flex direction="column" padding={32}>
+        <Flex direction="column" padding={32} gap={32}>
             <Paper layer={0}>
                 <SkillSummary
                     title={humanize(SPELLCRAFT_CONFIG.id)}
@@ -30,6 +30,9 @@ export function SpellcraftPage() {
                         </Icon>
                     }
                 />
+            </Paper>
+            <Paper layer={0}>
+                {/*    <ManaBar/>     */}
             </Paper>
         </Flex>
     )

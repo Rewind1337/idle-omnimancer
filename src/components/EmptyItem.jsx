@@ -9,6 +9,7 @@ export function EmptyItem({
     className = "",
     variant = "primary",
     layer = 2,
+    padding = 8,
 }) {
     return (
         <Paper
@@ -17,8 +18,9 @@ export function EmptyItem({
             data-variant={variant}
             hoverable
             data-selected="false"
+            padding={padding}
         >
-            <Flex direction="column" align="center" justify="space-between" padding={0}>
+            <Flex direction="column" align="center" justify="space-between" padding={0} className="item-empty-content">
                 {children}
             </Flex>
         </Paper>

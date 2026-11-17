@@ -1,6 +1,7 @@
 /* Color Tokens */
 $button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling, companions;
 $skill-colors: research, spellcraft, shop, transmutation, exploration, combat, unveiling, companions;
+$resource-colors: mana;
 
 /* Root Definitions - Colors, Fonts, etc */
 :root {
@@ -127,6 +128,16 @@ $skill-colors: research, spellcraft, shop, transmutation, exploration, combat, u
   --skill-companions-dark: hsla(155, 46%, 16%, 1);
   --skill-companions-text-on-dark: hsla(155, 39%, 84%, 1);
   --skill-companions-text-on-light: hsla(155, 39%, 18%, 1);
+
+  /* Resource Colors */
+  --resource-mana: hsla(205, 78%, 36%, 1);
+  --resource-mana-hover: hsla(205, 82%, 43%, 1);
+  --resource-mana-active: hsla(205, 84%, 28%, 1);
+  --resource-mana-toggled: hsla(205, 86%, 47%, 1);
+  --resource-mana-border: hsla(202, 90%, 58%, 1);
+  --resource-mana-dark: hsla(208, 78%, 19%, 1);
+  --resource-mana-text-on-dark: hsla(202, 85%, 88%, 1);
+  --resource-mana-text-on-light: hsla(208, 78%, 16%, 1);
 
   /* Background and Papers */
   --background: hsla(220, 41%, 4%, 1);

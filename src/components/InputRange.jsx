@@ -16,7 +16,7 @@ export function InputRange({
   onChange,
   ...props
 }) {
-  const percentage = ((value - min) / (max - min)) * 100
+  const percentage = max > min ? ((value - min) / (max - min)) * 100 : 0
   const thumbOffset = 12
   const position = `calc(${percentage}% + ${thumbOffset - (percentage / 100) * thumbOffset * 2}px)`
 

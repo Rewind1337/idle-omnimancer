@@ -81,3 +81,45 @@ export const SPELLCRAFT_ACTION_ICONS = {
         <BallWave />,
     ]
 }
+
+// Item artwork reuses the matching action-tier or elemental icons until dedicated
+// item sprites are added. Keep IDs aligned with the items produced by each action.
+export const ITEM_SPRITES = {
+    // Research items
+    "item:loose_notes": RESEARCH_ACTION_ICONS[0],
+    "item:bound_notes": RESEARCH_ACTION_ICONS[1],
+    "item:translated_scrolls": RESEARCH_ACTION_ICONS[2],
+    "item:arcane_manuscript": RESEARCH_ACTION_ICONS[3],
+    "item:sealed_grimoire": RESEARCH_ACTION_ICONS[4],
+    "item:lost_archive_record": RESEARCH_ACTION_ICONS[5],
+    "item:forgotten_texts": RESEARCH_ACTION_ICONS[6],
+    "item:forbidden_codex": RESEARCH_ACTION_ICONS[7],
+    "item:primordial_chronicle": RESEARCH_ACTION_ICONS[8],
+    "item:genesis_testament": RESEARCH_ACTION_ICONS[9],
+
+    // Spellcraft items
+    "item:dust": SPELLCRAFT_ACTION_ICONS.EARTH[0],
+    "item:breath": SPELLCRAFT_ACTION_ICONS.AIR[0],
+    "item:droplet": SPELLCRAFT_ACTION_ICONS.WATER[0],
+    "item:pebble": SPELLCRAFT_ACTION_ICONS.EARTH[1],
+    "item:breeze": SPELLCRAFT_ACTION_ICONS.AIR[1],
+    "item:ripple": SPELLCRAFT_ACTION_ICONS.WATER[1],
+    "item:stone": SPELLCRAFT_ACTION_ICONS.EARTH[2],
+    "item:gust": SPELLCRAFT_ACTION_ICONS.AIR[2],
+    "item:stream": SPELLCRAFT_ACTION_ICONS.WATER[2],
+    "item:shard": SPELLCRAFT_ACTION_ICONS.EARTH[3],
+    "item:gale": SPELLCRAFT_ACTION_ICONS.AIR[3],
+    "item:wave": SPELLCRAFT_ACTION_ICONS.WATER[3],
+    "item:crystal": SPELLCRAFT_ACTION_ICONS.EARTH[4],
+    "item:tempest": SPELLCRAFT_ACTION_ICONS.AIR[4],
+    "item:torrent": SPELLCRAFT_ACTION_ICONS.WATER[4],
+    "item:core": SPELLCRAFT_ACTION_ICONS.EARTH[5],
+    "item:cyclone": SPELLCRAFT_ACTION_ICONS.AIR[5],
+    "item:maelstrom": SPELLCRAFT_ACTION_ICONS.WATER[5],
+    "item:mountain_heart": SPELLCRAFT_ACTION_ICONS.EARTH[6],
+    "item:skycore": SPELLCRAFT_ACTION_ICONS.AIR[6],
+    "item:abyssal_heart": SPELLCRAFT_ACTION_ICONS.WATER[6],
+    "item:worldheart": SPELLCRAFT_ACTION_ICONS.EARTH[7],
+    "item:firmament_core": SPELLCRAFT_ACTION_ICONS.AIR[7],
+    "item:primordial_tide": SPELLCRAFT_ACTION_ICONS.WATER[7],
+}

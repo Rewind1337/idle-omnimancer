@@ -62,7 +62,8 @@
     background-color: transparent;
   }
 
-  &.paper-interactive:hover {
+  &.paper-interactive:hover,
+  &.paper-hoverable:hover {
     background-color: var(--paper-hover);
     transform: translateY(-1px);
     &[data-layer="0"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.8);}
@@ -72,6 +73,8 @@
     &[data-layer="4"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.4);}
     &[data-layer="5"] {box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.3);}
   }
+
+  &.paper-interactive:hover {cursor: pointer;}
 
   &.paper-round {
     aspect-ratio: 1 !important;

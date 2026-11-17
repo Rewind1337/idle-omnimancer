@@ -39,7 +39,7 @@ export function Item({
     } else if (mode === "wide") {
         return (
             <Paper layer={layer} interactive={interactive}
-                className={cx('item item-wide', className)}
+                className={cx('item item-wide clip-overflow', className)}
                 data-variant={variant}
                 data-selected={selected ? "true" : "false"}
                 onClick={() => { onClick() }}

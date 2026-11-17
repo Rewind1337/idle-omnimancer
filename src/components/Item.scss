@@ -1,3 +1,7 @@
+/* Color Tokens */
+@use '../scss/tokens.scss' as *;
+
+/* Item Component Styles */
 .item {
     &.paper.paper-interactive:hover {
         cursor: pointer;
@@ -15,6 +19,7 @@
 
         .item-badge {
             text-align: center;
+            width: 64px;
             position: relative;
             top: -6px;
         }

@@ -232,6 +232,7 @@
 
   &[data-size="small"] {
     font-size: 16px;
+    padding: 1px 3px;
 
     .button-content {
       transform: translateY(2px);
@@ -261,6 +262,7 @@
   &[data-size="large"] {
     font-size: 24px;
     line-height: 1.6;
+    padding: 4px 8px;
 
     .button-content {
       transform: translateY(2px);

@@ -5,12 +5,10 @@ import '../Modal.scss'
 import { Modal } from '../Modal'
 import { Heading } from '../Heading'
 import { Flex } from '../Flex'
-import { Grid } from '../Grid'
 import { Paper } from '../Paper'
 import { Item } from '../Item'
 import { EmptyItem } from '../EmptyItem'
 import { Button } from '../Button'
-import { InputNumber } from '../InputNumber'
 import { InputRange } from '../InputRange'
 
 import { ITEM_SPRITES } from '../../data/iconLibrary'
@@ -48,13 +46,6 @@ export function BagModal({
     const selectedVariant = selectedItem ? getItemVariant(selectedItem[0]) : "primary"
     const selectedMax = selectedItem ? selectedItem[1] : 1
 
-    const handleAmountChange = (event) => {
-        const min = Number(event.target.min) || 1
-        const max = Number(event.target.max) || selectedMax
-        const value = Number(event.target.value)
-        setSelectedAmount(Math.min(max, Math.max(min, Number.isFinite(value) ? value : min)))
-    }
-
     const handleRangeChange = (event) => {
         setSelectedAmount(Number(event.target.value))
     }
@@ -68,7 +59,7 @@ export function BagModal({
             footer={closeBagButton}
             content={
                 <Flex direction="column" gap={16}>
-                    <Grid columns={{ xsmall: 2, small: 3, medium: 4, large: 6 }}>
+                    <Flex direction="row" wrap>
                         {inventory.map(([itemId, amount]) => {
                             const variant = getItemVariant(itemId)
                             return (
@@ -88,20 +79,22 @@ export function BagModal({
                             )
                         })}
                         {emptySlots > 0 && (
-                            <EmptyItem amount={emptySlots} />
+                            <EmptyItem>
+                                <Heading h="6" className="align-center">Free Slots</Heading>
+                                <Heading h="3" className="align-center">{emptySlots}</Heading>
+                            </EmptyItem>
                         )}
-                        <EmptyItem variant="shop">
-                            <Button variant="shop" className="w-100">
-                                Buy
-                            </Button>
+                        <EmptyItem>
+                            <Heading h="6" className="align-center">+1 Slot</Heading>
+                            <Button variant="shop" size="small" className="w-100 align-center">Buy</Button>
                         </EmptyItem>
-                    </Grid>
+                    </Flex>
 
                     {selectedItem && (
-                        <Paper layer={1} variant={selectedVariant} className="bag-item-selection">
+                        <Paper layer={2} className="bag-item-selection">
                             <Flex direction="column" gap={12}>
                                 <Item
-                                    layer={2}
+                                    layer={3}
                                     mode="wide"
                                     interactive={false}
                                     icon={ITEM_SPRITES[selectedItem[0]]}
@@ -109,24 +102,14 @@ export function BagModal({
                                     amount={selectedAmount}
                                     variant={selectedVariant}
                                 />
-                                <Grid columns={{ xsmall: 1, small: 2 }} gap={8}>
-                                    <InputNumber
-                                        variant={selectedVariant}
-                                        value={selectedAmount}
-                                        onChange={handleAmountChange}
-                                        label="Amount"
-                                        min={1}
-                                        max={selectedMax}
-                                    />
-                                    <InputRange
-                                        variant={selectedVariant}
-                                        value={selectedAmount}
-                                        onChange={handleRangeChange}
-                                        label="Amount"
-                                        min={1}
-                                        max={selectedMax}
-                                    />
-                                </Grid>
+                                <InputRange
+                                    variant={selectedVariant}
+                                    value={selectedAmount}
+                                    onChange={handleRangeChange}
+                                    label="Amount"
+                                    min={1}
+                                    max={selectedMax}
+                                />
                             </Flex>
                         </Paper>
                     )}

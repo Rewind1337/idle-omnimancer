@@ -9,6 +9,7 @@ export function Paper({
   transparent = false,
   round = false,
   variant = null,
+  hoverable = false,
   interactive = false,
   selected = false,
   style = {},
@@ -21,6 +22,7 @@ export function Paper({
         'paper',
         transparent && 'paper-transparent',
         interactive && 'paper-interactive',
+        hoverable && 'paper-hoverable',
         selected && 'is-selected',
         round && 'paper-round',
         className)}

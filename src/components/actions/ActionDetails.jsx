@@ -23,9 +23,9 @@ export function ActionDetails({
                 </Badge>
             )}
             <Badge variant="transparent" interactive icon={OTHER_ICONS.FLAME} tooltip={<Flex direction="column">Multiplier to items gained from this action.</Flex>}>
-                {outputMultiplier.toFixed(1)}x Output
+                {outputMultiplier.toFixed(2)}x Output
             </Badge>
-            <Badge variant="transparent" interactive icon={OTHER_ICONS.RECYCLE} tooltip={<Flex direction="column">Chance to not consume any items.</Flex>}>
+            <Badge variant="transparent" interactive icon={OTHER_ICONS.RECYCLE} tooltip={<Flex direction="column">Chance to preserve required input resources when completing this action.</Flex>}>
                 {(preservationChance * 100).toFixed(0)}% Preservation
             </Badge>
         </Flex>

@@ -1,11 +1,11 @@
 import { ITEM_SPRITES } from "./iconLibrary"
+import { humanize } from "../utility/helpers"
 
 // Base values are currently placeholders and can be balanced independently
 // from item presentation. Each physical item type is defined exactly once.
 const createItemData = (ids, variant) => ids.map(id => ({
     id,
-    name: id.replace(/^item:/, "").replace(/[_-]+/g, " ")
-        .replace(/\b\p{L}/gu, letter => letter.toUpperCase()),
+    name: humanize(id),
     baseValue: 1,
     icon: ITEM_SPRITES[id],
     variant,

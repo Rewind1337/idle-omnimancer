@@ -84,7 +84,7 @@ const canStoreActionOutputs = (player, action) => {
         .filter(itemId => !(inventory[itemId] > 0))
     const inventorySlots = Number.isFinite(player.inventorySlots)
         ? Math.max(0, player.inventorySlots)
-        : 25
+        : GLOBAL_CONFIG.startingBagSpace
 
     return occupiedSlots + newItemIds.length <= inventorySlots
 }

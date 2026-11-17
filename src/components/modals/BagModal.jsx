@@ -36,7 +36,7 @@ export function BagModal({
     const inventory = Object.entries(player.inventory ?? {})
         .filter(([, amount]) => amount > 0)
     const occupiedSlots = inventory.length
-    const inventorySlots = player.inventorySlots ?? 25
+    const inventorySlots = player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
     const emptySlots = Math.max(0, inventorySlots - occupiedSlots)
 
     const selectedItem = inventory.find(([itemId]) => itemId === selectedItemId)

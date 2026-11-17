@@ -11,6 +11,9 @@ import { EmptyItem } from '../EmptyItem'
 import { Button } from '../Button'
 import { InputRange } from '../InputRange'
 import { Tooltip } from '../Tooltip'
+import { Icon } from '../Icon'
+
+import { OTHER_ICONS } from '../../data/iconLibrary'
 
 import { ITEM_DATA_BY_ID } from '../../data/itemData'
 import { getNextBagSlotCost } from '../../game/gameEngine'
@@ -35,7 +38,7 @@ export function BagModal({
     const [selectedAmount, setSelectedAmount] = useState(1)
 
     const inventory = Object.entries(player.inventory ?? {})
-        .filter(([, amount]) => amount > 0)
+        .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0)
     const occupiedSlots = inventory.length
     const inventorySlots = player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
     const emptySlots = Math.max(0, inventorySlots - occupiedSlots)
@@ -148,9 +151,15 @@ export function BagModal({
                                     max={selectedMax}
                                 />
 
-                                <Flex direction="row" justify="space-between">
-                                    <span>Total sell value: {totalSellValue.toLocaleString()} coins</span>
-                                    <span>{baseValue.toLocaleString()} coins each</span>
+                                <Flex direction="row" justify="space-between" align="center" wrap>
+                                    <Flex direction="row" align="center" gap={4}>
+                                        <Icon size={18} variant="shop">{OTHER_ICONS.COINS}</Icon>
+                                        <span>Total sell value: {totalSellValue.toLocaleString()} {totalSellValue === 1 ? "coin" : "coins"}</span>
+                                    </Flex>
+                                    <Flex direction="row" align="center" gap={4}>
+                                        <Icon size={18} variant="shop">{OTHER_ICONS.COINS}</Icon>
+                                        <span>{baseValue.toLocaleString()} {baseValue === 1 ? "coin" : "coins"} each</span>
+                                    </Flex>
                                 </Flex>
 
                                 <Flex direction="row" gap={8} wrap>

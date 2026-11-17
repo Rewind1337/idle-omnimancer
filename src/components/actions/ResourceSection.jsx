@@ -1,6 +1,8 @@
 import { Flex } from "../Flex"
 import { Paper } from "../Paper"
 import { Heading } from "../Heading"
+import { Item } from "../Item"
+import { ITEM_DATA_BY_ID, CURRENCY_DATA_BY_ID } from "../../data/itemData"
 import { humanize } from "../../utility/helpers"
 
 export function ResourceSection({ title, resources = [] }) {
@@ -12,12 +14,21 @@ export function ResourceSection({ title, resources = [] }) {
                 <Heading h="2">{title}</Heading>
                 <Flex wrap>
                     {resources.map(resource => {
-                        const item = typeof resource === "string" ? resource : resource.item
-                        const amount = typeof resource === "string" ? 1 : resource.amount
+                        const itemId = typeof resource === "string" ? resource : resource.item
+                        const amount = typeof resource === "string" ? 1 : (resource.amount ?? 1)
+                        const data = ITEM_DATA_BY_ID[itemId] ?? CURRENCY_DATA_BY_ID[itemId]
+
                         return (
-                            <Paper key={item} className="w-min flex-grow" layer="3">
-                                {amount}x {humanize(item)}
-                            </Paper>
+                            <Item
+                                key={itemId}
+                                layer={3}
+                                mode="compact"
+                                interactive={false}
+                                icon={data?.icon}
+                                name={data?.name ?? humanize(itemId)}
+                                amount={amount}
+                                variant={data?.variant ?? "primary"}
+                            />
                         )
                     })}
                 </Flex>

@@ -11,6 +11,7 @@ import { GameProvider } from "./contexts/GameProvider"
 import { ResearchPage } from "./pages/ResearchPage";
 import { SpellcraftPage } from "./pages/SpellcraftPage";
 import { DevelopmentPage } from "./pages/DevelopmentPage";
+import { ShopPage } from "./pages/ShopPage";
 
 import { cx } from './utility/helpers'
 import { BagButton } from "./components/buttons/BagButton";
@@ -85,6 +86,7 @@ function App() {
           {activeSkill?.skillId === "skill:research" && <ResearchPage />}
           {activeSkill?.skillId === "skill:spellcraft" && <SpellcraftPage />}
           {activePage === DEVELOPMENT_NAVIGATION.id && <DevelopmentPage />}
+          {activePage === SHOP_NAVIGATION.id && <ShopPage setActivePage={setActivePage} />}
         </ResponsivePage>
       </GameProvider>
     </ToastProvider>

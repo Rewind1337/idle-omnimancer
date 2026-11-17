@@ -86,6 +86,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "earth",
             manaCost: 7,
             produces: ["item:stone"],
+            unlockCosts: [{ amount: 300, item: "item:translated_scrolls" }, { amount: 1e5, item: "currency:coins" }],
         },
         {
             id: "action:summon_gale",
@@ -93,6 +94,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "air",
             manaCost: 7,
             produces: ["item:gust"],
+            unlockCosts: [{ amount: 300, item: "item:translated_scrolls" }, { amount: 2e5, item: "currency:coins" }],
         },
         {
             id: "action:guide_stream",
@@ -100,6 +102,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "water",
             manaCost: 7,
             produces: ["item:stream"],
+            unlockCosts: [{ amount: 300, item: "item:translated_scrolls" }, { amount: 3e5, item: "currency:coins" }],
         },
         {
             id: "action:split_the_ground",
@@ -107,6 +110,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "earth",
             manaCost: 13,
             produces: ["item:shard"],
+            unlockCosts: [{ amount: 400, item: "item:arcane_manuscript" }, { amount: 1e6, item: "currency:coins" }],
         },
         {
             id: "action:call_the_tempest",
@@ -114,6 +118,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "air",
             manaCost: 13,
             produces: ["item:gale"],
+            unlockCosts: [{ amount: 400, item: "item:arcane_manuscript" }, { amount: 2e6, item: "currency:coins" }],
         },
         {
             id: "action:shape_the_wave",
@@ -121,6 +126,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "water",
             manaCost: 13,
             produces: ["item:wave"],
+            unlockCosts: [{ amount: 400, item: "item:arcane_manuscript" }, { amount: 3e6, item: "currency:coins" }],
         },
         {
             id: "action:trigger_quake",
@@ -128,6 +134,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "earth",
             manaCost: 25,
             produces: ["item:crystal"],
+            unlockCosts: [{ amount: 500, item: "item:sealed_grimoire" }, { amount: 1e7, item: "currency:coins" }],
         },
         {
             id: "action:unleash_cyclone",
@@ -135,6 +142,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "air",
             manaCost: 25,
             produces: ["item:tempest"],
+            unlockCosts: [{ amount: 500, item: "item:sealed_grimoire" }, { amount: 2e7, item: "currency:coins" }],
         },
         {
             id: "action:command_torrent",
@@ -142,6 +150,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "water",
             manaCost: 25,
             produces: ["item:torrent"],
+            unlockCosts: [{ amount: 500, item: "item:sealed_grimoire" }, { amount: 3e7, item: "currency:coins" }],
         },
         {
             id: "action:mountain_wrath",
@@ -149,6 +158,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "earth",
             manaCost: 49,
             produces: ["item:core"],
+            unlockCosts: [{ amount: 600, item: "item:lost_archive_record" }, { amount: 1e8, item: "currency:coins" }],
         },
         {
             id: "action:stormfront",
@@ -156,6 +166,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "air",
             manaCost: 49,
             produces: ["item:cyclone"],
+            unlockCosts: [{ amount: 600, item: "item:lost_archive_record" }, { amount: 2e8, item: "currency:coins" }],
         },
         {
             id: "action:tidal_surge",
@@ -163,6 +174,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "water",
             manaCost: 49,
             produces: ["item:maelstrom"],
+            unlockCosts: [{ amount: 600, item: "item:lost_archive_record" }, { amount: 3e8, item: "currency:coins" }],
         },
         {
             id: "action:continental_shift",
@@ -170,6 +182,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "earth",
             manaCost: 97,
             produces: ["item:mountain_heart"],
+            unlockCosts: [{ amount: 700, item: "item:forgotten_texts" }, { amount: 1e9, item: "currency:coins" }],
         },
         {
             id: "action:sky_rend",
@@ -177,6 +190,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "air",
             manaCost: 97,
             produces: ["item:skycore"],
+            unlockCosts: [{ amount: 700, item: "item:forgotten_texts" }, { amount: 2e9, item: "currency:coins" }],
         },
         {
             id: "action:awaken_maelstrom",
@@ -184,6 +198,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "water",
             manaCost: 97,
             produces: ["item:abyssal_heart"],
+            unlockCosts: [{ amount: 700, item: "item:forgotten_texts" }, { amount: 3e9, item: "currency:coins" }],
         },
         {
             id: "action:worldshaper",
@@ -191,6 +206,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "earth",
             manaCost: 193,
             produces: ["item:worldheart"],
+            unlockCosts: [{ amount: 800, item: "item:forbidden_codex" }, { amount: 1e10, item: "currency:coins" }],
         },
         {
             id: "action:call_of_the_firmament",
@@ -198,6 +214,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "air",
             manaCost: 193,
             produces: ["item:firmament_core"],
+            unlockCosts: [{ amount: 800, item: "item:forbidden_codex" }, { amount: 2e10, item: "currency:coins" }],
         },
         {
             id: "action:primordial_tide",
@@ -205,6 +222,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "water",
             manaCost: 193,
             produces: ["item:primordial_tide"],
+            unlockCosts: [{ amount: 800, item: "item:forbidden_codex" }, { amount: 3e10, item: "currency:coins" }],
         },
     ],
 }

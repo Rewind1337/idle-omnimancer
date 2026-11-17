@@ -5,6 +5,7 @@ import {
     advanceGame,
     canStartAction,
     canUnlockAction,
+    canUnlockSkill,
     getActionActivity,
     getNextBagSlotCost,
 } from "./gameEngine"
@@ -214,11 +215,48 @@ export const gameReducer = (state, action) => {
 
         case "UNLOCK_SKILL": {
             const skillExists = SKILL_NAVIGATION.some(skill => skill.skillId === action.skillId)
-            if (!skillExists || state.unlockedSkills.includes(action.skillId)) return state
+            const skillConfig = SKILL_CONFIG_BY_ID[action.skillId]
+            if (
+                !skillExists ||
+                !skillConfig ||
+                !canUnlockSkill(state, action.skillId)
+            ) return state
+
+            const inventory = { ...state.inventory }
+            const currencies = { ...state.currencies }
+
+            for (const { item, amount } of skillConfig.unlockCosts) {
+                if (item.startsWith("currency:")) {
+                    const currencyId = item.slice("currency:".length)
+                    currencies[currencyId] = (currencies[currencyId] ?? 0) - amount
+                } else {
+                    inventory[item] = (inventory[item] ?? 0) - amount
+                }
+            }
+
+            const currentSkill = state.skills[action.skillId]
+            const actions = { ...currentSkill.actions }
+
+            for (const actionConfig of skillConfig.actions) {
+                if (!actionConfig.unlockedByDefault) continue
+                const currentAction = actions[actionConfig.id]
+                if (currentAction) {
+                    actions[actionConfig.id] = { ...currentAction, unlocked: true }
+                }
+            }
 
             return {
                 ...state,
+                inventory,
+                currencies,
                 unlockedSkills: [...state.unlockedSkills, action.skillId],
+                skills: {
+                    ...state.skills,
+                    [action.skillId]: {
+                        ...currentSkill,
+                        actions,
+                    },
+                },
             }
         }
 

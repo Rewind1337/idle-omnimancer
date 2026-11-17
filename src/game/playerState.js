@@ -4,6 +4,7 @@ import {
     SKILL_CONFIG_BY_ID,
 } from "../data/skillConfig"
 import { SKILL_NAVIGATION } from "../data/navigationData"
+import { ITEM_DATA_BY_ID } from "../data/itemData"
 
 export const SAVE_KEY = "omnimancer-idle-save"
 export const SAVE_VERSION = 3
@@ -121,7 +122,10 @@ export const normalizePlayerState = (savedState) => {
         skills[skill.id] = { actions }
     }
 
-    const inventory = normalizeNumberMap(savedState.inventory)
+    const inventory = Object.fromEntries(
+        Object.entries(normalizeNumberMap(savedState.inventory))
+            .filter(([itemId]) => ITEM_DATA_BY_ID[itemId])
+    )
     const occupiedSlots = Object.values(inventory).filter(amount => amount > 0).length
     const inventorySlots = Math.max(
         occupiedSlots,

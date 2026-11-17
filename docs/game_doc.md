@@ -110,6 +110,8 @@ Exact prices and resource quantities are not yet defined; see Section 14.
 
 ### 3.5 Action duration and XP
 
+When a completed action grants enough XP to level up, it gains one level and its remaining XP resets to zero. Excess XP from that completion is discarded rather than carried into the next action level.
+
 - Every action has a base duration and base XP reward.
 - Higher-tier actions generally take longer but should provide more XP and more valuable or useful resources.
 - Duration can be improved by:
@@ -712,7 +714,7 @@ Gold is a shared currency used for action unlocks, skill unlocks, inventory expa
 | Skill | Intended unlock requirement |
 |---|---|
 | Research | Available from the beginning; Research I is free. |
-| Spellcraft | Gold + a modest amount of Research materials, such as Bound Notes (Research II) or Arcane Manuscripts (Research III). |
+| Spellcraft | 100 Loose Notes and 1,000 coins. |
 | Transmutation | Gold + Research materials + elemental essences produced by Spellcraft. |
 | Exploration | Unlocked after Transmutation in the intended skill order. Its unlock should follow a similar resource-and-gold approach, but use a different resource requirement and cost somewhat more gold than Transmutation. The exact resource and quantities are undecided. |
 | Unveiling | Active skill; unlocking it also unlocks its first Material Destruction action, Destroy Research Books, and **Unveil Artifact or Companion**. Gold/resource requirements are undecided. |
@@ -728,6 +730,7 @@ Gold is a shared currency used for action unlocks, skill unlocks, inventory expa
 - Research is available at the start with Research I and Loose Notes.
 - Research I is free; later Research actions cost gold.
 - Additional actions in an unlocked skill generally cost gold.
+- Spellcraft action unlocks follow tiered Research-material and coin costs: tier 1 Air/Water require 100 Loose Notes and 2,000/3,000 coins; tier 2 requires 200 Bound Notes and 10,000/20,000/30,000 coins. Tiers 3–8 use 300–800 units of the matching Research material and elemental coin costs that increase tenfold per tier.
 - Action prices should rise with tier and expected value, encouraging investment in existing production.
 - Some actions may also require resources when this creates a meaningful connection.
 - No fixed starting price sequence is defined.
@@ -754,7 +757,7 @@ The bag stores produced resources and other physical items. It is central to pro
 - Example: one or fifty Loose Notes use one slot. Earth Dust, Air Breath and Water Droplet each use a separate slot.
 - Different elements and tiers remain separate items.
 - Research materials, essences, Catalysts and future resources each use their own item slots.
-- Gold and Mana are counters/currencies and do not occupy normal slots.
+- Coins and Mana are balances, not physical items, and do not occupy normal bag slots. Currency definitions (such as `currency:coins`) are kept separate from `ITEM_DATA`.
 
 ### 14.2 Expansion
 
@@ -793,7 +796,7 @@ The player must not silently lose resources when the bag is full.
 - Higher-tier and more advanced resources should generally be worth more than introductory materials.
 - Value is based on the individual item, not tier alone; items in the same tier can have different values based on their source, purpose and production requirements.
 - Later skills should introduce resources worth substantially more than early-game materials.
-- `ITEM_DATA` currently supplies a placeholder base sale value of 1 coin for each implemented item. Exact item values and sale modifiers remain undecided and must be balanced against production, inputs, unlocks and later economy.
+- Physical item sale values are derived from their tier in `ITEM_DATA`: tier 1 is worth 1 coin, tier 2 is worth 2, and each later tier is worth twice the previous value minus one (1, 2, 3, 5, 9, 17, 33, 65, ...).
 
 ### 15.2 Selling as a choice
 

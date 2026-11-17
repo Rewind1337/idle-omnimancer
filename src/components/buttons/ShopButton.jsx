@@ -23,8 +23,8 @@ export function ShopButton({ active = false, onClick }) {
             variant="shop"
             className="w-min"
             badge={formatCoins(player.currencies.coins)}
-            badgeIcon={OTHER_ICONS.DOLLAR_SIGN}
-            icon={OTHER_ICONS.CIRCLE_DOLLAR_SIGN}
+            badgeIcon={OTHER_ICONS.COINS}
+            icon={OTHER_ICONS.SHOPPING_CART}
             checked={active}
             onClick={onClick}
         >

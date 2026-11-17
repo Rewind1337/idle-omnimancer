@@ -4,6 +4,7 @@ import {
     getActionXPTable,
     getSkillXPTable,
 } from "../data/skillConfig"
+import { ITEM_DATA_BY_ID } from "../data/itemData"
 
 // Centralized action values. Later bonuses can be applied here without
 // teaching UI components about progression formulas.
@@ -79,14 +80,33 @@ const getActionOutputs = (action) => {
 // Each distinct item type occupies one slot; additional copies stack.
 const canStoreActionOutputs = (player, action) => {
     const inventory = player.inventory ?? {}
-    const occupiedSlots = Object.values(inventory).filter(amount => amount > 0).length
+    const occupiedSlots = Object.entries(inventory)
+        .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0)
+        .length
     const newItemIds = [...new Set(getActionOutputs(action))]
-        .filter(itemId => !(inventory[itemId] > 0))
+        .filter(itemId => ITEM_DATA_BY_ID[itemId] && !(inventory[itemId] > 0))
     const inventorySlots = Number.isFinite(player.inventorySlots)
         ? Math.max(0, player.inventorySlots)
         : GLOBAL_CONFIG.startingBagSpace
 
     return occupiedSlots + newItemIds.length <= inventorySlots
+}
+
+export const canUnlockSkill = (player, skillId) => {
+    const skill = SKILL_CONFIG_BY_ID[skillId]
+    if (
+        !skill ||
+        player.unlockedSkills?.includes(skillId) ||
+        !Array.isArray(skill.unlockCosts) ||
+        skill.unlockCosts.length === 0
+    ) return false
+
+    const costs = getUnlockCostTotals(skill.unlockCosts)
+    if (!costs) return false
+
+    return Object.entries(costs).every(([itemId, amount]) =>
+        getUnlockCostBalance(player, itemId) >= amount
+    )
 }
 
 export const canUnlockAction = (player, skillId, actionId) => {
@@ -140,15 +160,18 @@ const payActionCost = (player, action) => {
 }
 
 const awardActionXP = (player, skill, action, actionState) => {
-    actionState.xp += getActionXPReward(skill, action)
-
     const table = getActionXPTable(action.id)
-    while (
-        actionState.level < GLOBAL_CONFIG.maxActionLevel &&
-        actionState.xp >= table[actionState.level - 1].neededXP
-    ) {
-        actionState.xp -= table[actionState.level - 1].neededXP
-        actionState.level += 1
+
+    if (actionState.level < GLOBAL_CONFIG.maxActionLevel) {
+        const neededXP = table[actionState.level - 1].neededXP
+        actionState.xp += getActionXPReward(skill, action)
+
+        // A completed action can grant at most one action level. Any XP beyond
+        // that level's requirement is discarded instead of carrying forward.
+        if (neededXP !== null && neededXP !== undefined && actionState.xp >= neededXP) {
+            actionState.level += 1
+            actionState.xp = 0
+        }
     }
 
     if (actionState.level >= GLOBAL_CONFIG.maxActionLevel) {
@@ -156,8 +179,13 @@ const awardActionXP = (player, skill, action, actionState) => {
         actionState.xp = 0
     }
 
-    for (const itemId of getActionOutputs(action)) {
-        player.inventory[itemId] = (player.inventory[itemId] ?? 0) + 1
+    for (const resourceId of getActionOutputs(action)) {
+        if (resourceId.startsWith("currency:")) {
+            const currencyId = resourceId.slice("currency:".length)
+            player.currencies[currencyId] = (player.currencies[currencyId] ?? 0) + 1
+        } else if (ITEM_DATA_BY_ID[resourceId]) {
+            player.inventory[resourceId] = (player.inventory[resourceId] ?? 0) + 1
+        }
     }
 }
 

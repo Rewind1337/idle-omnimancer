@@ -6,6 +6,11 @@ import { SPELLCRAFT_CONFIG } from "./SpellcraftConfig"
 export const GLOBAL_CONFIG = {
     maxSkillLevel: 100,
     maxActionLevel: 100,
+
+    // Inventory capacity and the exponential cost of buying additional slots.
+    startingBagSpace: 25,
+    bagSlotStartingCost: 1000,
+    bagSlotCostMultiplier: 2,
 }
 
 // Generate the XP table for one action tier.

@@ -19,25 +19,29 @@ const SAVE_INTERVAL_MS = 1000
 export function GameProvider({ children }) {
     const [player, dispatch] = useReducer(gameReducer, undefined, loadPlayerState)
     const playerRef = useRef(player)
-    const lastTickRef = useRef(Date.now())
+    const lastTickRef = useRef(0)
     const initializedRef = useRef(false)
 
     // Keep a current reference for the independent save interval and page exit.
-    playerRef.current = player
+    useEffect(() => {
+        playerRef.current = player
+    }, [player])
 
     useEffect(() => {
+        const now = Date.now()
+
         // Apply elapsed time since the previous save once, before regular ticks.
         // The ref prevents React StrictMode's development effect replay from
         // applying the same offline interval twice.
         if (!initializedRef.current) {
             initializedRef.current = true
-            const now = Date.now()
             const offlineMs = Math.max(0, now - playerRef.current.lastUpdatedAt)
             if (offlineMs > 0) {
                 dispatch({ type: "OFFLINE_PROGRESS", deltaMs: offlineMs, now })
             }
-            lastTickRef.current = now
         }
+
+        lastTickRef.current = now
 
         const intervalId = window.setInterval(() => {
             const now = Date.now()

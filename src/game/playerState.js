@@ -3,7 +3,7 @@ import {
     SKILL_CONFIGS,
     SKILL_CONFIG_BY_ID,
 } from "../data/skillConfig"
-import { SKILL_NAVIGATION } from "../data/skillNavigation"
+import { SKILL_NAVIGATION } from "../data/navigationData"
 
 export const SAVE_KEY = "omnimancer-idle-save"
 export const SAVE_VERSION = 3

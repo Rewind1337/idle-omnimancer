@@ -1,7 +1,7 @@
 import { Paper } from "./Paper"
 import { Tabs } from "./Tabs"
 
-import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION } from "../data/skillNavigation"
+import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION } from "../data/navigationData"
 import { useGame } from "../hooks/useGame"
 
 import './Navigation.scss'

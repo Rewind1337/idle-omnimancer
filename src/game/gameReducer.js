@@ -1,5 +1,5 @@
 import { SKILL_CONFIG_BY_ID } from "../data/skillConfig"
-import { SKILL_NAVIGATION } from "../data/skillNavigation"
+import { SKILL_NAVIGATION } from "../data/navigationData"
 import {
     advanceGame,
     canStartAction,

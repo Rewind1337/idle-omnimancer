@@ -17,7 +17,7 @@ import { BagButton } from "./components/buttons/BagButton";
 import { ShopButton } from "./components/buttons/ShopButton";
 import { FloatingPanel } from "./components/FloatingPanel";
 
-import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION, SHOP_NAVIGATION } from "./data/skillNavigation";
+import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
 
 function ResponsivePage({
   children,

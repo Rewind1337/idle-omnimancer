@@ -18,6 +18,7 @@ import { getActionXPTable } from "../data/skillConfig"
 import {
     canUnlockAction,
     getActionDurationMs,
+    getActionXPReward,
     getActionOutputMultiplier,
     getActionPreservationChance,
     getSkillProgress,
@@ -30,7 +31,7 @@ const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wi
 
 function ResearchAction({ action, isActive, isUnlocked, actionState, canUnlock, onToggle, onUnlock }) {
     const actionIcon = RESEARCH_ACTION_ICONS[action.tier - 1] ?? RESEARCH_ACTION_ICONS[0]
-    const durationMs = isUnlocked ? getActionDurationMs(RESEARCH_CONFIG, action) : 0
+    const durationMs = isUnlocked ? getActionDurationMs(RESEARCH_CONFIG, action, player) : 0
     const xpTable = isUnlocked ? getActionXPTable(action.id) : null
     const neededXP = !isUnlocked || actionState.level >= 100
         ? null
@@ -65,9 +66,9 @@ function ResearchAction({ action, isActive, isUnlocked, actionState, canUnlock, 
                 {isUnlocked ? (
                     <>
                         <ActionDetails actionTime={durationMs / 1000}
-                            actionXP={RESEARCH_CONFIG.actionXP.base + RESEARCH_CONFIG.actionXP.perTier * (action.tier - 1)}
-                            outputMultiplier={getActionOutputMultiplier()}
-                            preservationChance={getActionPreservationChance()} />
+                            actionXP={getActionXPReward(RESEARCH_CONFIG, action, player)}
+                            outputMultiplier={getActionOutputMultiplier(player, RESEARCH_CONFIG, action)}
+                            preservationChance={getActionPreservationChance(player, RESEARCH_CONFIG, action)} />
                         <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []} />
                     </>
                 ) : (

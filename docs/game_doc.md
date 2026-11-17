@@ -173,11 +173,11 @@ Design goals:
 
 A skill may grant a passive bonus for every skill level, separate from milestone rewards.
 
-- Example: Spellcraft may increase maximum Mana by a fixed amount per Spellcraft level.
-- Such a bonus would be linear: each new level adds the same amount.
+- Spellcraft currently increases passive Mana regeneration by **+1 Mana per second for every Spellcraft level gained after level 1**. Its configured base regeneration applies at level 1.
+- Per-level bonuses are linear: each new level adds the same amount.
 - Other skills may have different per-level bonuses or no such bonus.
-- The effect for each skill is not finalized.
 - Per-level bonuses do not replace or consume action or skill milestone rewards.
+- Spellcraft's maximum Mana capacity remains separate from its regeneration bonus.
 
 ---
 
@@ -252,8 +252,9 @@ Example spell naming progression:
 - Spell Mana costs follow a configurable tier curve in `SPELLCRAFT_CONFIG.mana.cost`: base 3 at tier 1, then previous cost × 2 − 1. The current tier costs are 3, 5, 9, 17, 33, 65, 129 and 257 for tiers I–VIII.
 - Element modifiers are configured per element in `SPELLCRAFT_CONFIG.elementModifiers`. Earth takes 5% longer and grants 15% more XP; Air takes 5% less time and grants 10% less XP; Water uses the baseline time and XP.
 - If Mana is insufficient for the next cast, the cast waits. Mana must not be consumed for an action that cannot complete.
-- Spellcraft skill levels may increase maximum Mana by a fixed amount per level, separately from milestone rewards.
-- Starting capacity, regeneration rate and the per-level capacity increase remain to be balanced.
+- Spellcraft's configured base regeneration is **1 Mana per second at skill level 1**. Each additional Spellcraft skill level adds **+1 Mana per second**.
+- Effective regeneration is derived from the current overall Spellcraft skill level and applies during both online and offline simulation.
+- This regeneration bonus does not increase maximum Mana capacity; capacity bonuses remain separate from passive regeneration.
 
 ### 6.3 Elemental essences
 
@@ -668,13 +669,19 @@ Additional proposed action milestones:
 
 - Recurring bonuses continue to apply at special milestones; the special rewards are additional.
 - Input-saving chance matters for actions that consume inputs, such as Transmutation. It has no practical effect on an action without input costs unless a future system adds them.
-- The recurring values and milestone schedule are proposals and may change after playtesting.
+- The game engine now reads recurring `actionMilestones` from each skill configuration. A reward with `levels: N` is awarded once per every N action levels, counting from level 0; for example, `levels: 2` first applies at action level 2 and again at 4, 6, and so on.
+- Research's current prototype configuration grants +0.5% action speed every 2 levels, +1% resource output every 5 levels, and +10% action XP every 20 levels. These values are defined in `RESEARCH_CONFIG.actionMilestones` and can be changed or extended independently of the engine.
+- The other schedule above remains a design proposal, not a hardcoded progression rule.
 
 ### 12.3 Skill milestones
 
 Every skill has its own milestone track at **skill levels 10, 20, 30, 40, 50, 60, 70, 80, 90 and 100**.
 
 Milestones are based on the overall skill level, not individual action levels. Reaching a Research milestone does not grant the corresponding Spellcraft or Transmutation reward.
+
+The engine reads each skill's `milestones` configuration. A milestone becomes active when its source skill reaches the configured level; `reach: "local"` targets that source skill, `reach: "skill:<id>"` targets one named skill, and `reach: "global"` targets every registered skill. Its effect is applied to the relevant actions in the target skill.
+
+Research currently has three prototype milestones: level 10 grants +10% action speed to Research, level 20 grants +10% action speed to Spellcraft, and level 30 grants +10% action XP globally. Further Research milestones and milestones for other skills are not yet configured.
 
 Possible milestone purposes:
 
@@ -704,6 +711,9 @@ Bonuses of the same type from different sources stack **additively** by default.
 
 - Example: +20% individual action speed and +20% global action speed = +40% total action speed.
 - The same default applies to action speed, resource output, XP gain and other same-type bonuses.
+- In config, a `type: "mult"` value is expressed as a multiplier, and only its bonus portion is accumulated: two `1.1` bonuses therefore produce +20%, not +21%. A `type: "flat"` value is added directly to the effect's corresponding stat.
+- Action-time multipliers represent action speed: a `1.1` bonus means 10% more action speed, so the required duration is divided by 1.1.
+- Fractional resource output is resolved by awarding the whole-number portion and rolling the fractional remainder for one additional unit.
 - Any exception must be explicitly defined by the mechanic; exceptions are not assumed.
 
 ---

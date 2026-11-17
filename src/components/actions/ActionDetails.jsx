@@ -18,7 +18,7 @@ export function ActionDetails({
                 {actionXP.toFixed(1)} XP / Completion
             </Badge>
             {manaCost !== null && (
-                <Badge variant="transparent" interactive tooltip={<Flex direction="column">Mana required to start this action.</Flex>}>
+                <Badge variant="transparent" interactive icon={OTHER_ICONS.ZAP} tooltip={<Flex direction="column">Mana required to start this action.</Flex>}>
                     {manaCost.toLocaleString()} Mana / Cast
                 </Badge>
             )}

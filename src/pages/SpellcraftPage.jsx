@@ -34,7 +34,7 @@ const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wi
 function SpellcraftAction({ action, isActive, isUnlocked, actionState, canUnlock, onToggle, onUnlock }) {
     const elementIcons = SPELLCRAFT_ACTION_ICONS[action.element?.toUpperCase()] ?? SPELLCRAFT_ACTION_ICONS.EARTH
     const actionIcon = elementIcons[action.tier - 1] ?? elementIcons[0]
-    const durationMs = isUnlocked ? getActionDurationMs(SPELLCRAFT_CONFIG, action) : 0
+    const durationMs = isUnlocked ? getActionDurationMs(SPELLCRAFT_CONFIG, action, player) : 0
     const xpTable = isUnlocked ? getActionXPTable(action.id) : null
     const neededXP = !isUnlocked || actionState.level >= 100
         ? null
@@ -69,10 +69,10 @@ function SpellcraftAction({ action, isActive, isUnlocked, actionState, canUnlock
                 {isUnlocked ? (
                     <>
                         <ActionDetails actionTime={durationMs / 1000}
-                            actionXP={getActionXPReward(SPELLCRAFT_CONFIG, action)}
-                            manaCost={getActionManaCost(SPELLCRAFT_CONFIG, action)}
-                            outputMultiplier={getActionOutputMultiplier()}
-                            preservationChance={getActionPreservationChance()} />
+                            actionXP={getActionXPReward(SPELLCRAFT_CONFIG, action, player)}
+                            manaCost={getActionManaCost(SPELLCRAFT_CONFIG, action, player)}
+                            outputMultiplier={getActionOutputMultiplier(player, SPELLCRAFT_CONFIG, action)}
+                            preservationChance={getActionPreservationChance(player, SPELLCRAFT_CONFIG, action)} />
                         <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []} />
                     </>
                 ) : (

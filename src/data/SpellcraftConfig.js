@@ -5,6 +5,7 @@ export const SPELLCRAFT_CONFIG = {
     mana: {
         base: 100,
         regen: 1,
+        regenPerLevel: 1,
         cost: {
             base: 3,
             tierMultiplier: 2,

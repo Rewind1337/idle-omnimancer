@@ -1,18 +1,18 @@
 import { Flex } from "../Flex"
 import { Progress } from "../Progress"
 
-import { SPELLCRAFT_CONFIG } from "../../data/SpellcraftConfig"
+import { getManaCapacity, getManaRegeneration } from "../../game/gameEngine"
 import { useGame } from "../../hooks/useGame"
 
 export function ManaBar() {
     const { player } = useGame()
-    const maxMana = Math.max(0, Number(player.mana?.max) || 0)
+    const maxMana = getManaCapacity(player)
     const currentMana = Math.min(
         maxMana,
         Math.max(0, Number(player.mana?.current) || 0)
     )
     const percentage = maxMana > 0 ? (currentMana / maxMana) * 100 : 0
-    const regeneration = SPELLCRAFT_CONFIG.mana.regen
+    const regeneration = getManaRegeneration(player)
 
     return (
         <Flex direction="column" gap={8}>

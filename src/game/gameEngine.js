@@ -6,47 +6,6 @@ import {
 } from "../data/skillConfig"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
 
-// Centralized action values. Later bonuses can be applied here without
-// teaching UI components about progression formulas.
-export const getActionDurationMs = (skill, action) => {
-    const baseSeconds = skill.time.base + skill.time.perTier * (action.tier - 1)
-    const timeMultiplier = skill.elementModifiers?.[action.element]?.timeMultiplier ?? 1
-
-    return Math.max(1, baseSeconds * timeMultiplier * 1000)
-}
-
-export const getActionXPReward = (skill, action) => {
-    const baseXP = skill.actionXP.base + skill.actionXP.perTier * (action.tier - 1)
-    const xpMultiplier = skill.elementModifiers?.[action.element]?.xpMultiplier ?? 1
-
-    return Math.max(0, Math.round(baseXP * xpMultiplier))
-}
-
-// Action Mana can use a tier curve configured on the skill. The optional
-// action.manaCost fallback keeps fixed-cost actions supported for other skills.
-export const getActionManaCost = (skill, action) => {
-    const costConfig = skill.mana?.cost
-    if (!costConfig) return Math.max(0, action.manaCost ?? 0)
-
-    const tier = Math.max(1, Math.floor(action.tier || 1))
-    const multiplier = costConfig.tierMultiplier ?? 1
-    const flatAdjustment = costConfig.tierFlat ?? 0
-    let cost = costConfig.base
-
-    for (let currentTier = 2; currentTier <= tier; currentTier++) {
-        cost = cost * multiplier + flatAdjustment
-    }
-
-    return Math.max(0, Math.round(cost))
-}
-
-// Current action modifiers have no output bonuses or preservation effects yet.
-// Keep these totals centralized so future modifiers can feed the same UI values.
-export const getActionOutputMultiplier = () => 1
-export const getActionPreservationChance = () => 0
-
-export const getActionProgress = (actionState, durationMs) =>
-    Math.min(100, Math.max(0, (actionState.progressMs / durationMs) * 100))
 
 
 // The first additional bag slot costs the configured base price. Every
@@ -103,22 +62,57 @@ const getUnlockCostBalance = (player, itemId) => {
     return player.inventory?.[itemId] ?? 0
 }
 
+// Action inputs support the same string and { item, amount } formats as the
+// resource display. Invalid requirements fail safely instead of being ignored.
+const getActionConsumeTotals = (action) => {
+    const totals = {}
 
-// Return the item IDs produced by an action, supporting both current and
-// legacy output config shapes.
+    for (const entry of Array.isArray(action.consumes) ? action.consumes : []) {
+        const itemId = typeof entry === "string" ? entry : entry?.item
+        const amount = typeof entry === "string" ? 1 : (entry?.amount ?? 1)
+
+        if (
+            typeof itemId !== "string" ||
+            !itemId ||
+            !Number.isFinite(amount) ||
+            amount <= 0
+        ) return null
+
+        totals[itemId] = (totals[itemId] ?? 0) + amount
+    }
+
+    return totals
+}
+
+
+// Normalize action outputs so string and quantity-based config entries
+// share the same output and inventory-capacity handling.
 const getActionOutputs = (action) => {
     const outputs = action.produces ?? action.outputItem ?? []
-    return Array.isArray(outputs) ? outputs : [outputs].filter(Boolean)
+    const entries = Array.isArray(outputs) ? outputs : [outputs]
+
+    return entries
+        .filter(Boolean)
+        .map(output => typeof output === "string"
+            ? { item: output, amount: 1 }
+            : { item: output.item, amount: output.amount ?? 1 })
+        .filter(output => typeof output.item === "string" &&
+            output.item.length > 0 &&
+            Number.isFinite(output.amount) &&
+            output.amount > 0)
 }
 
 // Each distinct item type occupies one slot; additional copies stack.
-const canStoreActionOutputs = (player, action) => {
+const canStoreActionOutputs = (player, skill, action) => {
     const inventory = player.inventory ?? {}
     const occupiedSlots = Object.entries(inventory)
         .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0)
         .length
-    const newItemIds = [...new Set(getActionOutputs(action))]
-        .filter(itemId => ITEM_DATA_BY_ID[itemId] && !(inventory[itemId] > 0))
+    const outputMultiplier = getActionOutputMultiplier(player, skill, action)
+    const newItemIds = outputMultiplier > 0
+        ? [...new Set(getActionOutputs(action).map(output => output.item))]
+            .filter(itemId => ITEM_DATA_BY_ID[itemId] && !(inventory[itemId] > 0))
+        : []
     const inventorySlots = Number.isFinite(player.inventorySlots)
         ? Math.max(0, player.inventorySlots)
         : GLOBAL_CONFIG.startingBagSpace
@@ -188,15 +182,189 @@ export const getSkillProgress = (player, skillId) => {
     }
 }
 
+// Convert configured milestone rewards into additive bonuses for one target skill.
+// "mult" values are expressed as multipliers (1.1 = +10%); their bonus portions
+// add together, matching the default stacking rule in the game design document.
+const addMilestoneBonus = (totals, milestone, count = 1) => {
+    const { effect, type, value } = milestone
+    if (
+        typeof effect !== "string" ||
+        !Number.isFinite(value) ||
+        !Number.isFinite(count) ||
+        count <= 0
+    ) return
+
+    const effectTotals = totals[effect] ?? { flat: 0, mult: 0 }
+    if (type === "flat") effectTotals.flat += value * count
+    else if (type === "mult") effectTotals.mult += (value - 1) * count
+    else return
+
+    totals[effect] = effectTotals
+}
+
+const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
+    const totals = {}
+
+    for (const sourceSkill of Object.values(SKILL_CONFIG_BY_ID)) {
+        const sourceLevel = getSkillProgress(player, sourceSkill.id)?.level ?? 1
+
+        for (const milestone of sourceSkill.milestones ?? []) {
+            if (
+                !Number.isFinite(milestone.level) ||
+                sourceLevel < milestone.level ||
+                (effect && milestone.effect !== effect)
+            ) continue
+
+            const reachesTarget =
+                milestone.reach === "global" ||
+                (milestone.reach === "local" && sourceSkill.id === targetSkillId) ||
+                milestone.reach === targetSkillId
+
+            if (reachesTarget) addMilestoneBonus(totals, milestone)
+        }
+    }
+
+    return totals
+}
+
+const getActionMilestoneBonuses = (player, skill, action) => {
+    const totals = getSkillMilestoneBonuses(player, skill.id)
+    const actionLevel = player.skills?.[skill.id]?.actions?.[action.id]?.level ?? 1
+
+    for (const milestone of skill.actionMilestones ?? []) {
+        if (!Number.isFinite(milestone.levels) || milestone.levels <= 0) continue
+
+        // Levels are counted from zero: levels: 2 awards its first stack at action level 2.
+        const completedMilestones = Math.floor(actionLevel / milestone.levels)
+        addMilestoneBonus(totals, milestone, completedMilestones)
+    }
+
+    return totals
+}
+
+const getBonusForEffect = (totals, effect) =>
+    totals[effect] ?? { flat: 0, mult: 0 }
+
+export const getActionDurationMs = (skill, action, player = null) => {
+    const baseSeconds = skill.time.base + skill.time.perTier * (action.tier - 1)
+    const elementTimeMultiplier = skill.elementModifiers?.[action.element]?.timeMultiplier ?? 1
+    const bonuses = player
+        ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "actionTime")
+        : { flat: 0, mult: 0 }
+    const actionSpeedMultiplier = Math.max(0.01, 1 + bonuses.mult + bonuses.flat)
+
+    return Math.max(1, baseSeconds * elementTimeMultiplier / actionSpeedMultiplier * 1000)
+}
+
+export const getActionXPReward = (skill, action, player = null) => {
+    const baseXP = skill.actionXP.base + skill.actionXP.perTier * (action.tier - 1)
+    const elementXPMultiplier = skill.elementModifiers?.[action.element]?.xpMultiplier ?? 1
+    const bonuses = player
+        ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "xpGain")
+        : { flat: 0, mult: 0 }
+    const finalXP = baseXP * elementXPMultiplier * Math.max(0, 1 + bonuses.mult) + bonuses.flat
+
+    return Math.max(0, Math.round(finalXP))
+}
+
+// Action Mana uses the configured tier curve, then applies any configured
+// skill/action milestone discounts targeting this action's skill.
+export const getActionManaCost = (skill, action, player = null) => {
+    const costConfig = skill.mana?.cost
+    let baseCost = action.manaCost ?? 0
+
+    if (costConfig) {
+        const tier = Math.max(1, Math.floor(action.tier || 1))
+        const multiplier = costConfig.tierMultiplier ?? 1
+        const flatAdjustment = costConfig.tierFlat ?? 0
+        baseCost = costConfig.base
+
+        for (let currentTier = 2; currentTier <= tier; currentTier++) {
+            baseCost = baseCost * multiplier + flatAdjustment
+        }
+    }
+
+    const bonuses = player
+        ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "manaCost")
+        : { flat: 0, mult: 0 }
+    const discountedCost = baseCost / Math.max(0.01, 1 + bonuses.mult) - bonuses.flat
+
+    return Math.max(0, Math.round(discountedCost))
+}
+
+export const getActionOutputMultiplier = (player, skill, action) => {
+    const bonuses = getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "itemOutput")
+    return Math.max(0, 1 + bonuses.mult + bonuses.flat)
+}
+
+export const getActionPreservationChance = (player, skill, action) => {
+    const bonuses = getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "preservation")
+    return Math.max(0, Math.min(1, bonuses.mult + bonuses.flat))
+}
+
+export const getManaCapacity = (player) => {
+    const skill = SKILL_CONFIG_BY_ID["skill:spellcraft"]
+    if (!skill?.mana) return 0
+
+    const bonuses = getBonusForEffect(
+        getSkillMilestoneBonuses(player, skill.id),
+        "manaCapacity"
+    )
+    return Math.max(0, skill.mana.base * Math.max(0, 1 + bonuses.mult) + bonuses.flat)
+}
+
+export const getManaRegeneration = (player) => {
+    const skill = SKILL_CONFIG_BY_ID["skill:spellcraft"]
+    if (!skill?.mana) return 0
+
+    const skillLevel = getSkillProgress(player, skill.id)?.level ?? 1
+    const levelBonus = Math.max(0, skillLevel - 1) * (skill.mana.regenPerLevel ?? 0)
+    return Math.max(0, (skill.mana.regen ?? 0) + levelBonus)
+}
+
+export const getActionProgress = (actionState, durationMs) =>
+    Math.min(100, Math.max(0, (actionState.progressMs / durationMs) * 100))
+
 const canPayActionCost = (player, skill, action) => {
-    const manaCost = getActionManaCost(skill, action)
-    return manaCost <= 0 || player.mana.current >= manaCost
+    const manaCost = getActionManaCost(skill, action, player)
+    const consumeTotals = getActionConsumeTotals(action)
+    if (!consumeTotals) return false
+
+    const hasInputs = Object.entries(consumeTotals).every(([itemId, amount]) =>
+        getUnlockCostBalance(player, itemId) >= amount
+    )
+    const hasMana = manaCost <= 0 || player.mana.current >= manaCost
+
+    return hasInputs && hasMana
 }
 
 const payActionCost = (player, skill, action) => {
-    const manaCost = getActionManaCost(skill, action)
+    const manaCost = getActionManaCost(skill, action, player)
     if (manaCost > 0) {
         player.mana.current = Math.max(0, player.mana.current - manaCost)
+    }
+
+    const consumeTotals = getActionConsumeTotals(action) ?? {}
+    const hasInputs = Object.keys(consumeTotals).length > 0
+    const preservesInputs = hasInputs &&
+        Math.random() < getActionPreservationChance(player, skill, action)
+
+    if (!preservesInputs) {
+        for (const [itemId, amount] of Object.entries(consumeTotals)) {
+            if (itemId.startsWith("currency:")) {
+                const currencyId = itemId.slice("currency:".length)
+                player.currencies[currencyId] = Math.max(
+                    0,
+                    (player.currencies[currencyId] ?? 0) - amount
+                )
+            } else {
+                player.inventory[itemId] = Math.max(
+                    0,
+                    (player.inventory[itemId] ?? 0) - amount
+                )
+                if (player.inventory[itemId] === 0) delete player.inventory[itemId]
+            }
+        }
     }
 }
 
@@ -205,10 +373,10 @@ const awardActionXP = (player, skill, action, actionState) => {
 
     if (actionState.level < GLOBAL_CONFIG.maxActionLevel) {
         const neededXP = table[actionState.level - 1].neededXP
-        actionState.xp += getActionXPReward(skill, action)
+        actionState.xp += getActionXPReward(skill, action, player)
 
         // A completed action can grant at most one action level. Any XP beyond
-        // that level's requirement is discarded instead of carrying forward.
+        // that level's requirement is discarded instead of carried forward.
         if (neededXP !== null && neededXP !== undefined && actionState.xp >= neededXP) {
             actionState.level += 1
             actionState.xp = 0
@@ -220,12 +388,21 @@ const awardActionXP = (player, skill, action, actionState) => {
         actionState.xp = 0
     }
 
-    for (const resourceId of getActionOutputs(action)) {
-        if (resourceId.startsWith("currency:")) {
-            const currencyId = resourceId.slice("currency:".length)
-            player.currencies[currencyId] = (player.currencies[currencyId] ?? 0) + 1
-        } else if (ITEM_DATA_BY_ID[resourceId]) {
-            player.inventory[resourceId] = (player.inventory[resourceId] ?? 0) + 1
+    const outputMultiplier = getActionOutputMultiplier(player, skill, action)
+    for (const { item, amount } of getActionOutputs(action)) {
+        const scaledAmount = amount * outputMultiplier
+        const wholeAmount = Math.floor(scaledAmount)
+        const fractionalAmount = scaledAmount - wholeAmount
+        const outputAmount = wholeAmount +
+            (fractionalAmount > 0 && Math.random() < fractionalAmount ? 1 : 0)
+
+        if (outputAmount <= 0) continue
+
+        if (item.startsWith("currency:")) {
+            const currencyId = item.slice("currency:".length)
+            player.currencies[currencyId] = (player.currencies[currencyId] ?? 0) + outputAmount
+        } else if (ITEM_DATA_BY_ID[item]) {
+            player.inventory[item] = (player.inventory[item] ?? 0) + outputAmount
         }
     }
 }
@@ -241,7 +418,7 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
         // Check Mana before starting each cycle, including automatic repeats.
         if (actionState.progressMs === 0 && !canPayActionCost(player, skill, action)) break
 
-        const durationMs = getActionDurationMs(skill, action)
+        const durationMs = getActionDurationMs(skill, action, player)
         const timeLeft = Math.max(0, durationMs - actionState.progressMs)
         const consumedMs = Math.min(remainingMs, timeLeft)
 
@@ -253,7 +430,7 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
         // Check Mana and bag capacity before completing the action. If a new
         // item type would exceed capacity, hold the completed cycle until space
         // becomes available rather than consuming Mana or discarding output.
-        if (!canPayActionCost(player, skill, action) || !canStoreActionOutputs(player, action)) break
+        if (!canPayActionCost(player, skill, action) || !canStoreActionOutputs(player, skill, action)) break
         payActionCost(player, skill, action)
 
         actionState.progressMs = 0
@@ -311,20 +488,19 @@ export const advanceGame = (playerState, deltaMs, now = Date.now()) => {
     }
 
     const player = structuredClone(playerState)
-    const spellcraft = SKILL_CONFIG_BY_ID["skill:spellcraft"]
     const maxSliceMs = deltaMs > 1000 ? 1000 : deltaMs
     let remainingMs = deltaMs
 
     while (remainingMs > 0) {
         const sliceMs = Math.min(remainingMs, maxSliceMs)
 
-        // Passive resource regeneration is independent of active action selection.
-        if (spellcraft?.mana?.regen) {
-            player.mana.current = Math.min(
-                player.mana.max,
-                player.mana.current + spellcraft.mana.regen * (sliceMs / 1000)
-            )
-        }
+        // Mana capacity and regeneration are derived from the current Spellcraft level.
+        const maxMana = getManaCapacity(player)
+        player.mana.max = maxMana
+        player.mana.current = Math.min(
+            maxMana,
+            player.mana.current + getManaRegeneration(player) * (sliceMs / 1000)
+        )
 
         advanceRunningActions(player, sliceMs)
         remainingMs -= sliceMs

@@ -1,10 +1,12 @@
-import { SKILL_CONFIG_BY_ID } from "../data/skillConfig"
+import { GLOBAL_CONFIG, SKILL_CONFIG_BY_ID } from "../data/skillConfig"
+import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import {
     advanceGame,
     canStartAction,
     canUnlockAction,
     getActionActivity,
+    getNextBagSlotCost,
 } from "./gameEngine"
 
 export const gameReducer = (state, action) => {
@@ -159,6 +161,53 @@ export const gameReducer = (state, action) => {
                             [action.actionId]: { ...current, unlocked: true },
                         },
                     },
+                },
+            }
+        }
+
+        case "BUY_BAG_SLOT": {
+            const inventorySlots = state.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
+            const cost = getNextBagSlotCost(inventorySlots)
+            const coins = state.currencies?.coins ?? 0
+            if (!Number.isFinite(cost) || coins < cost) return state
+
+            return {
+                ...state,
+                inventorySlots: inventorySlots + 1,
+                currencies: {
+                    ...state.currencies,
+                    coins: coins - cost,
+                },
+            }
+        }
+
+        case "SELL_ITEM": {
+            const { itemId, amount } = action
+            const availableAmount = state.inventory?.[itemId] ?? 0
+            const itemData = ITEM_DATA_BY_ID[itemId]
+
+            if (
+                !itemData ||
+                !Number.isSafeInteger(amount) ||
+                amount < 1 ||
+                amount > availableAmount ||
+                !Number.isFinite(itemData.baseValue) ||
+                itemData.baseValue < 0
+            ) return state
+
+            const inventory = { ...state.inventory }
+            const remainingAmount = availableAmount - amount
+            if (remainingAmount > 0) inventory[itemId] = remainingAmount
+            else delete inventory[itemId]
+
+            const saleValue = amount * itemData.baseValue
+
+            return {
+                ...state,
+                inventory,
+                currencies: {
+                    ...state.currencies,
+                    coins: (state.currencies?.coins ?? 0) + saleValue,
                 },
             }
         }

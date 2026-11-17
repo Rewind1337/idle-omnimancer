@@ -794,7 +794,7 @@ The player must not silently lose resources when the bag is full.
 - Skills, milestones and future upgrades may increase sale value.
 - Apply sale-value bonuses using the additive stacking rule unless a specific exception is defined.
 - Higher-tier and more advanced resources should generally be worth more than introductory materials.
-- Value is based on the individual item, not tier alone; items in the same tier can have different values based on their source, purpose and production requirements.
+- Current Research and Spellcraft outputs use the shared tier-derived value curve; future item types may define their own base values when source, purpose or rarity warrants a deviation.
 - Later skills should introduce resources worth substantially more than early-game materials.
 - Physical item sale values are derived from their tier in `ITEM_DATA`: tier 1 is worth 1 coin, tier 2 is worth 2, and each later tier is worth twice the previous value minus one (1, 2, 3, 5, 9, 17, 33, 65, ...).
 

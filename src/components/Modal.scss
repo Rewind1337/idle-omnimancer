@@ -1,3 +1,6 @@
+/* Color Tokens */
+@use '../scss/tokens.scss' as *;
+
 /* Modal Component Styles */
 .modal-backdrop {
   position: absolute;
@@ -19,5 +22,19 @@
   .modal-flex {
     max-width: 1200px;
     margin-inline: auto;
+  }
+
+  @each $variant in $button-colors {
+    &[data-variant="#{$variant}"] {
+      .modal-wrapper .modal-content {
+      }
+    }
+  }
+
+  @each $variant in $skill-colors {
+    &[data-variant="#{$variant}"] {
+      .modal-wrapper .modal-content {
+      }
+    }
   }
 }

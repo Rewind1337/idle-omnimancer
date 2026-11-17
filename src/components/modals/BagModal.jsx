@@ -22,7 +22,7 @@ export function BagModal({
     return (
         <Modal
             visible={visible}
-            variant="transmutation"
+            variant={null}
             onBackdropClick={() => { setVisible(false) }}
             header={<Heading h="1">Bag</Heading>}
             footer={closeBagButton}
@@ -32,6 +32,7 @@ export function BagModal({
                         <Grid columns={{ xsmall: 2, small: 3, medium: 4, large: 6 }}>
                             {inventory.map(([itemId, amount]) => (
                                 <Item
+                                    layer={2}
                                     key={itemId}
                                     icon={ITEM_SPRITES[itemId]}
                                     name={humanize(itemId)}

@@ -76,6 +76,22 @@
                 animation: progress-bar-effect 1s linear infinite;
             }
         }
+
+        @each $variant in $resource-colors {
+            &[data-variant="#{$variant}"] {
+                background-color: var(--resource-#{$variant});
+                outline-color: var(--resource-#{$variant}-border);
+                background-image: repeating-linear-gradient(
+                -62.5deg,
+                var(--resource-#{$variant}-hover) 0 0,
+                var(--resource-#{$variant}-border) 10px 10px,
+                var(--resource-#{$variant}-active) 20px 31px
+                );
+                background-size: 104.5px 100%;
+
+                animation: progress-bar-effect 1s linear infinite;
+            }
+        }
     }
 
     &[data-animated="false"] {
@@ -90,6 +106,13 @@
             &[data-variant="#{$variant}"] {
                 background-color: var(--skill-#{$variant}-hover);
                 outline-color: var(--skill-#{$variant}-border);
+            }
+        }
+
+        @each $variant in $resource-colors {
+            &[data-variant="#{$variant}"] {
+                background-color: var(--resource-#{$variant}-hover);
+                outline-color: var(--resource-#{$variant}-border);
             }
         }
     }

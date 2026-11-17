@@ -11,9 +11,10 @@ export function FloatingPanel({
 }) {
 
   return (
-    <Paper transparent className={cx("floating-panel", "w-min", className)} style={{
+    <Paper layer={0} className={cx("floating-panel", "w-min", className)} style={{
+      zIndex: 987,
       position: "absolute",
-      right: margin,
+      right: margin + 8,
       bottom: margin,
     }}>
       <Flex direction={direction}>

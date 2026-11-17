@@ -24,7 +24,7 @@ import { Tooltip } from "../components/Tooltip"
 
 import "../data/skillConfig.js"
 
-const VARIANTS = ["primary", "secondary", "earth", "air", "water", "research", "spellcraft", "transmutation", "exploration", "combat", "unveiling", "companions"]
+const VARIANTS = ["primary", "secondary", "earth", "air", "water", "research", "spellcraft", "transmutation", "exploration", "combat", "unveiling", "companions", "shop"]
 const SIZES = ["large", "medium", "small"]
 const ICONS = [<BookOpenText />, <Scale />, <WandSparkles />, <Star />, <MapPin />, <CircleDollarSign />, <GraduationCap />, <FaceAngry />]
 

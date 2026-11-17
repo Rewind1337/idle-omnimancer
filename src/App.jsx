@@ -81,7 +81,7 @@ function App() {
   return (
     <ToastProvider>
       <GameProvider>
-        <ResponsivePage activePage={activePage} navigationPosition="top" navigationMode="compact" setActivePage={setActivePage}>
+        <ResponsivePage activePage={activePage} navigationPosition="top" navigationMode="default" setActivePage={setActivePage}>
           {activeSkill?.skillId === "skill:research" && <ResearchPage />}
           {activeSkill?.skillId === "skill:spellcraft" && <SpellcraftPage />}
           {activePage === DEVELOPMENT_NAVIGATION.id && <DevelopmentPage />}

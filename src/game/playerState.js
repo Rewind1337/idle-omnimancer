@@ -51,7 +51,7 @@ export const createInitialPlayerState = () => {
         skills,
         inventory: {},
         currencies: {
-            gold: 0,
+            coins: 0,
         },
         mana: {
             current: spellcraft?.mana?.base ?? 0,
@@ -128,7 +128,10 @@ export const normalizePlayerState = (savedState) => {
         skills,
         inventory: normalizeNumberMap(savedState.inventory),
         currencies: {
-            gold: Math.max(0, finiteNumber(savedState.currencies?.gold, 0)),
+            coins: Math.max(0, finiteNumber(
+                savedState.currencies?.coins,
+                finiteNumber(savedState.currencies?.gold, 0)
+            )),
         },
         mana: {
             current: Math.max(0, finiteNumber(savedState.mana?.current, initial.mana.current)),

@@ -36,6 +36,35 @@ export const getVisibleActions = (player, skillId) => {
     )
 }
 
+const getUnlockCostTotals = (unlockCosts = []) => {
+    const totals = {}
+    for (const cost of unlockCosts) {
+        if (!cost?.item || !Number.isFinite(cost.amount) || cost.amount < 0) return null
+        totals[cost.item] = (totals[cost.item] ?? 0) + cost.amount
+    }
+    return totals
+}
+
+const getUnlockCostBalance = (player, itemId) => {
+    if (itemId.startsWith("currency:")) {
+        return player.currencies?.[itemId.slice("currency:".length)] ?? 0
+    }
+    return player.inventory?.[itemId] ?? 0
+}
+
+export const canUnlockAction = (player, skillId, actionId) => {
+    if (!player.unlockedSkills?.includes(skillId)) return false
+    const skill = SKILL_CONFIG_BY_ID[skillId]
+    const action = skill?.actions.find(entry => entry.id === actionId)
+    const actionState = player.skills[skillId]?.actions[actionId]
+    if (!action || !actionState || actionState.unlocked) return false
+    const costs = getUnlockCostTotals(action.unlockCosts)
+    if (!costs) return false
+    return Object.entries(costs).every(([itemId, amount]) =>
+        getUnlockCostBalance(player, itemId) >= amount
+    )
+}
+
 export const getSkillProgress = (player, skillId) => {
     const skill = SKILL_CONFIG_BY_ID[skillId]
     const table = getSkillXPTable(skillId)

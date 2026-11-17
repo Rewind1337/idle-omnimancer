@@ -3,6 +3,7 @@ import { SKILL_NAVIGATION } from "../data/navigationData"
 import {
     advanceGame,
     canStartAction,
+    canUnlockAction,
     getActionActivity,
 } from "./gameEngine"
 
@@ -132,10 +133,23 @@ export const gameReducer = (state, action) => {
             const skill = SKILL_CONFIG_BY_ID[action.skillId]
             const actionConfig = skill?.actions.find(entry => entry.id === action.actionId)
             const current = state.skills[action.skillId]?.actions[action.actionId]
-            if (!actionConfig || !current || current.unlocked) return state
+            if (!actionConfig || !current || !canUnlockAction(state, action.skillId, action.actionId)) return state
+
+            const inventory = { ...state.inventory }
+            const currencies = { ...state.currencies }
+            for (const { item, amount } of actionConfig.unlockCosts ?? []) {
+                if (item.startsWith("currency:")) {
+                    const currencyId = item.slice("currency:".length)
+                    currencies[currencyId] -= amount
+                } else {
+                    inventory[item] -= amount
+                }
+            }
 
             return {
                 ...state,
+                inventory,
+                currencies,
                 skills: {
                     ...state.skills,
                     [action.skillId]: {

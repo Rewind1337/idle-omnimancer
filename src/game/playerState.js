@@ -7,7 +7,7 @@ import { SKILL_NAVIGATION } from "../data/navigationData"
 
 export const SAVE_KEY = "omnimancer-idle-save"
 export const SAVE_VERSION = 3
-export const DEFAULT_INVENTORY_SLOTS = 25
+export const DEFAULT_INVENTORY_SLOTS = GLOBAL_CONFIG.startingBagSpace
 
 // The save contains only serializable player data. Configurations, functions,
 // generated XP tables and derived skill levels are deliberately not stored.

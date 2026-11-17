@@ -105,7 +105,7 @@ function ResearchAction({ action, isActive, isUnlocked, actionState, canUnlock, 
                 <Flex direction="row">
                     <Paper round layer="0" interactive className="w-min" padding={4}>
                         <Icon size={48} variant="research" outerRunes={OuterRunesMap[action.tier - 1]}
-                            outerShape={3} innerRunes={"gap"} innerShape={InnerShapeMap[action.tier - 1]}>
+                            outerShape={7} innerRunes={"gap"} innerShape={InnerShapeMap[action.tier - 1]}>
                             {cloneElement(actionIcon, { size: 48 })}
                         </Icon>
                     </Paper>
@@ -137,7 +137,6 @@ function ResearchAction({ action, isActive, isUnlocked, actionState, canUnlock, 
         </Paper>
     )
 }
-
 export function ResearchPage() {
     const { player, startAction, stopAction, unlockAction } = useGame()
     const skillId = RESEARCH_CONFIG.id
@@ -145,7 +144,20 @@ export function ResearchPage() {
     const skillProgress = getSkillProgress(player, skillId)
     return (
         <Flex direction="column" padding={32}>
-            <Paper layer={0}><SkillSummary title="Research" skillProgress={skillProgress} variant={pageVariant} icon={SKILL_ICONS.RESEARCH} /></Paper>
+            <Paper layer={0}>
+                <SkillSummary
+                    title={humanize(RESEARCH_CONFIG.id)}
+                    skillProgress={skillProgress}
+                    variant={pageVariant}
+                    icon={
+                        <Icon
+                            size={64} variant={pageVariant} outerRunes="solid" outerShape={7}
+                            innerRunes="gap" innerShape={"3"} >
+                            {cloneElement(SKILL_ICONS.RESEARCH, { size: 48 })}
+                        </Icon>
+                    }
+                />
+            </Paper>
             <Paper layer={0}>
                 <Flex direction="column" gap={32}>
                     <Grid columns={{ small: 1, medium: 2, large: 3 }}>

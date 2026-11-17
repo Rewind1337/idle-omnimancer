@@ -139,14 +139,14 @@ function ResearchAction({ action, isActive, isUnlocked, actionState, canUnlock, 
     )
 }
 
-function SkillSummary({ skillProgress }) {
+function SkillSummary({ skillProgress, variant }) {
     const totalPercentage = skillProgress.maxXP > 0 ? (skillProgress.totalXP / skillProgress.maxXP) * 100 : 0
     const levelPercentage = skillProgress.neededXP > 0 ? (skillProgress.xp / skillProgress.neededXP) * 100 : 100
     return (
-        <Paper className="skill-summary" layer={1} variant="research" padding={16}>
+        <Paper className="skill-summary" layer={1} variant={variant} padding={16}>
             <Flex direction="row" gap={32}>
                 <Paper round layer="0" interactive className="w-min" padding={16}>
-                    <Icon size={64} variant="research" outerRunes={"solid"} outerShape={3}
+                    <Icon size={64} variant={variant} outerRunes={"solid"} outerShape={3}
                         innerRunes={"gap"} innerShape={3}>
                         <BookOpen size={48} />
                     </Icon>
@@ -157,8 +157,8 @@ function SkillSummary({ skillProgress }) {
                         <h3 className="align-right">Level {skillProgress.level} / 100</h3>
                     </Flex>
                     <Flex className="skill-progress" direction="column" gap={4}>
-                        <Progress size="small" variant="research" percentage={totalPercentage} />
-                        <Progress variant="research" percentage={levelPercentage} />
+                        <Progress size="small" variant={variant} percentage={totalPercentage} />
+                        <Progress variant={variant} percentage={levelPercentage} />
                     </Flex>
                 </Flex>
             </Flex>
@@ -169,10 +169,11 @@ function SkillSummary({ skillProgress }) {
 export function ResearchPage() {
     const { player, startAction, stopAction, unlockAction } = useGame()
     const skillId = RESEARCH_CONFIG.id
+    const pageVariant = "research"
     const skillProgress = getSkillProgress(player, skillId)
     return (
         <Flex direction="column" padding={32}>
-            <Paper layer={0}><SkillSummary skillProgress={skillProgress} /></Paper>
+            <Paper layer={0}><SkillSummary skillProgress={skillProgress} variant={pageVariant} /></Paper>
             <Paper layer={0}>
                 <Flex direction="column" gap={32}>
                     <Grid columns={{ small: 1, medium: 2, large: 3 }}>
@@ -184,6 +185,7 @@ export function ResearchPage() {
                             return (
                                 <ResearchAction key={action.id} action={action} actionState={actionState}
                                     isActive={isActive} isUnlocked={isUnlocked}
+                                    variant={pageVariant}
                                     canUnlock={canUnlockAction(player, skillId, action.id)}
                                     onUnlock={() => unlockAction(skillId, action.id)}
                                     onToggle={() => {

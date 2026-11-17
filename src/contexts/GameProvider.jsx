@@ -89,6 +89,14 @@ export function GameProvider({ children }) {
         dispatch({ type: "UNLOCK_SKILL", skillId })
     }, [])
 
+    const buyBagSlot = useCallback(() => {
+        dispatch({ type: "BUY_BAG_SLOT" })
+    }, [])
+
+    const sellItem = useCallback((itemId, amount) => {
+        dispatch({ type: "SELL_ITEM", itemId, amount })
+    }, [])
+
     const contextValue = useMemo(() => ({
         player,
         startAction,
@@ -96,7 +104,9 @@ export function GameProvider({ children }) {
         togglePassiveAction,
         unlockAction,
         unlockSkill,
-    }), [player, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill])
+        buyBagSlot,
+        sellItem,
+    }), [player, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, sellItem])
 
     return (
         <GameContext.Provider value={contextValue}>

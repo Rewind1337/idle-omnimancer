@@ -20,6 +20,8 @@ import {
     canUnlockAction,
     getActionDurationMs,
     getActionManaCost,
+    getActionOutputMultiplier,
+    getActionPreservationChance,
     getActionXPReward,
     getSkillProgress,
     getVisibleActions,
@@ -50,6 +52,7 @@ function SpellcraftAction({ action, isActive, isUnlocked, actionState, canUnlock
                     </Paper>
                     <Flex direction="column">
                         <ActionHeader name={humanize(action.id)} level={actionState.level}
+                            currentXP={actionState.xp} neededXP={neededXP}
                             tier={action.tier} isUnlocked={isUnlocked} skillName="Spellcraft" />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
@@ -68,7 +71,8 @@ function SpellcraftAction({ action, isActive, isUnlocked, actionState, canUnlock
                         <ActionDetails actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(SPELLCRAFT_CONFIG, action)}
                             manaCost={getActionManaCost(SPELLCRAFT_CONFIG, action)}
-                            neededXP={neededXP} currentXP={actionState.xp} />
+                            outputMultiplier={getActionOutputMultiplier()}
+                            preservationChance={getActionPreservationChance()} />
                         <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []} />
                     </>
                 ) : (

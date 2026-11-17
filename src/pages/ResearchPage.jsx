@@ -18,6 +18,8 @@ import { getActionXPTable } from "../data/skillConfig"
 import {
     canUnlockAction,
     getActionDurationMs,
+    getActionOutputMultiplier,
+    getActionPreservationChance,
     getSkillProgress,
     getVisibleActions,
 } from "../game/gameEngine"
@@ -46,6 +48,7 @@ function ResearchAction({ action, isActive, isUnlocked, actionState, canUnlock, 
                     </Paper>
                     <Flex direction="column">
                         <ActionHeader name={humanize(action.id)} level={actionState.level}
+                            currentXP={actionState.xp} neededXP={neededXP}
                             tier={action.tier} isUnlocked={isUnlocked} skillName="Research" />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
@@ -63,7 +66,8 @@ function ResearchAction({ action, isActive, isUnlocked, actionState, canUnlock, 
                     <>
                         <ActionDetails actionTime={durationMs / 1000}
                             actionXP={RESEARCH_CONFIG.actionXP.base + RESEARCH_CONFIG.actionXP.perTier * (action.tier - 1)}
-                            neededXP={neededXP} currentXP={actionState.xp} />
+                            outputMultiplier={getActionOutputMultiplier()}
+                            preservationChance={getActionPreservationChance()} />
                         <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []} />
                     </>
                 ) : (

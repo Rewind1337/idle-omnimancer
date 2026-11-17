@@ -40,6 +40,11 @@ export const getActionManaCost = (skill, action) => {
     return Math.max(0, Math.round(cost))
 }
 
+// Current action modifiers have no output bonuses or preservation effects yet.
+// Keep these totals centralized so future modifiers can feed the same UI values.
+export const getActionOutputMultiplier = () => 1
+export const getActionPreservationChance = () => 0
+
 export const getActionProgress = (actionState, durationMs) =>
     Math.min(100, Math.max(0, (actionState.progressMs / durationMs) * 100))
 

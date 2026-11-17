@@ -120,6 +120,7 @@ When a completed action grants enough XP to level up, it gains one level and its
   - Milestones from its skill.
   - Bonuses from other skills.
   - Global bonuses and future progression systems.
+- Action cards display the action's final output multiplier and preservation chance. Both currently start at ×1.0 output and 0% preservation until modifiers are implemented.
 - XP is awarded when an action completes.
 - XP requirements increase with action level and are affected by the skill scalar and action-tier scalar.
 - Two actions at the same level can therefore require different amounts of XP.

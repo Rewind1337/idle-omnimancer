@@ -2,6 +2,7 @@ import { Paper } from "./Paper"
 import { Tabs } from "./Tabs"
 
 import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION } from "../data/navigationData"
+import { getSkillProgress } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 
 import './Navigation.scss'
@@ -25,10 +26,16 @@ export function Navigation({
   const tabs = [
     ...SKILL_NAVIGATION
       .filter(skill => unlockedSkills.has(skill.skillId) || skill === nextLockedSkill)
-      .map(skill => ({
-        ...skill,
-        disabled: !unlockedSkills.has(skill.skillId),
-      })),
+      .map(skill => {
+        const isUnlocked = unlockedSkills.has(skill.skillId)
+        const skillProgress = isUnlocked ? getSkillProgress(player, skill.skillId) : null
+
+        return {
+          ...skill,
+          disabled: !isUnlocked,
+          badge: skillProgress?.level ?? null,
+        }
+      }),
     DEVELOPMENT_NAVIGATION,
   ]
 

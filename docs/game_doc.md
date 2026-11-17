@@ -99,7 +99,8 @@ Skills level independently. Research progress does not automatically increase Sp
 
 ### 3.4 Unlocking skills and actions
 
-- Actions are generally unlocked with gold. Unlocking a later action does not require the previous action to reach level 100.
+- Actions are unlocked in their configured sequence. The next locked action is the only locked action shown, even when several actions share a tier; all previously unlocked actions remain visible.
+- Unlocking a later action does not require the previous action to reach level 100.
 - An unlocked action becomes available but does not automatically become active.
 - Some unlocks can require resources from other actions or skills when this creates a meaningful progression connection.
 - Skill unlocks generally require gold plus resources from earlier skills.
@@ -247,10 +248,11 @@ Example spell naming progression:
 - Mana is a separate regenerating resource, not an inventory item.
 - Casting a spell consumes its Mana cost.
 - Mana regenerates passively, including offline, subject to the final offline rules.
-- Each spell has its own Mana cost; higher-tier spells generally cost more.
+- Spell Mana costs follow a configurable tier curve in `SPELLCRAFT_CONFIG.mana.cost`: base 3 at tier 1, then previous cost × 2 − 1. The current tier costs are 3, 5, 9, 17, 33, 65, 129 and 257 for tiers I–VIII.
+- Element modifiers are configured per element in `SPELLCRAFT_CONFIG.elementModifiers`. Earth takes 5% longer and grants 15% more XP; Air takes 5% less time and grants 10% less XP; Water uses the baseline time and XP.
 - If Mana is insufficient for the next cast, the cast waits. Mana must not be consumed for an action that cannot complete.
 - Spellcraft skill levels may increase maximum Mana by a fixed amount per level, separately from milestone rewards.
-- Starting capacity, regeneration rate, spell costs and the per-level capacity increase remain to be balanced.
+- Starting capacity, regeneration rate and the per-level capacity increase remain to be balanced.
 
 ### 6.3 Elemental essences
 

@@ -10,12 +10,35 @@ import { ITEM_DATA_BY_ID } from "../data/itemData"
 // teaching UI components about progression formulas.
 export const getActionDurationMs = (skill, action) => {
     const baseSeconds = skill.time.base + skill.time.perTier * (action.tier - 1)
-    // Action-level speed bonuses will be applied here when those bonuses exist.
-    return Math.max(1, baseSeconds * 1000)
+    const timeMultiplier = skill.elementModifiers?.[action.element]?.timeMultiplier ?? 1
+
+    return Math.max(1, baseSeconds * timeMultiplier * 1000)
 }
 
-export const getActionXPReward = (skill, action) =>
-    skill.actionXP.base + skill.actionXP.perTier * (action.tier - 1)
+export const getActionXPReward = (skill, action) => {
+    const baseXP = skill.actionXP.base + skill.actionXP.perTier * (action.tier - 1)
+    const xpMultiplier = skill.elementModifiers?.[action.element]?.xpMultiplier ?? 1
+
+    return Math.max(0, Math.round(baseXP * xpMultiplier))
+}
+
+// Action Mana can use a tier curve configured on the skill. The optional
+// action.manaCost fallback keeps fixed-cost actions supported for other skills.
+export const getActionManaCost = (skill, action) => {
+    const costConfig = skill.mana?.cost
+    if (!costConfig) return Math.max(0, action.manaCost ?? 0)
+
+    const tier = Math.max(1, Math.floor(action.tier || 1))
+    const multiplier = costConfig.tierMultiplier ?? 1
+    const flatAdjustment = costConfig.tierFlat ?? 0
+    let cost = costConfig.base
+
+    for (let currentTier = 2; currentTier <= tier; currentTier++) {
+        cost = cost * multiplier + flatAdjustment
+    }
+
+    return Math.max(0, Math.round(cost))
+}
 
 export const getActionProgress = (actionState, durationMs) =>
     Math.min(100, Math.max(0, (actionState.progressMs / durationMs) * 100))
@@ -34,20 +57,20 @@ export const getNextBagSlotCost = (inventorySlots = GLOBAL_CONFIG.startingBagSpa
     return Number.isFinite(cost) ? Math.ceil(cost) : Infinity
 }
 
-// Show unlocked actions and preview only the tier immediately beyond progression.
+// Show every unlocked action and only the next locked action in config order.
+// This keeps same-tier elemental actions sequential instead of revealing an
+// entire later tier as soon as the first action in it becomes available.
 export const getVisibleActions = (player, skillId) => {
     const skill = SKILL_CONFIG_BY_ID[skillId]
     if (!skill) return []
 
     const actionStates = player.skills[skillId]?.actions ?? {}
-    const highestUnlockedTier = skill.actions.reduce((highestTier, action) => {
-        return actionStates[action.id]?.unlocked
-            ? Math.max(highestTier, action.tier)
-            : highestTier
-    }, 0)
+    const nextLockedAction = skill.actions.find(action =>
+        !actionStates[action.id]?.unlocked
+    )
 
     return skill.actions.filter(action =>
-        actionStates[action.id]?.unlocked || action.tier === highestUnlockedTier + 1
+        actionStates[action.id]?.unlocked || action.id === nextLockedAction?.id
     )
 }
 
@@ -149,13 +172,15 @@ export const getSkillProgress = (player, skillId) => {
     }
 }
 
-const canPayActionCost = (player, action) =>
-    !action.manaCost ||
-    player.mana.current >= action.manaCost
+const canPayActionCost = (player, skill, action) => {
+    const manaCost = getActionManaCost(skill, action)
+    return manaCost <= 0 || player.mana.current >= manaCost
+}
 
-const payActionCost = (player, action) => {
-    if (action.manaCost) {
-        player.mana.current = Math.max(0, player.mana.current - action.manaCost)
+const payActionCost = (player, skill, action) => {
+    const manaCost = getActionManaCost(skill, action)
+    if (manaCost > 0) {
+        player.mana.current = Math.max(0, player.mana.current - manaCost)
     }
 }
 
@@ -198,7 +223,7 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
     // reaches the cap. Active actions stop at their maximum level.
     while (remainingMs > 0 && (!isActive || actionState.level < GLOBAL_CONFIG.maxActionLevel)) {
         // Check Mana before starting each cycle, including automatic repeats.
-        if (actionState.progressMs === 0 && !canPayActionCost(player, action)) break
+        if (actionState.progressMs === 0 && !canPayActionCost(player, skill, action)) break
 
         const durationMs = getActionDurationMs(skill, action)
         const timeLeft = Math.max(0, durationMs - actionState.progressMs)
@@ -212,8 +237,8 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
         // Check Mana and bag capacity before completing the action. If a new
         // item type would exceed capacity, hold the completed cycle until space
         // becomes available rather than consuming Mana or discarding output.
-        if (!canPayActionCost(player, action) || !canStoreActionOutputs(player, action)) break
-        payActionCost(player, action)
+        if (!canPayActionCost(player, skill, action) || !canStoreActionOutputs(player, action)) break
+        payActionCost(player, skill, action)
 
         actionState.progressMs = 0
         awardActionXP(player, skill, action, actionState)
@@ -304,7 +329,7 @@ export const canStartAction = (player, skillId, actionId) => {
     }
 
     // Require enough Mana to begin; completion checks and deducts it again.
-    return canPayActionCost(player, action)
+    return canPayActionCost(player, skill, action)
 }
 
 export const getActionActivity = (skillId, actionId) => {

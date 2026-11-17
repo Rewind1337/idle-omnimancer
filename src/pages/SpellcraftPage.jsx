@@ -19,6 +19,7 @@ import { SKILL_ICONS, SPELLCRAFT_ACTION_ICONS } from "../data/iconLibrary"
 import {
     canUnlockAction,
     getActionDurationMs,
+    getActionManaCost,
     getActionXPReward,
     getSkillProgress,
     getVisibleActions,
@@ -66,6 +67,7 @@ function SpellcraftAction({ action, isActive, isUnlocked, actionState, canUnlock
                     <>
                         <ActionDetails actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(SPELLCRAFT_CONFIG, action)}
+                            manaCost={getActionManaCost(SPELLCRAFT_CONFIG, action)}
                             neededXP={neededXP} currentXP={actionState.xp} />
                         <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []} />
                     </>

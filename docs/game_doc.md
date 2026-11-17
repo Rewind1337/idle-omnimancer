@@ -896,7 +896,7 @@ The general progression principle is **simple things leading to more complicated
 - **Additive bonuses:** Same-type bonuses from different sources add together by default.
 - **Distinct Primary Elements:** Earth, Air and Water have separate identities, spells, resources and companion types.
 - **Aspects are future-facing:** The potential run-based invoke/channel concept is not part of initial implementation.
-- **Mana supports Spellcraft:** Spells consume Mana; Mana regenerates passively; Spellcraft levels may increase maximum Mana.
+- **Mana supports Spellcraft:** Spells consume Mana; Mana regenerates passively; Spellcraft starts with its configured base regeneration at level 1 and gains +1 Mana per second for every level thereafter.
 - **Exploration is active:** Areas are individual actions on a shared hex map.
 - **Combat is passive:** It continues in a selected unlocked Exploration area independently of the active action.
 - **Companions come from containers:** Elemental containers discovered through Exploration are opened through Unveiling to obtain companions.
@@ -924,7 +924,7 @@ The following details remain open for design, balancing or implementation:
 ### Research, Spellcraft and Transmutation
 - Final spell names and which spell tiers will be implemented.
 - Final descriptions and names for higher-tier essences.
-- Mana starting capacity, regeneration rate, spell costs and maximum-Mana gain per Spellcraft level.
+- Mana starting capacity, spell costs and any future maximum-Mana gain per Spellcraft level.
 - Final Transmutation action names, Catalyst tier names, recipes, quantities and input combinations.
 - Final action unlock prices and skill unlock resource quantities.
 

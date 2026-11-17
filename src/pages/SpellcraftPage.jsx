@@ -31,7 +31,7 @@ import { useGame } from "../hooks/useGame"
 const InnerShapeMap = [3, 4, 5, 6, 7, 8, 9, 10]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide"]
 
-function SpellcraftAction({ action, isActive, isUnlocked, actionState, canUnlock, onToggle, onUnlock }) {
+function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, canUnlock, onToggle, onUnlock }) {
     const elementIcons = SPELLCRAFT_ACTION_ICONS[action.element?.toUpperCase()] ?? SPELLCRAFT_ACTION_ICONS.EARTH
     const actionIcon = elementIcons[action.tier - 1] ?? elementIcons[0]
     const durationMs = isUnlocked ? getActionDurationMs(SPELLCRAFT_CONFIG, action, player) : 0
@@ -117,7 +117,7 @@ export function SpellcraftPage() {
                             player.activeAction?.actionId === action.id
 
                         return (
-                            <SpellcraftAction key={action.id} action={action} actionState={actionState}
+                            <SpellcraftAction key={action.id} action={action} player={player} actionState={actionState}
                                 isActive={isActive} isUnlocked={isUnlocked}
                                 canUnlock={canUnlockAction(player, skillId, action.id)}
                                 onUnlock={() => unlockAction(skillId, action.id)}

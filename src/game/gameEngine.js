@@ -206,6 +206,9 @@ const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
     const totals = {}
 
     for (const sourceSkill of Object.values(SKILL_CONFIG_BY_ID)) {
+        // A skill cannot award milestones until it has actually been unlocked.
+        if (!player.unlockedSkills?.includes(sourceSkill.id)) continue
+
         const sourceLevel = getSkillProgress(player, sourceSkill.id)?.level ?? 1
 
         for (const milestone of sourceSkill.milestones ?? []) {
@@ -229,7 +232,10 @@ const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
 
 const getActionMilestoneBonuses = (player, skill, action) => {
     const totals = getSkillMilestoneBonuses(player, skill.id)
-    const actionLevel = player.skills?.[skill.id]?.actions?.[action.id]?.level ?? 1
+    const actionState = player.skills?.[skill.id]?.actions?.[action.id]
+    const actionLevel = actionState?.unlocked
+        ? Math.max(0, Math.floor(actionState.level ?? 1))
+        : 0
 
     for (const milestone of skill.actionMilestones ?? []) {
         if (!Number.isFinite(milestone.levels) || milestone.levels <= 0) continue

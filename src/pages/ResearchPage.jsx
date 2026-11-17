@@ -49,7 +49,7 @@ function ResearchAction({ action, isActive, isUnlocked, actionState, canUnlock, 
                     <Flex direction="column">
                         <ActionHeader name={humanize(action.id)} level={actionState.level}
                             currentXP={actionState.xp} neededXP={neededXP}
-                            tier={action.tier} isUnlocked={isUnlocked} skillName="Research" />
+                            tier={action.tier} isUnlocked={isUnlocked} />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
                                 durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}

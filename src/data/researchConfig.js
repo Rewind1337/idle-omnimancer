@@ -25,6 +25,29 @@ export const RESEARCH_CONFIG = {
         finalMultPerLevel: 0.999,// <previous total> * Math.pow(finalMultPerLevel, level - 1)
     },
 
+    /*
+    milestones
+        reach: 'local', 'global' or a specific skill id, like 'skill:spellcraft'
+            'local' -> this current skill (research) would be boosted
+            'global' -> all skills would be boosted
+            'skill:id' -> only that skill will be boosted
+        type: 'flat', 'mult'
+            'flat' -> bonus gets added on to the other ones
+            'mult' -> bonus gets multiplied ontop of the existing ones
+        effect: 'xpGain', 'actionTime', 'itemOutput', 'preservation', 'manaCost', 'manaCapacity'
+            'xpGain' -> boosts the xp gained FOR actions, not the skill xp
+            'actionTime' -> reduces the time required to complete an action
+            'itemOutput' -> multiplies the final output by this amount, fractions will be rolled, for example having a x2.38 output mult would result in 2 items, with an 38% chance for a third.
+            'preservation' -> chance to not consume the required items when completing this action
+            'manaCost' -> reduces the mana costs by this much (only really for spellcraft, at the moment)
+            'manaCapacity' -> increases the maximum mana by this much (only really for spellcraft, at the moment)
+    */
+    milestones: [
+        { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 0.9 },
+        { level: 20, reach: "skill:spellcraft", type: "mult", effect: "actionTime", value: 0.9 },
+        { level: 30, reach: "global", type: "mult", effect: "xpGain", value: 1.1 },
+    ],
+
     actions: [
         {
             id: "action:read_books",

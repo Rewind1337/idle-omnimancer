@@ -10,6 +10,10 @@
     padding: 0 6px;
     transition: background-color 0.2s ease-out;
 
+    .badge-content {
+        font-weight: 400 !important;
+    }
+
     svg {
         transform: translateY(2px);
         width: 24px;

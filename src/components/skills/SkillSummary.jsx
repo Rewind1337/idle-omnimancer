@@ -3,6 +3,7 @@ import { Flex } from "../Flex"
 import { Paper } from "../Paper"
 import { Progress } from "../Progress"
 import { OTHER_ICONS } from "../../data/iconLibrary"
+import { Heading } from "../Heading"
 
 export function SkillSummary({ title, skillProgress, variant, icon }) {
     const totalPercentage = skillProgress.maxXP > 0
@@ -21,12 +22,19 @@ export function SkillSummary({ title, skillProgress, variant, icon }) {
                 <Flex direction="column">
                     <Flex>
                         <h1>{title}</h1>
-                        <Badge variant={variant} icon={OTHER_ICONS.STAR}>Next Level {skillProgress.xp} / {skillProgress.neededXP}</Badge>
-                        <Badge variant={variant} icon={OTHER_ICONS.STAR}>Level {skillProgress.level} / 100</Badge>
+                        <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">Action levels needed for the next Skill level</Flex>}>
+                            {skillProgress.xp} / {skillProgress.neededXP} XP
+                        </Badge>
+                        <Badge variant="transparent" interactive icon={OTHER_ICONS.STAR} tooltip={<Flex direction="column">Total Progress in this Skill.</Flex>}>
+                            Level {skillProgress.level} / 100
+                        </Badge>
                     </Flex>
                     <Flex className="skill-progress" direction="column" gap={4}>
-                        <Progress size="small" variant={variant} percentage={totalPercentage} />
-                        <Progress variant={variant} percentage={levelPercentage} />
+                        <Heading h="3">Total Skill Progress</Heading>
+                        <Progress corners="rounded" variant={variant} percentage={totalPercentage} />
+                        <hr style={{ marginBlock: 8, borderColor: "transparent" }} />
+                        <Heading h="3">Progress to next Level</Heading>
+                        <Progress corners="rounded" variant={variant} percentage={levelPercentage} />
                     </Flex>
                 </Flex>
             </Flex>

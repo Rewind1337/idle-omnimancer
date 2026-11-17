@@ -19,6 +19,20 @@ export const getActionXPReward = (skill, action) =>
 export const getActionProgress = (actionState, durationMs) =>
     Math.min(100, Math.max(0, (actionState.progressMs / durationMs) * 100))
 
+
+// The first additional bag slot costs the configured base price. Every
+// purchased slot increases the next price by the configured multiplier.
+export const getNextBagSlotCost = (inventorySlots = GLOBAL_CONFIG.startingBagSpace) => {
+    const purchasedSlots = Math.max(
+        0,
+        Math.floor(inventorySlots) - GLOBAL_CONFIG.startingBagSpace
+    )
+    const cost = GLOBAL_CONFIG.bagSlotStartingCost *
+        Math.pow(GLOBAL_CONFIG.bagSlotCostMultiplier, purchasedSlots)
+
+    return Number.isFinite(cost) ? Math.ceil(cost) : Infinity
+}
+
 // Show unlocked actions and preview only the tier immediately beyond progression.
 export const getVisibleActions = (player, skillId) => {
     const skill = SKILL_CONFIG_BY_ID[skillId]

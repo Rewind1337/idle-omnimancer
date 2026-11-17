@@ -10,29 +10,26 @@ import { Item } from '../Item'
 import { EmptyItem } from '../EmptyItem'
 import { Button } from '../Button'
 import { InputRange } from '../InputRange'
+import { Tooltip } from '../Tooltip'
 
-import { ITEM_SPRITES } from '../../data/iconLibrary'
-import { SKILL_CONFIGS } from '../../data/skillConfig'
+import { ITEM_DATA_BY_ID } from '../../data/itemData'
+import { getNextBagSlotCost } from '../../game/gameEngine'
 import { humanize } from '../../utility/helpers'
 import { useGame } from '../../hooks/useGame'
 
-const getItemVariant = (itemId) => {
-    const sourceSkill = SKILL_CONFIGS.find(skill =>
-        skill.actions.some(action => {
-            const outputs = action.produces ?? action.outputItem ?? []
-            return (Array.isArray(outputs) ? outputs : [outputs]).includes(itemId)
-        })
-    )
-
-    return sourceSkill?.id.split(":")[1] ?? "primary"
-}
+const AMOUNT_PRESETS = [
+    { label: "1%", ratio: 0.01 },
+    { label: "10%", ratio: 0.10 },
+    { label: "50%", ratio: 0.50 },
+    { label: "100%", ratio: 1 },
+]
 
 export function BagModal({
     visible,
     setVisible,
     closeBagButton
 }) {
-    const { player } = useGame()
+    const { player, buyBagSlot, sellItem } = useGame()
     const [selectedItemId, setSelectedItemId] = useState(null)
     const [selectedAmount, setSelectedAmount] = useState(1)
 
@@ -43,11 +40,36 @@ export function BagModal({
     const emptySlots = Math.max(0, inventorySlots - occupiedSlots)
 
     const selectedItem = inventory.find(([itemId]) => itemId === selectedItemId)
-    const selectedVariant = selectedItem ? getItemVariant(selectedItem[0]) : "primary"
+    const selectedData = selectedItem ? ITEM_DATA_BY_ID[selectedItem[0]] : null
+    const selectedVariant = selectedData?.variant ?? "primary"
     const selectedMax = selectedItem ? selectedItem[1] : 1
+    const amountToSell = Math.max(1, Math.min(selectedAmount, selectedMax))
+    const baseValue = selectedData?.baseValue ?? 0
+    const totalSellValue = amountToSell * baseValue
+
+    const nextSlotCost = getNextBagSlotCost(inventorySlots)
+    const coins = player.currencies?.coins ?? 0
 
     const handleRangeChange = (event) => {
-        setSelectedAmount(Number(event.target.value))
+        const value = Number(event.target.value)
+        setSelectedAmount(Math.max(1, Math.min(selectedMax, value)))
+    }
+
+    const handlePreset = (ratio) => {
+        setSelectedAmount(Math.max(1, Math.min(selectedMax, Math.ceil(selectedMax * ratio))))
+    }
+
+    const handleSell = () => {
+        if (!selectedItem || amountToSell > selectedMax) return
+
+        sellItem(selectedItem[0], amountToSell)
+
+        if (amountToSell >= selectedMax) {
+            setSelectedItemId(null)
+            setSelectedAmount(1)
+        } else {
+            setSelectedAmount(Math.min(amountToSell, selectedMax - amountToSell))
+        }
     }
 
     return (
@@ -61,15 +83,15 @@ export function BagModal({
                 <Flex direction="column" gap={16}>
                     <Flex direction="row" wrap>
                         {inventory.map(([itemId, amount]) => {
-                            const variant = getItemVariant(itemId)
+                            const itemData = ITEM_DATA_BY_ID[itemId]
                             return (
                                 <Item
                                     layer={2}
                                     key={itemId}
-                                    icon={ITEM_SPRITES[itemId]}
-                                    name={humanize(itemId)}
+                                    icon={itemData?.icon}
+                                    name={itemData?.name ?? humanize(itemId)}
                                     amount={amount}
-                                    variant={variant}
+                                    variant={itemData?.variant ?? "primary"}
                                     selected={selectedItemId === itemId}
                                     onClick={() => {
                                         setSelectedItemId(itemId)
@@ -84,32 +106,80 @@ export function BagModal({
                                 <Heading h="3" className="align-center">{emptySlots}</Heading>
                             </EmptyItem>
                         )}
-                        <EmptyItem>
-                            <Heading h="6" className="align-center">+1 Slot</Heading>
-                            <Button variant="shop" size="small" className="w-100 align-center">Buy</Button>
+                        <EmptyItem variant="shop" className="bag-buy-slot" padding={0}>
+                            <Tooltip
+                                variant="shop"
+                                content={`Cost: ${nextSlotCost.toLocaleString()} coins`}
+                                block
+                            >
+                                <Button
+                                    variant="shop"
+                                    size="small"
+                                    className="w-100 bag-buy-slot-button"
+                                    style={{ width: "100%", height: "100%" }}
+                                    disabled={coins < nextSlotCost}
+                                    onClick={buyBagSlot}
+                                >
+                                    Buy
+                                </Button>
+                            </Tooltip>
                         </EmptyItem>
                     </Flex>
 
-                    {selectedItem && (
+                    {selectedItem && selectedData && (
                         <Paper layer={2} className="bag-item-selection">
                             <Flex direction="column" gap={12}>
                                 <Item
                                     layer={3}
                                     mode="wide"
                                     interactive={false}
-                                    icon={ITEM_SPRITES[selectedItem[0]]}
-                                    name={humanize(selectedItem[0])}
-                                    amount={selectedAmount}
+                                    icon={selectedData.icon}
+                                    name={selectedData.name}
+                                    amount={amountToSell}
                                     variant={selectedVariant}
                                 />
+
+                                <Flex direction="row" gap={8} wrap>
+                                    {AMOUNT_PRESETS.map(({ label, ratio }) => {
+                                        const presetAmount = Math.max(
+                                            1,
+                                            Math.min(selectedMax, Math.ceil(selectedMax * ratio))
+                                        )
+                                        return (
+                                            <Button
+                                                key={label}
+                                                variant={selectedVariant}
+                                                size="small"
+                                                checked={amountToSell === presetAmount}
+                                                onClick={() => handlePreset(ratio)}
+                                            >
+                                                {label}
+                                            </Button>
+                                        )
+                                    })}
+                                </Flex>
+
                                 <InputRange
                                     variant={selectedVariant}
-                                    value={selectedAmount}
+                                    value={amountToSell}
                                     onChange={handleRangeChange}
                                     label="Amount"
                                     min={1}
                                     max={selectedMax}
                                 />
+
+                                <Flex direction="row" justify="space-between">
+                                    <span>Total sell value: {totalSellValue.toLocaleString()} coins</span>
+                                    <span>{baseValue.toLocaleString()} coins each</span>
+                                </Flex>
+                                <Button
+                                    variant="shop"
+                                    className="w-100"
+                                    disabled={baseValue <= 0 || amountToSell < 1}
+                                    onClick={handleSell}
+                                >
+                                    Sell {amountToSell.toLocaleString()}
+                                </Button>
                             </Flex>
                         </Paper>
                     )}

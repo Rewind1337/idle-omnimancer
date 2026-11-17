@@ -8,7 +8,7 @@ export function BagButton({
     return (
         <Button
             size="medium"
-            variant="transmutation"
+            variant="primary"
             checked={active}
             onClick={onClick}
             className="w-min"

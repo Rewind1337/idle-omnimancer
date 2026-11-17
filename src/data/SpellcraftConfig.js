@@ -1,6 +1,6 @@
 export const SPELLCRAFT_CONFIG = {
     id: "skill:spellcraft",
-    unlockedByDefault: false,
+    unlockCosts: [{ amount: 1e2, item: "item:loose_notes" }, { amount: 1e3, item: "currency:coins" }],
 
     mana: {
         base: 100,
@@ -46,6 +46,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "air",
             manaCost: 2,
             produces: ["item:breath"],
+            unlockCosts: [{ amount: 1e2, item: "item:loose_notes" }, { amount: 2e3, item: "currency:coins" }]
         },
         {
             id: "action:gather_droplet",
@@ -53,6 +54,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "water",
             manaCost: 2,
             produces: ["item:droplet"],
+            unlockCosts: [{ amount: 1e2, item: "item:loose_notes" }, { amount: 3e3, item: "currency:coins" }]
         },
         {
             id: "action:shape_stone",
@@ -60,6 +62,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "earth",
             manaCost: 4,
             produces: ["item:pebble"],
+            unlockCosts: [{ amount: 2e2, item: "item:bound_notes" }, { amount: 1e4, item: "currency:coins" }]
         },
         {
             id: "action:create_gust",
@@ -67,6 +70,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "air",
             manaCost: 4,
             produces: ["item:breeze"],
+            unlockCosts: [{ amount: 2e2, item: "item:bound_notes" }, { amount: 2e4, item: "currency:coins" }]
         },
         {
             id: "action:form_ripple",
@@ -74,6 +78,7 @@ export const SPELLCRAFT_CONFIG = {
             element: "water",
             manaCost: 4,
             produces: ["item:ripple"],
+            unlockCosts: [{ amount: 2e2, item: "item:bound_notes" }, { amount: 3e4, item: "currency:coins" }]
         },
         {
             id: "action:raise_boulder",

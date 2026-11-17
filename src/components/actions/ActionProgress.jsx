@@ -22,14 +22,10 @@ export function ActionProgress({
                 percentage={actionLevelPercentage} animated={isActive} />
             <Flex direction="column" className="w-30">
                 <Button variant={variant} className="w-100" size="medium"
-                    toggled={isActive} disabled={actionState.level >= 100} onClick={onToggle}>
+                    toggled={isActive} onClick={onToggle}
+                    badge={isActive ? actionCompletionPercentage.toFixed(0) + "%" : null}>
                     {isActive ? "Stop" : actionLabel}
                 </Button>
-                {isActive ? (
-                    <Progress className="relative-position" corners="sharp"
-                        size="small" layer={2} variant={variant}
-                        percentage={actionCompletionPercentage} />
-                ) : null}
             </Flex>
         </Flex>
     )

@@ -12,24 +12,45 @@ export function Item({
     className = '',
     icon,
     name,
+    mode = "compact",
     amount = null,
     variant = 'primary',
     layer = 2,
     interactive = true,
     onClick = () => { }
 }) {
-    return (
-        <Tooltip layer={layer} variant={variant} content={name}>
+    if (mode === "compact") {
+        return (
+            <Tooltip layer={layer} variant={variant} content={name}>
+                <Paper layer={layer} interactive={interactive}
+                    className={cx('item item-compact', className)}
+                    data-variant={variant}
+                    onClick={() => { onClick() }}
+                >
+                    <Flex direction="column" padding={0}>
+                        {icon && <Icon variant={variant} className="item-icon">{icon}</Icon>}
+                        {amount && <Paper variant={variant} className="item-badge" padding={"2px 6px"}><Text variant={variant}>{amount}</Text></Paper>}
+                    </Flex>
+                </Paper>
+            </Tooltip>
+        )
+    } else if (mode === "wide") {
+        return (
             <Paper layer={layer} interactive={interactive}
-                className={cx('item', className)}
+                className={cx('item item-wide', className)}
                 data-variant={variant}
                 onClick={() => { onClick() }}
             >
-                <Flex direction="column" padding={0}>
-                    {icon && <Icon variant={variant} className="item-icon">{icon}</Icon>}
-                    {amount && <Paper variant={variant} className="item-badge" padding={"2px 6px"}><Text variant={variant}>{amount}</Text></Paper>}
+                <Flex direction="row" padding={0}>
+                    <Flex direction="column" padding={0}>
+                        {icon &&
+                            <Icon variant={variant} className="item-icon">{icon}</Icon>
+                        }
+                        {amount && <Paper variant={variant} className="item-badge" padding={"2px 6px"}><Text variant={variant}>{amount}</Text></Paper>}
+                    </Flex>
+                    <Paper className="item-name" variant={variant}><Text variant={variant}>{name}</Text></Paper>
                 </Flex>
             </Paper>
-        </Tooltip>
-    )
+        )
+    }
 }

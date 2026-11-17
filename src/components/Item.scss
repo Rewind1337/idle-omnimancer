@@ -1,21 +1,38 @@
 .item {
-    aspect-ratio: 1 !important;
-    width: 64px;
-    height: 64px;
-
     &.paper.paper-interactive:hover {
         cursor: pointer;
     }
 
-    .item-icon {
-        width: 32px;
-        height: 32px;
+    &.item-compact,
+    &.item-badge {
+            width: 32px;
     }
 
-    .item-badge {
-        width: 32px;
-        text-align: center;
-        position: relative;
-        top: -6px;
+    &.item-compact {
+        aspect-ratio: 1 !important;
+        width: 64px;
+        height: 64px;
+
+        .item-badge {
+            text-align: center;
+            position: relative;
+            top: -6px;
+        }
+    }
+
+    &.item-wide {
+        width: fit-content;
+        height: 64px;
+
+        .item-badge {
+            text-align: center;
+            position: relative;
+            top: -6px;
+        }
+
+        .item-name {
+            position: relative;
+            top: -6px;
+        }
     }
 }

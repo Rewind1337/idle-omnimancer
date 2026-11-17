@@ -2,7 +2,8 @@
 export const cx = (...values) => values.filter(Boolean).join(' ')
 
 // Removes a known data-type prefix and turns an ID into a readable label.
-// Examples: "action:read_books" -> "Read Books", "item:loose_notes" -> "Loose Notes".
+// Examples: "action:read_books" -> "Read Books", "item:loose_notes" -> "Loose Notes",
+ // and "currency:coins" -> "Coins".
 export const humanize = (value) => String(value ?? "")
     .replace(/^(?:skill|action|item|currency):/i, "")
     .replace(/[_-]+/g, " ")

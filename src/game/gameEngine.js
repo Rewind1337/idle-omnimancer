@@ -37,9 +37,11 @@ export const getVisibleActions = (player, skillId) => {
 }
 
 const getUnlockCostTotals = (unlockCosts = []) => {
+    if (!Array.isArray(unlockCosts)) return null
+
     const totals = {}
     for (const cost of unlockCosts) {
-        if (!cost?.item || !Number.isFinite(cost.amount) || cost.amount < 0) return null
+        if (typeof cost?.item !== "string" || !cost.item || !Number.isFinite(cost.amount) || cost.amount < 0) return null
         totals[cost.item] = (totals[cost.item] ?? 0) + cost.amount
     }
     return totals

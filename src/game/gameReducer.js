@@ -140,9 +140,9 @@ export const gameReducer = (state, action) => {
             for (const { item, amount } of actionConfig.unlockCosts ?? []) {
                 if (item.startsWith("currency:")) {
                     const currencyId = item.slice("currency:".length)
-                    currencies[currencyId] -= amount
+                    currencies[currencyId] = (currencies[currencyId] ?? 0) - amount
                 } else {
-                    inventory[item] -= amount
+                    inventory[item] = (inventory[item] ?? 0) - amount
                 }
             }
 

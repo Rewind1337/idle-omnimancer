@@ -125,7 +125,7 @@ export const normalizePlayerState = (savedState) => {
     const occupiedSlots = Object.values(inventory).filter(amount => amount > 0).length
     const inventorySlots = Math.max(
         occupiedSlots,
-        clampInteger(savedState.inventorySlots, 1, Number.MAX_SAFE_INTEGER, DEFAULT_INVENTORY_SLOTS)
+        clampInteger(savedState.inventorySlots, DEFAULT_INVENTORY_SLOTS, Number.MAX_SAFE_INTEGER, DEFAULT_INVENTORY_SLOTS)
     )
 
     return {

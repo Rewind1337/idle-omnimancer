@@ -26,13 +26,12 @@ export function Item({
             <Tooltip layer={layer} variant={variant} content={<Heading h="5">{name}</Heading>}>
                 <Paper layer={layer} interactive={interactive}
                     className={cx('item item-compact', className)}
-                    data-variant={variant}
                     data-selected={selected ? "true" : "false"}
                     onClick={() => { onClick() }}
                 >
                     <Flex direction="column" padding={0}>
                         {icon && <Icon variant={variant} className="item-icon">{icon}</Icon>}
-                        {amount && <Paper variant={variant} className="item-badge" padding={"2px 6px"}><Text variant={variant}>{amount}</Text></Paper>}
+                        {amount && <Paper className="item-badge" padding={"2px 6px"}><Text>{amount}</Text></Paper>}
                     </Flex>
                 </Paper>
             </Tooltip>
@@ -47,12 +46,10 @@ export function Item({
             >
                 <Flex direction="row" padding={0}>
                     <Flex direction="column" padding={0}>
-                        {icon &&
-                            <Icon variant={variant} className="item-icon">{icon}</Icon>
-                        }
-                        {amount && <Paper variant={variant} className="item-badge" padding={"2px 6px"}><Text variant={variant}>{amount}</Text></Paper>}
+                        {icon && <Icon variant={variant} className="item-icon">{icon}</Icon>}
+                        {amount && <Paper className="item-badge" padding={"2px 6px"}><Text>{amount}</Text></Paper>}
                     </Flex>
-                    <Paper className="item-name" variant={variant}><Text variant={variant}>{name}</Text></Paper>
+                    <Paper className="item-name" variant={variant}><Text>{name}</Text></Paper>
                 </Flex>
             </Paper>
         )

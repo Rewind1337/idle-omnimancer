@@ -14,7 +14,7 @@ export function ActionHeader({
         <Flex className={cx("action-header", className)}>
             <h2>{name}</h2>
             {isUnlocked && <Badge variant={skillName.toLowerCase()} interactive>Lv. {level} / 100</Badge>}
-            <Badge variant={skillName.toLowerCase()} interactive>Tier {tier} {skillName}</Badge>
+            <Badge variant={skillName.toLowerCase()} interactive>Tier {tier}</Badge>
         </Flex>
     )
 }

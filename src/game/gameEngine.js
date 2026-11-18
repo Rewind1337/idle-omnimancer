@@ -438,7 +438,8 @@ export const getActionManaCost = (skill, action, player = null) => {
     const bonuses = player
         ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "manaCost")
         : { flat: 0, mult: 0 }
-    const discountedCost = baseCost / Math.max(0.01, 1 + bonuses.mult) - bonuses.flat
+    // Mana-cost multipliers are applied directly: 0.9 means a 10% reduction.
+    const discountedCost = baseCost * Math.max(0.01, 1 + bonuses.mult) - bonuses.flat
 
     return Math.max(0, discountedCost)
 }

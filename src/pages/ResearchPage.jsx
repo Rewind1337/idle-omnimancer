@@ -25,6 +25,7 @@ import {
     getVisibleActions,
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
+import { CopyX } from "lucide-react"
 
 const InnerShapeMap = ["dot", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]
@@ -86,7 +87,7 @@ export function ResearchPage() {
     const skillProgress = getSkillProgress(player, skillId)
 
     return (
-        <Flex direction="column" padding={32} gap={32}>
+        <Flex direction="column" className={CopyX("page-flex page-flex-research")} padding={32} gap={32}>
             <Paper layer={0}>
                 <SkillSummary
                     title={humanize(RESEARCH_CONFIG.id)}
@@ -103,7 +104,7 @@ export function ResearchPage() {
             </Paper>
             <Paper layer={0}>
                 <Flex direction="column" gap={32}>
-                    <Grid columns={{ small: 1, medium: 2, large: 3 }}>
+                    <Grid columns={1}>
                         {getVisibleActions(player, skillId).map(action => {
                             const actionState = player.skills[skillId].actions[action.id]
                             const isUnlocked = Boolean(actionState?.unlocked)

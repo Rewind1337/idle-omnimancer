@@ -160,6 +160,36 @@ body {
 }
 
 
+.page-flex {
+  padding-bottom: 72px !important;
+}
+
+@media (max-width: 600px) {
+  .page-flex {
+    gap: 8px !important;
+    padding: 0 !important;
+    padding-bottom: 72px !important;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1200px) {
+  .page-flex {
+    gap: 16px !important;
+    padding-top: 16px !important;
+    padding-inline: 64px !important;
+    padding-bottom: 72px !important;
+  }
+}
+
+@media (min-width: 1201px) {
+  .page-flex {
+    gap: 32px !important;
+    padding-top: 32px !important;
+    padding-inline: 128px !important;
+    padding-bottom: 72px !important;
+  }
+}
+
 
 .toast-container {
   position: absolute;

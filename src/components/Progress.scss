@@ -42,7 +42,7 @@
     overflow: hidden;
     border-radius: inherit;
 
-    transition: width 0.1s linear;
+    transition: width 0.5s ease-in-out;
 
     &[data-animated="true"] {
         @each $variant in $button-colors {

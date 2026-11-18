@@ -12,7 +12,7 @@ import { ActionDetails } from "../components/actions/ActionDetails"
 import { ActionProgress } from "../components/actions/ActionProgress"
 import { ActionResources } from "../components/actions/ActionResources"
 
-import { humanize } from "../utility/helpers"
+import { cx, humanize } from "../utility/helpers"
 import { SPELLCRAFT_CONFIG } from "../data/SpellcraftConfig"
 import { getActionXPTable } from "../data/skillConfig"
 import { SKILL_ICONS, SPELLCRAFT_ACTION_ICONS } from "../data/iconLibrary"
@@ -90,7 +90,7 @@ export function SpellcraftPage() {
     const pageVariant = "spellcraft"
 
     return (
-        <Flex direction="column" padding={32} gap={32}>
+        <Flex direction="column" className={cx("page-flex page-flex-spellcraft")} padding={32} gap={32}>
             <Paper layer={0}>
                 <SkillSummary
                     title={humanize(SPELLCRAFT_CONFIG.id)}
@@ -109,7 +109,7 @@ export function SpellcraftPage() {
                 <ManaBar />
             </Paper>
             <Paper layer={0}>
-                <Grid columns={{ small: 1, medium: 2, large: 3 }}>
+                <Grid columns={1}>
                     {getVisibleActions(player, skillId).map(action => {
                         const actionState = player.skills[skillId].actions[action.id]
                         const isUnlocked = Boolean(actionState?.unlocked)

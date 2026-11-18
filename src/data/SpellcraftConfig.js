@@ -7,7 +7,7 @@ export const SPELLCRAFT_CONFIG = {
         regen: 1,
         regenPerLevel: 1,
         cost: {
-            base: 3,
+            base: 6,
             tierMultiplier: 2,
             tierFlat: -1,
         },

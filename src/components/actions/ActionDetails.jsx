@@ -12,21 +12,21 @@ export function ActionDetails({
     return (
         <Flex className="action-details">
             <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS} tooltip={<Flex direction="column">Time needed to complete this action.</Flex>}>
-                {actionTime.toFixed(2)} Seconds
+                {actionTime.toFixed(2)}s
             </Badge>
             <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">XP gained upon completing this action.</Flex>}>
-                {actionXP.toFixed(1)} XP / Completion
+                {actionXP.toFixed(1)} XP
             </Badge>
             {manaCost !== null && (
                 <Badge variant="transparent" interactive icon={OTHER_ICONS.ZAP} tooltip={<Flex direction="column">Mana required to start this action.</Flex>}>
-                    {manaCost.toLocaleString()} Mana / Cast
+                    {manaCost.toFixed(1)} Mana
                 </Badge>
             )}
             <Badge variant="transparent" interactive icon={OTHER_ICONS.FLAME} tooltip={<Flex direction="column">Multiplier to items gained from this action.</Flex>}>
-                {outputMultiplier.toFixed(2)}x Output
+                x{outputMultiplier.toFixed(2)}
             </Badge>
-            <Badge variant="transparent" interactive icon={OTHER_ICONS.RECYCLE} tooltip={<Flex direction="column">Chance to preserve required input resources when completing this action.</Flex>}>
-                {(preservationChance * 100).toFixed(0)}% Preservation
+            <Badge variant="transparent" interactive icon={OTHER_ICONS.RECYCLE} tooltip={<Flex direction="column">Chance to keep required resources when completing this action.</Flex>}>
+                {(preservationChance * 100).toFixed(0)}%
             </Badge>
         </Flex>
     )

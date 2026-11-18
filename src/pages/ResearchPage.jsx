@@ -11,7 +11,7 @@ import { ActionDetails } from "../components/actions/ActionDetails"
 import { ActionProgress } from "../components/actions/ActionProgress"
 import { ActionResources } from "../components/actions/ActionResources"
 
-import { humanize } from "../utility/helpers"
+import { cx, humanize } from "../utility/helpers"
 import { RESEARCH_CONFIG } from "../data/researchConfig"
 import { RESEARCH_ACTION_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
@@ -25,7 +25,6 @@ import {
     getVisibleActions,
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
-import { CopyX } from "lucide-react"
 
 const InnerShapeMap = ["dot", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]
@@ -87,7 +86,7 @@ export function ResearchPage() {
     const skillProgress = getSkillProgress(player, skillId)
 
     return (
-        <Flex direction="column" className={CopyX("page-flex page-flex-research")} padding={32} gap={32}>
+        <Flex direction="column" className={cx("page-flex page-flex-research")} padding={32} gap={32}>
             <Paper layer={0}>
                 <SkillSummary
                     title={humanize(RESEARCH_CONFIG.id)}

@@ -20,7 +20,7 @@
 
         margin-inline: 8px;
         margin-block-end: 8px;
-        max-width: min(280px, calc(100vw - 16px));
+        max-width: fit-content;
 
         z-index: 1000;
 

@@ -6,6 +6,7 @@ import { Text } from './Text'
 import './Tooltip.scss'
 
 import { cx } from '../utility/helpers'
+import { Heading } from './Heading'
 
 export function Tooltip({
     children,
@@ -46,9 +47,9 @@ export function Tooltip({
                 padding={8}
                 className="tooltip-content"
             >
-                <Text size="small" variant={variant}>
+                <Heading h="4" weight={500} variant={variant}>
                     {content}
-                </Text>
+                </Heading>
             </Paper>
         </span>
     )

@@ -11,7 +11,7 @@
   user-select: none;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, .heading {
   font-weight: 700;
   font-family: var(--font-heading);
   white-space: nowrap;
@@ -19,7 +19,7 @@ h1, h2, h3, h4, h5, h6 {
   color: white;
 }
 
-p, a, div, span, label, input, select {
+p, a, div, span, label, input, select, .text {
   font-family: var(--font-text);
   white-space: nowrap;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
@@ -175,7 +175,6 @@ body {
 @media (min-width: 601px) and (max-width: 1200px) {
   .page-flex {
     gap: 16px !important;
-    padding-top: 16px !important;
     padding-inline: 64px !important;
     padding-bottom: 72px !important;
   }
@@ -183,9 +182,7 @@ body {
 
 @media (min-width: 1201px) {
   .page-flex {
-    gap: 32px !important;
-    padding-top: 32px !important;
-    padding-inline: 128px !important;
+    padding-inline: min(256px, max(64px, 5vw)) !important;
     padding-bottom: 72px !important;
   }
 }

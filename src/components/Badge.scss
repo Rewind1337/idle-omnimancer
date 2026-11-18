@@ -8,6 +8,7 @@
     width: fit-content;
     outline: 1px solid transparent;
     padding: 0 6px;
+    border-radius: 4px;
     transition: background-color 0.2s ease-out;
 
     .badge-content {
@@ -50,6 +51,23 @@
             &.button-toggled {
                 background: var(--skill-#{$variant}-toggled);
                 outline-color: var(--skill-#{$variant}-border);
+            }
+        }
+    }
+
+    @each $variant in $resource-colors {
+        &[data-variant="#{$variant}"] {
+            background: var(--resource-#{$variant});
+            outline-color: var(--resource-#{$variant}-active);
+
+            &.badge-interactive:hover {
+                background: var(--resource-#{$variant}-hover);
+                cursor: pointer;
+            }
+
+            &.button-toggled {
+                background: var(--resource-#{$variant}-toggled);
+                outline-color: var(--resource-#{$variant}-border);
             }
         }
     }

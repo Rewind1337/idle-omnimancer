@@ -3,6 +3,9 @@ import { Progress } from "../Progress"
 
 import { getManaCapacity, getManaRegeneration } from "../../game/gameEngine"
 import { useGame } from "../../hooks/useGame"
+import { Heading } from "../Heading"
+import { Badge } from "../Badge"
+import { OTHER_ICONS } from "../../data/iconLibrary"
 
 export function ManaBar() {
     const { player } = useGame()
@@ -16,13 +19,13 @@ export function ManaBar() {
 
     return (
         <Flex direction="column" gap={8}>
-            <Flex justify="space-between">
-                <h3>Mana</h3>
-                <span>{currentMana.toFixed(1)} / {maxMana.toFixed(0)}</span>
+            <Flex justify="center" align="center">
+                <Heading h="2" className="w-100 align-center" weight={700}>Mana Status</Heading>
             </Flex>
-            <Progress size="medium" variant="mana" percentage={percentage} />
-            <Flex justify="flex-end">
-                <span>Regenerates {regeneration} Mana per second</span>
+            <Progress size="medium" variant="mana" corners="rounded" label={currentMana.toFixed(0)} percentage={percentage} />
+            <Flex justify="center">
+                <Badge variant="mana" interactive icon={OTHER_ICONS.ZAP} >{maxMana} Mana Capacity</Badge>
+                <Badge variant="mana" interactive icon={OTHER_ICONS.ZAP} >+{regeneration.toFixed(1)} Mana / second</Badge>
             </Flex>
         </Flex>
     )

@@ -44,7 +44,7 @@ export const RESEARCH_CONFIG = {
     */
     milestones: [
         { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 1.1 },
-        { level: 20, reach: "skill:spellcraft", type: "mult", effect: "actionTime", value: 1.1 },
+        { level: 20, reach: "skill:spellcraft", type: "mult", effect: "actionTime", value: 1.2 },
         { level: 30, reach: "global", type: "mult", effect: "xpGain", value: 1.1 },
         // 40, 50, 60, 70, 80, 90, 100
     ],
@@ -64,8 +64,8 @@ export const RESEARCH_CONFIG = {
             'manaCapacity' -> increases the maximum mana by this much (only really for spellcraft, at the moment)
     */
     actionMilestones: [
-        { levels: 2, type: "mult", effect: "actionTime", value: 1.005 },
-        { levels: 5, type: "mult", effect: "itemOutput", value: 1.01 },
+        { levels: 2, type: "mult", effect: "itemOutput", value: 1.01 },
+        { levels: 5, type: "mult", effect: "actionTime", value: 1.01 },
         { levels: 20, type: "mult", effect: "xpGain", value: 1.1 },
     ],
 

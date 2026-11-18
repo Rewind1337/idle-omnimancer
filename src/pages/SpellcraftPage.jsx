@@ -103,22 +103,24 @@ export function SpellcraftPage() {
     return (
         <Flex direction="column" className={cx("page-flex page-flex-spellcraft")} padding={32} gap={32}>
             <Paper layer={0}>
-                <SkillSummary
-                    title={humanize(SPELLCRAFT_CONFIG.id)}
-                    skillProgress={skillProgress}
-                    milestones={getSkillMilestoneDetails(player, SPELLCRAFT_CONFIG)}
-                    variant={pageVariant}
-                    icon={
-                        <Icon
-                            size={64} variant={pageVariant} outerRunes="solid" outerShape={3}
-                            innerRunes="gap" innerShape={5}>
-                            {cloneElement(SKILL_ICONS.SPELLCRAFT, { size: 48 })}
-                        </Icon>
-                    }
-                />
-            </Paper>
-            <Paper layer={0}>
-                <ManaBar />
+                <Flex direction="column">
+                    <SkillSummary
+                        title={humanize(SPELLCRAFT_CONFIG.id)}
+                        skillProgress={skillProgress}
+                        milestones={getSkillMilestoneDetails(player, SPELLCRAFT_CONFIG)}
+                        variant={pageVariant}
+                        icon={
+                            <Icon
+                                size={64} variant={pageVariant} outerRunes="solid" outerShape={3}
+                                innerRunes="gap" innerShape={5}>
+                                {cloneElement(SKILL_ICONS.SPELLCRAFT, { size: 48 })}
+                            </Icon>
+                        }
+                    />
+                    <Paper layer={1}>
+                        <ManaBar />
+                    </Paper>
+                </Flex>
             </Paper>
             <Paper layer={0}>
                 <Grid columns={1}>

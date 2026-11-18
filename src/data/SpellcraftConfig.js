@@ -45,6 +45,19 @@ export const SPELLCRAFT_CONFIG = {
         finalMultPerLevel: 0.999,// <previous total> * Math.pow(finalMultPerLevel, level - 1)
     },
 
+    milestones: [
+        { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 1.1 },
+        { level: 20, reach: "skill:transmutation", type: "mult", effect: "itemOutput", value: 1.2 },
+        { level: 30, reach: "global", type: "mult", effect: "actionTime", value: 1.1 },
+        // 40, 50, 60, 70, 80, 90, 100
+    ],
+
+    actionMilestones: [
+        { levels: 2, type: "mult", effect: "actionTime", value: 1.01 },
+        { levels: 5, type: "mult", effect: "itemOutput", value: 1.01 },
+        { levels: 20, type: "mult", effect: "xpGain", value: 1.1 },
+    ],
+
     actions: [
         // Tier I
         {

@@ -2,6 +2,7 @@ import { Flex } from "../Flex"
 import { Badge } from "../Badge"
 import { OTHER_ICONS } from "../../data/iconLibrary"
 import { EffectStack } from "../EffectStack"
+import { Heading } from "../Heading"
 
 export function ActionDetails({
     actionTime,
@@ -13,7 +14,12 @@ export function ActionDetails({
 }) {
     return (
         <Flex className="action-details">
-            <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS} tooltip={<EffectStack title="Active time effects" entries={effectStacks.actionTime ?? []} />}>
+            <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS} tooltip={<Flex direction="column">
+                <Heading h="4">Time needed to complete this action.</Heading>
+                <div className="divider tooltip-divider"></div>
+                <EffectStack title="Active time effects" entries={effectStacks.actionTime ?? []} />
+                <div className="divider tooltip-divider"></div>
+            </Flex>}>
                 {actionTime.toFixed(2)}s
             </Badge>
             <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<EffectStack title="Active XP effects" entries={effectStacks.xpGain ?? []} />}>

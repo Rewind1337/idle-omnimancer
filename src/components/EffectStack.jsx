@@ -74,23 +74,24 @@ export function EffectStack({
 
     return (
         <Flex direction="column" gap={8} className="effect-stack">
-            {title && <Heading h="5">{title}</Heading>}
+            {title && <Heading h="4" className="w-100 align-center">{title}</Heading>}
             {visibleEntries.length > 0 ? visibleEntries.map(entry => (
                 <Flex
                     key={entry.id}
                     direction="column"
-                    align="stretch"
+                    align="start"
                     gap={2}
                     className="effect-stack-entry"
                     data-active={entry.active === false ? "false" : "true"}
                 >
-                    <Flex direction="row" justify="space-between" align="center" gap={8}>
-                        <Heading h="6">{entry.title ?? entry.source}</Heading>
-                        {entry.status && <Text>{entry.status}</Text>}
+                    <Flex direction="row" gap={8}>
+                        <Heading h="6" weight={400}>{entry.title ?? entry.source}</Heading>
                     </Flex>
-                    <Text>{formatEffectDescription(entry)}{entry.perStack ? " per milestone" : ""}</Text>
-                    {entry.source && entry.title && <Text size="small">{entry.source}</Text>}
-                    {entry.meta && <Text size="small">{entry.meta}</Text>}
+                    <Flex direction="row" gap={8}>
+                        <Text>{formatEffectDescription(entry)}</Text>
+                        {entry.source && entry.title && <Text>{entry.source}</Text>}
+                    </Flex>
+                    {entry.meta && <Text>{entry.meta}</Text>}
                 </Flex>
             )) : (
                 <Text>{emptyLabel}</Text>

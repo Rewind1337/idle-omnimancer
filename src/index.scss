@@ -88,6 +88,15 @@ body {
   gap: 8px;
 }
 
+.divider {
+  background-color: rgba(0, 0, 0, 0.5);
+  &.tooltip-divider {
+  margin-top: 1px;
+  padding-top: 1px;
+  margin-bottom: 1px;
+  }
+}
+
 
 
 /* Somewhat useful here */

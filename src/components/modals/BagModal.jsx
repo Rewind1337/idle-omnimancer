@@ -154,29 +154,27 @@ export function BagModal({
                     {selectedItem && selectedData && (
                         <Paper layer={2} className="bag-item-selection">
                             <Flex direction="column" gap={12}>
-                                <Flex direction="row" justify="space-between" align="center" wrap>
+                                <Heading h="3">{selectedData.name}</Heading>
+                                <Flex direction="row" justify="center" align="center">
                                     <Item
                                         layer={3}
-                                        mode="wide"
+                                        mode="compact"
                                         interactive={false}
                                         icon={selectedData.icon}
                                         name={selectedData.name}
                                         amount={amountToSell}
                                         variant={selectedVariant}
                                     />
-                                    <Button variant="primary" size="small" onClick={handleDeselect}>
-                                        Deselect
-                                    </Button>
+                                    <InputRange
+                                        variant={"primary"}
+                                        value={amountToSell}
+                                        onChange={handleRangeChange}
+                                        label="Amount"
+                                        layer={2}
+                                        min={1}
+                                        max={selectedMax}
+                                    />
                                 </Flex>
-
-                                <InputRange
-                                    variant={"primary"}
-                                    value={amountToSell}
-                                    onChange={handleRangeChange}
-                                    label="Amount"
-                                    min={1}
-                                    max={selectedMax}
-                                />
 
                                 <Flex direction="row" justify="space-between" align="center" wrap>
                                     <Flex direction="row" align="center" gap={4}>
@@ -190,6 +188,9 @@ export function BagModal({
                                 </Flex>
 
                                 <Flex direction="row" gap={8} wrap>
+                                    <Button variant="primary" onClick={handleDeselect}>
+                                        Deselect
+                                    </Button>
                                     {AMOUNT_PRESETS.map(({ label, ratio }) => {
                                         const presetAmount = Math.max(
                                             1,
@@ -210,7 +211,7 @@ export function BagModal({
                                     })}
                                     <Button
                                         variant="shop"
-                                        className="w-10 flex-grow"
+                                        className="w-20 flex-grow"
                                         disabled={baseValue <= 0 || amountToSell < 1}
                                         onClick={handleSell}
                                     >

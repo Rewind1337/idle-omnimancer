@@ -20,7 +20,7 @@
 
         margin-inline: 8px;
         margin-block-end: 8px;
-        max-width: fit-content;
+        max-width: 360px;
 
         z-index: 1000;
 
@@ -49,7 +49,7 @@
     }
 
     // Allow tooltip content to wrap instead of staying on one line.
-    .tooltip-content .text {
+    .tooltip-content .text, .tooltip-content .heading {
         width: auto;
         white-space: normal;
         overflow-wrap: anywhere;

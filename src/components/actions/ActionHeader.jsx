@@ -28,7 +28,7 @@ export function ActionHeader({
             {isUnlocked && (
                 <Badge variant="transparent" interactive icon={OTHER_ICONS.STAR} tooltip={
                     <Flex direction="column" gap={8}>
-                        <Heading h="4">Total progress in this action, including all completed action levels.</Heading>
+                        <Heading h="4" className="w-100 align-center">Total progress in this Action</Heading>
                         {actionMilestones.length > 0 && (
                             <>
                                 <div className="divider tooltip-divider"></div>
@@ -46,8 +46,8 @@ export function ActionHeader({
                 </Badge>
             )}
             <Badge variant="transparent" interactive icon={OTHER_ICONS.MERGE} tooltip={<Flex direction="column">
-                    <Heading h="4">Action tier determines its base duration, XP reward and Mana cost.</Heading>
-                </Flex>}>
+                <Heading h="4">Action tier determines its base duration, XP reward and Mana cost.</Heading>
+            </Flex>}>
                 Tier {tier}
             </Badge>
         </Flex>

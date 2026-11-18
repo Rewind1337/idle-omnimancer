@@ -77,8 +77,8 @@ export function EffectStack({
         <Flex direction="column" gap={8} className="effect-stack">
             {title && (
                 <Flex direction="row" align="center" justify="center" gap={6} className="effect-stack-title">
-                    {icon && <span className="effect-stack-title-icon">{icon}</span>}
-                    <Heading h="4" className="w-100 align-center">{title}</Heading>
+                    <Heading h="4" className="w-100 align-left">{title}</Heading>
+                    {icon && <span className="w-100 align-right effect-stack-title-icon">{icon}</span>}
                 </Flex>
             )}
             {visibleEntries.length > 0 ? visibleEntries.map(entry => (

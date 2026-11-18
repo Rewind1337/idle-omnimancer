@@ -15,7 +15,7 @@ export function ActionDetails({
     return (
         <Flex className="action-details">
             <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS} tooltip={<Flex direction="column" gap={8}>
-                <Heading h="4">Time needed to complete this action.</Heading>
+                <Heading h="4" className="w-100 align-center">Time needed to complete this action.</Heading>
                 <div className="divider tooltip-divider"></div>
                 <EffectStack title="Time effects" icon={OTHER_ICONS.HOURGLASS} entries={effectStacks.actionTime ?? []} />
                 <div className="divider tooltip-divider"></div>
@@ -23,7 +23,7 @@ export function ActionDetails({
                 {actionTime.toFixed(2)}s
             </Badge>
             <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column" gap={8}>
-                <Heading h="4">XP gained upon completing this action.</Heading>
+                <Heading h="4" className="w-100 align-center">XP gained upon completing this action.</Heading>
                 <div className="divider tooltip-divider"></div>
                 <EffectStack title="XP effects" icon={OTHER_ICONS.SPARKLES} entries={effectStacks.xpGain ?? []} />
             </Flex>}>
@@ -31,7 +31,7 @@ export function ActionDetails({
             </Badge>
             {manaCost !== null && (
                 <Badge variant="transparent" interactive icon={OTHER_ICONS.ZAP} tooltip={<Flex direction="column" gap={8}>
-                    <Heading h="4">Mana consumed each time this action completes.</Heading>
+                    <Heading h="4" className="w-100 align-center">Mana consumed each time this action completes.</Heading>
                     <div className="divider tooltip-divider"></div>
                     <EffectStack title="Mana cost effects" icon={OTHER_ICONS.ZAP} entries={effectStacks.manaCost ?? []} />
                 </Flex>}>
@@ -39,14 +39,14 @@ export function ActionDetails({
                 </Badge>
             )}
             <Badge variant="transparent" interactive icon={OTHER_ICONS.FLAME} tooltip={<Flex direction="column" gap={8}>
-                <Heading h="4">Multiplier applied to the base amount of resources produced by this action.</Heading>
+                <Heading h="4" className="w-100 align-center">Multiplier applied to the base amount of resources produced by this action.</Heading>
                 <div className="divider tooltip-divider"></div>
                 <EffectStack title="Output effects" icon={OTHER_ICONS.FLAME} entries={effectStacks.itemOutput ?? []} />
             </Flex>}>
                 x{outputMultiplier.toFixed(2)}
             </Badge>
             <Badge variant="transparent" interactive icon={OTHER_ICONS.RECYCLE} tooltip={<Flex direction="column" gap={8}>
-                <Heading h="4">Chance to avoid consuming this action's required input resources when it completes.</Heading>
+                <Heading h="4" className="w-100 align-center">Chance to avoid consuming this action's required input resources when it completes.</Heading>
                 <div className="divider tooltip-divider"></div>
                 <EffectStack title="Preservation effects" icon={OTHER_ICONS.RECYCLE} entries={effectStacks.preservation ?? []} />
             </Flex>}>

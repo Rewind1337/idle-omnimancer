@@ -45,13 +45,15 @@ export function ActionDetails({
             </Flex>}>
                 x{outputMultiplier.toFixed(2)}
             </Badge>
-            <Badge variant="transparent" interactive icon={OTHER_ICONS.RECYCLE} tooltip={<Flex direction="column" gap={8}>
-                <Heading h="4" className="w-100 align-center">Chance to avoid consuming this action's required input resources when it completes.</Heading>
-                <div className="divider tooltip-divider"></div>
-                <EffectStack title="Preservation effects" icon={OTHER_ICONS.RECYCLE} entries={effectStacks.preservation ?? []} />
-            </Flex>}>
-                {(preservationChance * 100).toFixed(0)}%
-            </Badge>
+            {preservationChance > 0 && (
+                <Badge variant="transparent" interactive icon={OTHER_ICONS.RECYCLE} tooltip={<Flex direction="column" gap={8}>
+                    <Heading h="4" className="w-100 align-center">Chance to avoid consuming this action's required input resources when it completes.</Heading>
+                    <div className="divider tooltip-divider"></div>
+                    <EffectStack title="Preservation effects" icon={OTHER_ICONS.RECYCLE} entries={effectStacks.preservation ?? []} />
+                </Flex>}>
+                    {(preservationChance * 100).toFixed(0)}%
+                </Badge>
+            )}
         </Flex>
     )
 }

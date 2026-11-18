@@ -1,7 +1,8 @@
 import { useState } from "react";
 
 import { Button } from "./components/Button";
-import { BagModal } from "./components/modals/BagModal";
+import { BagModal } from "./components/modals/BagModal"
+import { MissionsModal } from "./components/modals/MissionsModal";
 import { Flex } from "./components/Flex";
 import { Navigation } from "./components/Navigation";
 import { ScrollArea } from "./components/ScrollArea";
@@ -16,6 +17,7 @@ import { ShopPage } from "./pages/ShopPage";
 import { cx } from './utility/helpers'
 import { BagButton } from "./components/buttons/BagButton";
 import { ShopButton } from "./components/buttons/ShopButton";
+import { MissionsButton } from "./components/buttons/MissionsButton";
 import { FloatingPanel } from "./components/FloatingPanel";
 
 import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
@@ -29,6 +31,7 @@ function ResponsivePage({
   className = '',
 }) {
   const [bagModalVisible, setBagModalVisible] = useState(false)
+  const [missionsModalVisible, setMissionsModalVisible] = useState(false)
 
   const closeBagButton = (
     <Button variant="primary" onClick={() => setBagModalVisible(false)}>
@@ -57,6 +60,10 @@ function ResponsivePage({
       active={activePage === SHOP_NAVIGATION.id}
       onClick={() => setActivePage(SHOP_NAVIGATION.id)}
     />
+    <MissionsButton
+      active={missionsModalVisible}
+      onClick={() => setMissionsModalVisible(true)}
+    />
     <BagButton active={bagModalVisible} onClick={() => { setBagModalVisible(true) }} />
   </FloatingPanel>
 
@@ -67,6 +74,10 @@ function ResponsivePage({
         visible={bagModalVisible}
         setVisible={setBagModalVisible}
         closeBagButton={closeBagButton}
+      />
+      <MissionsModal
+        visible={missionsModalVisible}
+        setVisible={setMissionsModalVisible}
       />
       {floatingButtons}
     </>

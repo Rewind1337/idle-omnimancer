@@ -175,7 +175,7 @@ Design goals:
 
 A skill may grant a passive bonus for every skill level, separate from milestone rewards.
 
-- Spellcraft currently increases passive Mana regeneration by **+1 Mana per second for every Spellcraft level gained after level 1**. Its configured base regeneration applies at level 1.
+- Spellcraft currently increases passive Mana regeneration by **+0.5 Mana per second for every Spellcraft level gained after level 1**. Its configured base regeneration applies at level 1.
 - Per-level bonuses are linear: each new level adds the same amount.
 - Other skills may have different per-level bonuses or no such bonus.
 - Per-level bonuses do not replace or consume action or skill milestone rewards.
@@ -797,6 +797,14 @@ The player must not silently lose resources when the bag is full.
 - A visible overflow system is an alternative, but resources should not be silently discarded.
 - Final full-inventory handling is undecided.
 
+### 14.4 Shop
+
+- The Shop is a single page with internal tabs: **Improvements**, **Skills & Actions** and **General Goods**.
+- Improvements includes repeatable upgrades such as purchasing additional bag slots.
+- Skills & Actions lists available skill unlocks and the next locked action from each configured, unlocked skill. Each entry displays its unlock requirements.
+- General Goods is reserved for repeatable purchases of items that cannot be obtained through actions or other game systems. No General Goods are currently configured.
+- The global floating panel also provides a Missions shortcut on every main tab. Its modal is currently an empty placeholder with a close button.
+
 ---
 
 ## 16. Selling Items and Resource Values
@@ -898,7 +906,7 @@ The general progression principle is **simple things leading to more complicated
 - **Additive bonuses:** Same-type bonuses from different sources add together by default.
 - **Distinct Primary Elements:** Earth, Air and Water have separate identities, spells, resources and companion types.
 - **Aspects are future-facing:** The potential run-based invoke/channel concept is not part of initial implementation.
-- **Mana supports Spellcraft:** Spells consume Mana; Mana regenerates passively; Spellcraft starts with its configured base regeneration at level 1 and gains +1 Mana per second for every level thereafter.
+- **Mana supports Spellcraft:** Spells consume Mana; Mana regenerates passively; Spellcraft starts with its configured base regeneration at level 1 and gains +0.5 Mana per second for every level thereafter.
 - **Exploration is active:** Areas are individual actions on a shared hex map.
 - **Combat is passive:** It continues in a selected unlocked Exploration area independently of the active action.
 - **Companions come from containers:** Elemental containers discovered through Exploration are opened through Unveiling to obtain companions.

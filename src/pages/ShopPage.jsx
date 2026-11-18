@@ -1,78 +1,219 @@
-import { cloneElement } from "react"
+import { cloneElement, useState } from "react"
 
 import { Flex } from "../components/Flex"
 import { Paper } from "../components/Paper"
 import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
 import { Button } from "../components/Button"
-import { Item } from "../components/Item"
+import { Text } from "../components/Text"
+import { Tabs } from "../components/Tabs"
+import { ActionResources } from "../components/actions/ActionResources"
 
-import { SPELLCRAFT_CONFIG } from "../data/SpellcraftConfig"
-import { SKILL_ICONS } from "../data/iconLibrary"
-import { ITEM_DATA_BY_ID, CURRENCY_DATA_BY_ID } from "../data/itemData"
+import { OTHER_ICONS } from "../data/iconLibrary"
 import { SKILL_NAVIGATION } from "../data/navigationData"
-import { canUnlockSkill } from "../game/gameEngine"
+import { GLOBAL_CONFIG, SKILL_CONFIG_BY_ID } from "../data/skillConfig"
+import {
+    canUnlockAction,
+    canUnlockSkill,
+    getNextBagSlotCost,
+    getVisibleActions,
+} from "../game/gameEngine"
 import { humanize } from "../utility/helpers"
 import { useGame } from "../hooks/useGame"
 
-export function ShopPage({ setActivePage }) {
-    const { player, unlockSkill } = useGame()
-    const skillId = SPELLCRAFT_CONFIG.id
-    const spellcraftTab = SKILL_NAVIGATION.find(skill => skill.skillId === skillId)
-    const isUnlocked = player.unlockedSkills.includes(skillId)
-    const canUnlock = canUnlockSkill(player, skillId)
+const SHOP_TABS = [
+    { id: "improvements", name: "Improvements" },
+    { id: "skills-actions", name: "Skills & Actions" },
+    { id: "general-goods", name: "General Goods" },
+]
 
-    if (isUnlocked) return null
+// General Goods will contain repeatable purchases that cannot be obtained elsewhere.
+// There are no such goods configured yet.
+const GENERAL_GOODS = []
 
-    const handleUnlock = () => {
-        if (!canUnlock || !spellcraftTab) return
-        unlockSkill(skillId)
-        setActivePage(spellcraftTab.id)
-    }
+const formatCoins = value =>
+    Number.isFinite(value) ? value.toLocaleString() : "Unavailable"
 
+function ShopSection({ title, children }) {
     return (
-        <Flex direction="column" padding={32} gap={32}>
-            <Paper layer={1} variant="shop" className="action action-shop">
-                <Flex direction="column" gap={16}>
-                    <Flex direction="row" align="center" gap={16}>
-                        <Icon size={48} variant="shop">
-                            {cloneElement(SKILL_ICONS.SPELLCRAFT, { size: 48 })}
-                        </Icon>
-                        <Flex direction="column" gap={8}>
-                            <Heading h="2">Unlock {humanize(skillId)}</Heading>
-                            <Button
-                                variant="shop"
-                                size="medium"
-                                className="w-100"
-                                disabled={!canUnlock}
-                                onClick={handleUnlock}
-                            >
-                                Unlock Spellcraft
-                            </Button>
-                        </Flex>
-                    </Flex>
+        <Paper layer={0}>
+            <Flex direction="column" gap={16}>
+                <Heading h="2">{title}</Heading>
+                {children}
+            </Flex>
+        </Paper>
+    )
+}
+
+function ShopUnlockCard({
+    title,
+    subtitle,
+    icon,
+    variant,
+    requirements = [],
+    buttonLabel,
+    canUnlock,
+    onUnlock,
+}) {
+    return (
+        <Paper layer={1} variant={variant} className="action action-shop">
+            <Flex direction="column" gap={12}>
+                <Flex direction="row" align="center" gap={16}>
+                    <Icon size={44} variant={variant}>
+                        {cloneElement(icon ?? OTHER_ICONS.STAR, { size: 40 })}
+                    </Icon>
                     <Flex direction="column" gap={8}>
-                        <Heading h="2">Requires:</Heading>
-                        <Flex direction="row" wrap>
-                            {SPELLCRAFT_CONFIG.unlockCosts.map(({ item, amount }) => {
-                                const data = ITEM_DATA_BY_ID[item] ?? CURRENCY_DATA_BY_ID[item]
-                                return (
-                                    <Item
-                                        key={item}
-                                        layer={2}
-                                        mode="compact"
-                                        interactive={false}
-                                        icon={data?.icon}
-                                        name={data?.name ?? humanize(item)}
-                                        amount={amount}
-                                        variant={data?.variant ?? "primary"}
-                                    />
-                                )
-                            })}
-                        </Flex>
+                        <Heading h="3">{title}</Heading>
+                        <Text size="small">{subtitle}</Text>
+                        <Button
+                            variant="shop"
+                            size="medium"
+                            className="w-100"
+                            disabled={!canUnlock}
+                            onClick={onUnlock}
+                        >
+                            {buttonLabel}
+                        </Button>
                     </Flex>
                 </Flex>
+                {requirements.length > 0 && (
+                    <ActionResources requires={requirements} />
+                )}
+            </Flex>
+        </Paper>
+    )
+}
+
+function BagSlotImprovement({ player, buyBagSlot }) {
+    const inventorySlots = player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
+    const nextSlotCost = getNextBagSlotCost(inventorySlots)
+    const coins = player.currencies?.coins ?? 0
+    const canPurchase = Number.isFinite(nextSlotCost) && coins >= nextSlotCost
+
+    return (
+        <Paper layer={1} variant="shop" className="action action-shop">
+            <Flex direction="row" align="center" gap={16}>
+                <Icon size={44} variant="shop">
+                    {cloneElement(OTHER_ICONS.GRIP, { size: 40 })}
+                </Icon>
+                <Flex direction="column" gap={8}>
+                    <Heading h="3">Additional Bag Slot</Heading>
+                    <Text size="small">Current capacity: {inventorySlots} slots</Text>
+                    <Button
+                        variant="shop"
+                        size="medium"
+                        className="w-100"
+                        disabled={!canPurchase}
+                        onClick={buyBagSlot}
+                    >
+                        Buy for {formatCoins(nextSlotCost)} Coins
+                    </Button>
+                </Flex>
+            </Flex>
+        </Paper>
+    )
+}
+
+function getAvailableUnlocks(player, unlockSkill, unlockAction) {
+    return SKILL_NAVIGATION.flatMap(skillTab => {
+        const skill = SKILL_CONFIG_BY_ID[skillTab.skillId]
+        if (!skill) return []
+
+        const isUnlocked = player.unlockedSkills?.includes(skill.id)
+
+        if (!isUnlocked) {
+            if (!Array.isArray(skill.unlockCosts) || skill.unlockCosts.length === 0) return []
+
+            return [{
+                key: "skill-" + skill.id,
+                title: "Unlock " + skillTab.name,
+                subtitle: "Skill",
+                icon: skillTab.icon,
+                variant: skillTab.variant,
+                requirements: skill.unlockCosts,
+                buttonLabel: "Unlock Skill",
+                canUnlock: canUnlockSkill(player, skill.id),
+                onUnlock: () => unlockSkill(skill.id),
+            }]
+        }
+
+        const nextAction = getVisibleActions(player, skill.id).find(action =>
+            !player.skills?.[skill.id]?.actions?.[action.id]?.unlocked
+        )
+        if (!nextAction) return []
+
+        return [{
+            key: "action-" + skill.id + "-" + nextAction.id,
+            title: humanize(nextAction.id.replace(/^action:/, "")),
+            subtitle: skillTab.name + " Action · Tier " + nextAction.tier,
+            icon: skillTab.icon,
+            variant: skillTab.variant,
+            requirements: nextAction.unlockCosts ?? [],
+            buttonLabel: "Unlock Action",
+            canUnlock: canUnlockAction(player, skill.id, nextAction.id),
+            onUnlock: () => unlockAction(skill.id, nextAction.id),
+        }]
+    })
+}
+
+export function ShopPage() {
+    const { player, unlockSkill, unlockAction, buyBagSlot } = useGame()
+    const [activeTab, setActiveTab] = useState("improvements")
+    const availableUnlocks = getAvailableUnlocks(player, unlockSkill, unlockAction)
+
+    return (
+        <Flex
+            direction="column"
+            className="page-flex page-flex-shop"
+            padding={32}
+            gap={16}
+        >
+            <Paper layer={0}>
+                <Flex direction="column" gap={16}>
+                    <Heading h="1">Shop</Heading>
+                    <Tabs
+                        tabs={SHOP_TABS}
+                        value={activeTab}
+                        onChange={setActiveTab}
+                        variant="shop"
+                        size="medium"
+                        wrap
+                        className="shop-tabs"
+                    />
+                </Flex>
             </Paper>
+
+            {activeTab === "improvements" && (
+                <ShopSection title="Improvements">
+                    <BagSlotImprovement player={player} buyBagSlot={buyBagSlot} />
+                </ShopSection>
+            )}
+
+            {activeTab === "skills-actions" && (
+                <ShopSection title="Skills & Actions">
+                    {availableUnlocks.length > 0 ? (
+                        <Flex direction="column" gap={12}>
+                            {availableUnlocks.map(unlock => (
+                                <ShopUnlockCard key={unlock.key} {...unlock} />
+                            ))}
+                        </Flex>
+                    ) : (
+                        <Text>No skills or actions are currently available to unlock.</Text>
+                    )}
+                </ShopSection>
+            )}
+
+            {activeTab === "general-goods" && (
+                <ShopSection title="Items">
+                    {GENERAL_GOODS.length > 0 ? (
+                        <Flex direction="column" gap={12}>
+                            {GENERAL_GOODS.map(item => item)}
+                        </Flex>
+                    ) : (
+                        <Text>No items are currently available for purchase.</Text>
+                    )}
+                </ShopSection>
+            )}
         </Flex>
     )
 }

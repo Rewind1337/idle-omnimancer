@@ -22,15 +22,21 @@ export function Modal({
       <Flex direction='column' className={cx('modal-wrapper')}>
         <Paper layer={0} variant={variant} className={cx('modal-content')}>
           <Flex direction='column' padding={padding} gap={32} className={cx('modal-flex')}>
-            <Paper layer={1} className={cx('modal-header')}>
-              {header}
-            </Paper>
-            <Paper layer={1} className={cx('modal-content')}>
-              {content}
-            </Paper>
-            <Paper layer={1} className={cx('modal-footer')}>
-              {footer}
-            </Paper>
+            {header && (
+              <Paper layer={1} className={cx('modal-header')}>
+                {header}
+              </Paper>
+            )}
+            {content !== null && content !== undefined && (
+              <Paper layer={1} className={cx('modal-content')}>
+                {content}
+              </Paper>
+            )}
+            {footer && (
+              <Paper layer={1} className={cx('modal-footer')}>
+                {footer}
+              </Paper>
+            )}
           </Flex>
         </Paper>
       </Flex>

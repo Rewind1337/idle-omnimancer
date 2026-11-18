@@ -440,7 +440,7 @@ export const getActionManaCost = (skill, action, player = null) => {
         : { flat: 0, mult: 0 }
     const discountedCost = baseCost / Math.max(0.01, 1 + bonuses.mult) - bonuses.flat
 
-    return Math.max(0, Math.round(discountedCost))
+    return Math.max(0, discountedCost)
 }
 
 export const getActionOutputMultiplier = (player, skill, action) => {

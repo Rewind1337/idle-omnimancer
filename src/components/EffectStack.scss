@@ -1,5 +1,19 @@
 .effect-stack {
     min-width: 220px;
+
+    .effect-stack-title {
+        width: 100%;
+    }
+
+    .effect-stack-title-icon {
+        display: inline-flex;
+        align-items: center;
+
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
     max-width: min(360px, 75vw);
 
     .effect-stack-entry {

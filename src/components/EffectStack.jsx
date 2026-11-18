@@ -5,11 +5,11 @@ import { Text } from "./Text"
 import "./EffectStack.scss"
 
 const EFFECT_LABELS = {
-    actionTime: "action speed",
-    xpGain: "action XP",
-    manaCost: "Mana cost",
-    itemOutput: "item output",
-    preservation: "preservation chance",
+    actionTime: "Action Speed",
+    xpGain: "Action XP",
+    manaCost: "Mana Cost",
+    itemOutput: "Item Output",
+    preservation: "Preservation Chance",
     manaCapacity: "maximum Mana",
 }
 
@@ -67,6 +67,7 @@ export function EffectStack({
     entries = [],
     showInactive = false,
     emptyLabel = "No active effects.",
+    icon = null,
 }) {
     const visibleEntries = showInactive
         ? entries
@@ -74,7 +75,12 @@ export function EffectStack({
 
     return (
         <Flex direction="column" gap={8} className="effect-stack">
-            {title && <Heading h="4" className="w-100 align-center">{title}</Heading>}
+            {title && (
+                <Flex direction="row" align="center" justify="center" gap={6} className="effect-stack-title">
+                    {icon && <span className="effect-stack-title-icon">{icon}</span>}
+                    <Heading h="4" className="w-100 align-center">{title}</Heading>
+                </Flex>
+            )}
             {visibleEntries.length > 0 ? visibleEntries.map(entry => (
                 <Flex
                     key={entry.id}
@@ -88,7 +94,10 @@ export function EffectStack({
                         <Heading h="6" weight={400}>{entry.title ?? entry.source}</Heading>
                     </Flex>
                     <Flex direction="row" gap={8}>
-                        <Text>{formatEffectDescription(entry)}</Text>
+                        <Text>
+                            {formatEffectDescription(entry)}
+                            {entry.showStacks ? " - x" + entry.stacks : ""}
+                        </Text>
                         {entry.source && entry.title && <Text>{entry.source}</Text>}
                     </Flex>
                     {entry.meta && <Text>{entry.meta}</Text>}

@@ -1,0 +1,22 @@
+.item-tooltip {
+    width: 260px;
+    max-width: 70vw;
+
+    .item-tooltip-summary,
+    .item-tooltip-section,
+    .item-tooltip-action {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .item-tooltip-action {
+        padding-inline-start: 4px;
+    }
+
+    .heading,
+    .text {
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}

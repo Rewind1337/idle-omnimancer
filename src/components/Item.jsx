@@ -8,11 +8,13 @@ import { Text } from "./Text"
 import { Tooltip } from "./Tooltip"
 import { Icon } from "./Icon"
 import { Heading } from "./Heading"
+import { ItemTooltip } from "./ItemTooltip"
 
 export function Item({
     className = '',
     icon,
     name,
+    itemId = null,
     mode = "compact",
     amount = null,
     variant = 'primary',
@@ -21,9 +23,13 @@ export function Item({
     selected = false,
     onClick = () => { }
 }) {
+    const tooltipContent = itemId
+        ? <ItemTooltip itemId={itemId} name={name} />
+        : <Heading h="5">{name}</Heading>
+
     if (mode === "compact") {
         return (
-            <Tooltip layer={layer} variant={variant} content={<Heading h="5">{name}</Heading>}>
+            <Tooltip layer={layer} variant={variant} content={tooltipContent}>
                 <Paper layer={layer} interactive={interactive}
                     className={cx('item item-compact', className)}
                     data-selected={selected ? "true" : "false"}
@@ -38,20 +44,22 @@ export function Item({
         )
     } else if (mode === "wide") {
         return (
-            <Paper layer={layer} interactive={interactive}
-                className={cx('item item-wide clip-overflow', className)}
-                data-variant={variant}
-                data-selected={selected ? "true" : "false"}
-                onClick={() => { onClick() }}
-            >
-                <Flex direction="row" padding={0}>
-                    <Flex direction="column" padding={0}>
-                        {icon && <Icon variant={variant} className="item-icon">{icon}</Icon>}
-                        {amount && <Paper className="item-badge" padding={"2px 6px"}><Text>{amount}</Text></Paper>}
+            <Tooltip layer={layer} variant={variant} content={tooltipContent}>
+                <Paper layer={layer} interactive={interactive}
+                    className={cx('item item-wide clip-overflow', className)}
+                    data-variant={variant}
+                    data-selected={selected ? "true" : "false"}
+                    onClick={() => { onClick() }}
+                >
+                    <Flex direction="row" padding={0}>
+                        <Flex direction="column" padding={0}>
+                            {icon && <Icon variant={variant} className="item-icon">{icon}</Icon>}
+                            {amount && <Paper className="item-badge" padding={"2px 6px"}><Text>{amount}</Text></Paper>}
+                        </Flex>
+                        <Paper className="item-name" variant={variant}><Text>{name}</Text></Paper>
                     </Flex>
-                    <Paper className="item-name" variant={variant}><Text>{name}</Text></Paper>
-                </Flex>
-            </Paper>
+                </Paper>
+            </Tooltip>
         )
     }
 }

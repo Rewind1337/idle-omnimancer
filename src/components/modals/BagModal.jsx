@@ -115,6 +115,7 @@ export function BagModal({
                                         key={itemId}
                                         icon={itemData?.icon}
                                         name={itemData?.name ?? humanize(itemId)}
+                                        itemId={itemId}
                                         amount={amount}
                                         variant={itemData?.variant ?? "primary"}
                                         selected={selectedItemId === itemId}
@@ -162,6 +163,7 @@ export function BagModal({
                                         interactive={false}
                                         icon={selectedData.icon}
                                         name={selectedData.name}
+                                        itemId={selectedItem[0]}
                                         amount={amountToSell}
                                         variant={selectedVariant}
                                     />

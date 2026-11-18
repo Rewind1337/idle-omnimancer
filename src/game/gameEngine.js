@@ -1,5 +1,6 @@
 import {
     GLOBAL_CONFIG,
+    SKILL_CONFIGS,
     SKILL_CONFIG_BY_ID,
     getActionXPTable,
     getSkillXPTable,
@@ -102,6 +103,70 @@ const getActionOutputs = (action) => {
             output.item.length > 0 &&
             Number.isFinite(output.amount) &&
             output.amount > 0)
+}
+
+// Trace the configured production and consumption paths for an item. This is
+// intentionally based on base action amounts, before any runtime multipliers.
+export const getItemActionSources = (itemId) => {
+    const obtainedBy = []
+    const consumedBy = []
+
+    for (const skill of SKILL_CONFIGS) {
+        if (Array.isArray(skill.unlockCosts)) {
+            const skillCost = skill.unlockCosts
+                .filter(cost => cost.item === itemId)
+                .reduce((total, cost) => total + (cost.amount ?? 0), 0)
+
+            if (skillCost > 0) {
+                consumedBy.push({
+                    id: "skill-unlock-" + skill.id,
+                    name: "Unlock " + humanize(skill.id),
+                    amount: skillCost,
+                    type: "unlock",
+                })
+            }
+        }
+
+        for (const action of skill.actions) {
+            const outputAmount = getActionOutputs(action)
+                .filter(output => output.item === itemId)
+                .reduce((total, output) => total + output.amount, 0)
+
+            if (outputAmount > 0) {
+                obtainedBy.push({
+                    id: "obtain-" + skill.id + "-" + action.id,
+                    name: humanize(action.id),
+                    amount: outputAmount,
+                    type: "action",
+                })
+            }
+
+            const consumedAmount = getActionConsumeTotals(action)?.[itemId] ?? 0
+            if (consumedAmount > 0) {
+                consumedBy.push({
+                    id: "consume-" + skill.id + "-" + action.id,
+                    name: humanize(action.id),
+                    amount: consumedAmount,
+                    type: "action",
+                })
+            }
+
+            const unlockAmount = (action.unlockCosts ?? [])
+                .filter(cost => cost.item === itemId)
+                .reduce((total, cost) => total + (cost.amount ?? 0), 0)
+
+            if (unlockAmount > 0) {
+                consumedBy.push({
+                    id: "action-unlock-" + skill.id + "-" + action.id,
+                    name: "Unlock " + humanize(action.id),
+                    amount: unlockAmount,
+                    type: "unlock",
+                })
+            }
+        }
+    }
+
+    return { obtainedBy, consumedBy }
 }
 
 // Each distinct item type occupies one slot; additional copies stack.
@@ -219,14 +284,14 @@ const milestoneTargetsSkill = (sourceSkill, targetSkillId, milestone) =>
     milestone.reach === targetSkillId
 
 const getMilestoneTargetLabel = (sourceSkill, reach) => {
-    if (reach === "global") return "All skill tabs"
+    if (reach === "global") return "All Skills"
 
     const targetSkillId = reach === "local" ? sourceSkill.id : reach
     const targetName = SKILL_CONFIG_BY_ID[targetSkillId]
         ? getSkillName(targetSkillId)
         : targetSkillId
 
-    return targetName + " tab"
+    return targetName
 }
 
 const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
@@ -284,8 +349,8 @@ export const getSkillMilestoneDetails = (player, skill) => {
 
             return {
                 id: "skill-" + skill.id + "-milestone-" + milestone.level + "-" + index,
-                title: "Skill Level " + milestone.level,
-                source: "Targets: " + getMilestoneTargetLabel(skill, milestone.reach),
+                title: getSkillName(skill.id) + " - Level " + milestone.level,
+                source: getMilestoneTargetLabel(skill, milestone.reach),
                 effect: milestone.effect,
                 type: milestone.type,
                 value: milestone.value,
@@ -311,17 +376,15 @@ export const getActionMilestoneDetails = (player, skill, action) => {
 
             return {
                 id: "action-" + skill.id + "-" + action.id + "-milestone-" + milestone.levels + "-" + index,
-                title: "Every " + milestone.levels + " action levels",
-                source: "First reward at action level " + milestone.levels,
+                title: "Every " + milestone.levels + " Action Levels",
                 effect: milestone.effect,
                 type: milestone.type,
                 value: milestone.value,
                 stacks,
                 perStack: true,
+                showStacks: true,
                 mode: "milestone",
                 active,
-                status: active ? stacks + " earned" : "Unlocks at Level " + milestone.levels,
-                meta: "Repeats every " + milestone.levels + " levels, starting from level 0",
             }
         })
 }
@@ -436,7 +499,7 @@ export const getActionEffectStacks = (player, skill, action) => {
 
                 entries.push({
                     id: "skill-" + sourceSkill.id + "-" + milestone.level + "-" + effect + "-" + milestoneIndex,
-                    source: getSkillName(sourceSkill.id) + " milestone · Skill Level " + milestone.level,
+                    source: getSkillName(sourceSkill.id) + " - Level " + milestone.level,
                     effect,
                     type: milestone.type,
                     value: milestone.value,
@@ -463,7 +526,7 @@ export const getActionEffectStacks = (player, skill, action) => {
 
             entries.push({
                 id: "action-" + skill.id + "-" + action.id + "-" + milestone.levels + "-" + effect + "-" + milestoneIndex,
-                source: humanize(action.id) + " milestone · Every " + milestone.levels + " levels",
+                source: humanize(action.id) + " - Level " + actionLevel,
                 effect,
                 type: milestone.type,
                 value: milestone.value,
@@ -482,11 +545,14 @@ export const getManaCapacity = (player) => {
     const skill = SKILL_CONFIG_BY_ID["skill:spellcraft"]
     if (!skill?.mana) return 0
 
+    const skillLevel = getSkillProgress(player, skill.id)?.level ?? 1
+    const levelBonus = Math.max(0, skillLevel - 1) * (skill.mana.capacityPerLevel ?? 0)
+    const baseCapacity = skill.mana.base + levelBonus
     const bonuses = getBonusForEffect(
         getSkillMilestoneBonuses(player, skill.id),
         "manaCapacity"
     )
-    return Math.max(0, skill.mana.base * Math.max(0, 1 + bonuses.mult) + bonuses.flat)
+    return Math.max(0, baseCapacity * Math.max(0, 1 + bonuses.mult) + bonuses.flat)
 }
 
 export const getManaRegeneration = (player) => {

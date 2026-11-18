@@ -26,6 +26,7 @@ export function ResourceSection({ title, resources = [] }) {
                                 interactive={false}
                                 icon={data?.icon}
                                 name={data?.name ?? humanize(itemId)}
+                                itemId={ITEM_DATA_BY_ID[itemId] ? itemId : null}
                                 amount={amount}
                                 variant={data?.variant ?? "primary"}
                             />

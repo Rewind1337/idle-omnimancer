@@ -251,12 +251,12 @@ Example spell naming progression:
 - Mana is a separate regenerating resource, not an inventory item.
 - Casting a spell consumes its Mana cost.
 - Mana regenerates passively, including offline, subject to the final offline rules.
-- Spell Mana costs follow a configurable tier curve in `SPELLCRAFT_CONFIG.mana.cost`: base 3 at tier 1, then previous cost × 2 − 1. The current tier costs are 3, 5, 9, 17, 33, 65, 129 and 257 for tiers I–VIII.
-- Element modifiers are configured per element in `SPELLCRAFT_CONFIG.elementModifiers`. Earth takes 5% longer and grants 15% more XP; Air takes 5% less time and grants 10% less XP; Water uses the baseline time and XP.
+- Spell Mana costs follow a configurable tier curve in `SPELLCRAFT_CONFIG.mana.cost`: base 6 at tier 1, then previous cost × 2 − 1. The baseline Water costs are 6, 11, 21, 41, 81, 161, 321 and 641 for tiers I–VIII, before elemental Mana-cost multipliers and milestone discounts.
+- Element modifiers are configured per element in `SPELLCRAFT_CONFIG.elementModifiers`. Earth takes 5% longer, grants 15% more XP and costs 10% more Mana; Air takes 5% less time, grants 10% less XP and costs 10% less Mana; Water uses the baseline time, XP and Mana cost.
 - If Mana is insufficient for the next cast, the cast waits. Mana must not be consumed for an action that cannot complete.
-- Spellcraft's configured base regeneration is **1 Mana per second at skill level 1**. Each additional Spellcraft skill level adds **+1 Mana per second**.
+- Spellcraft's configured base regeneration is **1 Mana per second at skill level 1**. Each additional Spellcraft skill level adds **+0.5 Mana per second** and **+50 maximum Mana**.
 - Effective regeneration is derived from the current overall Spellcraft skill level and applies during both online and offline simulation.
-- This regeneration bonus does not increase maximum Mana capacity; capacity bonuses remain separate from passive regeneration.
+- Maximum Mana capacity and passive regeneration are calculated separately.
 
 ### 6.3 Elemental essences
 
@@ -672,7 +672,7 @@ Additional proposed action milestones:
 - Recurring bonuses continue to apply at special milestones; the special rewards are additional.
 - Input-saving chance matters for actions that consume inputs, such as Transmutation. It has no practical effect on an action without input costs unless a future system adds them.
 - The game engine now reads recurring `actionMilestones` from each skill configuration. A reward with `levels: N` is awarded once per every N action levels, counting from level 0; for example, `levels: 2` first applies at action level 2 and again at 4, 6, and so on.
-- Research's current prototype configuration grants +0.5% action speed every 2 levels, +1% resource output every 5 levels, and +10% action XP every 20 levels. These values are defined in `RESEARCH_CONFIG.actionMilestones` and can be changed or extended independently of the engine.
+- Research's current prototype configuration grants +1% resource output every 2 levels, +1% action speed every 5 levels, and +10% action XP every 20 levels. Spellcraft currently grants +1% action speed every 2 levels, +1% resource output every 5 levels, and +10% action XP every 20 levels. These values are defined independently in each skill's `actionMilestones` configuration.
 - The other schedule above remains a design proposal, not a hardcoded progression rule.
 
 ### 12.3 Skill milestones
@@ -683,7 +683,7 @@ Milestones are based on the overall skill level, not individual action levels. R
 
 The engine reads each skill's `milestones` configuration. A milestone becomes active when its source skill reaches the configured level; `reach: "local"` targets that source skill, `reach: "skill:<id>"` targets one named skill, and `reach: "global"` targets every registered skill. Its effect is applied to the relevant actions in the target skill.
 
-Research currently has three prototype milestones: level 10 grants +10% action speed to Research, level 20 grants +10% action speed to Spellcraft, and level 30 grants +10% action XP globally. Further Research milestones and milestones for other skills are not yet configured.
+Research currently has three prototype skill milestones: level 10 grants +10% action speed to Research, level 20 grants +20% action speed to Spellcraft, and level 30 grants +10% action XP globally. Spellcraft currently has three draft skill milestones: level 10 grants +10% action speed to Spellcraft, level 20 grants +20% item output to Transmutation, and level 30 grants +10% action speed globally. Further milestones remain to be configured.
 
 Possible milestone purposes:
 

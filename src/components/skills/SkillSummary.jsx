@@ -23,13 +23,26 @@ export function SkillSummary({ title, skillProgress, variant, icon, milestones =
                 <Flex direction="column">
                     <Flex>
                         <h1>{title}</h1>
-                        <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">Action levels needed for the next Skill level</Flex>}>
+                        <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">
+                            <Heading h="4">Skill XP earned from completed action level-ups, toward the next Skill level.</Heading>
+                        </Flex>}>
                             {skillProgress.xp} / {skillProgress.neededXP} XP
                         </Badge>
                         <Badge variant="transparent" interactive icon={OTHER_ICONS.STAR} tooltip={
-                            milestones.length > 0
-                                ? <EffectStack title="Skill milestones" entries={milestones} showInactive />
-                                : null
+                            <Flex direction="column" gap={8}>
+                                <Heading h="4">Total progress in this skill, derived from the levels of all its actions.</Heading>
+                                {milestones.length > 0 && (
+                                    <>
+                                        <div className="divider tooltip-divider"></div>
+                                        <EffectStack
+                                            title="Skill milestones"
+                                            icon={OTHER_ICONS.STAR}
+                                            entries={milestones}
+                                            showInactive
+                                        />
+                                    </>
+                                )}
+                            </Flex>
                         }>
                             Level {skillProgress.level} / 100
                         </Badge>

@@ -1,0 +1,12 @@
+.effect-stack {
+    min-width: 220px;
+    max-width: min(360px, 75vw);
+
+    .effect-stack-entry {
+        padding-block: 3px;
+
+        &[data-active="false"] {
+            opacity: 0.5;
+        }
+    }
+}

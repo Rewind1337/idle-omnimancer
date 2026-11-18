@@ -13,12 +13,13 @@ export const SPELLCRAFT_CONFIG = {
         },
     },
 
-    // Small element-specific trade-offs. Earth is slower but grants more XP,
-    // Air is faster but grants less XP, and Water is the balanced baseline.
+    // Small element-specific trade-offs. Earth is slower, grants more XP and
+    // costs slightly more Mana; Air is faster, grants less XP and costs less.
+    // Water remains the balanced baseline.
     elementModifiers: {
-        earth: { timeMultiplier: 1.05, xpMultiplier: 1.15 },
-        air: { timeMultiplier: 0.95, xpMultiplier: 0.90 },
-        water: { timeMultiplier: 1, xpMultiplier: 1 },
+        earth: { timeMultiplier: 1.05, xpMultiplier: 1.15, manaCostMultiplier: 1.1 },
+        air: { timeMultiplier: 0.95, xpMultiplier: 0.90, manaCostMultiplier: 0.9 },
+        water: { timeMultiplier: 1, xpMultiplier: 1, manaCostMultiplier: 1 },
     },
 
     skillXP: {

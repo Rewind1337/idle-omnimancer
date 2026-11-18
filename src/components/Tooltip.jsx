@@ -47,9 +47,9 @@ export function Tooltip({
                 padding={8}
                 className="tooltip-content"
             >
-                <Heading h="4" weight={500} variant={variant}>
-                    {content}
-                </Heading>
+                {typeof content === "string" || typeof content === "number"
+                    ? <Heading h="4" weight={500} variant={variant}>{content}</Heading>
+                    : content}
             </Paper>
         </span>
     )

@@ -19,6 +19,9 @@ import {
     canUnlockAction,
     getActionDurationMs,
     getActionXPReward,
+    getActionEffectStacks,
+    getActionMilestoneDetails,
+    getSkillMilestoneDetails,
     getActionOutputMultiplier,
     getActionPreservationChance,
     getSkillProgress,
@@ -36,6 +39,12 @@ function ResearchAction({ action, player, isActive, isUnlocked, actionState, can
     const neededXP = !isUnlocked || actionState.level >= 100
         ? null
         : xpTable[actionState.level - 1].neededXP
+    const actionMilestones = isUnlocked
+        ? getActionMilestoneDetails(player, RESEARCH_CONFIG, action)
+        : []
+    const effectStacks = isUnlocked
+        ? getActionEffectStacks(player, RESEARCH_CONFIG, action)
+        : {}
 
     return (
         <Paper layer={1} variant="research" className="action action-research">
@@ -50,7 +59,7 @@ function ResearchAction({ action, player, isActive, isUnlocked, actionState, can
                     <Flex direction="column">
                         <ActionHeader name={humanize(action.id)} level={actionState.level}
                             currentXP={actionState.xp} neededXP={neededXP}
-                            tier={action.tier} isUnlocked={isUnlocked} />
+                            tier={action.tier} isUnlocked={isUnlocked} actionMilestones={actionMilestones} />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
                                 durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
@@ -68,7 +77,8 @@ function ResearchAction({ action, player, isActive, isUnlocked, actionState, can
                         <ActionDetails actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(RESEARCH_CONFIG, action, player)}
                             outputMultiplier={getActionOutputMultiplier(player, RESEARCH_CONFIG, action)}
-                            preservationChance={getActionPreservationChance(player, RESEARCH_CONFIG, action)} />
+                            preservationChance={getActionPreservationChance(player, RESEARCH_CONFIG, action)}
+                            effectStacks={effectStacks} />
                         <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []} />
                     </>
                 ) : (
@@ -91,6 +101,7 @@ export function ResearchPage() {
                 <SkillSummary
                     title={humanize(RESEARCH_CONFIG.id)}
                     skillProgress={skillProgress}
+                    milestones={getSkillMilestoneDetails(player, RESEARCH_CONFIG)}
                     variant={pageVariant}
                     icon={
                         <Icon

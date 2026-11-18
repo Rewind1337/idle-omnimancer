@@ -40,6 +40,8 @@ export function BagModal({
     const inventory = Object.entries(player.inventory ?? {})
         .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0)
     const occupiedSlots = inventory.length
+    const totalBagValue = inventory.reduce((total, [itemId, amount]) =>
+        total + amount * (ITEM_DATA_BY_ID[itemId]?.baseValue ?? 0), 0)
     const inventorySlots = player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
     const emptySlots = Math.max(0, inventorySlots - occupiedSlots)
 
@@ -53,6 +55,11 @@ export function BagModal({
 
     const nextSlotCost = getNextBagSlotCost(inventorySlots)
     const coins = player.currencies?.coins ?? 0
+
+    const handleDeselect = () => {
+        setSelectedItemId(null)
+        setSelectedAmount(1)
+    }
 
     const handleRangeChange = (event) => {
         const value = Number(event.target.value)
@@ -85,32 +92,46 @@ export function BagModal({
             footer={closeBagButton}
             content={
                 <Flex direction="column" gap={16}>
-                    <Flex direction="row" wrap>
-                        {inventory.map(([itemId, amount]) => {
-                            const itemData = ITEM_DATA_BY_ID[itemId]
-                            return (
-                                <Item
-                                    layer={2}
-                                    key={itemId}
-                                    icon={itemData?.icon}
-                                    name={itemData?.name ?? humanize(itemId)}
-                                    amount={amount}
-                                    variant={itemData?.variant ?? "primary"}
-                                    selected={selectedItemId === itemId}
-                                    onClick={() => {
-                                        setSelectedItemId(itemId)
-                                        setSelectedAmount(1)
-                                    }}
-                                />
-                            )
-                        })}
-                        {emptySlots > 0 && (
-                            <EmptyItem>
-                                <Heading h="6" className="align-center">Free Slots</Heading>
-                                <Heading h="3" className="align-center">{emptySlots}</Heading>
-                            </EmptyItem>
-                        )}
-                        <EmptyItem variant="shop" className="bag-buy-slot" padding={0}>
+                    <Flex direction="row" align="center" gap={6} className="bag-total-value">
+                        <Icon size={18} variant="shop">{OTHER_ICONS.COINS}</Icon>
+                        <span>Total bag value: {totalBagValue.toLocaleString()} coins</span>
+                    </Flex>
+
+                    <Paper
+                        layer={2}
+                        className="bag-inventory"
+                        onClick={(event) => {
+                            if (event.target.closest?.(".bag-inventory-item")) return
+                            handleDeselect()
+                        }}
+                    >
+                        <Flex direction="row" wrap>
+                            {inventory.map(([itemId, amount]) => {
+                                const itemData = ITEM_DATA_BY_ID[itemId]
+                                return (
+                                    <Item
+                                        layer={3}
+                                        className="bag-inventory-item"
+                                        key={itemId}
+                                        icon={itemData?.icon}
+                                        name={itemData?.name ?? humanize(itemId)}
+                                        amount={amount}
+                                        variant={itemData?.variant ?? "primary"}
+                                        selected={selectedItemId === itemId}
+                                        onClick={() => {
+                                            setSelectedItemId(itemId)
+                                            setSelectedAmount(1)
+                                        }}
+                                    />
+                                )
+                            })}
+                            {emptySlots > 0 && (
+                                <EmptyItem layer={3}>
+                                    <Heading h="6" className="align-center">Free Slots</Heading>
+                                    <Heading h="3" className="align-center">{emptySlots}</Heading>
+                                </EmptyItem>
+                            )}
+                            <EmptyItem layer={3} variant="shop" className="bag-buy-slot" padding={0}>
                             <Tooltip block
                                 variant="shop"
                                 content={<Heading h="5">{`Cost: ${nextSlotCost.toLocaleString()} coins`}</Heading>}
@@ -126,21 +147,27 @@ export function BagModal({
                                     Buy
                                 </Button>
                             </Tooltip>
-                        </EmptyItem>
-                    </Flex>
+                            </EmptyItem>
+                        </Flex>
+                    </Paper>
 
                     {selectedItem && selectedData && (
                         <Paper layer={2} className="bag-item-selection">
                             <Flex direction="column" gap={12}>
-                                <Item
-                                    layer={3}
-                                    mode="wide"
-                                    interactive={false}
-                                    icon={selectedData.icon}
-                                    name={selectedData.name}
-                                    amount={amountToSell}
-                                    variant={selectedVariant}
-                                />
+                                <Flex direction="row" justify="space-between" align="center" wrap>
+                                    <Item
+                                        layer={3}
+                                        mode="wide"
+                                        interactive={false}
+                                        icon={selectedData.icon}
+                                        name={selectedData.name}
+                                        amount={amountToSell}
+                                        variant={selectedVariant}
+                                    />
+                                    <Button variant="primary" size="small" onClick={handleDeselect}>
+                                        Deselect
+                                    </Button>
+                                </Flex>
 
                                 <InputRange
                                     variant={"primary"}
@@ -187,7 +214,7 @@ export function BagModal({
                                         disabled={baseValue <= 0 || amountToSell < 1}
                                         onClick={handleSell}
                                     >
-                                        Sell {amountToSell.toLocaleString()}
+                                        Sell for {totalSellValue.toLocaleString()} Coins
                                     </Button>
                                 </Flex>
                             </Flex>

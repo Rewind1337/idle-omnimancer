@@ -4,8 +4,9 @@ import { Paper } from "../Paper"
 import { Progress } from "../Progress"
 import { OTHER_ICONS } from "../../data/iconLibrary"
 import { Heading } from "../Heading"
+import { EffectStack } from "../EffectStack"
 
-export function SkillSummary({ title, skillProgress, variant, icon }) {
+export function SkillSummary({ title, skillProgress, variant, icon, milestones = [] }) {
     const totalPercentage = skillProgress.maxXP > 0
         ? (skillProgress.totalXP / skillProgress.maxXP) * 100
         : 0
@@ -25,7 +26,11 @@ export function SkillSummary({ title, skillProgress, variant, icon }) {
                         <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">Action levels needed for the next Skill level</Flex>}>
                             {skillProgress.xp} / {skillProgress.neededXP} XP
                         </Badge>
-                        <Badge variant="transparent" interactive icon={OTHER_ICONS.STAR} tooltip={<Flex direction="column">Total Progress in this Skill.</Flex>}>
+                        <Badge variant="transparent" interactive icon={OTHER_ICONS.STAR} tooltip={
+                            milestones.length > 0
+                                ? <EffectStack title="Skill milestones" entries={milestones} showInactive />
+                                : null
+                        }>
                             Level {skillProgress.level} / 100
                         </Badge>
                     </Flex>

@@ -5,6 +5,8 @@ import {
     getSkillXPTable,
 } from "../data/skillConfig"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
+import { SKILL_NAVIGATION } from "../data/navigationData"
+import { humanize } from "../utility/helpers"
 
 
 
@@ -202,6 +204,31 @@ const addMilestoneBonus = (totals, milestone, count = 1) => {
     totals[effect] = effectTotals
 }
 
+const getSkillName = (skillId) => {
+    const navigationEntry = SKILL_NAVIGATION.find(entry => entry.skillId === skillId)
+    if (navigationEntry) return navigationEntry.name
+
+    return skillId.replace("skill:", "").split("_")
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ")
+}
+
+const milestoneTargetsSkill = (sourceSkill, targetSkillId, milestone) =>
+    milestone.reach === "global" ||
+    (milestone.reach === "local" && sourceSkill.id === targetSkillId) ||
+    milestone.reach === targetSkillId
+
+const getMilestoneTargetLabel = (sourceSkill, reach) => {
+    if (reach === "global") return "All skill tabs"
+
+    const targetSkillId = reach === "local" ? sourceSkill.id : reach
+    const targetName = SKILL_CONFIG_BY_ID[targetSkillId]
+        ? getSkillName(targetSkillId)
+        : targetSkillId
+
+    return targetName + " tab"
+}
+
 const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
     const totals = {}
 
@@ -218,12 +245,9 @@ const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
                 (effect && milestone.effect !== effect)
             ) continue
 
-            const reachesTarget =
-                milestone.reach === "global" ||
-                (milestone.reach === "local" && sourceSkill.id === targetSkillId) ||
-                milestone.reach === targetSkillId
-
-            if (reachesTarget) addMilestoneBonus(totals, milestone)
+            if (milestoneTargetsSkill(sourceSkill, targetSkillId, milestone)) {
+                addMilestoneBonus(totals, milestone)
+            }
         }
     }
 
@@ -246,6 +270,60 @@ const getActionMilestoneBonuses = (player, skill, action) => {
     }
 
     return totals
+}
+
+// Tooltip records are generated from the same milestone configs used by the calculations.
+export const getSkillMilestoneDetails = (player, skill) => {
+    const skillLevel = getSkillProgress(player, skill.id)?.level ?? 1
+    const skillUnlocked = player.unlockedSkills?.includes(skill.id) ?? false
+
+    return (skill.milestones ?? [])
+        .filter(milestone => Number.isFinite(milestone.level))
+        .map((milestone, index) => {
+            const active = skillUnlocked && skillLevel >= milestone.level
+
+            return {
+                id: "skill-" + skill.id + "-milestone-" + milestone.level + "-" + index,
+                title: "Skill Level " + milestone.level,
+                source: "Targets: " + getMilestoneTargetLabel(skill, milestone.reach),
+                effect: milestone.effect,
+                type: milestone.type,
+                value: milestone.value,
+                stacks: 1,
+                mode: "milestone",
+                active,
+                status: active ? "Active" : "Unlocks at Level " + milestone.level,
+            }
+        })
+}
+
+export const getActionMilestoneDetails = (player, skill, action) => {
+    const actionState = player.skills?.[skill.id]?.actions?.[action.id]
+    const actionLevel = actionState?.unlocked
+        ? Math.max(0, Math.floor(actionState.level ?? 1))
+        : 0
+
+    return (skill.actionMilestones ?? [])
+        .filter(milestone => Number.isFinite(milestone.levels) && milestone.levels > 0)
+        .map((milestone, index) => {
+            const stacks = Math.floor(actionLevel / milestone.levels)
+            const active = stacks > 0
+
+            return {
+                id: "action-" + skill.id + "-" + action.id + "-milestone-" + milestone.levels + "-" + index,
+                title: "Every " + milestone.levels + " action levels",
+                source: "First reward at action level " + milestone.levels,
+                effect: milestone.effect,
+                type: milestone.type,
+                value: milestone.value,
+                stacks,
+                perStack: true,
+                mode: "milestone",
+                active,
+                status: active ? stacks + " earned" : "Unlocks at Level " + milestone.levels,
+                meta: "Repeats every " + milestone.levels + " levels, starting from level 0",
+            }
+        })
 }
 
 const getBonusForEffect = (totals, effect) =>
@@ -290,6 +368,10 @@ export const getActionManaCost = (skill, action, player = null) => {
         }
     }
 
+    const elementManaCostMultiplier =
+        skill.elementModifiers?.[action.element]?.manaCostMultiplier ?? 1
+    baseCost *= elementManaCostMultiplier
+
     const bonuses = player
         ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "manaCost")
         : { flat: 0, mult: 0 }
@@ -306,6 +388,94 @@ export const getActionOutputMultiplier = (player, skill, action) => {
 export const getActionPreservationChance = (player, skill, action) => {
     const bonuses = getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "preservation")
     return Math.max(0, Math.min(1, bonuses.mult + bonuses.flat))
+}
+
+// Return active contributors from element modifiers, applicable skill milestones
+// and repeated action milestones. These records are used by the action tooltips.
+export const getActionEffectStacks = (player, skill, action) => {
+    const effectNames = ["actionTime", "xpGain", "manaCost", "itemOutput", "preservation"]
+    const elementProperties = {
+        actionTime: "timeMultiplier",
+        xpGain: "xpMultiplier",
+        manaCost: "manaCostMultiplier",
+    }
+    const elementName = action.element
+        ? action.element.charAt(0).toUpperCase() + action.element.slice(1)
+        : null
+
+    const getActiveEffects = (effect) => {
+        const entries = []
+        const elementProperty = elementProperties[effect]
+        const elementValue = elementProperty
+            ? skill.elementModifiers?.[action.element]?.[elementProperty]
+            : null
+
+        if (Number.isFinite(elementValue) && elementValue !== 1) {
+            entries.push({
+                id: "element-" + skill.id + "-" + action.id + "-" + effect,
+                source: elementName + " element modifier",
+                effect,
+                type: "mult",
+                value: elementValue,
+                stacks: 1,
+                mode: "element",
+            })
+        }
+
+        for (const sourceSkill of Object.values(SKILL_CONFIG_BY_ID)) {
+            if (!player.unlockedSkills?.includes(sourceSkill.id)) continue
+
+            const sourceLevel = getSkillProgress(player, sourceSkill.id)?.level ?? 1
+            for (const [milestoneIndex, milestone] of (sourceSkill.milestones ?? []).entries()) {
+                if (
+                    milestone.effect !== effect ||
+                    !Number.isFinite(milestone.level) ||
+                    sourceLevel < milestone.level ||
+                    !milestoneTargetsSkill(sourceSkill, skill.id, milestone)
+                ) continue
+
+                entries.push({
+                    id: "skill-" + sourceSkill.id + "-" + milestone.level + "-" + effect + "-" + milestoneIndex,
+                    source: getSkillName(sourceSkill.id) + " milestone · Skill Level " + milestone.level,
+                    effect,
+                    type: milestone.type,
+                    value: milestone.value,
+                    stacks: 1,
+                    mode: "milestone",
+                })
+            }
+        }
+
+        const actionState = player.skills?.[skill.id]?.actions?.[action.id]
+        const actionLevel = actionState?.unlocked
+            ? Math.max(0, Math.floor(actionState.level ?? 1))
+            : 0
+
+        for (const [milestoneIndex, milestone] of (skill.actionMilestones ?? []).entries()) {
+            if (
+                milestone.effect !== effect ||
+                !Number.isFinite(milestone.levels) ||
+                milestone.levels <= 0
+            ) continue
+
+            const stacks = Math.floor(actionLevel / milestone.levels)
+            if (stacks <= 0) continue
+
+            entries.push({
+                id: "action-" + skill.id + "-" + action.id + "-" + milestone.levels + "-" + effect + "-" + milestoneIndex,
+                source: humanize(action.id) + " milestone · Every " + milestone.levels + " levels",
+                effect,
+                type: milestone.type,
+                value: milestone.value,
+                stacks,
+                mode: "milestone",
+            })
+        }
+
+        return entries.filter(entry => Number.isFinite(entry.value) && entry.value !== 0)
+    }
+
+    return Object.fromEntries(effectNames.map(effect => [effect, getActiveEffects(effect)]))
 }
 
 export const getManaCapacity = (player) => {

@@ -23,6 +23,9 @@ import {
     getActionOutputMultiplier,
     getActionPreservationChance,
     getActionXPReward,
+    getActionEffectStacks,
+    getActionMilestoneDetails,
+    getSkillMilestoneDetails,
     getSkillProgress,
     getVisibleActions,
 } from "../game/gameEngine"
@@ -39,6 +42,12 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
     const neededXP = !isUnlocked || actionState.level >= 100
         ? null
         : xpTable[actionState.level - 1].neededXP
+    const actionMilestones = isUnlocked
+        ? getActionMilestoneDetails(player, SPELLCRAFT_CONFIG, action)
+        : []
+    const effectStacks = isUnlocked
+        ? getActionEffectStacks(player, SPELLCRAFT_CONFIG, action)
+        : {}
 
     return (
         <Paper layer={1} variant="spellcraft" className="action action-spellcraft">
@@ -53,7 +62,8 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
                     <Flex direction="column">
                         <ActionHeader name={humanize(action.id)} level={actionState.level}
                             currentXP={actionState.xp} neededXP={neededXP}
-                            tier={action.tier} isUnlocked={isUnlocked} skillName="Spellcraft" />
+                            tier={action.tier} isUnlocked={isUnlocked} skillName="Spellcraft"
+                            actionMilestones={actionMilestones} />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
                                 durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
@@ -72,7 +82,8 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
                             actionXP={getActionXPReward(SPELLCRAFT_CONFIG, action, player)}
                             manaCost={getActionManaCost(SPELLCRAFT_CONFIG, action, player)}
                             outputMultiplier={getActionOutputMultiplier(player, SPELLCRAFT_CONFIG, action)}
-                            preservationChance={getActionPreservationChance(player, SPELLCRAFT_CONFIG, action)} />
+                            preservationChance={getActionPreservationChance(player, SPELLCRAFT_CONFIG, action)}
+                            effectStacks={effectStacks} />
                         <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []} />
                     </>
                 ) : (
@@ -95,6 +106,7 @@ export function SpellcraftPage() {
                 <SkillSummary
                     title={humanize(SPELLCRAFT_CONFIG.id)}
                     skillProgress={skillProgress}
+                    milestones={getSkillMilestoneDetails(player, SPELLCRAFT_CONFIG)}
                     variant={pageVariant}
                     icon={
                         <Icon

@@ -351,8 +351,8 @@ export const getActionXPReward = (skill, action, player = null) => {
     return Math.max(0, Math.round(finalXP))
 }
 
-// Action Mana uses the configured tier curve, then applies any configured
-// skill/action milestone discounts targeting this action's skill.
+// Action Mana uses the configured tier curve and element modifier, then applies
+// any skill/action milestone discounts targeting this action's skill.
 export const getActionManaCost = (skill, action, player = null) => {
     const costConfig = skill.mana?.cost
     let baseCost = action.manaCost ?? 0

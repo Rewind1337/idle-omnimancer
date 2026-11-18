@@ -1,7 +1,6 @@
 import { cloneElement, isValidElement, useId } from 'react'
 
 import { Paper } from './Paper'
-import { Text } from './Text'
 
 import './Tooltip.scss'
 

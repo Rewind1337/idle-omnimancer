@@ -94,7 +94,7 @@ export function BagModal({
                 <Flex direction="column" gap={16}>
                     <Flex direction="row" align="center" gap={6} className="bag-total-value">
                         <Icon size={18} variant="shop">{OTHER_ICONS.COINS}</Icon>
-                        <span>Total bag value: {totalBagValue.toLocaleString()} coins</span>
+                        <span>Total bag value: {totalBagValue.toLocaleString()} {totalBagValue === 1 ? "coin" : "coins"}</span>
                     </Flex>
 
                     <Paper
@@ -132,21 +132,21 @@ export function BagModal({
                                 </EmptyItem>
                             )}
                             <EmptyItem layer={3} variant="shop" className="bag-buy-slot" padding={0}>
-                            <Tooltip block
-                                variant="shop"
-                                content={<Heading h="5">{`Cost: ${nextSlotCost.toLocaleString()} coins`}</Heading>}
-                            >
-                                <Button
+                                <Tooltip block
                                     variant="shop"
-                                    size="small"
-                                    className="w-100 bag-buy-slot-button"
-                                    style={{ width: "100%", height: "100%" }}
-                                    disabled={coins < nextSlotCost}
-                                    onClick={buyBagSlot}
+                                    content={<Heading h="5">{`Cost: ${nextSlotCost.toLocaleString()} coins`}</Heading>}
                                 >
-                                    Buy
-                                </Button>
-                            </Tooltip>
+                                    <Button
+                                        variant="shop"
+                                        size="small"
+                                        className="w-100 bag-buy-slot-button"
+                                        style={{ width: "100%", height: "100%" }}
+                                        disabled={coins < nextSlotCost}
+                                        onClick={buyBagSlot}
+                                    >
+                                        Buy
+                                    </Button>
+                                </Tooltip>
                             </EmptyItem>
                         </Flex>
                     </Paper>

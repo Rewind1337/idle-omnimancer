@@ -171,7 +171,7 @@ function getAvailableUnlocks(player, unlockSkill, unlockAction) {
 
         return [{
             key: "action-" + skill.id + "-" + nextAction.id,
-            title: humanize(nextAction.id.replace(/^action:/, "")),
+            title: nextAction.name ?? humanize(nextAction.id.replace(/^action:/, "")),
             subtitle: skillTab.name + " Action · Tier " + nextAction.tier,
             icon: skillTab.icon,
             variant: skillTab.variant,

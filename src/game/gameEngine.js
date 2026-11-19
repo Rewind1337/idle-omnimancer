@@ -142,6 +142,7 @@ export const getItemActionSources = (itemId) => {
         }
 
         for (const action of skill.actions) {
+            const actionName = action.name ?? humanize(action.id)
             const outputAmount = getActionOutputs(action)
                 .filter(output => output.item === itemId)
                 .reduce((total, output) => total + output.amount, 0)
@@ -149,7 +150,7 @@ export const getItemActionSources = (itemId) => {
             if (outputAmount > 0) {
                 obtainedBy.push({
                     id: "obtain-" + skill.id + "-" + action.id,
-                    name: humanize(action.id),
+                    name: actionName,
                     amount: outputAmount,
                     type: "action",
                 })
@@ -159,7 +160,7 @@ export const getItemActionSources = (itemId) => {
             if (consumedAmount > 0) {
                 consumedBy.push({
                     id: "consume-" + skill.id + "-" + action.id,
-                    name: humanize(action.id),
+                    name: actionName,
                     amount: consumedAmount,
                     type: "action",
                 })
@@ -172,7 +173,7 @@ export const getItemActionSources = (itemId) => {
             if (unlockAmount > 0) {
                 consumedBy.push({
                     id: "action-unlock-" + skill.id + "-" + action.id,
-                    name: "Unlock " + humanize(action.id),
+                    name: "Unlock " + actionName,
                     amount: unlockAmount,
                     type: "unlock",
                 })
@@ -541,7 +542,7 @@ export const getActionEffectStacks = (player, skill, action) => {
 
             entries.push({
                 id: "action-" + skill.id + "-" + action.id + "-" + milestone.levels + "-" + effect + "-" + milestoneIndex,
-                source: humanize(action.id) + " - Level " + actionLevel,
+                source: (action.name ?? humanize(action.id)) + " - Level " + actionLevel,
                 effect,
                 type: milestone.type,
                 value: milestone.value,

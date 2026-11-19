@@ -63,6 +63,7 @@ export const SPELLCRAFT_CONFIG = {
         // Tier I
         {
             id: "action:shape_pebble",
+            name: "Conjure Dust",
             tier: 1,
             element: "earth",
             produces: ["item:dust"],
@@ -84,6 +85,7 @@ export const SPELLCRAFT_CONFIG = {
         },
         {
             id: "action:shape_stone",
+            name: "Shape Pebble",
             tier: 2,
             element: "earth",
             produces: ["item:pebble"],
@@ -105,6 +107,7 @@ export const SPELLCRAFT_CONFIG = {
         },
         {
             id: "action:raise_boulder",
+            name: "Raise Stone",
             tier: 3,
             element: "earth",
             produces: ["item:stone"],

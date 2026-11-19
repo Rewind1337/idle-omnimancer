@@ -65,7 +65,7 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
                         </Icon>
                     </Paper>
                     <Flex direction="column">
-                        <ActionHeader name={humanize(action.id)} level={actionState.level}
+                        <ActionHeader name={action.name ?? humanize(action.id)} level={actionState.level}
                             currentXP={actionState.xp} neededXP={neededXP}
                             tier={action.tier} isUnlocked={isUnlocked} skillName="Spellcraft"
                             actionMilestones={actionMilestones} />

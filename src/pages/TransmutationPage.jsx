@@ -14,7 +14,7 @@ import { ActionResources } from "../components/actions/ActionResources"
 import { cx, humanize } from "../utility/helpers"
 import { TRANSMUTATION_CONFIG } from "../data/transmutationConfig"
 import { getActionXPTable } from "../data/skillConfig"
-import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
+import { SKILL_ICONS, TRANSMUTATION_ACTION_ICONS } from "../data/iconLibrary"
 import {
     canUnlockAction,
     getActionDurationMs,
@@ -67,12 +67,12 @@ function TransmutationAction({ action, player, isActive, isUnlocked, actionState
                             innerRunes="gap"
                             innerShape={InnerShapeMap[action.tier - 1] ?? 10}
                         >
-                            {cloneElement(OTHER_ICONS.STAR, { size: 48 })}
+                            {cloneElement(TRANSMUTATION_ACTION_ICONS[action.tier - 1] ?? TRANSMUTATION_ACTION_ICONS[0], { size: 48 })}
                         </Icon>
                     </Paper>
                     <Flex direction="column">
                         <ActionHeader
-                            name={humanize(action.id)}
+                            name={action.name ?? humanize(action.id)}
                             level={actionState.level}
                             currentXP={actionState.xp}
                             neededXP={neededXP}

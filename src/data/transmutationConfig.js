@@ -60,6 +60,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:earth_transmutation_i",
             tier: 1,
             element: "earth",
+            name: "Lesser Earth Transmutation",
             consumes: [
                 { item: "item:loose_notes", amount: 2 },
                 { item: "item:dust", amount: 1 },
@@ -71,6 +72,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:air_transmutation_i",
             tier: 1,
             element: "air",
+            name: "Lesser Air Transmutation",
             consumes: [
                 { item: "item:loose_notes", amount: 2 },
                 { item: "item:breath", amount: 1 },
@@ -85,6 +87,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:water_transmutation_i",
             tier: 1,
             element: "water",
+            name: "Lesser Water Transmutation",
             consumes: [
                 { item: "item:loose_notes", amount: 2 },
                 { item: "item:droplet", amount: 1 },
@@ -99,6 +102,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:earth_transmutation_ii",
             tier: 2,
             element: "earth",
+            name: "Weak Earth Transmutation",
             consumes: [
                 { item: "item:bound_notes", amount: 2 },
                 { item: "item:pebble", amount: 2 },
@@ -113,6 +117,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:air_transmutation_ii",
             tier: 2,
             element: "air",
+            name: "Weak Air Transmutation",
             consumes: [
                 { item: "item:bound_notes", amount: 2 },
                 { item: "item:breeze", amount: 2 },
@@ -127,6 +132,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:water_transmutation_ii",
             tier: 2,
             element: "water",
+            name: "Weak Water Transmutation",
             consumes: [
                 { item: "item:bound_notes", amount: 2 },
                 { item: "item:ripple", amount: 2 },
@@ -141,6 +147,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:earth_transmutation_iii",
             tier: 3,
             element: "earth",
+            name: "Regular Earth Transmutation",
             consumes: [
                 { item: "item:translated_scrolls", amount: 3 },
                 { item: "item:stone", amount: 3 },
@@ -155,6 +162,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:air_transmutation_iii",
             tier: 3,
             element: "air",
+            name: "Regular Air Transmutation",
             consumes: [
                 { item: "item:translated_scrolls", amount: 3 },
                 { item: "item:gust", amount: 3 },
@@ -169,6 +177,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:water_transmutation_iii",
             tier: 3,
             element: "water",
+            name: "Regular Water Transmutation",
             consumes: [
                 { item: "item:translated_scrolls", amount: 3 },
                 { item: "item:stream", amount: 3 },
@@ -183,6 +192,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:earth_transmutation_iv",
             tier: 4,
             element: "earth",
+            name: "Greater Earth Transmutation",
             consumes: [
                 { item: "item:arcane_manuscript", amount: 3 },
                 { item: "item:shard", amount: 4 },
@@ -197,6 +207,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:air_transmutation_iv",
             tier: 4,
             element: "air",
+            name: "Greater Air Transmutation",
             consumes: [
                 { item: "item:arcane_manuscript", amount: 3 },
                 { item: "item:gale", amount: 4 },
@@ -211,6 +222,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:water_transmutation_iv",
             tier: 4,
             element: "water",
+            name: "Greater Water Transmutation",
             consumes: [
                 { item: "item:arcane_manuscript", amount: 3 },
                 { item: "item:wave", amount: 4 },
@@ -225,6 +237,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:earth_transmutation_v",
             tier: 5,
             element: "earth",
+            name: "Superior Earth Transmutation",
             consumes: [
                 { item: "item:sealed_grimoire", amount: 4 },
                 { item: "item:crystal", amount: 5 },
@@ -239,6 +252,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:air_transmutation_v",
             tier: 5,
             element: "air",
+            name: "Superior Air Transmutation",
             consumes: [
                 { item: "item:sealed_grimoire", amount: 4 },
                 { item: "item:tempest", amount: 5 },
@@ -253,6 +267,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:water_transmutation_v",
             tier: 5,
             element: "water",
+            name: "Superior Water Transmutation",
             consumes: [
                 { item: "item:sealed_grimoire", amount: 4 },
                 { item: "item:torrent", amount: 5 },
@@ -267,6 +282,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:earth_transmutation_vi",
             tier: 6,
             element: "earth",
+            name: "Exalted Earth Transmutation",
             consumes: [
                 { item: "item:lost_archive_record", amount: 4 },
                 { item: "item:core", amount: 6 },
@@ -281,6 +297,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:air_transmutation_vi",
             tier: 6,
             element: "air",
+            name: "Exalted Air Transmutation",
             consumes: [
                 { item: "item:lost_archive_record", amount: 4 },
                 { item: "item:cyclone", amount: 6 },
@@ -295,6 +312,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:water_transmutation_vi",
             tier: 6,
             element: "water",
+            name: "Exalted Water Transmutation",
             consumes: [
                 { item: "item:lost_archive_record", amount: 4 },
                 { item: "item:maelstrom", amount: 6 },
@@ -309,6 +327,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:earth_transmutation_vii",
             tier: 7,
             element: "earth",
+            name: "Supreme Earth Transmutation",
             consumes: [
                 { item: "item:forgotten_texts", amount: 5 },
                 { item: "item:mountain_heart", amount: 7 },
@@ -323,6 +342,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:air_transmutation_vii",
             tier: 7,
             element: "air",
+            name: "Supreme Air Transmutation",
             consumes: [
                 { item: "item:forgotten_texts", amount: 5 },
                 { item: "item:skycore", amount: 7 },
@@ -337,6 +357,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:water_transmutation_vii",
             tier: 7,
             element: "water",
+            name: "Supreme Water Transmutation",
             consumes: [
                 { item: "item:forgotten_texts", amount: 5 },
                 { item: "item:abyssal_heart", amount: 7 },
@@ -351,6 +372,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:earth_transmutation_viii",
             tier: 8,
             element: "earth",
+            name: "Transcendent Earth Transmutation",
             consumes: [
                 { item: "item:forbidden_codex", amount: 5 },
                 { item: "item:worldheart", amount: 8 },
@@ -365,6 +387,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:air_transmutation_viii",
             tier: 8,
             element: "air",
+            name: "Transcendent Air Transmutation",
             consumes: [
                 { item: "item:forbidden_codex", amount: 5 },
                 { item: "item:firmament_core", amount: 8 },
@@ -379,6 +402,7 @@ export const TRANSMUTATION_CONFIG = {
             id: "action:water_transmutation_viii",
             tier: 8,
             element: "water",
+            name: "Transcendent Water Transmutation",
             consumes: [
                 { item: "item:forbidden_codex", amount: 5 },
                 { item: "item:primordial_tide", amount: 8 },

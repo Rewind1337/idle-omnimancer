@@ -1,4 +1,4 @@
-import { ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck, CircleFadingArrowUp } from "lucide-react";
+import { ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck, CircleFadingArrowUp , Circle, CircleChevronDown, CircleChevronUp, CircleChevronsDown, CircleChevronsUp, CircleDivide, CircleEllipsis, CircleEqual, CircleExclamationPoint, CircleLetterA, CircleLetterB, CircleLetterC, CircleLetterD, CircleLetterE, CircleLetterF, CircleLetterG, CircleLetterH, CircleLetterI, CircleLetterJ } from "lucide-react";
 
 export const OTHER_ICONS = {
     STAR: <Star />,
@@ -94,6 +94,34 @@ export const SPELLCRAFT_ACTION_ICONS = {
     ]
 }
 
+
+export const TRANSMUTATION_ACTION_ICONS = [
+    <CircleChevronsDown />,
+    <CircleChevronDown />,
+    <Circle />,
+    <CircleDot />,
+    <CircleChevronUp />,
+    <CircleChevronsUp />,
+    <CircleEqual />,
+    <CircleExclamationPoint />,
+    <CircleEllipsis />,
+    <CircleDivide />,
+]
+
+export const TRANSMUTATION_ITEM_ICONS = [
+    <CircleLetterA />,
+    <CircleLetterB />,
+    <CircleLetterC />,
+    <CircleLetterD />,
+    <CircleLetterE />,
+    <CircleLetterF />,
+    <CircleLetterG />,
+    <CircleLetterH />,
+    <CircleLetterI />,
+    <CircleLetterJ />,
+]
+
+
 // Item artwork reuses the matching action-tier or elemental icons until dedicated
 // item sprites are added. Keep IDs aligned with the items produced by each action.
 export const ITEM_SPRITES = {
@@ -134,4 +162,30 @@ export const ITEM_SPRITES = {
     "item:worldheart": SPELLCRAFT_ACTION_ICONS.EARTH[7],
     "item:firmament_core": SPELLCRAFT_ACTION_ICONS.AIR[7],
     "item:primordial_tide": SPELLCRAFT_ACTION_ICONS.WATER[7],
+
+    // Transmutation catalysts use one letter icon per tier, shared across elements.
+    "item:earth_catalyst_i": TRANSMUTATION_ITEM_ICONS[0],
+    "item:air_catalyst_i": TRANSMUTATION_ITEM_ICONS[0],
+    "item:water_catalyst_i": TRANSMUTATION_ITEM_ICONS[0],
+    "item:earth_catalyst_ii": TRANSMUTATION_ITEM_ICONS[1],
+    "item:air_catalyst_ii": TRANSMUTATION_ITEM_ICONS[1],
+    "item:water_catalyst_ii": TRANSMUTATION_ITEM_ICONS[1],
+    "item:earth_catalyst_iii": TRANSMUTATION_ITEM_ICONS[2],
+    "item:air_catalyst_iii": TRANSMUTATION_ITEM_ICONS[2],
+    "item:water_catalyst_iii": TRANSMUTATION_ITEM_ICONS[2],
+    "item:earth_catalyst_iv": TRANSMUTATION_ITEM_ICONS[3],
+    "item:air_catalyst_iv": TRANSMUTATION_ITEM_ICONS[3],
+    "item:water_catalyst_iv": TRANSMUTATION_ITEM_ICONS[3],
+    "item:earth_catalyst_v": TRANSMUTATION_ITEM_ICONS[4],
+    "item:air_catalyst_v": TRANSMUTATION_ITEM_ICONS[4],
+    "item:water_catalyst_v": TRANSMUTATION_ITEM_ICONS[4],
+    "item:earth_catalyst_vi": TRANSMUTATION_ITEM_ICONS[5],
+    "item:air_catalyst_vi": TRANSMUTATION_ITEM_ICONS[5],
+    "item:water_catalyst_vi": TRANSMUTATION_ITEM_ICONS[5],
+    "item:earth_catalyst_vii": TRANSMUTATION_ITEM_ICONS[6],
+    "item:air_catalyst_vii": TRANSMUTATION_ITEM_ICONS[6],
+    "item:water_catalyst_vii": TRANSMUTATION_ITEM_ICONS[6],
+    "item:earth_catalyst_viii": TRANSMUTATION_ITEM_ICONS[7],
+    "item:air_catalyst_viii": TRANSMUTATION_ITEM_ICONS[7],
+    "item:water_catalyst_viii": TRANSMUTATION_ITEM_ICONS[7],
 }

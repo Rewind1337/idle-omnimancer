@@ -1,17 +1,133 @@
 import { Modal } from "../Modal"
 import { Heading } from "../Heading"
 import { Button } from "../Button"
+import { Badge } from "../Badge"
+import { Flex } from "../Flex"
+import { Grid } from "../Grid"
+import { Item } from "../Item"
+import { Paper } from "../Paper"
+import { Progress } from "../Progress"
+import { Text } from "../Text"
+
+import { CURRENCY_DATA_BY_ID, ITEM_DATA_BY_ID } from "../../data/itemData"
+import { MISSION_DATA } from "../../data/missionData"
+import { useGame } from "../../hooks/useGame"
+
+import "./MissionsModal.scss"
+
+function MissionCard({ mission }) {
+    const objectiveItem = ITEM_DATA_BY_ID[mission.objective.item]
+
+    return (
+        <Paper layer={2} className="mission-card">
+            <Flex direction="column" align="stretch" gap={10}>
+                <Flex direction="row" justify="space-between" wrap gap={8}>
+                    <Heading h="4">{mission.title}</Heading>
+                    <Badge variant="primary">Tier {mission.tier}</Badge>
+                </Flex>
+                <Text size="small">{mission.description}</Text>
+                <Flex direction="row" justify="space-between" wrap gap={8}>
+                    <Item
+                        mode="wide"
+                        layer={2}
+                        interactive={false}
+                        icon={objectiveItem?.icon}
+                        name={mission.objective.amount.toLocaleString() + " × " + (objectiveItem?.name ?? mission.objective.item)}
+                        variant={objectiveItem?.variant ?? "primary"}
+                    />
+                    {mission.rewards.map((reward, index) => {
+                        const currency = CURRENCY_DATA_BY_ID[reward.currency]
+                        return (
+                            <Badge
+                                key={reward.currency + "-" + index}
+                                variant={currency?.variant ?? "primary"}
+                                icon={currency?.icon}
+                            >
+                                +{reward.amount.toLocaleString()} {currency?.name ?? reward.currency}
+                            </Badge>
+                        )
+                    })}
+                </Flex>
+            </Flex>
+        </Paper>
+    )
+}
 
 export function MissionsModal({ visible, setVisible }) {
+    const { player } = useGame()
     const close = () => setVisible(false)
+
+    const missionTier = Math.max(1, Math.floor(player.missionTier ?? MISSION_DATA.startingTier))
+    const completedMissionIds = new Set(player.completedMissions ?? [])
+    const currentTierMissions = MISSION_DATA.missions.filter(mission => mission.tier === missionTier)
+    const completedCount = currentTierMissions.filter(mission => completedMissionIds.has(mission.id)).length
+    const requiredCount = MISSION_DATA.tierRequirements[missionTier - 1] ?? null
+    const progressPercentage = requiredCount
+        ? Math.min(100, completedCount / requiredCount * 100)
+        : 100
+    const availableMissions = MISSION_DATA.missions.filter(mission => mission.tier <= missionTier)
+    const fame = CURRENCY_DATA_BY_ID["currency:fame"]
+    const fameBalance = player.currencies?.fame ?? 0
 
     return (
         <Modal
             visible={visible}
             variant="primary"
+            className="modal-missions"
             onBackdropClick={close}
-            header={<Heading h="1">Missions</Heading>}
-            content={null}
+            header={
+                <Flex direction="row" justify="space-between" wrap gap={12}>
+                    <Heading h="1">Missions</Heading>
+                    <Badge variant={fame?.variant ?? "primary"} icon={fame?.icon}>
+                        {fameBalance.toLocaleString()} Fame
+                    </Badge>
+                </Flex>
+            }
+            content={
+                <Flex direction="column" align="stretch" gap={12} className="missions-modal-content">
+                    <Paper layer={2} className="mission-tier-panel">
+                        <Flex direction="column" align="stretch" gap={8}>
+                            <Flex direction="row" justify="space-between" wrap gap={8}>
+                                <Heading h="3">Mission Tier {missionTier}</Heading>
+                                <Badge variant="primary">
+                                    {requiredCount
+                                        ? completedCount.toLocaleString() + " / " + requiredCount.toLocaleString()
+                                        : "Maximum Tier"}
+                                </Badge>
+                            </Flex>
+                            <Progress
+                                percentage={progressPercentage}
+                                label={requiredCount
+                                    ? completedCount.toLocaleString() + " / " + requiredCount.toLocaleString() + " Missions Completed"
+                                    : "All mission tiers unlocked"}
+                                size="small"
+                                variant="primary"
+                            />
+                            <Text size="small">
+                                {requiredCount
+                                    ? "Complete " + requiredCount.toLocaleString() + " missions from this tier to unlock Mission Tier " + (missionTier + 1) + "."
+                                    : "You have reached the highest configured mission tier."}
+                            </Text>
+                        </Flex>
+                    </Paper>
+                    <Heading h="3">Available Missions</Heading>
+                    {availableMissions.length > 0 ? (
+                        <Grid
+                            columns={{ xsmall: 1, small: 1, medium: 2, large: 2 }}
+                            gap={12}
+                            className="missions-modal-list"
+                        >
+                            {availableMissions.map(mission => (
+                                <MissionCard key={mission.id} mission={mission} />
+                            ))}
+                        </Grid>
+                    ) : (
+                        <Paper layer={2}>
+                            <Text>No missions have been configured for this tier yet.</Text>
+                        </Paper>
+                    )}
+                </Flex>
+            }
             footer={
                 <Button variant="primary" onClick={close}>
                     Close

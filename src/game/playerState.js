@@ -5,6 +5,7 @@ import {
 } from "../data/skillConfig"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
+import { MISSION_TIER_REQUIREMENTS } from "../data/missionData"
 
 export const SAVE_KEY = "omnimancer-idle-save"
 export const SAVE_VERSION = 3
@@ -53,8 +54,11 @@ export const createInitialPlayerState = () => {
         skills,
         inventory: {},
         inventorySlots: DEFAULT_INVENTORY_SLOTS,
+        missionTier: 1,
+        completedMissions: [],
         currencies: {
             coins: 0,
+            fame: 0,
         },
         mana: {
             current: spellcraft?.mana?.base ?? 0,
@@ -142,11 +146,21 @@ export const normalizePlayerState = (savedState) => {
         skills,
         inventory,
         inventorySlots,
+        missionTier: clampInteger(
+            savedState.missionTier,
+            1,
+            MISSION_TIER_REQUIREMENTS.length + 1,
+            initial.missionTier
+        ),
+        completedMissions: Array.isArray(savedState.completedMissions)
+            ? [...new Set(savedState.completedMissions.filter(id => typeof id === "string"))]
+            : initial.completedMissions,
         currencies: {
             coins: Math.max(0, finiteNumber(
                 savedState.currencies?.coins,
                 finiteNumber(savedState.currencies?.gold, 0)
             )),
+            fame: Math.max(0, finiteNumber(savedState.currencies?.fame, initial.currencies.fame)),
         },
         mana: {
             current: Math.max(0, finiteNumber(savedState.mana?.current, initial.mana.current)),

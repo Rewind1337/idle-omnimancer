@@ -39,7 +39,7 @@ const ELEMENT_PATHS = [
 ]
 
 // Initial recipe quantities and unlock costs are scaffolding for balancing.
-const RESEARCH_INPUT_AMOUNTS = [1, 2, 3, 4, 5, 6, 7, 8]
+const RESEARCH_INPUT_AMOUNTS = [2, 2, 3, 3, 4, 4, 5, 5]
 const ESSENCE_INPUT_AMOUNTS = [1, 2, 3, 4, 5, 6, 7, 8]
 
 const getActionUnlockCosts = (tier, elementIndex) => [
@@ -76,8 +76,17 @@ export const TRANSMUTATION_CONFIG = {
     // These starting requirements should be adjusted once the first economy pass is tested.
     unlockCosts: [
         { item: "item:bound_notes", amount: 100 },
-        { item: "currency:coins", amount: 10000 },
+        { item: "item:dust", amount: 25 },
+        { item: "item:breath", amount: 25 },
+        { item: "item:droplet", amount: 25 },
+        { item: "currency:coins", amount: 5000 },
     ],
+
+    elementModifiers: {
+        earth: { timeMultiplier: 1.05, xpMultiplier: 1.15, manaCostMultiplier: 1.1 },
+        air: { timeMultiplier: 0.95, xpMultiplier: 0.90, manaCostMultiplier: 0.9 },
+        water: { timeMultiplier: 1, xpMultiplier: 1, manaCostMultiplier: 1 },
+    },
 
     skillXP: {
         firstLevelXP: 3,
@@ -103,7 +112,17 @@ export const TRANSMUTATION_CONFIG = {
         finalMultPerLevel: 0.999,
     },
 
-    milestones: [],
-    actionMilestones: [],
+    milestones: [
+        { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 1.2 },
+        { level: 20, reach: "skill:research", type: "mult", effect: "actionTime", value: 1.2 },
+        { level: 30, reach: "global", type: "mult", effect: "preservation", value: 1.05 },
+    ],
+
+    actionMilestones: [
+        { levels: 2, type: "mult", effect: "itemOutput", value: 1.01 },
+        { levels: 5, type: "mult", effect: "preservation", value: 1.01 },
+        { levels: 20, type: "mult", effect: "xpGain", value: 1.1 },
+    ],
+
     actions: ACTIONS,
 }

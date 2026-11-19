@@ -54,7 +54,7 @@ export const SPELLCRAFT_CONFIG = {
     ],
 
     actionMilestones: [
-        { levels: 2, type: "mult", effect: "actionTime", value: 1.01 },
+        { levels: 1, type: "mult", effect: "actionTime", value: 1.01 },
         { levels: 5, type: "mult", effect: "itemOutput", value: 1.01 },
         { levels: 20, type: "mult", effect: "xpGain", value: 1.1 },
     ],

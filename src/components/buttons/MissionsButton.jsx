@@ -8,7 +8,9 @@ export function MissionsButton({ active = false, onClick }) {
             variant="primary"
             className="w-min"
             checked={active}
-            icon={OTHER_ICONS.STAR}
+            icon={OTHER_ICONS.MISSIONS}
+            badge={"0 / 4"}
+            badgeIcon={OTHER_ICONS.STAR}
             onClick={onClick}
         >
             Missions

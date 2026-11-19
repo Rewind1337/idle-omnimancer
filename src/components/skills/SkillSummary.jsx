@@ -24,13 +24,13 @@ export function SkillSummary({ title, skillProgress, variant, icon, milestones =
                     <Flex>
                         <h1>{title}</h1>
                         <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">
-                            <Heading h="4">Skill XP earned from completed action level-ups, toward the next Skill level.</Heading>
+                            <Heading h="4" className="w-100 align-center">Skill XP earned from completed action level-ups, toward the next Skill level.</Heading>
                         </Flex>}>
                             {skillProgress.xp} / {skillProgress.neededXP} XP
                         </Badge>
                         <Badge variant="transparent" interactive icon={OTHER_ICONS.STAR} tooltip={
                             <Flex direction="column" gap={8}>
-                                <Heading h="4">Total progress in this skill, derived from the levels of all its actions.</Heading>
+                                <Heading h="4" className="w-100 align-center">Total progress in this skill, derived from the levels of all its actions.</Heading>
                                 {milestones.length > 0 && (
                                     <>
                                         <div className="divider tooltip-divider"></div>

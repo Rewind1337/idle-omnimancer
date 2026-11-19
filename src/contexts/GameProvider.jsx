@@ -57,11 +57,10 @@ export function GameProvider({ children }) {
     const playerRef = useRef(player)
     const lastTickRef = useRef(0)
     const offlineTaskRef = useRef(null)
-    const initialOfflineMs = Math.max(0, Date.now() - player.lastUpdatedAt)
     const [isGameReady, setIsGameReady] = useState(false)
     const [offlineProgress, setOfflineProgress] = useState({
-        visible: initialOfflineMs > 1000,
-        totalMs: initialOfflineMs,
+        visible: false,
+        totalMs: 0,
         processedMs: 0,
         feed: [],
         completed: false,

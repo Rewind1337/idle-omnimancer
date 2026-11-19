@@ -18,7 +18,7 @@ export function MissionsButton({ active = false, onClick }) {
     return (
         <Button
             size="medium"
-            variant="primary"
+            variant="secondary"
             className="w-min"
             checked={active}
             icon={OTHER_ICONS.MISSIONS}

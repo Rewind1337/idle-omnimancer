@@ -19,11 +19,11 @@ function MissionCard({ mission }) {
     const objectiveItem = ITEM_DATA_BY_ID[mission.objective.item]
 
     return (
-        <Paper layer={2} className="mission-card">
+        <Paper layer={2} variant="secondary" className="mission-card">
             <Flex direction="column" align="stretch" gap={10}>
                 <Flex direction="row" justify="space-between" wrap gap={8}>
                     <Heading h="4">{mission.title}</Heading>
-                    <Badge variant="primary">Tier {mission.tier}</Badge>
+                    <Badge variant="secondary">Tier {mission.tier}</Badge>
                 </Flex>
                 <Text size="small">{mission.description}</Text>
                 <Flex direction="row" justify="space-between" wrap gap={8}>
@@ -40,7 +40,7 @@ function MissionCard({ mission }) {
                         return (
                             <Badge
                                 key={reward.currency + "-" + index}
-                                variant={currency?.variant ?? "primary"}
+                                variant="secondary"
                                 icon={currency?.icon}
                             >
                                 +{reward.amount.toLocaleString()} {currency?.name ?? reward.currency}
@@ -72,24 +72,24 @@ export function MissionsModal({ visible, setVisible }) {
     return (
         <Modal
             visible={visible}
-            variant="primary"
+            variant="secondary"
             className="modal-missions"
             onBackdropClick={close}
             header={
                 <Flex direction="row" justify="space-between" wrap gap={12}>
                     <Heading h="1">Missions</Heading>
-                    <Badge variant={fame?.variant ?? "primary"} icon={fame?.icon}>
+                    <Badge variant="secondary" icon={fame?.icon}>
                         {fameBalance.toLocaleString()} Fame
                     </Badge>
                 </Flex>
             }
             content={
                 <Flex direction="column" align="stretch" gap={12} className="missions-modal-content">
-                    <Paper layer={2} className="mission-tier-panel">
+                    <Paper layer={2} variant="secondary" className="mission-tier-panel">
                         <Flex direction="column" align="stretch" gap={8}>
                             <Flex direction="row" justify="space-between" wrap gap={8}>
                                 <Heading h="3">Mission Tier {missionTier}</Heading>
-                                <Badge variant="primary">
+                                <Badge variant="secondary">
                                     {requiredCount
                                         ? completedCount.toLocaleString() + " / " + requiredCount.toLocaleString()
                                         : "Maximum Tier"}
@@ -101,7 +101,7 @@ export function MissionsModal({ visible, setVisible }) {
                                     ? completedCount.toLocaleString() + " / " + requiredCount.toLocaleString() + " Missions Completed"
                                     : "All mission tiers unlocked"}
                                 size="small"
-                                variant="primary"
+                                variant="secondary"
                             />
                             <Text size="small">
                                 {requiredCount
@@ -122,14 +122,14 @@ export function MissionsModal({ visible, setVisible }) {
                             ))}
                         </Grid>
                     ) : (
-                        <Paper layer={2}>
+                        <Paper layer={2} variant="secondary">
                             <Text>No missions have been configured for this tier yet.</Text>
                         </Paper>
                     )}
                 </Flex>
             }
             footer={
-                <Button variant="primary" onClick={close}>
+                <Button variant="secondary" onClick={close}>
                     Close
                 </Button>
             }

@@ -16,6 +16,7 @@ import { RESEARCH_ACTION_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
     canUnlockAction,
+    canStartAction,
     getActionDurationMs,
     getActionXPReward,
     getActionEffectStacks,
@@ -31,7 +32,7 @@ import { useGame } from "../hooks/useGame"
 const InnerShapeMap = ["dot", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]
 
-function ResearchAction({ action, player, isActive, isUnlocked, actionState, canUnlock, onToggle, onUnlock }) {
+function ResearchAction({ action, player, isActive, isUnlocked, actionState, canUnlock, canStart, onToggle, onUnlock }) {
     const actionIcon = RESEARCH_ACTION_ICONS[action.tier - 1] ?? RESEARCH_ACTION_ICONS[0]
     const durationMs = isUnlocked ? getActionDurationMs(RESEARCH_CONFIG, action, player) : 0
     const xpTable = isUnlocked ? getActionXPTable(action.id) : null
@@ -64,7 +65,7 @@ function ResearchAction({ action, player, isActive, isUnlocked, actionState, can
                             tier={action.tier} isUnlocked={isUnlocked} actionMilestones={actionMilestones} />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
-                                durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
+                                canStart={canStart} durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
                                 variant="research" actionLabel="Research" />
                         ) : (
                             <Button variant="research" className="w-100" size="medium"
@@ -126,6 +127,7 @@ export function ResearchPage() {
                         return (
                             <ResearchAction key={action.id} action={action} player={player} actionState={actionState}
                                 isActive={isActive} isUnlocked={isUnlocked}
+                                canStart={canStartAction(player, skillId, action.id)}
                                 canUnlock={canUnlockAction(player, skillId, action.id)}
                                 onUnlock={() => unlockAction(skillId, action.id)}
                                 onToggle={() => {

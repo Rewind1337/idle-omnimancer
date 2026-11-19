@@ -14,6 +14,7 @@ const EFFECT_LABELS = {
 }
 
 const formatNumber = (value) => Number(value.toFixed(2)).toString()
+const formatMultiplier = (value) => Number(value.toFixed(4)).toString()
 
 const formatSigned = (value) =>
     (value < 0 ? "−" : "+") + formatNumber(Math.abs(value))
@@ -33,8 +34,12 @@ const formatEffectDescription = (entry) => {
             xpGain: "action XP",
             manaCost: "Mana cost",
         }
-        return "×" + formatNumber(value) + " " + (elementLabels[effect] ?? label) +
-            " (" + formatPercent(value - 1) + ")"
+        return "x" + formatMultiplier(value) + " " + (elementLabels[effect] ?? label)
+    }
+
+    // Multiplier effects are shown as their resulting factor instead of a signed percentage.
+    if (type === "mult" || ["actionTime", "itemOutput", "preservation"].includes(effect)) {
+        return "x" + formatMultiplier(1 + delta) + " " + label
     }
 
     if (effect === "xpGain" && type === "flat") {

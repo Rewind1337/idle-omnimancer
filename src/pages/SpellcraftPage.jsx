@@ -18,6 +18,7 @@ import { getActionXPTable } from "../data/skillConfig"
 import { SKILL_ICONS, SPELLCRAFT_ACTION_ICONS } from "../data/iconLibrary"
 import {
     canUnlockAction,
+    canStartAction,
     getActionDurationMs,
     getActionManaCost,
     getActionOutputMultiplier,
@@ -34,7 +35,7 @@ import { useGame } from "../hooks/useGame"
 const InnerShapeMap = [3, 4, 5, 6, 7, 8, 9, 10]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide"]
 
-function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, canUnlock, onToggle, onUnlock }) {
+function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, canUnlock, canStart, onToggle, onUnlock }) {
     const elementIcons = SPELLCRAFT_ACTION_ICONS[action.element?.toUpperCase()] ?? SPELLCRAFT_ACTION_ICONS.EARTH
     const actionIcon = elementIcons[action.tier - 1] ?? elementIcons[0]
     const durationMs = isUnlocked ? getActionDurationMs(SPELLCRAFT_CONFIG, action, player) : 0
@@ -70,7 +71,7 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
                             actionMilestones={actionMilestones} />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
-                                durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
+                                canStart={canStart} durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
                                 variant={elementVariant} actionLabel="Cast" />
                         ) : (
                             <Button variant={elementVariant} className="w-100" size="medium"
@@ -138,6 +139,7 @@ export function SpellcraftPage() {
                         return (
                             <SpellcraftAction key={action.id} action={action} player={player} actionState={actionState}
                                 isActive={isActive} isUnlocked={isUnlocked}
+                                canStart={canStartAction(player, skillId, action.id)}
                                 canUnlock={canUnlockAction(player, skillId, action.id)}
                                 onUnlock={() => unlockAction(skillId, action.id)}
                                 onToggle={() => {

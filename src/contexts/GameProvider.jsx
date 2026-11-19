@@ -26,7 +26,7 @@ const MAX_OFFLINE_CHUNKS = 300
 
 const formatGainAmount = amount => Number(amount).toLocaleString()
 
-const getOfflineGains = (previous, next, processedMs) => {
+const getOfflineGains = (previous, next) => {
     const gains = []
 
     for (const [itemId, amount] of Object.entries(next.inventory ?? {})) {
@@ -35,17 +35,19 @@ const getOfflineGains = (previous, next, processedMs) => {
 
         const item = ITEM_DATA_BY_ID[itemId]
         gains.push({
-            key: itemId + "-" + processedMs,
+            key: itemId,
             text: "+" + formatGainAmount(gained) + " " + (item?.name ?? itemId),
         })
     }
 
-    const gainedCoins = (next.currencies?.coins ?? 0) - (previous.currencies?.coins ?? 0)
-    if (gainedCoins > 0) {
-        const currency = CURRENCY_DATA_BY_ID["currency:coins"]
+    for (const [currencyId, amount] of Object.entries(next.currencies ?? {})) {
+        const gained = amount - (previous.currencies?.[currencyId] ?? 0)
+        if (gained <= 0) continue
+
+        const currency = CURRENCY_DATA_BY_ID["currency:" + currencyId]
         gains.push({
-            key: "coins-" + processedMs,
-            text: "+" + formatGainAmount(gainedCoins) + " " + (currency?.name ?? "Coins"),
+            key: "currency:" + currencyId,
+            text: "+" + formatGainAmount(gained) + " " + (currency?.name ?? currencyId),
         })
     }
 
@@ -78,9 +80,11 @@ export function GameProvider({ children }) {
             const basePlayer = playerRef.current
             const targetAt = Date.now()
             const totalMs = Math.max(0, targetAt - basePlayer.lastUpdatedAt)
+            const initialPlayer = structuredClone(basePlayer)
 
             offlineTaskRef.current = {
-                player: structuredClone(basePlayer),
+                player: structuredClone(initialPlayer),
+                initialPlayer,
                 startAt: basePlayer.lastUpdatedAt,
                 totalMs,
                 processedMs: 0,
@@ -139,8 +143,7 @@ export function GameProvider({ children }) {
             )
             task.processedMs = nextProcessedMs
 
-            const newGains = getOfflineGains(previousPlayer, task.player, task.processedMs)
-            task.feed = [...newGains, ...task.feed].slice(0, 8)
+            task.feed = getOfflineGains(task.initialPlayer, task.player)
 
             const completed = task.processedMs >= task.totalMs
             setOfflineProgress({

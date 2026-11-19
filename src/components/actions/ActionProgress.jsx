@@ -12,6 +12,7 @@ export function ActionProgress({
     durationMs,
     variant = "research",
     actionLabel = "Research",
+    canStart = true,
 }) {
     const actionCompletionPercentage = getActionProgress(actionState, durationMs)
     const actionLevelPercentage = neededXP > 0 ? (currentXP / neededXP) * 100 : 100
@@ -22,6 +23,7 @@ export function ActionProgress({
                 percentage={actionLevelPercentage} animated={isActive} />
             <Flex direction="column" className="w-30">
                 <Button variant={variant} className="w-100" size="medium"
+                    disabled={!isActive && !canStart}
                     toggled={isActive} onClick={onToggle}
                     badge={isActive ? actionCompletionPercentage.toFixed(0) + "%" : null}>
                     {isActive ? "Stop" : actionLabel}

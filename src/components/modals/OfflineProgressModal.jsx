@@ -6,6 +6,8 @@ import { Paper } from "../Paper"
 import { Progress } from "../Progress"
 import { Text } from "../Text"
 
+import "./OfflineProgressModal.scss"
+
 const formatDuration = (milliseconds) => {
     const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000))
     const days = Math.floor(totalSeconds / 86400)
@@ -34,7 +36,7 @@ export function OfflineProgressModal({ progress, onContinue }) {
     return (
         <Modal
             visible
-            variant="shop"
+            variant="primary"
             className="modal-offline-progress"
             onBackdropClick={() => {
                 if (completed) onContinue()
@@ -48,28 +50,29 @@ export function OfflineProgressModal({ progress, onContinue }) {
                             : "Calculating the progress made while you were away..."}
                     </Text>
                     <Progress
+                        className="offline-progress-bar"
                         layer={1}
-                        variant="shop"
+                        variant="primary"
                         size="large"
                         percentage={percentage}
                         label={percentage.toFixed(1) + "%"}
                     />
                     <Flex direction="row" wrap gap={8}>
-                        <Paper layer={2}>
+                        <Paper layer={2} variant="primary">
                             <Heading h="5">Total Offline Time</Heading>
                             <Heading h="3">{formatDuration(totalMs)}</Heading>
                         </Paper>
-                        <Paper layer={2}>
+                        <Paper layer={2} variant="primary">
                             <Heading h="5">Simulated</Heading>
                             <Heading h="3">{formatDuration(processedMs)}</Heading>
                         </Paper>
-                        <Paper layer={2}>
+                        <Paper layer={2} variant="primary">
                             <Heading h="5">Remaining</Heading>
                             <Heading h="3">{formatDuration(remainingMs)}</Heading>
                         </Paper>
                     </Flex>
                     <Heading h="3">Resource Gains</Heading>
-                    <Paper layer={2}>
+                    <Paper layer={2} variant="primary">
                         <Flex direction="column" gap={6}>
                             {progress.feed?.length > 0
                                 ? progress.feed.map((entry, index) => (
@@ -81,7 +84,7 @@ export function OfflineProgressModal({ progress, onContinue }) {
                 </Flex>
             }
             footer={completed
-                ? <Button variant="shop" onClick={onContinue}>Continue</Button>
+                ? <Button variant="primary" onClick={onContinue}>Continue</Button>
                 : <Text size="small">Offline progress is being calculated...</Text>}
         />
     )

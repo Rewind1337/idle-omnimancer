@@ -1,73 +1,4 @@
-// Transmutation connects Research materials with the matching elemental Spellcraft essence.
-// Eight tiers mirror the current Spellcraft essence families, giving every essence
-// exactly one corresponding Transmutation recipe.
-const RESEARCH_MATERIALS = [
-    "item:loose_notes",
-    "item:bound_notes",
-    "item:translated_scrolls",
-    "item:arcane_manuscript",
-    "item:sealed_grimoire",
-    "item:lost_archive_record",
-    "item:forgotten_texts",
-    "item:forbidden_codex",
-]
-
-const ROMAN_TIERS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"]
-
-const ELEMENT_PATHS = [
-    {
-        element: "earth",
-        essences: [
-            "item:dust", "item:pebble", "item:stone", "item:shard",
-            "item:crystal", "item:core", "item:mountain_heart", "item:worldheart",
-        ],
-    },
-    {
-        element: "air",
-        essences: [
-            "item:breath", "item:breeze", "item:gust", "item:gale",
-            "item:tempest", "item:cyclone", "item:skycore", "item:firmament_core",
-        ],
-    },
-    {
-        element: "water",
-        essences: [
-            "item:droplet", "item:ripple", "item:stream", "item:wave",
-            "item:torrent", "item:maelstrom", "item:abyssal_heart", "item:primordial_tide",
-        ],
-    },
-]
-
-// Initial recipe quantities and unlock costs are scaffolding for balancing.
-const RESEARCH_INPUT_AMOUNTS = [2, 2, 3, 3, 4, 4, 5, 5]
-const ESSENCE_INPUT_AMOUNTS = [1, 2, 3, 4, 5, 6, 7, 8]
-
-const getActionUnlockCosts = (tier, elementIndex) => [
-    { item: RESEARCH_MATERIALS[tier - 1], amount: tier * 100 },
-    { item: "currency:coins", amount: 1000 * Math.pow(10, tier - 1) * (elementIndex + 1) },
-]
-
-const ACTIONS = Array.from({ length: ROMAN_TIERS.length }, (_, tierIndex) =>
-    ELEMENT_PATHS.map((path, elementIndex) => {
-        const tier = tierIndex + 1
-        const romanTier = ROMAN_TIERS[tierIndex]
-        const catalystId = "item:" + path.element + "_catalyst_" + romanTier.toLowerCase()
-
-        return {
-            id: "action:" + path.element + "_transmutation_" + romanTier.toLowerCase(),
-            tier,
-            element: path.element,
-            consumes: [
-                { item: RESEARCH_MATERIALS[tierIndex], amount: RESEARCH_INPUT_AMOUNTS[tierIndex] },
-                { item: path.essences[tierIndex], amount: ESSENCE_INPUT_AMOUNTS[tierIndex] },
-            ],
-            produces: [{ item: catalystId, amount: 1 }],
-            ...((tier === 1 && elementIndex === 0)
-                ? { unlockedByDefault: true }
-                : { unlockCosts: getActionUnlockCosts(tier, elementIndex) }),
-        }
-    })
-).flat()
+// Transmutation recipes are listed explicitly so each element and tier can be tuned independently.
 
 export const TRANSMUTATION_CONFIG = {
     id: "skill:transmutation",
@@ -124,5 +55,339 @@ export const TRANSMUTATION_CONFIG = {
         { levels: 20, type: "mult", effect: "xpGain", value: 1.1 },
     ],
 
-    actions: ACTIONS,
+    actions: [
+        {
+            id: "action:earth_transmutation_i",
+            tier: 1,
+            element: "earth",
+            consumes: [
+                { item: "item:loose_notes", amount: 2 },
+                { item: "item:dust", amount: 1 },
+            ],
+            produces: [{ item: "item:earth_catalyst_i", amount: 1 }],
+            unlockedByDefault: true,
+        },
+        {
+            id: "action:air_transmutation_i",
+            tier: 1,
+            element: "air",
+            consumes: [
+                { item: "item:loose_notes", amount: 2 },
+                { item: "item:breath", amount: 1 },
+            ],
+            produces: [{ item: "item:air_catalyst_i", amount: 1 }],
+            unlockCosts: [
+                { item: "item:loose_notes", amount: 100 },
+                { item: "currency:coins", amount: 2000 },
+            ],
+        },
+        {
+            id: "action:water_transmutation_i",
+            tier: 1,
+            element: "water",
+            consumes: [
+                { item: "item:loose_notes", amount: 2 },
+                { item: "item:droplet", amount: 1 },
+            ],
+            produces: [{ item: "item:water_catalyst_i", amount: 1 }],
+            unlockCosts: [
+                { item: "item:loose_notes", amount: 100 },
+                { item: "currency:coins", amount: 3000 },
+            ],
+        },
+        {
+            id: "action:earth_transmutation_ii",
+            tier: 2,
+            element: "earth",
+            consumes: [
+                { item: "item:bound_notes", amount: 2 },
+                { item: "item:pebble", amount: 2 },
+            ],
+            produces: [{ item: "item:earth_catalyst_ii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:bound_notes", amount: 200 },
+                { item: "currency:coins", amount: 10000 },
+            ],
+        },
+        {
+            id: "action:air_transmutation_ii",
+            tier: 2,
+            element: "air",
+            consumes: [
+                { item: "item:bound_notes", amount: 2 },
+                { item: "item:breeze", amount: 2 },
+            ],
+            produces: [{ item: "item:air_catalyst_ii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:bound_notes", amount: 200 },
+                { item: "currency:coins", amount: 20000 },
+            ],
+        },
+        {
+            id: "action:water_transmutation_ii",
+            tier: 2,
+            element: "water",
+            consumes: [
+                { item: "item:bound_notes", amount: 2 },
+                { item: "item:ripple", amount: 2 },
+            ],
+            produces: [{ item: "item:water_catalyst_ii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:bound_notes", amount: 200 },
+                { item: "currency:coins", amount: 30000 },
+            ],
+        },
+        {
+            id: "action:earth_transmutation_iii",
+            tier: 3,
+            element: "earth",
+            consumes: [
+                { item: "item:translated_scrolls", amount: 3 },
+                { item: "item:stone", amount: 3 },
+            ],
+            produces: [{ item: "item:earth_catalyst_iii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:translated_scrolls", amount: 300 },
+                { item: "currency:coins", amount: 100000 },
+            ],
+        },
+        {
+            id: "action:air_transmutation_iii",
+            tier: 3,
+            element: "air",
+            consumes: [
+                { item: "item:translated_scrolls", amount: 3 },
+                { item: "item:gust", amount: 3 },
+            ],
+            produces: [{ item: "item:air_catalyst_iii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:translated_scrolls", amount: 300 },
+                { item: "currency:coins", amount: 200000 },
+            ],
+        },
+        {
+            id: "action:water_transmutation_iii",
+            tier: 3,
+            element: "water",
+            consumes: [
+                { item: "item:translated_scrolls", amount: 3 },
+                { item: "item:stream", amount: 3 },
+            ],
+            produces: [{ item: "item:water_catalyst_iii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:translated_scrolls", amount: 300 },
+                { item: "currency:coins", amount: 300000 },
+            ],
+        },
+        {
+            id: "action:earth_transmutation_iv",
+            tier: 4,
+            element: "earth",
+            consumes: [
+                { item: "item:arcane_manuscript", amount: 3 },
+                { item: "item:shard", amount: 4 },
+            ],
+            produces: [{ item: "item:earth_catalyst_iv", amount: 1 }],
+            unlockCosts: [
+                { item: "item:arcane_manuscript", amount: 400 },
+                { item: "currency:coins", amount: 1000000 },
+            ],
+        },
+        {
+            id: "action:air_transmutation_iv",
+            tier: 4,
+            element: "air",
+            consumes: [
+                { item: "item:arcane_manuscript", amount: 3 },
+                { item: "item:gale", amount: 4 },
+            ],
+            produces: [{ item: "item:air_catalyst_iv", amount: 1 }],
+            unlockCosts: [
+                { item: "item:arcane_manuscript", amount: 400 },
+                { item: "currency:coins", amount: 2000000 },
+            ],
+        },
+        {
+            id: "action:water_transmutation_iv",
+            tier: 4,
+            element: "water",
+            consumes: [
+                { item: "item:arcane_manuscript", amount: 3 },
+                { item: "item:wave", amount: 4 },
+            ],
+            produces: [{ item: "item:water_catalyst_iv", amount: 1 }],
+            unlockCosts: [
+                { item: "item:arcane_manuscript", amount: 400 },
+                { item: "currency:coins", amount: 3000000 },
+            ],
+        },
+        {
+            id: "action:earth_transmutation_v",
+            tier: 5,
+            element: "earth",
+            consumes: [
+                { item: "item:sealed_grimoire", amount: 4 },
+                { item: "item:crystal", amount: 5 },
+            ],
+            produces: [{ item: "item:earth_catalyst_v", amount: 1 }],
+            unlockCosts: [
+                { item: "item:sealed_grimoire", amount: 500 },
+                { item: "currency:coins", amount: 10000000 },
+            ],
+        },
+        {
+            id: "action:air_transmutation_v",
+            tier: 5,
+            element: "air",
+            consumes: [
+                { item: "item:sealed_grimoire", amount: 4 },
+                { item: "item:tempest", amount: 5 },
+            ],
+            produces: [{ item: "item:air_catalyst_v", amount: 1 }],
+            unlockCosts: [
+                { item: "item:sealed_grimoire", amount: 500 },
+                { item: "currency:coins", amount: 20000000 },
+            ],
+        },
+        {
+            id: "action:water_transmutation_v",
+            tier: 5,
+            element: "water",
+            consumes: [
+                { item: "item:sealed_grimoire", amount: 4 },
+                { item: "item:torrent", amount: 5 },
+            ],
+            produces: [{ item: "item:water_catalyst_v", amount: 1 }],
+            unlockCosts: [
+                { item: "item:sealed_grimoire", amount: 500 },
+                { item: "currency:coins", amount: 30000000 },
+            ],
+        },
+        {
+            id: "action:earth_transmutation_vi",
+            tier: 6,
+            element: "earth",
+            consumes: [
+                { item: "item:lost_archive_record", amount: 4 },
+                { item: "item:core", amount: 6 },
+            ],
+            produces: [{ item: "item:earth_catalyst_vi", amount: 1 }],
+            unlockCosts: [
+                { item: "item:lost_archive_record", amount: 600 },
+                { item: "currency:coins", amount: 100000000 },
+            ],
+        },
+        {
+            id: "action:air_transmutation_vi",
+            tier: 6,
+            element: "air",
+            consumes: [
+                { item: "item:lost_archive_record", amount: 4 },
+                { item: "item:cyclone", amount: 6 },
+            ],
+            produces: [{ item: "item:air_catalyst_vi", amount: 1 }],
+            unlockCosts: [
+                { item: "item:lost_archive_record", amount: 600 },
+                { item: "currency:coins", amount: 200000000 },
+            ],
+        },
+        {
+            id: "action:water_transmutation_vi",
+            tier: 6,
+            element: "water",
+            consumes: [
+                { item: "item:lost_archive_record", amount: 4 },
+                { item: "item:maelstrom", amount: 6 },
+            ],
+            produces: [{ item: "item:water_catalyst_vi", amount: 1 }],
+            unlockCosts: [
+                { item: "item:lost_archive_record", amount: 600 },
+                { item: "currency:coins", amount: 300000000 },
+            ],
+        },
+        {
+            id: "action:earth_transmutation_vii",
+            tier: 7,
+            element: "earth",
+            consumes: [
+                { item: "item:forgotten_texts", amount: 5 },
+                { item: "item:mountain_heart", amount: 7 },
+            ],
+            produces: [{ item: "item:earth_catalyst_vii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:forgotten_texts", amount: 700 },
+                { item: "currency:coins", amount: 1000000000 },
+            ],
+        },
+        {
+            id: "action:air_transmutation_vii",
+            tier: 7,
+            element: "air",
+            consumes: [
+                { item: "item:forgotten_texts", amount: 5 },
+                { item: "item:skycore", amount: 7 },
+            ],
+            produces: [{ item: "item:air_catalyst_vii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:forgotten_texts", amount: 700 },
+                { item: "currency:coins", amount: 2000000000 },
+            ],
+        },
+        {
+            id: "action:water_transmutation_vii",
+            tier: 7,
+            element: "water",
+            consumes: [
+                { item: "item:forgotten_texts", amount: 5 },
+                { item: "item:abyssal_heart", amount: 7 },
+            ],
+            produces: [{ item: "item:water_catalyst_vii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:forgotten_texts", amount: 700 },
+                { item: "currency:coins", amount: 3000000000 },
+            ],
+        },
+        {
+            id: "action:earth_transmutation_viii",
+            tier: 8,
+            element: "earth",
+            consumes: [
+                { item: "item:forbidden_codex", amount: 5 },
+                { item: "item:worldheart", amount: 8 },
+            ],
+            produces: [{ item: "item:earth_catalyst_viii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:forbidden_codex", amount: 800 },
+                { item: "currency:coins", amount: 10000000000 },
+            ],
+        },
+        {
+            id: "action:air_transmutation_viii",
+            tier: 8,
+            element: "air",
+            consumes: [
+                { item: "item:forbidden_codex", amount: 5 },
+                { item: "item:firmament_core", amount: 8 },
+            ],
+            produces: [{ item: "item:air_catalyst_viii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:forbidden_codex", amount: 800 },
+                { item: "currency:coins", amount: 20000000000 },
+            ],
+        },
+        {
+            id: "action:water_transmutation_viii",
+            tier: 8,
+            element: "water",
+            consumes: [
+                { item: "item:forbidden_codex", amount: 5 },
+                { item: "item:primordial_tide", amount: 8 },
+            ],
+            produces: [{ item: "item:water_catalyst_viii", amount: 1 }],
+            unlockCosts: [
+                { item: "item:forbidden_codex", amount: 800 },
+                { item: "currency:coins", amount: 30000000000 },
+            ],
+        },
+    ],
 }

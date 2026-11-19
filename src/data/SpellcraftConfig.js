@@ -62,8 +62,7 @@ export const SPELLCRAFT_CONFIG = {
     actions: [
         // Tier I
         {
-            id: "action:shape_pebble",
-            name: "Conjure Dust",
+            id: "action:conjure_dust",
             tier: 1,
             element: "earth",
             produces: ["item:dust"],
@@ -84,8 +83,7 @@ export const SPELLCRAFT_CONFIG = {
             unlockCosts: [{ amount: 1e2, item: "item:loose_notes" }, { amount: 3e3, item: "currency:coins" }]
         },
         {
-            id: "action:shape_stone",
-            name: "Shape Pebble",
+            id: "action:shape_pebble",
             tier: 2,
             element: "earth",
             produces: ["item:pebble"],
@@ -106,8 +104,7 @@ export const SPELLCRAFT_CONFIG = {
             unlockCosts: [{ amount: 2e2, item: "item:bound_notes" }, { amount: 3e4, item: "currency:coins" }]
         },
         {
-            id: "action:raise_boulder",
-            name: "Raise Stone",
+            id: "action:raise_stone",
             tier: 3,
             element: "earth",
             produces: ["item:stone"],

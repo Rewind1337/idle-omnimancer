@@ -18,6 +18,7 @@ import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 import {
     canUnlockAction,
     getActionDurationMs,
+    getActionManaCost,
     getActionOutputMultiplier,
     getActionPreservationChance,
     getActionXPReward,
@@ -48,6 +49,10 @@ function TransmutationAction({ action, player, isActive, isUnlocked, actionState
     const outputMultiplier = isUnlocked
         ? getActionOutputMultiplier(player, TRANSMUTATION_CONFIG, action)
         : 1
+    const hasManaCost = Boolean(TRANSMUTATION_CONFIG.mana?.cost || action.manaCost > 0)
+    const manaCost = isUnlocked && hasManaCost
+        ? getActionManaCost(TRANSMUTATION_CONFIG, action, player)
+        : null
 
     return (
         <Paper layer={1} variant={elementVariant} className="action action-transmutation">
@@ -104,6 +109,7 @@ function TransmutationAction({ action, player, isActive, isUnlocked, actionState
                         <ActionDetails
                             actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(TRANSMUTATION_CONFIG, action, player)}
+                            manaCost={manaCost}
                             outputMultiplier={outputMultiplier}
                             preservationChance={getActionPreservationChance(player, TRANSMUTATION_CONFIG, action)}
                             effectStacks={effectStacks}

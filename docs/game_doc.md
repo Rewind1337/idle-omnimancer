@@ -334,7 +334,9 @@ Each action consumes materials from earlier skills.
 
 Higher tiers should require more advanced Research materials and elemental essences.
 
-- Exact quantities, combinations and tier recipes remain undecided.
+- The initial config provides eight tiered actions for each element so every current Spellcraft essence has one matching Transmutation recipe and is consumed by that recipe only.
+- Each recipe pairs its corresponding elemental essence with a Research material and produces the matching elemental Catalyst tier.
+- Recipe amounts, unlock costs, action durations and XP values in `transmutationConfig.js` are first-pass placeholders for in-game balancing, not final design decisions.
 - Recipes should create meaningful connections between earlier skills.
 - Each Transmutation action levels independently from 1 to 100.
 - The overall Transmutation skill level follows the shared skill-level rules.
@@ -737,7 +739,7 @@ Gold is a shared currency used for action unlocks, skill unlocks, inventory expa
 
 - Unlocking a skill should normally include its first action.
 - Resource requirements should connect skills without demanding that every earlier action reach level 100.
-- The exact resource quantities and gold costs are undecided.
+- The exact resource quantities and gold costs are undecided; the current Transmutation config uses editable starter values.
 - The Companion collection's separate unlock conditions, if any, are also undecided.
 
 ### 13.2 Research actions and further action unlocks
@@ -804,6 +806,7 @@ The player must not silently lose resources when the bag is full.
 - Skills & Actions lists available skill unlocks and the next locked action from each configured, unlocked skill. Each entry displays its unlock requirements.
 - General Goods is reserved for repeatable purchases of items that cannot be obtained through actions or other game systems. No General Goods are currently configured.
 - The global floating panel also provides a Missions shortcut on every main tab. Its modal is currently an empty placeholder with a close button.
+- Repeatable General Goods are defined in `SHOP_ITEM_DEFINITIONS` inside `src/data/itemData.js`; only items in that section appear in the General Goods shop tab.
 
 ---
 

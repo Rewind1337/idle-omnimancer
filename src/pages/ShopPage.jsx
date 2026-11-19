@@ -10,11 +10,13 @@ import { Tabs } from "../components/Tabs"
 import { ActionResources } from "../components/actions/ActionResources"
 
 import { OTHER_ICONS } from "../data/iconLibrary"
+import { SHOP_ITEM_DATA } from "../data/itemData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { GLOBAL_CONFIG, SKILL_CONFIG_BY_ID } from "../data/skillConfig"
 import {
     canUnlockAction,
     canUnlockSkill,
+    canBuyShopItem,
     getNextBagSlotCost,
     getVisibleActions,
 } from "../game/gameEngine"
@@ -26,10 +28,6 @@ const SHOP_TABS = [
     { id: "skills-actions", name: "Skills & Actions" },
     { id: "general-goods", name: "General Goods" },
 ]
-
-// General Goods will contain repeatable purchases that cannot be obtained elsewhere.
-// There are no such goods configured yet.
-const GENERAL_GOODS = []
 
 const formatCoins = value =>
     Number.isFinite(value) ? value.toLocaleString() : "Unavailable"
@@ -114,6 +112,35 @@ function BagSlotImprovement({ player, buyBagSlot }) {
     )
 }
 
+function ShopGoodCard({ item, player, buyShopItem }) {
+    const amountHeld = player.inventory?.[item.id] ?? 0
+    const canPurchase = canBuyShopItem(player, item.id)
+
+    return (
+        <Paper layer={1} variant="shop" className="action action-shop">
+            <Flex direction="row" align="center" gap={16}>
+                <Icon size={44} variant={item.variant ?? "shop"}>
+                    {cloneElement(item.icon ?? OTHER_ICONS.STAR, { size: 40 })}
+                </Icon>
+                <Flex direction="column" gap={8}>
+                    <Heading h="3">{item.name}</Heading>
+                    {item.description && <Text size="small">{item.description}</Text>}
+                    {amountHeld > 0 && <Text size="small">Owned: {amountHeld.toLocaleString()}</Text>}
+                    <Button
+                        variant="shop"
+                        size="medium"
+                        className="w-100"
+                        disabled={!canPurchase}
+                        onClick={() => buyShopItem(item.id)}
+                    >
+                        Buy for {formatCoins(item.shopPrice)} Coins
+                    </Button>
+                </Flex>
+            </Flex>
+        </Paper>
+    )
+}
+
 function getAvailableUnlocks(player, unlockSkill, unlockAction) {
     return SKILL_NAVIGATION.flatMap(skillTab => {
         const skill = SKILL_CONFIG_BY_ID[skillTab.skillId]
@@ -157,7 +184,7 @@ function getAvailableUnlocks(player, unlockSkill, unlockAction) {
 }
 
 export function ShopPage() {
-    const { player, unlockSkill, unlockAction, buyBagSlot } = useGame()
+    const { player, unlockSkill, unlockAction, buyBagSlot, buyShopItem } = useGame()
     const [activeTab, setActiveTab] = useState("improvements")
     const availableUnlocks = getAvailableUnlocks(player, unlockSkill, unlockAction)
 
@@ -204,10 +231,17 @@ export function ShopPage() {
             )}
 
             {activeTab === "general-goods" && (
-                <ShopSection title="Items">
-                    {GENERAL_GOODS.length > 0 ? (
+                <ShopSection title="General Goods">
+                    {SHOP_ITEM_DATA.length > 0 ? (
                         <Flex direction="column" gap={12}>
-                            {GENERAL_GOODS.map(item => item)}
+                            {SHOP_ITEM_DATA.map(item => (
+                                <ShopGoodCard
+                                    key={item.id}
+                                    item={item}
+                                    player={player}
+                                    buyShopItem={buyShopItem}
+                                />
+                            ))}
                         </Flex>
                     ) : (
                         <Text>No items are currently available for purchase.</Text>

@@ -45,6 +45,9 @@ function ResearchAction({ action, player, isActive, isUnlocked, actionState, can
     const effectStacks = isUnlocked
         ? getActionEffectStacks(player, RESEARCH_CONFIG, action)
         : {}
+    const outputMultiplier = isUnlocked
+        ? getActionOutputMultiplier(player, RESEARCH_CONFIG, action)
+        : 1
 
     return (
         <Paper layer={1} variant="research" className="action action-research">
@@ -76,10 +79,11 @@ function ResearchAction({ action, player, isActive, isUnlocked, actionState, can
                     <>
                         <ActionDetails actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(RESEARCH_CONFIG, action, player)}
-                            outputMultiplier={getActionOutputMultiplier(player, RESEARCH_CONFIG, action)}
+                            outputMultiplier={outputMultiplier}
                             preservationChance={getActionPreservationChance(player, RESEARCH_CONFIG, action)}
                             effectStacks={effectStacks} />
-                        <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []} />
+                        <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []}
+                            outputMultiplier={outputMultiplier} />
                     </>
                 ) : (
                     <ActionResources requires={action.unlockCosts ?? []} />

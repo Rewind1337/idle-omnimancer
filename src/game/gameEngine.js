@@ -5,7 +5,7 @@ import {
     getActionXPTable,
     getSkillXPTable,
 } from "../data/skillConfig"
-import { ITEM_DATA_BY_ID } from "../data/itemData"
+import { ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { humanize } from "../utility/helpers"
 
@@ -22,6 +22,20 @@ export const getNextBagSlotCost = (inventorySlots = GLOBAL_CONFIG.startingBagSpa
         Math.pow(GLOBAL_CONFIG.bagSlotCostMultiplier, purchasedSlots)
 
     return Number.isFinite(cost) ? Math.ceil(cost) : Infinity
+}
+
+// Shop goods can be bought repeatedly, but a new item type still needs a free bag slot.
+export const canBuyShopItem = (player, itemId) => {
+    const item = SHOP_ITEM_DATA_BY_ID[itemId]
+    const coins = player.currencies?.coins ?? 0
+    if (!item || !Number.isFinite(item.shopPrice) || item.shopPrice < 0 || coins < item.shopPrice) return false
+    if ((player.inventory?.[itemId] ?? 0) > 0) return true
+
+    const occupiedSlots = Object.entries(player.inventory ?? {})
+        .filter(([inventoryItemId, amount]) => ITEM_DATA_BY_ID[inventoryItemId] && amount > 0)
+        .length
+    const inventorySlots = player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
+    return occupiedSlots < inventorySlots
 }
 
 // Resolve the next action in the configured progression order.

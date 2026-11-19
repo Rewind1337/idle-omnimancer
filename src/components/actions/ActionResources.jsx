@@ -7,11 +7,12 @@ export function ActionResources({
     consumes = [],
     produces = [],
     requires = [],
+    outputMultiplier = 1,
 }) {
     return (
         <Flex className={cx("action-resources", className)} align="start" justify="start">
             <ResourceSection title="Consumes:" resources={consumes} />
-            <ResourceSection title="Produces:" resources={produces} />
+            <ResourceSection title="Produces:" resources={produces} amountMultiplier={outputMultiplier} />
             <ResourceSection title="Requires:" resources={requires} />
         </Flex>
     )

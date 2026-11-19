@@ -11,6 +11,7 @@ import { GameProvider } from "./contexts/GameProvider"
 
 import { ResearchPage } from "./pages/ResearchPage";
 import { SpellcraftPage } from "./pages/SpellcraftPage";
+import { TransmutationPage } from "./pages/TransmutationPage";
 import { DevelopmentPage } from "./pages/DevelopmentPage";
 import { ShopPage } from "./pages/ShopPage";
 
@@ -96,6 +97,7 @@ function App() {
         <ResponsivePage activePage={activePage} navigationPosition="top" navigationMode="default" setActivePage={setActivePage}>
           {activeSkill?.skillId === "skill:research" && <ResearchPage />}
           {activeSkill?.skillId === "skill:spellcraft" && <SpellcraftPage />}
+          {activeSkill?.skillId === "skill:transmutation" && <TransmutationPage />}
           {activePage === DEVELOPMENT_NAVIGATION.id && <DevelopmentPage />}
           {activePage === SHOP_NAVIGATION.id && <ShopPage setActivePage={setActivePage} />}
         </ResponsivePage>

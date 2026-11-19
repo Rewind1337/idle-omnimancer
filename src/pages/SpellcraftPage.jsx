@@ -48,13 +48,17 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
     const effectStacks = isUnlocked
         ? getActionEffectStacks(player, SPELLCRAFT_CONFIG, action)
         : {}
+    const elementVariant = action.element ?? "spellcraft"
+    const outputMultiplier = isUnlocked
+        ? getActionOutputMultiplier(player, SPELLCRAFT_CONFIG, action)
+        : 1
 
     return (
-        <Paper layer={1} variant="spellcraft" className="action action-spellcraft">
+        <Paper layer={1} variant={elementVariant} className="action action-spellcraft">
             <Flex direction="column">
                 <Flex direction="row">
                     <Paper round layer="0" interactive className="w-min" padding={4}>
-                        <Icon size={48} variant="spellcraft" outerRunes={OuterRunesMap[action.tier - 1] ?? "wide"}
+                        <Icon size={48} variant={elementVariant} outerRunes={OuterRunesMap[action.tier - 1] ?? "wide"}
                             outerShape={7} innerRunes="gap" innerShape={InnerShapeMap[action.tier - 1] ?? 10}>
                             {cloneElement(actionIcon, { size: 48 })}
                         </Icon>
@@ -67,9 +71,9 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
                                 durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
-                                variant="spellcraft" actionLabel="Cast" />
+                                variant={elementVariant} actionLabel="Cast" />
                         ) : (
-                            <Button variant="spellcraft" className="w-100" size="medium"
+                            <Button variant={elementVariant} className="w-100" size="medium"
                                 disabled={!canUnlock} onClick={onUnlock}>
                                 Unlock
                             </Button>
@@ -81,10 +85,11 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
                         <ActionDetails actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(SPELLCRAFT_CONFIG, action, player)}
                             manaCost={getActionManaCost(SPELLCRAFT_CONFIG, action, player)}
-                            outputMultiplier={getActionOutputMultiplier(player, SPELLCRAFT_CONFIG, action)}
+                            outputMultiplier={outputMultiplier}
                             preservationChance={getActionPreservationChance(player, SPELLCRAFT_CONFIG, action)}
                             effectStacks={effectStacks} />
-                        <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []} />
+                        <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []}
+                            outputMultiplier={outputMultiplier} />
                     </>
                 ) : (
                     <ActionResources requires={action.unlockCosts ?? []} />

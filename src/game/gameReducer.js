@@ -1,9 +1,10 @@
 import { GLOBAL_CONFIG, SKILL_CONFIG_BY_ID } from "../data/skillConfig"
-import { ITEM_DATA_BY_ID } from "../data/itemData"
+import { ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import {
     advanceGame,
     canStartAction,
+    canBuyShopItem,
     canUnlockAction,
     canUnlockSkill,
     getActionActivity,
@@ -182,6 +183,24 @@ export const gameReducer = (state, action) => {
             }
         }
 
+        case "BUY_SHOP_ITEM": {
+            const { itemId } = action
+            const item = SHOP_ITEM_DATA_BY_ID[itemId]
+            if (!item || !canBuyShopItem(state, itemId)) return state
+
+            return {
+                ...state,
+                inventory: {
+                    ...state.inventory,
+                    [itemId]: (state.inventory?.[itemId] ?? 0) + 1,
+                },
+                currencies: {
+                    ...state.currencies,
+                    coins: (state.currencies?.coins ?? 0) - item.shopPrice,
+                },
+            }
+        }
+
         case "SELL_ITEM": {
             const { itemId, amount } = action
             const availableAmount = state.inventory?.[itemId] ?? 0
@@ -259,6 +278,9 @@ export const gameReducer = (state, action) => {
                 },
             }
         }
+
+        case "HYDRATE_PLAYER":
+            return action.player ?? state
 
         case "TICK":
             return advanceGame(state, action.deltaMs, action.now)

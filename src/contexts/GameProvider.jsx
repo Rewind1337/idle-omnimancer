@@ -4,45 +4,183 @@ import {
     useMemo,
     useReducer,
     useRef,
+    useState,
 } from "react"
 
 import { GameContext } from "./GameContext"
 import { gameReducer } from "../game/gameReducer"
+import { advanceGame } from "../game/gameEngine"
 import {
     loadPlayerState,
     savePlayerState,
 } from "../game/playerState"
+import { ITEM_DATA_BY_ID, CURRENCY_DATA_BY_ID } from "../data/itemData"
+import { OfflineProgressModal } from "../components/modals/OfflineProgressModal"
 
 const TICK_INTERVAL_MS = 100
 const SAVE_INTERVAL_MS = 1000
+const OFFLINE_CHUNK_DELAY_MS = 20
+const FIRST_OFFLINE_CHUNK_DELAY_MS = 100
+const MAX_OFFLINE_CHUNK_MS = 6 * 60 * 60 * 1000
+const MAX_OFFLINE_CHUNKS = 300
+
+const formatGainAmount = amount => Number(amount).toLocaleString()
+
+const getOfflineGains = (previous, next, processedMs) => {
+    const gains = []
+
+    for (const [itemId, amount] of Object.entries(next.inventory ?? {})) {
+        const gained = amount - (previous.inventory?.[itemId] ?? 0)
+        if (gained <= 0) continue
+
+        const item = ITEM_DATA_BY_ID[itemId]
+        gains.push({
+            key: itemId + "-" + processedMs,
+            text: "+" + formatGainAmount(gained) + " " + (item?.name ?? itemId),
+        })
+    }
+
+    const gainedCoins = (next.currencies?.coins ?? 0) - (previous.currencies?.coins ?? 0)
+    if (gainedCoins > 0) {
+        const currency = CURRENCY_DATA_BY_ID["currency:coins"]
+        gains.push({
+            key: "coins-" + processedMs,
+            text: "+" + formatGainAmount(gainedCoins) + " " + (currency?.name ?? "Coins"),
+        })
+    }
+
+    return gains
+}
 
 export function GameProvider({ children }) {
     const [player, dispatch] = useReducer(gameReducer, undefined, loadPlayerState)
     const playerRef = useRef(player)
     const lastTickRef = useRef(0)
-    const initializedRef = useRef(false)
+    const offlineTaskRef = useRef(null)
+    const initialOfflineMs = Math.max(0, Date.now() - player.lastUpdatedAt)
+    const [isGameReady, setIsGameReady] = useState(false)
+    const [offlineProgress, setOfflineProgress] = useState({
+        visible: initialOfflineMs > 1000,
+        totalMs: initialOfflineMs,
+        processedMs: 0,
+        feed: [],
+        completed: false,
+    })
 
     // Keep a current reference for the independent save interval and page exit.
     useEffect(() => {
         playerRef.current = player
     }, [player])
 
+    // Show the modal first, then simulate the offline interval in manageable chunks.
+    // The task lives in a ref so React StrictMode's effect replay can resume it safely.
     useEffect(() => {
-        const now = Date.now()
+        if (!offlineTaskRef.current) {
+            const basePlayer = playerRef.current
+            const targetAt = Date.now()
+            const totalMs = Math.max(0, targetAt - basePlayer.lastUpdatedAt)
 
-        // Apply elapsed time since the previous save once, before regular ticks.
-        // The ref prevents React StrictMode's development effect replay from
-        // applying the same offline interval twice.
-        if (!initializedRef.current) {
-            initializedRef.current = true
-            const offlineMs = Math.max(0, now - playerRef.current.lastUpdatedAt)
-            if (offlineMs > 0) {
-                dispatch({ type: "OFFLINE_PROGRESS", deltaMs: offlineMs, now })
+            offlineTaskRef.current = {
+                player: structuredClone(basePlayer),
+                startAt: basePlayer.lastUpdatedAt,
+                totalMs,
+                processedMs: 0,
+                feed: [],
+                cancelled: false,
+                done: false,
+                timeoutId: null,
+                chunkMs: Math.min(
+                    MAX_OFFLINE_CHUNK_MS,
+                    Math.max(1000, Math.ceil(totalMs / MAX_OFFLINE_CHUNKS))
+                ),
             }
         }
 
-        lastTickRef.current = now
+        const task = offlineTaskRef.current
+        task.cancelled = false
 
+        if (task.done) {
+            setIsGameReady(true)
+            return undefined
+        }
+
+        if (task.totalMs <= 1000) {
+            if (task.totalMs > 0) {
+                const updatedPlayer = advanceGame(
+                    task.player,
+                    task.totalMs,
+                    task.startAt + task.totalMs
+                )
+                dispatch({ type: "HYDRATE_PLAYER", player: updatedPlayer })
+            }
+            task.done = true
+            setOfflineProgress(current => ({ ...current, visible: false, completed: true }))
+            setIsGameReady(true)
+            return undefined
+        }
+
+        setOfflineProgress(current => ({
+            ...current,
+            visible: true,
+            totalMs: task.totalMs,
+        }))
+
+        const processChunk = () => {
+            if (task.cancelled || task.done) return
+
+            const deltaMs = Math.min(task.chunkMs, task.totalMs - task.processedMs)
+            if (deltaMs <= 0) return
+
+            const previousPlayer = task.player
+            const nextProcessedMs = task.processedMs + deltaMs
+            task.player = advanceGame(
+                previousPlayer,
+                deltaMs,
+                task.startAt + nextProcessedMs
+            )
+            task.processedMs = nextProcessedMs
+
+            const newGains = getOfflineGains(previousPlayer, task.player, task.processedMs)
+            task.feed = [...newGains, ...task.feed].slice(0, 8)
+
+            const completed = task.processedMs >= task.totalMs
+            setOfflineProgress({
+                visible: true,
+                totalMs: task.totalMs,
+                processedMs: task.processedMs,
+                feed: task.feed,
+                completed,
+            })
+
+            if (completed) {
+                task.done = true
+                task.timeoutId = null
+                dispatch({ type: "HYDRATE_PLAYER", player: task.player })
+                setIsGameReady(true)
+            } else {
+                task.timeoutId = window.setTimeout(processChunk, OFFLINE_CHUNK_DELAY_MS)
+            }
+        }
+
+        task.timeoutId = window.setTimeout(
+            processChunk,
+            task.processedMs === 0 ? FIRST_OFFLINE_CHUNK_DELAY_MS : OFFLINE_CHUNK_DELAY_MS
+        )
+
+        return () => {
+            task.cancelled = true
+            if (task.timeoutId !== null) {
+                window.clearTimeout(task.timeoutId)
+                task.timeoutId = null
+            }
+        }
+    }, [])
+
+    // Regular ticks do not begin until the offline state has been committed.
+    useEffect(() => {
+        if (!isGameReady) return undefined
+
+        lastTickRef.current = Date.now()
         const intervalId = window.setInterval(() => {
             const now = Date.now()
             const deltaMs = Math.max(0, now - lastTickRef.current)
@@ -54,11 +192,13 @@ export function GameProvider({ children }) {
         }, TICK_INTERVAL_MS)
 
         return () => window.clearInterval(intervalId)
-    }, [])
+    }, [isGameReady])
 
-    // Persist at a lower frequency than the simulation tick. The latest
-    // in-memory state is also saved when the page is being closed or hidden.
+    // Persist only after offline simulation is committed; page exit during loading
+    // leaves the old timestamp intact so the interval can be retried on next launch.
     useEffect(() => {
+        if (!isGameReady) return undefined
+
         const intervalId = window.setInterval(() => {
             savePlayerState(playerRef.current)
         }, SAVE_INTERVAL_MS)
@@ -71,7 +211,7 @@ export function GameProvider({ children }) {
             window.removeEventListener("pagehide", saveOnExit)
             savePlayerState(playerRef.current)
         }
-    }, [])
+    }, [isGameReady])
 
     const startAction = useCallback((skillId, actionId) => {
         dispatch({ type: "START_ACTION", skillId, actionId })
@@ -97,6 +237,10 @@ export function GameProvider({ children }) {
         dispatch({ type: "BUY_BAG_SLOT" })
     }, [])
 
+    const buyShopItem = useCallback((itemId) => {
+        dispatch({ type: "BUY_SHOP_ITEM", itemId })
+    }, [])
+
     const sellItem = useCallback((itemId, amount) => {
         dispatch({ type: "SELL_ITEM", itemId, amount })
     }, [])
@@ -109,12 +253,18 @@ export function GameProvider({ children }) {
         unlockAction,
         unlockSkill,
         buyBagSlot,
+        buyShopItem,
         sellItem,
-    }), [player, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, sellItem])
+    }), [player, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyShopItem, sellItem])
+
+    const continueFromOffline = () => {
+        setOfflineProgress(current => ({ ...current, visible: false }))
+    }
 
     return (
         <GameContext.Provider value={contextValue}>
             {children}
+            <OfflineProgressModal progress={offlineProgress} onContinue={continueFromOffline} />
         </GameContext.Provider>
     )
 }

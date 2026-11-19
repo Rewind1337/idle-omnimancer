@@ -5,7 +5,18 @@ import { Item } from "../Item"
 import { ITEM_DATA_BY_ID, CURRENCY_DATA_BY_ID } from "../../data/itemData"
 import { humanize } from "../../utility/helpers"
 
-export function ResourceSection({ title, resources = [] }) {
+const formatOutputRange = (amount, multiplier) => {
+    const scaledAmount = Math.max(0, amount * multiplier)
+    const minimum = Math.floor(scaledAmount)
+    const maximum = scaledAmount - minimum > 0.000001 ? minimum + 1 : minimum
+    const format = value => value.toLocaleString()
+
+    return minimum === maximum
+        ? format(minimum)
+        : format(minimum) + "–" + format(maximum)
+}
+
+export function ResourceSection({ title, resources = [], amountMultiplier = 1 }) {
     if (resources.length === 0) return null
 
     return (
@@ -13,21 +24,24 @@ export function ResourceSection({ title, resources = [] }) {
             <Flex direction="column">
                 <Heading h="2">{title}</Heading>
                 <Flex wrap>
-                    {resources.map(resource => {
+                    {resources.map((resource, index) => {
                         const itemId = typeof resource === "string" ? resource : resource.item
                         const amount = typeof resource === "string" ? 1 : (resource.amount ?? 1)
                         const data = ITEM_DATA_BY_ID[itemId] ?? CURRENCY_DATA_BY_ID[itemId]
+                        const displayAmount = amountMultiplier === 1
+                            ? amount
+                            : formatOutputRange(amount, amountMultiplier)
 
                         return (
                             <Item
-                                key={itemId}
+                                key={itemId + "-" + index}
                                 layer={3}
                                 mode="compact"
                                 interactive={false}
                                 icon={data?.icon}
                                 name={data?.name ?? humanize(itemId)}
                                 itemId={ITEM_DATA_BY_ID[itemId] ? itemId : null}
-                                amount={amount}
+                                amount={displayAmount}
                                 variant={data?.variant ?? "primary"}
                             />
                         )

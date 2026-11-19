@@ -68,6 +68,7 @@ export function EffectStack({
     showInactive = false,
     emptyLabel = "No active effects.",
     icon = null,
+    formula = null,
 }) {
     const visibleEntries = showInactive
         ? entries
@@ -105,6 +106,7 @@ export function EffectStack({
             )) : (
                 <Text>{emptyLabel}</Text>
             )}
+            {formula && <Text size="small">{formula}</Text>}
         </Flex>
     )
 }

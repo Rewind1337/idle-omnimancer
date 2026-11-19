@@ -9,7 +9,7 @@ import { Text } from "../components/Text"
 import { Tabs } from "../components/Tabs"
 import { ActionResources } from "../components/actions/ActionResources"
 
-import { OTHER_ICONS } from "../data/iconLibrary"
+import { OTHER_ICONS, SHOP_ICONS } from "../data/iconLibrary"
 import { SHOP_ITEM_DATA } from "../data/itemData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { GLOBAL_CONFIG, SKILL_CONFIG_BY_ID } from "../data/skillConfig"
@@ -24,9 +24,9 @@ import { humanize } from "../utility/helpers"
 import { useGame } from "../hooks/useGame"
 
 const SHOP_TABS = [
-    { id: "improvements", name: "Improvements" },
-    { id: "skills-actions", name: "Skills & Actions" },
-    { id: "general-goods", name: "General Goods" },
+    { id: "improvements", name: "Improvements", icon: SHOP_ICONS.IMPROVEMENTS },
+    { id: "skills-actions", name: "Skills & Actions", icon: SHOP_ICONS.SKILLS_ACTIONS },
+    { id: "general-goods", name: "General Goods", icon: SHOP_ICONS.GENERAL_GOODS },
 ]
 
 const formatCoins = value =>
@@ -34,7 +34,7 @@ const formatCoins = value =>
 
 function ShopSection({ title, children }) {
     return (
-        <Paper layer={0}>
+        <Paper layer={1}>
             <Flex direction="column" gap={16}>
                 <Heading h="2">{title}</Heading>
                 {children}
@@ -54,7 +54,7 @@ function ShopUnlockCard({
     onUnlock,
 }) {
     return (
-        <Paper layer={1} variant={variant} className="action action-shop">
+        <Paper layer={2} variant={variant} className="action action-shop">
             <Flex direction="column" gap={12}>
                 <Flex direction="row" align="center" gap={16}>
                     <Icon size={44} variant={variant}>
@@ -89,7 +89,7 @@ function BagSlotImprovement({ player, buyBagSlot }) {
     const canPurchase = Number.isFinite(nextSlotCost) && coins >= nextSlotCost
 
     return (
-        <Paper layer={1} variant="shop" className="action action-shop">
+        <Paper layer={2} variant="shop" className="action action-shop">
             <Flex direction="row" align="center" gap={16}>
                 <Icon size={44} variant="shop">
                     {cloneElement(OTHER_ICONS.GRIP, { size: 40 })}
@@ -117,7 +117,7 @@ function ShopGoodCard({ item, player, buyShopItem }) {
     const canPurchase = canBuyShopItem(player, item.id)
 
     return (
-        <Paper layer={1} variant="shop" className="action action-shop">
+        <Paper layer={2} variant="shop" className="action action-shop">
             <Flex direction="row" align="center" gap={16}>
                 <Icon size={44} variant={item.variant ?? "shop"}>
                     {cloneElement(item.icon ?? OTHER_ICONS.STAR, { size: 40 })}
@@ -196,58 +196,62 @@ export function ShopPage() {
             gap={16}
         >
             <Paper layer={0}>
-                <Flex direction="column" gap={16}>
-                    <Heading h="1">Shop</Heading>
-                    <Tabs
-                        tabs={SHOP_TABS}
-                        value={activeTab}
-                        onChange={setActiveTab}
-                        variant="shop"
-                        size="medium"
-                        wrap
-                        className="shop-tabs"
-                    />
-                </Flex>
+                <Paper layer={1}>
+                    <Flex direction="column" gap={16}>
+                        <Heading h="1">Shop</Heading>
+                        <Tabs
+                            tabs={SHOP_TABS}
+                            value={activeTab}
+                            onChange={setActiveTab}
+                            variant="shop"
+                            size="medium"
+                            wrap
+                            className="shop-tabs"
+                        />
+                    </Flex>
+                </Paper>
             </Paper>
 
-            {activeTab === "improvements" && (
-                <ShopSection title="Improvements">
-                    <BagSlotImprovement player={player} buyBagSlot={buyBagSlot} />
-                </ShopSection>
-            )}
+            <Paper layer={0}>
+                {activeTab === "improvements" && (
+                    <ShopSection title="Improvements">
+                        <BagSlotImprovement player={player} buyBagSlot={buyBagSlot} />
+                    </ShopSection>
+                )}
 
-            {activeTab === "skills-actions" && (
-                <ShopSection title="Skills & Actions">
-                    {availableUnlocks.length > 0 ? (
-                        <Flex direction="column" gap={12}>
-                            {availableUnlocks.map(unlock => (
-                                <ShopUnlockCard key={unlock.key} {...unlock} />
-                            ))}
-                        </Flex>
-                    ) : (
-                        <Text>No skills or actions are currently available to unlock.</Text>
-                    )}
-                </ShopSection>
-            )}
+                {activeTab === "skills-actions" && (
+                    <ShopSection title="Skills & Actions">
+                        {availableUnlocks.length > 0 ? (
+                            <Flex direction="column" gap={12}>
+                                {availableUnlocks.map(unlock => (
+                                    <ShopUnlockCard key={unlock.key} {...unlock} />
+                                ))}
+                            </Flex>
+                        ) : (
+                            <Text>No skills or actions are currently available to unlock.</Text>
+                        )}
+                    </ShopSection>
+                )}
 
-            {activeTab === "general-goods" && (
-                <ShopSection title="General Goods">
-                    {SHOP_ITEM_DATA.length > 0 ? (
-                        <Flex direction="column" gap={12}>
-                            {SHOP_ITEM_DATA.map(item => (
-                                <ShopGoodCard
-                                    key={item.id}
-                                    item={item}
-                                    player={player}
-                                    buyShopItem={buyShopItem}
-                                />
-                            ))}
-                        </Flex>
-                    ) : (
-                        <Text>No items are currently available for purchase.</Text>
-                    )}
-                </ShopSection>
-            )}
+                {activeTab === "general-goods" && (
+                    <ShopSection title="General Goods">
+                        {SHOP_ITEM_DATA.length > 0 ? (
+                            <Flex direction="column" gap={12}>
+                                {SHOP_ITEM_DATA.map(item => (
+                                    <ShopGoodCard
+                                        key={item.id}
+                                        item={item}
+                                        player={player}
+                                        buyShopItem={buyShopItem}
+                                    />
+                                ))}
+                            </Flex>
+                        ) : (
+                            <Text>No items are currently available for purchase.</Text>
+                        )}
+                    </ShopSection>
+                )}
+            </Paper>
         </Flex>
     )
 }

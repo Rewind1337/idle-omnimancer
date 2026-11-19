@@ -1,7 +1,6 @@
 import { cloneElement } from "react"
 
 import { Flex } from "../components/Flex"
-import { Grid } from "../components/Grid"
 import { Paper } from "../components/Paper"
 import { Icon } from "../components/Icon"
 import { Button } from "../components/Button"
@@ -117,26 +116,24 @@ export function ResearchPage() {
                 />
             </Paper>
             <Paper layer={0}>
-                <Flex direction="column" gap={32}>
-                    <Grid columns={1}>
-                        {getVisibleActions(player, skillId).map(action => {
-                            const actionState = player.skills[skillId].actions[action.id]
-                            const isUnlocked = Boolean(actionState?.unlocked)
-                            const isActive = player.activeAction?.skillId === skillId &&
-                                player.activeAction?.actionId === action.id
+                <Flex direction="column" gap={16}>
+                    {getVisibleActions(player, skillId).map(action => {
+                        const actionState = player.skills[skillId].actions[action.id]
+                        const isUnlocked = Boolean(actionState?.unlocked)
+                        const isActive = player.activeAction?.skillId === skillId &&
+                            player.activeAction?.actionId === action.id
 
-                            return (
-                                <ResearchAction key={action.id} action={action} player={player} actionState={actionState}
-                                    isActive={isActive} isUnlocked={isUnlocked}
-                                    canUnlock={canUnlockAction(player, skillId, action.id)}
-                                    onUnlock={() => unlockAction(skillId, action.id)}
-                                    onToggle={() => {
-                                        if (isActive) stopAction(skillId, action.id)
-                                        else startAction(skillId, action.id)
-                                    }} />
-                            )
-                        })}
-                    </Grid>
+                        return (
+                            <ResearchAction key={action.id} action={action} player={player} actionState={actionState}
+                                isActive={isActive} isUnlocked={isUnlocked}
+                                canUnlock={canUnlockAction(player, skillId, action.id)}
+                                onUnlock={() => unlockAction(skillId, action.id)}
+                                onToggle={() => {
+                                    if (isActive) stopAction(skillId, action.id)
+                                    else startAction(skillId, action.id)
+                                }} />
+                        )
+                    })}
                 </Flex>
             </Paper>
         </Flex>

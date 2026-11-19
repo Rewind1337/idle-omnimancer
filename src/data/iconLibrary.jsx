@@ -1,8 +1,7 @@
-import { ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck } from "lucide-react";
+import { ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck, CircleFadingArrowUp } from "lucide-react";
 
 export const OTHER_ICONS = {
     STAR: <Star />,
-    GRADUATION_CAP: <GraduationCap />,
     CHECK_CIRCLE: <CheckCircle />,
     INFO: <Info />,
     ALERT_TRIANGLE: <AlertTriangle />,
@@ -27,7 +26,11 @@ export const OTHER_ICONS = {
 
 export const BAG_ICONS = {}
 
-export const SHOP_ICONS = {}
+export const SHOP_ICONS = {
+    IMPROVEMENTS: <CircleFadingArrowUp />,
+    SKILLS_ACTIONS: <GraduationCap />,
+    GENERAL_GOODS: <Coins />,
+}
 
 export const SKILL_ICONS = {
     RESEARCH: <BookOpenText />,

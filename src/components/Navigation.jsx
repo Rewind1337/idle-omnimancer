@@ -41,10 +41,10 @@ export function Navigation({
 
   const columns = position === "top" && mode !== "compact"
     ? {
-      xsmall: 2,
-      small: 3,
-      medium: 4,
-      large: 5
+      xsmall: 3,
+      small: 4,
+      medium: 5,
+      large: 6
     }
     : null
 

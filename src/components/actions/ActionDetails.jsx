@@ -18,7 +18,6 @@ export function ActionDetails({
                 <Heading h="4" className="w-100 align-center">Time needed to complete this action.</Heading>
                 <div className="divider tooltip-divider"></div>
                 <EffectStack title="Time effects" icon={OTHER_ICONS.HOURGLASS} entries={effectStacks.actionTime ?? []} />
-                <div className="divider tooltip-divider"></div>
             </Flex>}>
                 {actionTime.toFixed(2)}s
             </Badge>

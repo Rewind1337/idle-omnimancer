@@ -76,9 +76,6 @@ export const TRANSMUTATION_CONFIG = {
     // These starting requirements should be adjusted once the first economy pass is tested.
     unlockCosts: [
         { item: "item:bound_notes", amount: 100 },
-        { item: "item:dust", amount: 25 },
-        { item: "item:breath", amount: 25 },
-        { item: "item:droplet", amount: 25 },
         { item: "currency:coins", amount: 10000 },
     ],
 

@@ -11,12 +11,13 @@ export function Modal({
   footer,
   variant = 'primary',
   onBackdropClick = () => { },
-  padding = 8
+  padding = 8,
+  className = ''
 }) {
   if (!visible) return null;
 
   return (
-    <div className={cx('modal-backdrop')} onClick={(event) => {
+    <div className={cx('modal-backdrop', className)} onClick={(event) => {
       if (event.target === event.currentTarget) onBackdropClick()
     }} style={{ padding: "32px 64px" }} data-variant={variant}>
       <Flex direction='column' className={cx('modal-wrapper')}>

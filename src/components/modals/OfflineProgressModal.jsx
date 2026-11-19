@@ -35,6 +35,7 @@ export function OfflineProgressModal({ progress, onContinue }) {
         <Modal
             visible
             variant="shop"
+            className="modal-offline-progress"
             onBackdropClick={() => {
                 if (completed) onContinue()
             }}

@@ -38,3 +38,8 @@
     }
   }
 }
+
+// Offline processing must cover the global floating buttons while the modal is active.
+.modal-backdrop.modal-offline-progress {
+  z-index: 2000;
+}

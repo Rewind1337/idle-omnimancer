@@ -12,7 +12,7 @@ export function FloatingPanel({
 
   return (
     <Paper layer={0} className={cx("floating-panel", "w-min", className)} style={{
-      zIndex: 987,
+      zIndex: 99,
       position: "absolute",
       left: margin + 8,
       bottom: margin,

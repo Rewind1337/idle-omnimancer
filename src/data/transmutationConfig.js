@@ -39,7 +39,7 @@ const ELEMENT_PATHS = [
 ]
 
 // Initial recipe quantities and unlock costs are scaffolding for balancing.
-const RESEARCH_INPUT_AMOUNTS = [10, 20, 30, 40, 50, 60, 70, 80]
+const RESEARCH_INPUT_AMOUNTS = [1, 2, 3, 4, 5, 6, 7, 8]
 const ESSENCE_INPUT_AMOUNTS = [1, 2, 3, 4, 5, 6, 7, 8]
 
 const getActionUnlockCosts = (tier, elementIndex) => [
@@ -85,21 +85,21 @@ export const TRANSMUTATION_CONFIG = {
 
     // Initial timing and XP values are placeholders for balancing.
     time: {
-        base: 8,
-        perTier: 4,
+        base: 3,
+        perTier: 1,
     },
 
     actionXP: {
-        base: 12,
+        base: 9,
         perTier: 6,
     },
 
     neededXP: {
-        base: 24,
-        perTier: 12,
-        perLevelMult: 1.12,
+        base: 18,
+        perTier: 8,
+        perLevelMult: 1.124,
         perLevelFlat: 2,
-        perTierMult: 1.001,
+        perTierMult: 1.0012,
         finalMultPerLevel: 0.999,
     },
 

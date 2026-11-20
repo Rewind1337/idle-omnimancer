@@ -15,15 +15,19 @@ import { useGame } from "../../hooks/useGame"
 
 import "./MissionsModal.scss"
 
-function MissionCard({ mission }) {
+function MissionCard({ mission, player, isCompleted, canTurnIn, onTurnIn }) {
     const objectiveItem = ITEM_DATA_BY_ID[mission.objective.item]
+    const ownedAmount = player.inventory?.[mission.objective.item] ?? 0
 
     return (
         <Paper layer={2} variant="secondary" className="mission-card">
             <Flex direction="column" align="stretch" gap={10}>
                 <Flex direction="row" justify="space-between" wrap gap={8}>
                     <Heading h="4">{mission.title}</Heading>
-                    <Badge variant="secondary">Tier {mission.tier}</Badge>
+                    <Flex direction="row" gap={6} wrap>
+                        <Badge variant="secondary">Tier {mission.tier}</Badge>
+                        {isCompleted && <Badge variant="secondary">Completed</Badge>}
+                    </Flex>
                 </Flex>
                 <Text size="small">{mission.description}</Text>
                 <Flex direction="row" justify="space-between" wrap gap={8}>
@@ -36,17 +40,33 @@ function MissionCard({ mission }) {
                         variant={objectiveItem?.variant ?? "primary"}
                     />
                     {mission.rewards.map((reward, index) => {
-                        const currency = CURRENCY_DATA_BY_ID[reward.currency]
+                        const rewardId = reward.currency ?? reward.item
+                        const rewardData = reward.currency
+                            ? CURRENCY_DATA_BY_ID[reward.currency]
+                            : ITEM_DATA_BY_ID[reward.item]
                         return (
                             <Badge
-                                key={reward.currency + "-" + index}
+                                key={rewardId + "-" + index}
                                 variant="secondary"
-                                icon={currency?.icon}
+                                icon={rewardData?.icon}
                             >
-                                +{reward.amount.toLocaleString()} {currency?.name ?? reward.currency}
+                                +{reward.amount.toLocaleString()} {rewardData?.name ?? rewardId}
                             </Badge>
                         )
                     })}
+                </Flex>
+                <Flex direction="row" justify="space-between" align="center" wrap gap={8}>
+                    <Text size="small">
+                        {ownedAmount.toLocaleString()} / {mission.objective.amount.toLocaleString()} available
+                    </Text>
+                    <Button
+                        variant="secondary"
+                        size="small"
+                        disabled={!canTurnIn}
+                        onClick={onTurnIn}
+                    >
+                        {isCompleted ? "Completed" : "Turn In"}
+                    </Button>
                 </Flex>
             </Flex>
         </Paper>
@@ -54,7 +74,7 @@ function MissionCard({ mission }) {
 }
 
 export function MissionsModal({ visible, setVisible }) {
-    const { player } = useGame()
+    const { player, turnInMission } = useGame()
     const close = () => setVisible(false)
 
     const missionTier = Math.max(1, Math.floor(player.missionTier ?? MISSION_DATA.startingTier))
@@ -117,9 +137,29 @@ export function MissionsModal({ visible, setVisible }) {
                             gap={12}
                             className="missions-modal-list"
                         >
-                            {availableMissions.map(mission => (
-                                <MissionCard key={mission.id} mission={mission} />
-                            ))}
+                            {availableMissions.map(mission => {
+                                const isCompleted = completedMissionIds.has(mission.id)
+                                const objective = mission.objective
+                                const ownedAmount = player.inventory?.[objective.item] ?? 0
+                                const canTurnIn = !isCompleted &&
+                                    mission.tier <= missionTier &&
+                                    objective.type === "turnIn" &&
+                                    Boolean(ITEM_DATA_BY_ID[objective.item]) &&
+                                    Number.isSafeInteger(objective.amount) &&
+                                    objective.amount > 0 &&
+                                    ownedAmount >= objective.amount
+
+                                return (
+                                    <MissionCard
+                                        key={mission.id}
+                                        mission={mission}
+                                        player={player}
+                                        isCompleted={isCompleted}
+                                        canTurnIn={canTurnIn}
+                                        onTurnIn={() => turnInMission(mission.id)}
+                                    />
+                                )
+                            })}
                         </Grid>
                     ) : (
                         <Paper layer={2} variant="secondary">

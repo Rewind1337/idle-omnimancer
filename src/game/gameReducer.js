@@ -1,5 +1,6 @@
 import { GLOBAL_CONFIG, SKILL_CONFIG_BY_ID } from "../data/skillConfig"
-import { ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
+import { CURRENCY_DATA_BY_ID, ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
+import { MISSION_DATA } from "../data/missionData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import {
     advanceGame,
@@ -229,6 +230,90 @@ export const gameReducer = (state, action) => {
                     ...state.currencies,
                     coins: (state.currencies?.coins ?? 0) + saleValue,
                 },
+            }
+        }
+
+        case "TURN_IN_MISSION": {
+            const mission = MISSION_DATA.missions.find(entry => entry.id === action.missionId)
+            const missionTier = Math.max(
+                MISSION_DATA.startingTier,
+                Math.floor(state.missionTier ?? MISSION_DATA.startingTier)
+            )
+            const completedMissions = new Set(state.completedMissions ?? [])
+            const objective = mission?.objective
+            const objectiveAmount = objective?.amount
+            const ownedAmount = objective?.item
+                ? (state.inventory?.[objective.item] ?? 0)
+                : 0
+
+            if (
+                !mission ||
+                mission.tier > missionTier ||
+                completedMissions.has(mission.id) ||
+                objective?.type !== "turnIn" ||
+                !ITEM_DATA_BY_ID[objective.item] ||
+                !Number.isSafeInteger(objectiveAmount) ||
+                objectiveAmount < 1 ||
+                ownedAmount < objectiveAmount ||
+                !Array.isArray(mission.rewards) ||
+                !mission.rewards.every(reward => {
+                    const validAmount = Number.isSafeInteger(reward.amount) && reward.amount > 0
+                    const hasCurrency = typeof reward.currency === "string" &&
+                        Boolean(CURRENCY_DATA_BY_ID[reward.currency]) &&
+                        !reward.item
+                    const hasItem = typeof reward.item === "string" &&
+                        Boolean(ITEM_DATA_BY_ID[reward.item]) &&
+                        !reward.currency
+                    return validAmount && (hasCurrency || hasItem)
+                })
+            ) return state
+
+            const inventory = { ...state.inventory }
+            const remainingAmount = ownedAmount - objectiveAmount
+            if (remainingAmount > 0) inventory[objective.item] = remainingAmount
+            else delete inventory[objective.item]
+
+            const itemRewardIds = [...new Set(
+                mission.rewards.filter(reward => reward.item).map(reward => reward.item)
+            )]
+            const occupiedSlots = Object.entries(inventory)
+                .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0)
+                .length
+            const inventorySlots = state.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
+            const newItemSlots = itemRewardIds.filter(itemId => !(inventory[itemId] > 0)).length
+            if (occupiedSlots + newItemSlots > inventorySlots) return state
+
+            const currencies = { ...state.currencies }
+            for (const reward of mission.rewards) {
+                if (reward.currency) {
+                    const currencyId = reward.currency.slice("currency:".length)
+                    currencies[currencyId] = (currencies[currencyId] ?? 0) + reward.amount
+                } else {
+                    inventory[reward.item] = (inventory[reward.item] ?? 0) + reward.amount
+                }
+            }
+
+            const nextCompletedMissions = [...completedMissions, mission.id]
+            let nextMissionTier = missionTier
+
+            while (nextMissionTier <= MISSION_DATA.tierRequirements.length) {
+                const requiredCount = MISSION_DATA.tierRequirements[nextMissionTier - 1]
+                if (!Number.isSafeInteger(requiredCount) || requiredCount < 1) break
+
+                const completedCount = MISSION_DATA.missions.filter(entry =>
+                    entry.tier === nextMissionTier && nextCompletedMissions.includes(entry.id)
+                ).length
+
+                if (completedCount < requiredCount) break
+                nextMissionTier += 1
+            }
+
+            return {
+                ...state,
+                inventory,
+                currencies,
+                completedMissions: nextCompletedMissions,
+                missionTier: nextMissionTier,
             }
         }
 

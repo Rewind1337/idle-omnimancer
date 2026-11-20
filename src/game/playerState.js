@@ -5,7 +5,7 @@ import {
 } from "../data/skillConfig"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
-import { MISSION_TIER_REQUIREMENTS } from "../data/missionData"
+import { MISSION_DATA } from "../data/missionData"
 
 export const SAVE_KEY = "omnimancer-idle-save"
 export const SAVE_VERSION = 3
@@ -54,7 +54,7 @@ export const createInitialPlayerState = () => {
         skills,
         inventory: {},
         inventorySlots: DEFAULT_INVENTORY_SLOTS,
-        missionTier: 1,
+        missionTier: MISSION_DATA.startingTier,
         completedMissions: [],
         currencies: {
             coins: 0,
@@ -137,6 +137,31 @@ export const normalizePlayerState = (savedState) => {
         clampInteger(savedState.inventorySlots, DEFAULT_INVENTORY_SLOTS, Number.MAX_SAFE_INTEGER, DEFAULT_INVENTORY_SLOTS)
     )
 
+    const completedMissions = Array.isArray(savedState.completedMissions)
+        ? [...new Set(savedState.completedMissions.filter(id =>
+            MISSION_DATA.missions.some(mission => mission.id === id)
+        ))]
+        : initial.completedMissions
+
+    let missionTier = clampInteger(
+        savedState.missionTier,
+        MISSION_DATA.startingTier,
+        MISSION_DATA.tierRequirements.length + 1,
+        initial.missionTier
+    )
+
+    while (missionTier <= MISSION_DATA.tierRequirements.length) {
+        const requiredCount = MISSION_DATA.tierRequirements[missionTier - 1]
+        if (!Number.isSafeInteger(requiredCount) || requiredCount < 1) break
+
+        const completedCount = MISSION_DATA.missions.filter(mission =>
+            mission.tier === missionTier && completedMissions.includes(mission.id)
+        ).length
+
+        if (completedCount < requiredCount) break
+        missionTier += 1
+    }
+
     return {
         ...initial,
         version: SAVE_VERSION,
@@ -146,15 +171,8 @@ export const normalizePlayerState = (savedState) => {
         skills,
         inventory,
         inventorySlots,
-        missionTier: clampInteger(
-            savedState.missionTier,
-            1,
-            MISSION_TIER_REQUIREMENTS.length + 1,
-            initial.missionTier
-        ),
-        completedMissions: Array.isArray(savedState.completedMissions)
-            ? [...new Set(savedState.completedMissions.filter(id => typeof id === "string"))]
-            : initial.completedMissions,
+        missionTier,
+        completedMissions,
         currencies: {
             coins: Math.max(0, finiteNumber(
                 savedState.currencies?.coins,

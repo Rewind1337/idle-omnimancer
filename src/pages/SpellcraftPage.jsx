@@ -1,4 +1,4 @@
-import { cloneElement } from "react"
+import { cloneElement, useState } from "react"
 
 import { Flex } from "../components/Flex"
 import { Grid } from "../components/Grid"
@@ -6,6 +6,7 @@ import { Paper } from "../components/Paper"
 import { Icon } from "../components/Icon"
 import { Button } from "../components/Button"
 import { SkillSummary } from "../components/skills/SkillSummary"
+import { ElementFilter } from "../components/skills/ElementFilter"
 import { ManaBar } from "../components/resources/ManaBar"
 import { ActionHeader } from "../components/actions/ActionHeader"
 import { ActionDetails } from "../components/actions/ActionDetails"
@@ -102,6 +103,7 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
 
 export function SpellcraftPage() {
     const { player, startAction, stopAction, unlockAction } = useGame()
+    const [elementFilter, setElementFilter] = useState("all")
     const skillId = SPELLCRAFT_CONFIG.id
     const skillProgress = getSkillProgress(player, skillId)
     const pageVariant = "spellcraft"
@@ -123,6 +125,7 @@ export function SpellcraftPage() {
                             </Icon>
                         }
                     />
+                    <ElementFilter value={elementFilter} onChange={setElementFilter} variant={pageVariant} />
                     <Paper layer={1}>
                         <ManaBar />
                     </Paper>
@@ -130,7 +133,9 @@ export function SpellcraftPage() {
             </Paper>
             <Paper layer={0}>
                 <Grid columns={1}>
-                    {getVisibleActions(player, skillId).map(action => {
+                    {getVisibleActions(player, skillId)
+                        .filter(action => elementFilter === "all" || action.element === elementFilter)
+                        .map(action => {
                         const actionState = player.skills[skillId].actions[action.id]
                         const isUnlocked = Boolean(actionState?.unlocked)
                         const isActive = player.activeAction?.skillId === skillId &&

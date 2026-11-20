@@ -35,6 +35,7 @@ export function Tabs({
                 size={option.size ?? size}
                 icon={option.icon}
                 badge={option.badge ?? option.level ?? null}
+                badgeIcon={option.badgeIcon}
                 checked={isActive}
                 disabled={option.disabled ?? false}
                 className={cx('tab', option.className)}

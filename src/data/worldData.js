@@ -22,7 +22,7 @@ export const WORLD_DATA = {
             areaNumber: 1,
             position: { q: 0, r: 0 },
             exploration: {
-                produces: ["item:crossroads_field_notes"],
+                produces: ["item:crossroads_field_notes"]
             },
             combat: {
                 produces: ["item:crossroads_waystone"],
@@ -37,9 +37,8 @@ export const WORLD_DATA = {
             areaNumber: 2,
             position: { q: -1, r: 0 },
             exploration: {
-                produces: [
-                    "item:mossbound_ore"
-                ],
+                produces: ["item:mossbound_ore"],
+                unlockCosts: [{ item: "currency:coins", amount: 10000 }]
             },
             combat: {
                 produces: ["item:mossbound_heartstone"],
@@ -54,9 +53,8 @@ export const WORLD_DATA = {
             areaNumber: 3,
             position: { q: 1, r: -1 },
             exploration: {
-                produces: [
-                    "item:whispering_seeds",
-                ],
+                produces: ["item:whispering_seeds"],
+                unlockCosts: [{ item: "currency:coins", amount: 10000 }]
             },
             combat: {
                 produces: ["item:whispering_chime"],
@@ -71,9 +69,8 @@ export const WORLD_DATA = {
             areaNumber: 4,
             position: { q: 0, r: 1 },
             exploration: {
-                produces: [
-                    "item:stillwater_reeds",
-                ],
+                produces: ["item:stillwater_reeds"],
+                unlockCosts: [{ item: "currency:coins", amount: 10000 }]
             },
             combat: {
                 produces: ["item:stillwater_idol"],
@@ -88,10 +85,8 @@ export const WORLD_DATA = {
             areaNumber: 5,
             position: { q: -2, r: 1 },
             exploration: {
-                produces: [
-                    "item:<some new item here>",
-                    "item:earth_geode_i"
-                ],
+                produces: ["item:<some new item here>", "item:earth_geode_i"],
+                unlockCosts: [{ item: "currency:coins", amount: 30000 }]
             },
             combat: {
                 produces: ["item:<some new item here>"],
@@ -106,9 +101,8 @@ export const WORLD_DATA = {
             areaNumber: 8,
             position: { q: -2, r: 0 },
             exploration: {
-                produces: [
-                    "item:<some new item here>",
-                ],
+                produces: ["item:<some new item here>"],
+                unlockCosts: [{ item: "currency:coins", amount: 75000 }]
             },
             combat: {
                 produces: ["item:<some new item here>"],
@@ -123,10 +117,8 @@ export const WORLD_DATA = {
             areaNumber: 11,
             position: { q: -1, r: -1 },
             exploration: {
-                produces: [
-                    "item:<some new item here>",
-                    "item:earth_geode_ii"
-                ],
+                produces: ["item:<some new item here>", "item:earth_geode_ii"],
+                unlockCosts: [{ item: "currency:coins", amount: 150000 }]
             },
             combat: {
                 produces: ["item:<some new item here>"],

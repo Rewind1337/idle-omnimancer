@@ -60,6 +60,7 @@ export const EXPLORATION_CONFIG = {
             tier: area.tier,
             element: area.element,
             produces: area.exploration.produces,
+            unlockCosts: area.exploration.unlockCosts,
             unlockedByDefault: area.unlockedByDefault,
         }
     }),

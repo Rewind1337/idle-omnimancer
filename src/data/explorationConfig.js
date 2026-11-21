@@ -17,6 +17,14 @@ export const EXPLORATION_CONFIG = {
         { item: "currency:coins", amount: 10000 },
     ],
 
+    artifactChance: {
+        base: 0.001,
+    },
+
+    companionChance: {
+        base: 0.001,
+    },
+
     skillXP: {
         firstLevelXP: 3,
     },

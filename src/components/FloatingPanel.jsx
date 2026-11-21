@@ -15,8 +15,8 @@ export function FloatingPanel({
     <Paper layer={0} className={cx("floating-panel", "w-min", className)} style={{
       zIndex: 99,
       position: "fixed",
-      left: isRight ? "auto" : margin + 8,
-      right: isRight ? margin + 8 : "auto",
+      left: isRight ? "auto" : margin,
+      right: isRight ? margin : "auto",
       bottom: margin,
     }}>
       <Flex direction={direction}>

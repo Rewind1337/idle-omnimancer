@@ -247,9 +247,6 @@
   &[data-size="medium"] {
     font-size: 19px;
 
-    .button-badge {
-    }
-
     .button-content {
       transform: translateY(2px);
     }
@@ -265,6 +262,11 @@
     font-size: 24px;
     line-height: 1.6;
     padding: 4px 8px;
+
+    .button-badge {
+      padding: 3px;
+      line-height: 23px;
+    }
 
     .button-content {
       transform: translateY(2px);

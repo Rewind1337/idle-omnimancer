@@ -32,7 +32,7 @@ function ResponsivePage({
   setActivePage,
   navigationPosition = "top",
   navigationMode = "default",
-  onNavigationSettingsChange = () => {},
+  onNavigationSettingsChange = () => { },
   className = '',
 }) {
   const [bagModalVisible, setBagModalVisible] = useState(false)
@@ -66,13 +66,13 @@ function ResponsivePage({
   const settingsButton = (
     <Button
       variant="primary"
-      size="medium"
+      size="large"
       className="w-min"
       icon={OTHER_ICONS.SETTINGS}
       aria-label="Settings"
       title="Settings"
       onClick={() => setSettingsModalVisible(true)}
-    />
+    >Settings</Button>
   )
 
   const sideActionsLeft = (

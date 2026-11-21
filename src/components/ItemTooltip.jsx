@@ -5,22 +5,25 @@ import { Text } from "./Text"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { getItemActionSources } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
+import { Badge } from "./Badge"
 
 import "./ItemTooltip.scss"
+import { OTHER_ICONS } from "../data/iconLibrary"
 
 const formatAmount = amount =>
     Number(amount).toLocaleString()
 
 function ItemActionList({ title, actions, emptyLabel }) {
     return (
-        <Flex direction="column" align="start" gap={6} className="item-tooltip-section">
-            <Heading h="5">{title}</Heading>
+        <Flex direction="column" align="start" gap={4} className="item-tooltip-section">
+            <Heading h="4" className="w-100 align-center">{title}</Heading>
             {actions.length > 0 ? actions.map(action => (
-                <Flex key={action.id} direction="column" align="start" gap={2} className="item-tooltip-action">
-                    <Heading h="6" weight={500}>{action.name}</Heading>
-                    <Text size="small">
-                        Base amount: {formatAmount(action.amount)} {action.type === "unlock" ? "to unlock" : "per completion"}
-                    </Text>
+                <Flex key={action.id} direction="row" align="center" justify="start" gap={8} className="item-tooltip-action">
+                    <Badge size="small" variant={action.badgeVariant}>{action.type}</Badge>
+                    <Heading h="5" weight={400} className="align-left flex-grow">{action.name}</Heading>
+                    <Heading h="5" size="small">
+                        {formatAmount(action.amount)}
+                    </Heading>
                 </Flex>
             )) : (
                 <Text size="small">{emptyLabel}</Text>
@@ -37,16 +40,33 @@ export function ItemTooltip({ itemId, name }) {
 
     return (
         <Flex direction="column" align="start" gap={8} className="item-tooltip">
-            <Heading h="4">{name ?? itemData?.name ?? "Unknown Item"}</Heading>
+            <Heading h="3" className="w-100 align-center">{name ?? itemData?.name ?? "Unknown Item"}</Heading>
 
-            <Flex direction="column" align="start" gap={2} className="item-tooltip-summary">
-                <Text>Amount held: {formatAmount(amountHeld)}</Text>
-                <Text>
-                    Sell value (1 item): {formatAmount(itemData?.baseValue ?? 0)} Coins
-                </Text>
+            <Flex direction="column" align="start" gap={4} className="item-tooltip-summary">
+                <Flex direction="row" align="center" justify="space-between">
+                    <Heading h="5" className="w-70">Value each:</Heading>
+                    <Flex direction="row" align="end" justify="end">
+                        <Heading h="5">{formatAmount(itemData?.baseValue ?? 0)}</Heading>
+                        {OTHER_ICONS.COINS}
+                    </Flex>
+                </Flex>
+                <Flex direction="row" align="center" justify="space-between">
+                    <Heading h="5" className="w-70">Amount held:</Heading>
+                    <Flex direction="row" align="end" justify="end">
+                        <Heading h="5">{formatAmount(amountHeld)}</Heading>
+                        {OTHER_ICONS.GRIP}
+                    </Flex>
+                </Flex>
+                <Flex direction="row" align="center" justify="space-between">
+                    <Heading h="5" className="w-70">Value Stack ({amountHeld}):</Heading>
+                    <Flex direction="row" align="end" justify="end">
+                        <Heading h="5">{formatAmount(itemData?.baseValue * amountHeld)}</Heading>
+                        {OTHER_ICONS.COINS}
+                    </Flex>
+                </Flex>
             </Flex>
 
-            <div className="divider tooltip-divider"></div>
+            <hr />
 
             <ItemActionList
                 title="Obtaining"
@@ -54,7 +74,7 @@ export function ItemTooltip({ itemId, name }) {
                 emptyLabel="No configured actions produce this item."
             />
 
-            <div className="divider tooltip-divider"></div>
+            <hr />
 
             <ItemActionList
                 title="Consuming"

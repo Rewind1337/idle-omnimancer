@@ -134,9 +134,10 @@ export const getItemActionSources = (itemId) => {
             if (skillCost > 0) {
                 consumedBy.push({
                     id: "skill-unlock-" + skill.id,
-                    name: "Unlock " + humanize(skill.id),
+                    name: humanize(skill.id),
                     amount: skillCost,
                     type: "unlock",
+                    badgeVariant: skill.variant
                 })
             }
         }
@@ -153,6 +154,7 @@ export const getItemActionSources = (itemId) => {
                     name: actionName,
                     amount: outputAmount,
                     type: "action",
+                    badgeVariant: skill.variant
                 })
             }
 
@@ -163,6 +165,7 @@ export const getItemActionSources = (itemId) => {
                     name: actionName,
                     amount: consumedAmount,
                     type: "action",
+                    badgeVariant: skill.variant
                 })
             }
 
@@ -173,9 +176,10 @@ export const getItemActionSources = (itemId) => {
             if (unlockAmount > 0) {
                 consumedBy.push({
                     id: "action-unlock-" + skill.id + "-" + action.id,
-                    name: "Unlock " + actionName,
+                    name: actionName,
                     amount: unlockAmount,
                     type: "unlock",
+                    badgeVariant: skill.variant
                 })
             }
         }
@@ -373,6 +377,7 @@ export const getSkillMilestoneDetails = (player, skill) => {
                 mode: "milestone",
                 active,
                 status: active ? "Active" : "Unlocks at Level " + milestone.level,
+                variant: skill.variant
             }
         })
 }
@@ -400,6 +405,7 @@ export const getActionMilestoneDetails = (player, skill, action) => {
                 showStacks: true,
                 mode: "milestone",
                 active,
+                variant: skill.variant
             }
         })
 }
@@ -498,6 +504,7 @@ export const getActionEffectStacks = (player, skill, action) => {
                 value: elementValue,
                 stacks: 1,
                 mode: "element",
+                variant: elementName.toLowerCase()
             })
         }
 
@@ -521,6 +528,7 @@ export const getActionEffectStacks = (player, skill, action) => {
                     value: milestone.value,
                     stacks: 1,
                     mode: "milestone",
+                    variant: skill.variant
                 })
             }
         }
@@ -548,6 +556,7 @@ export const getActionEffectStacks = (player, skill, action) => {
                 value: milestone.value,
                 stacks,
                 mode: "milestone",
+                variant: skill.variant
             })
         }
 

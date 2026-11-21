@@ -16,44 +16,44 @@ export function ActionDetails({
         <Flex className="action-details">
             <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS} tooltip={<Flex direction="column" gap={8}>
                 <Heading h="4" className="w-100 align-center">Time needed to complete this action.</Heading>
-                <div className="divider tooltip-divider"></div>
+                <hr />
                 <EffectStack title="Time effects" icon={OTHER_ICONS.HOURGLASS} entries={effectStacks.actionTime ?? []}
-                    formula="Time = (base duration × element modifier) ÷ max(0.01, 1 + Σ multiplier bonuses + Σ flat bonuses)" />
+                    formulas={["Time = (base duration × element modifier) ÷ max(0.01, 1 + Σ multiplier bonuses + Σ flat bonuses)"]} />
             </Flex>}>
                 {actionTime.toFixed(2)}s
             </Badge>
             <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column" gap={8}>
                 <Heading h="4" className="w-100 align-center">XP gained upon completing this action.</Heading>
-                <div className="divider tooltip-divider"></div>
+                <hr />
                 <EffectStack title="XP effects" icon={OTHER_ICONS.SPARKLES} entries={effectStacks.xpGain ?? []}
-                    formula="XP = max(0, round(base XP × element modifier × max(0, 1 + Σ multiplier bonuses) + Σ flat bonuses))" />
+                    formulas={["XP = max(0, round(base XP × element modifier × max(0, 1 + Σ multiplier bonuses) + Σ flat bonuses))"]} />
             </Flex>}>
                 {actionXP.toFixed(1)} XP
             </Badge>
             {manaCost !== null && (
                 <Badge variant="transparent" interactive icon={OTHER_ICONS.ZAP} tooltip={<Flex direction="column" gap={8}>
                     <Heading h="4" className="w-100 align-center">Mana consumed each time this action completes.</Heading>
-                    <div className="divider tooltip-divider"></div>
+                    <hr />
                     <EffectStack title="Mana cost effects" icon={OTHER_ICONS.ZAP} entries={effectStacks.manaCost ?? []}
-                        formula="Mana = max(0, base cost × element modifier × max(0.01, 1 + Σ multiplier bonuses) − Σ flat discounts)" />
+                        formulas={["Mana = max(0, base cost × element modifier × max(0.01, 1 + Σ multiplier bonuses) − Σ flat discounts)"]} />
                 </Flex>}>
                     {manaCost.toFixed(1)} Mana
                 </Badge>
             )}
             <Badge variant="transparent" interactive icon={OTHER_ICONS.FLAME} tooltip={<Flex direction="column" gap={8}>
                 <Heading h="4" className="w-100 align-center">Multiplier applied to the base amount of resources produced by this action.</Heading>
-                <div className="divider tooltip-divider"></div>
+                <hr />
                 <EffectStack title="Output effects" icon={OTHER_ICONS.FLAME} entries={effectStacks.itemOutput ?? []}
-                    formula="Output multiplier = max(0, 1 + Σ multiplier bonuses + Σ flat bonuses); output = base amount × multiplier, with fractional output rolling for +1" />
+                    formulas={["Output multiplier = max(0, 1 + Σ multiplier bonuses + Σ flat bonuses)", "Output = base amount × multiplier, with fractional output rolling for +1"]} />
             </Flex>}>
                 x{outputMultiplier.toFixed(2)}
             </Badge>
             {preservationChance > 0 && (
                 <Badge variant="transparent" interactive icon={OTHER_ICONS.RECYCLE} tooltip={<Flex direction="column" gap={8}>
                     <Heading h="4" className="w-100 align-center">Chance to avoid consuming this action's required input resources when it completes.</Heading>
-                    <div className="divider tooltip-divider"></div>
+                    <hr />
                     <EffectStack title="Preservation effects" icon={OTHER_ICONS.RECYCLE} entries={effectStacks.preservation ?? []}
-                        formula="Preservation = clamp(Σ multiplier bonus deltas + Σ flat bonuses, 0, 1)" />
+                        formulas={["Preservation = clamp(Σ multiplier bonus deltas + Σ flat bonuses, 0, 1)"]} />
                 </Flex>}>
                     {(preservationChance * 100).toFixed(0)}%
                 </Badge>

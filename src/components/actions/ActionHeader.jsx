@@ -20,7 +20,7 @@ export function ActionHeader({
             <h2>{name}</h2>
             {isUnlocked && (
                 <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">
-                    <Heading h="4">Current Action XP earned toward the next Action level.</Heading>
+                    <Heading h="4" className="w-100 align-center">Current Action XP earned toward the next Action level.</Heading>
                 </Flex>}>
                     {neededXP === null ? "MAX LEVEL" : `${currentXP.toFixed(1)} / ${neededXP} XP`}
                 </Badge>
@@ -31,7 +31,7 @@ export function ActionHeader({
                         <Heading h="4" className="w-100 align-center">Total progress in this Action</Heading>
                         {actionMilestones.length > 0 && (
                             <>
-                                <div className="divider tooltip-divider"></div>
+                                <hr />
                                 <EffectStack
                                     title="Action milestones"
                                     icon={OTHER_ICONS.STAR}
@@ -46,7 +46,7 @@ export function ActionHeader({
                 </Badge>
             )}
             <Badge variant="transparent" interactive icon={OTHER_ICONS.MERGE} tooltip={<Flex direction="column">
-                <Heading h="4">Action tier determines its base duration, XP reward and Mana cost.</Heading>
+                <Heading h="4" className="w-100 align-center">Action tier determines its base duration, XP reward and Mana cost.</Heading>
             </Flex>}>
                 Tier {tier}
             </Badge>

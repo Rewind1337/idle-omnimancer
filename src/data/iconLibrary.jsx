@@ -1,4 +1,4 @@
-import { ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck, CircleFadingArrowUp , Circle, CircleChevronDown, CircleChevronUp, CircleChevronsDown, CircleChevronsUp, CircleDivide, CircleEllipsis, CircleEqual, CircleExclamationPoint, CircleLetterA, CircleLetterB, CircleLetterC, CircleLetterD, CircleLetterE, CircleLetterF, CircleLetterG, CircleLetterH, CircleLetterI, CircleLetterJ } from "lucide-react";
+import { ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck, CircleFadingArrowUp, Circle, CircleChevronDown, CircleChevronUp, CircleChevronsDown, CircleChevronsUp, CircleDivide, CircleEllipsis, CircleEqual, CircleExclamationPoint, CircleLetterA, CircleLetterB, CircleLetterC, CircleLetterD, CircleLetterE, CircleLetterF, CircleLetterG, CircleLetterH, CircleLetterI, CircleLetterJ, Ellipsis } from "lucide-react";
 
 export const OTHER_ICONS = {
     STAR: <Star />,
@@ -43,6 +43,7 @@ export const SKILL_ICONS = {
 }
 
 export const ELEMENT_ICONS = {
+    ALL: <Ellipsis />,
     EARTH: <Mountain />,
     AIR: <Wind />,
     WATER: <Waves />

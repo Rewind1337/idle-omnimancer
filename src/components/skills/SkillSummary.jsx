@@ -48,11 +48,11 @@ export function SkillSummary({ title, skillProgress, variant, icon, milestones =
                         </Badge>
                     </Flex>
                     <Flex className="skill-progress" direction="column" gap={4}>
-                        <Heading h="3">Total Skill Progress</Heading>
-                        <Progress corners="rounded" variant={variant} percentage={totalPercentage} />
-                        <hr style={{ marginBlock: 8, borderColor: "transparent" }} />
                         <Heading h="3">Progress to next Level</Heading>
                         <Progress corners="rounded" variant={variant} percentage={levelPercentage} />
+                        <hr style={{ marginBlock: 8, borderColor: "transparent" }} />
+                        <Heading h="3">Total Skill Progress</Heading>
+                        <Progress corners="rounded" variant={variant} percentage={totalPercentage} />
                     </Flex>
                 </Flex>
             </Flex>

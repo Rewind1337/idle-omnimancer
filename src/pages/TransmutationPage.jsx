@@ -159,36 +159,36 @@ export function TransmutationPage() {
                         </Icon>
                     }
                 />
-                <ElementFilter value={elementFilter} onChange={setElementFilter} variant={pageVariant} />
             </Paper>
             <Paper layer={0}>
+                <ElementFilter value={elementFilter} onChange={setElementFilter} variant={pageVariant} />
                 <Grid columns={1}>
                     {getVisibleActions(player, skillId)
                         .filter(action => elementFilter === "all" || action.element === elementFilter)
                         .map(action => {
-                        const actionState = player.skills[skillId].actions[action.id]
-                        const isUnlocked = Boolean(actionState?.unlocked)
-                        const isActive = player.activeAction?.skillId === skillId &&
-                            player.activeAction?.actionId === action.id
+                            const actionState = player.skills[skillId].actions[action.id]
+                            const isUnlocked = Boolean(actionState?.unlocked)
+                            const isActive = player.activeAction?.skillId === skillId &&
+                                player.activeAction?.actionId === action.id
 
-                        return (
-                            <TransmutationAction
-                                key={action.id}
-                                action={action}
-                                player={player}
-                                actionState={actionState}
-                                isActive={isActive}
-                                isUnlocked={isUnlocked}
-                                canStart={canStartAction(player, skillId, action.id)}
-                                canUnlock={canUnlockAction(player, skillId, action.id)}
-                                onUnlock={() => unlockAction(skillId, action.id)}
-                                onToggle={() => {
-                                    if (isActive) stopAction(skillId, action.id)
-                                    else startAction(skillId, action.id)
-                                }}
-                            />
-                        )
-                    })}
+                            return (
+                                <TransmutationAction
+                                    key={action.id}
+                                    action={action}
+                                    player={player}
+                                    actionState={actionState}
+                                    isActive={isActive}
+                                    isUnlocked={isUnlocked}
+                                    canStart={canStartAction(player, skillId, action.id)}
+                                    canUnlock={canUnlockAction(player, skillId, action.id)}
+                                    onUnlock={() => unlockAction(skillId, action.id)}
+                                    onToggle={() => {
+                                        if (isActive) stopAction(skillId, action.id)
+                                        else startAction(skillId, action.id)
+                                    }}
+                                />
+                            )
+                        })}
                 </Grid>
             </Paper>
         </Flex>

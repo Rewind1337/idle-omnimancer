@@ -2,7 +2,6 @@ import { Paper } from "./Paper"
 import { Tabs } from "./Tabs"
 
 import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION } from "../data/navigationData"
-import { OTHER_ICONS } from "../data/iconLibrary"
 import { getSkillProgress } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 
@@ -35,7 +34,7 @@ export function Navigation({
           ...skill,
           disabled: !isUnlocked,
           badge: skillProgress ? "Lv. " + skillProgress.level : null,
-          badgeIcon: skillProgress ? OTHER_ICONS.STAR : null,
+          badgeIcon: null,
         }
       }),
     DEVELOPMENT_NAVIGATION,

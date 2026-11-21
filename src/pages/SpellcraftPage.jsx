@@ -125,34 +125,36 @@ export function SpellcraftPage() {
                             </Icon>
                         }
                     />
-                    <ElementFilter value={elementFilter} onChange={setElementFilter} variant={pageVariant} />
                     <Paper layer={1}>
                         <ManaBar />
                     </Paper>
                 </Flex>
             </Paper>
             <Paper layer={0}>
+                <Flex>
+                    <ElementFilter value={elementFilter} onChange={setElementFilter} variant={pageVariant} />
+                </Flex>
                 <Grid columns={1}>
                     {getVisibleActions(player, skillId)
                         .filter(action => elementFilter === "all" || action.element === elementFilter)
                         .map(action => {
-                        const actionState = player.skills[skillId].actions[action.id]
-                        const isUnlocked = Boolean(actionState?.unlocked)
-                        const isActive = player.activeAction?.skillId === skillId &&
-                            player.activeAction?.actionId === action.id
+                            const actionState = player.skills[skillId].actions[action.id]
+                            const isUnlocked = Boolean(actionState?.unlocked)
+                            const isActive = player.activeAction?.skillId === skillId &&
+                                player.activeAction?.actionId === action.id
 
-                        return (
-                            <SpellcraftAction key={action.id} action={action} player={player} actionState={actionState}
-                                isActive={isActive} isUnlocked={isUnlocked}
-                                canStart={canStartAction(player, skillId, action.id)}
-                                canUnlock={canUnlockAction(player, skillId, action.id)}
-                                onUnlock={() => unlockAction(skillId, action.id)}
-                                onToggle={() => {
-                                    if (isActive) stopAction(skillId, action.id)
-                                    else startAction(skillId, action.id)
-                                }} />
-                        )
-                    })}
+                            return (
+                                <SpellcraftAction key={action.id} action={action} player={player} actionState={actionState}
+                                    isActive={isActive} isUnlocked={isUnlocked}
+                                    canStart={canStartAction(player, skillId, action.id)}
+                                    canUnlock={canUnlockAction(player, skillId, action.id)}
+                                    onUnlock={() => unlockAction(skillId, action.id)}
+                                    onToggle={() => {
+                                        if (isActive) stopAction(skillId, action.id)
+                                        else startAction(skillId, action.id)
+                                    }} />
+                            )
+                        })}
                 </Grid>
             </Paper>
         </Flex>

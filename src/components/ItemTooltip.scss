@@ -1,5 +1,5 @@
 .item-tooltip {
-    width: 260px;
+    width: fit-content;
     max-width: 70vw;
 
     .item-tooltip-summary,
@@ -7,6 +7,12 @@
     .item-tooltip-action {
         width: 100%;
         min-width: 0;
+
+        svg {
+            width: 16px;
+            height: 16px;
+            align-self: center;
+        }
     }
 
     .item-tooltip-action {

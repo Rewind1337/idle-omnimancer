@@ -1,6 +1,7 @@
 export const RESEARCH_CONFIG = {
     id: "skill:research",
     unlockedByDefault: true,
+    variant: "research",
 
     skillXP: {
         firstLevelXP: 2
@@ -41,6 +42,7 @@ export const RESEARCH_CONFIG = {
             'preservation' -> chance to not consume the required items when completing this action
             'manaCost' -> reduces the mana costs by this much (only really for spellcraft, at the moment)
             'manaCapacity' -> increases the maximum mana by this much (only really for spellcraft, at the moment)
+            'manaRegeneration' -> increases the mana regen by this much (only really for spellcraft, at the moment)
     */
     milestones: [
         { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 1.1 },

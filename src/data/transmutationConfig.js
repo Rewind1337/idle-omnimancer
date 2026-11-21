@@ -2,9 +2,6 @@
 
 export const TRANSMUTATION_CONFIG = {
     id: "skill:transmutation",
-
-    // The game document calls for Research materials plus elemental essences and gold.
-    // These starting requirements should be adjusted once the first economy pass is tested.
     unlockCosts: [
         { item: "item:bound_notes", amount: 100 },
         { item: "item:dust", amount: 25 },
@@ -12,6 +9,7 @@ export const TRANSMUTATION_CONFIG = {
         { item: "item:droplet", amount: 25 },
         { item: "currency:coins", amount: 5000 },
     ],
+    variant: "transmutation",
 
     elementModifiers: {
         earth: { timeMultiplier: 1.05, xpMultiplier: 1.15, manaCostMultiplier: 1.1 },

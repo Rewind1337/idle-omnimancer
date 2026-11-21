@@ -3,6 +3,7 @@ import { Heading } from "./Heading"
 import { Text } from "./Text"
 
 import "./EffectStack.scss"
+import { Badge } from "./Badge"
 
 const EFFECT_LABELS = {
     actionTime: "Action Speed",
@@ -73,7 +74,7 @@ export function EffectStack({
     showInactive = false,
     emptyLabel = "No active effects.",
     icon = null,
-    formula = null,
+    formulas = [],
 }) {
     const visibleEntries = showInactive
         ? entries
@@ -83,8 +84,9 @@ export function EffectStack({
         <Flex direction="column" gap={8} className="effect-stack">
             {title && (
                 <Flex direction="row" align="center" justify="center" gap={6} className="effect-stack-title">
-                    <Heading h="4" className="w-100 align-left">{title}</Heading>
-                    {icon && <span className="w-100 align-right effect-stack-title-icon">{icon}</span>}
+                    {icon && <span className="w-0 align-right effect-stack-title-icon">{icon}</span>}
+                    <Heading h="4" className="w-100 flex-grow align-center">{title}</Heading>
+                    {icon && <span className="w-0 align-left effect-stack-title-icon">{icon}</span>}
                 </Flex>
             )}
             {visibleEntries.length > 0 ? visibleEntries.map(entry => (
@@ -96,22 +98,24 @@ export function EffectStack({
                     className="effect-stack-entry"
                     data-active={entry.active === false ? "false" : "true"}
                 >
-                    <Flex direction="row" gap={8}>
-                        <Heading h="6" weight={400}>{entry.title ?? entry.source}</Heading>
-                    </Flex>
-                    <Flex direction="row" gap={8}>
-                        <Text>
+                    <Flex direction="row" justify="start" align="center" gap={8}>
+                        <Badge variant={entry.variant} size="small">
+                            <Heading h="5" weight={400}>{entry.title ?? entry.source}</Heading>
+                        </Badge>
+                        <Heading h="5" className="w-60 flex-grow">
                             {formatEffectDescription(entry)}
-                            {entry.showStacks ? " - x" + entry.stacks : ""}
-                        </Text>
-                        {entry.source && entry.title && <Text>{entry.source}</Text>}
+                        </Heading>
+                        <Heading h="5" className="w-40 align-right">
+                            {entry.showStacks ? "x" + entry.stacks : ""}
+                            {entry.source && entry.title && entry.source}
+                        </Heading>
                     </Flex>
-                    {entry.meta && <Text>{entry.meta}</Text>}
                 </Flex>
             )) : (
                 <Text>{emptyLabel}</Text>
             )}
-            {formula && <Text size="small">{formula}</Text>}
+            {formulas.length > 0 && <hr />}
+            {formulas.length > 0 && formulas.map(f => <Text size="small">{f}</Text>)}
         </Flex>
     )
 }

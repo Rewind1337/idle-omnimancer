@@ -1,6 +1,7 @@
 export const SPELLCRAFT_CONFIG = {
     id: "skill:spellcraft",
     unlockCosts: [{ amount: 1e2, item: "item:loose_notes" }, { amount: 1e3, item: "currency:coins" }],
+    variant: "spellcraft",
 
     mana: {
         base: 100,

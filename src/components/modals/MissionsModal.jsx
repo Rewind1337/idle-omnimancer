@@ -21,24 +21,34 @@ function MissionCard({ mission, player, isCompleted, canTurnIn, onTurnIn }) {
 
     return (
         <Paper layer={2} variant="secondary" className="mission-card">
-            <Flex direction="column" align="stretch" gap={10}>
-                <Flex direction="row" justify="space-between" wrap gap={8}>
-                    <Heading h="4">{mission.title}</Heading>
-                    <Flex direction="row" gap={6} wrap>
+            <Flex direction="column">
+                <Flex direction="row" gap={8}>
+                    <Flex direction="row" gap={6}>
+                        <Heading h="3">{mission.title}</Heading>
                         <Badge variant="secondary">Tier {mission.tier}</Badge>
                         {isCompleted && <Badge variant="secondary">Completed</Badge>}
                     </Flex>
                 </Flex>
-                <Text size="small">{mission.description}</Text>
-                <Flex direction="row" justify="space-between" wrap gap={8}>
+
+                <Flex direction="row" gap={8}>
+                    <Text size="small">{mission.description}</Text>
+                </Flex>
+
+                <Flex direction="column" gap={8}>
                     <Item
-                        mode="wide"
                         layer={2}
+                        amount={mission.objective.amount}
                         interactive={false}
                         icon={objectiveItem?.icon}
                         name={mission.objective.amount.toLocaleString() + " × " + (objectiveItem?.name ?? mission.objective.item)}
                         variant={objectiveItem?.variant ?? "primary"}
                     />
+                    <Text size="small" className="w-100 align-center">
+                        {ownedAmount.toLocaleString()} / {mission.objective.amount.toLocaleString()} available
+                    </Text>
+                </Flex>
+
+                <Flex direction="row" justify="space-between" wrap gap={8}>
                     {mission.rewards.map((reward, index) => {
                         const rewardId = reward.currency ?? reward.item
                         const rewardData = reward.currency
@@ -55,13 +65,11 @@ function MissionCard({ mission, player, isCompleted, canTurnIn, onTurnIn }) {
                         )
                     })}
                 </Flex>
-                <Flex direction="row" justify="space-between" align="center" wrap gap={8}>
-                    <Text size="small">
-                        {ownedAmount.toLocaleString()} / {mission.objective.amount.toLocaleString()} available
-                    </Text>
+
+                <Flex direction="row" justify="space-between" align="center" gap={8}>
                     <Button
                         variant="secondary"
-                        size="small"
+                        className="w-100"
                         disabled={!canTurnIn}
                         onClick={onTurnIn}
                     >

@@ -66,6 +66,26 @@ const ITEM_DEFINITIONS = [
     { id: "item:skybreak_aether", tier: 4, variant: "air", type: "resource" },
     { id: "item:tidal_heart", tier: 4, variant: "water", type: "resource" },
 
+    // Higher-tier Exploration resources.
+    { id: "item:deepstone_crystals", tier: 5, variant: "earth", type: "resource" },
+    { id: "item:highwind_plumes", tier: 5, variant: "air", type: "resource" },
+    { id: "item:mooncurrent_pearls", tier: 5, variant: "water", type: "resource" },
+    { id: "item:verdant_heartwood", tier: 6, variant: "earth", type: "resource" },
+    { id: "item:stormwing_feathers", tier: 6, variant: "air", type: "resource" },
+    { id: "item:glacial_pearls", tier: 6, variant: "water", type: "resource" },
+    { id: "item:obsidian_fragments", tier: 7, variant: "earth", type: "resource" },
+    { id: "item:celestial_aether", tier: 7, variant: "air", type: "resource" },
+    { id: "item:abyssal_corals", tier: 7, variant: "water", type: "resource" },
+    { id: "item:primordial_ore", tier: 8, variant: "earth", type: "resource" },
+    { id: "item:starfall_aether", tier: 8, variant: "air", type: "resource" },
+    { id: "item:worldtide_pearls", tier: 8, variant: "water", type: "resource" },
+    { id: "item:worldcore_shards", tier: 9, variant: "earth", type: "resource" },
+    { id: "item:firmament_plumes", tier: 9, variant: "air", type: "resource" },
+    { id: "item:leviathan_essence", tier: 9, variant: "water", type: "resource" },
+    { id: "item:genesis_ore", tier: 10, variant: "earth", type: "resource" },
+    { id: "item:origin_aether", tier: 10, variant: "air", type: "resource" },
+    { id: "item:eternal_tideheart", tier: 10, variant: "water", type: "resource" },
+
     // Companion containers discovered by exploration for use in the Unveiling systems & Companion Tab.
     { id: "item:earth_geode_i", tier: 1, variant: "earth", type: "companionContainer" },
     { id: "item:air_egg_i", tier: 1, variant: "air", type: "companionContainer" },
@@ -73,6 +93,16 @@ const ITEM_DEFINITIONS = [
     { id: "item:earth_geode_ii", tier: 2, variant: "earth", type: "companionContainer" },
     { id: "item:air_egg_ii", tier: 2, variant: "air", type: "companionContainer" },
     { id: "item:water_shell_ii", tier: 2, variant: "water", type: "companionContainer" },
+
+    { id: "item:earth_geode_iii", tier: 3, variant: "earth", type: "companionContainer" },
+    { id: "item:air_egg_iii", tier: 3, variant: "air", type: "companionContainer" },
+    { id: "item:water_shell_iii", tier: 3, variant: "water", type: "companionContainer" },
+    { id: "item:earth_geode_iv", tier: 4, variant: "earth", type: "companionContainer" },
+    { id: "item:air_egg_iv", tier: 4, variant: "air", type: "companionContainer" },
+    { id: "item:water_shell_iv", tier: 4, variant: "water", type: "companionContainer" },
+    { id: "item:earth_geode_v", tier: 5, variant: "earth", type: "companionContainer" },
+    { id: "item:air_egg_v", tier: 5, variant: "air", type: "companionContainer" },
+    { id: "item:water_shell_v", tier: 5, variant: "water", type: "companionContainer" },
 
     // Unique area artifacts reserved for the Combat and Unveiling systems.
     { id: "item:crossroads_waystone", tier: 1, variant: "exploration", type: "artifact" },
@@ -88,6 +118,26 @@ const ITEM_DEFINITIONS = [
     { id: "item:basalt_crown_fragment", tier: 4, variant: "earth", type: "artifact" },
     { id: "item:skybreak_sigil", tier: 4, variant: "air", type: "artifact" },
     { id: "item:abyssal_crown", tier: 4, variant: "water", type: "artifact" },
+
+    // Higher-tier area artifacts reserved for Combat and Unveiling.
+    { id: "item:deepstone_guardian_core", tier: 5, variant: "earth", type: "artifact" },
+    { id: "item:highwind_wisp_chime", tier: 5, variant: "air", type: "artifact" },
+    { id: "item:mooncurrent_tide_idol", tier: 5, variant: "water", type: "artifact" },
+    { id: "item:verdant_golem_core", tier: 6, variant: "earth", type: "artifact" },
+    { id: "item:stormwing_wisp_chime", tier: 6, variant: "air", type: "artifact" },
+    { id: "item:glacial_tide_idol", tier: 6, variant: "water", type: "artifact" },
+    { id: "item:obsidian_golem_relic", tier: 7, variant: "earth", type: "artifact" },
+    { id: "item:celestial_wisp_chime", tier: 7, variant: "air", type: "artifact" },
+    { id: "item:abyssal_tide_scepter", tier: 7, variant: "water", type: "artifact" },
+    { id: "item:primordial_golem_heart", tier: 8, variant: "earth", type: "artifact" },
+    { id: "item:starfall_wisp_sigil", tier: 8, variant: "air", type: "artifact" },
+    { id: "item:worldtide_tide_crown", tier: 8, variant: "water", type: "artifact" },
+    { id: "item:worldcore_relic", tier: 9, variant: "earth", type: "artifact" },
+    { id: "item:firmament_wisp_chime", tier: 9, variant: "air", type: "artifact" },
+    { id: "item:leviathan_tide_scepter", tier: 9, variant: "water", type: "artifact" },
+    { id: "item:genesis_golem_core", tier: 10, variant: "earth", type: "artifact" },
+    { id: "item:origin_wisp_sigil", tier: 10, variant: "air", type: "artifact" },
+    { id: "item:eternal_tide_crown", tier: 10, variant: "water", type: "artifact" },
 
     // Transmutation Catalyst placeholders; names and sale tiers can be tuned later.
     { id: "item:earth_catalyst_i", name: "Lesser Earth Catalyst", tier: 1, variant: "earth" },

@@ -24,7 +24,7 @@ export function Toast({
     const variant = config.variant
 
     const icon = cloneElement(config.icon, {
-        size: 22,
+        size: 24,
         'aria-hidden': true,
     })
 
@@ -97,9 +97,9 @@ export function Toast({
 
     return (
         <Paper
-            layer={2}
+            layer={3}
             variant={variant}
-            padding={12}
+            padding={16}
             className={`toast toast-${type}`}
             role={type === 'error' ? 'alert' : 'status'}
             aria-live={type === 'error' ? 'assertive' : 'polite'}

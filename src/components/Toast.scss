@@ -1,12 +1,44 @@
-/* Toast Component Styles */
+/* Toast notifications render in a centered layer above floating UI. */
 .toast-container {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 384px;
-  align-items: end;
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  right: auto;
+  bottom: 16px;
+  transform: translateX(-50%);
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  align-items: center;
+  pointer-events: none;
+  overscroll-behavior: contain;
 }
 
 .toast {
-  width: fit-content;
+  width: max-content;
+  max-width: 100%;
+  min-width: min(320px, 100%);
+  border-width: 2px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7);
+  pointer-events: auto;
+
+  .toast-layout {
+    width: 100%;
+    align-items: center;
+  }
+
+  .toast-content {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    .heading,
+    .text {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .toast-dismiss {
+    flex: 0 0 auto;
+  }
 }

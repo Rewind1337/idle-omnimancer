@@ -66,7 +66,7 @@ function ResponsivePage({
   const settingsButton = (
     <Button
       variant="primary"
-      size="large"
+      size="medium"
       className="w-min"
       icon={OTHER_ICONS.SETTINGS}
       aria-label="Settings"

@@ -1,4 +1,5 @@
 import { WORLD_DATA } from "./worldData"
+import { ITEM_DATA_BY_ID } from "./itemData"
 
 // Exploration tuning is an initial proposal. The game document intentionally
 // leaves durations, XP, rewards, area count and unlock quantities open for review.
@@ -47,20 +48,31 @@ export const EXPLORATION_CONFIG = {
 
     // Each area is its own action. These milestones are intended to affect the
     // same area's future Combat and discovery systems.
-    actionMilestones: [
-    ],
+    actionMilestones: [],
 
-    // The shared map is the source of truth for area identity, position, links,
-    // resources, container discoveries and Combat artifacts.
-    actions: WORLD_DATA.areas.map(area => ({
-        id: area.actionId,
-        areaId: area.id,
-        name: area.name,
-        tier: area.tier,
-        element: area.element,
-        produces: area.exploration.resourceRewards,
-        companionContainer: area.exploration.companionContainer,
-        artifactItem: area.combat.artifactItem,
-        unlockedByDefault: area.unlockedByDefault,
-    })),
+    // Each area's guaranteed resources and chance-based discoveries share one
+    // produces list. Only guaranteed item entries feed the current action loop.
+    actions: WORLD_DATA.areas.map(area => {
+        const companionContainer = area.exploration.produces.find(output =>
+            output.id && ITEM_DATA_BY_ID[output.id]?.type === "companionContainer"
+        )
+        const artifact = area.combat.produces.find(output =>
+            ITEM_DATA_BY_ID[output.id]?.type === "artifact"
+        )
+
+        return {
+            id: area.actionId,
+            areaId: area.id,
+            name: area.name,
+            tier: area.tier,
+            element: area.element,
+            produces: area.exploration.produces.filter(output => output.item),
+            companionContainer: companionContainer
+                ? { ...companionContainer, item: companionContainer.id }
+                : null,
+            artifactItem: artifact?.id ?? null,
+            combatProduces: area.combat.produces,
+            unlockedByDefault: area.unlockedByDefault,
+        }
+    }),
 }

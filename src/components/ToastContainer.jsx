@@ -14,8 +14,8 @@ export function ToastContainer({
     return createPortal(
         <Flex
             direction="column"
-            align="end"
-            gap={2}
+            align="center"
+            gap={8}
             className="toast-container"
             role="region"
             aria-label="Notifications"

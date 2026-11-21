@@ -432,7 +432,7 @@ export const getActionXPReward = (skill, action, player = null) => {
         : { flat: 0, mult: 0 }
     const finalXP = baseXP * elementXPMultiplier * Math.max(0, 1 + bonuses.mult) + bonuses.flat
 
-    return Math.max(0, Math.round(finalXP))
+    return Math.max(0, finalXP)
 }
 
 // Action Mana uses the configured tier curve and element modifier, then applies

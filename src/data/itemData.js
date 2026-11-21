@@ -51,6 +51,23 @@ const ITEM_DEFINITIONS = [
     { id: "item:firmament_core", tier: 8, variant: "air" },
     { id: "item:primordial_tide", tier: 8, variant: "water" },
 
+    // Exploration resources.
+    { id: "item:crossroads_field_notes", tier: 1, variant: "exploration", type: "resource" },
+    { id: "item:mossbound_ore", tier: 1, variant: "earth", type: "resource" },
+    { id: "item:whispering_seeds", tier: 1, variant: "air", type: "resource" },
+    { id: "item:stillwater_reeds", tier: 1, variant: "water", type: "resource" },
+
+    // Tier-I companion containers.
+    { id: "item:earth_geode_i", tier: 1, variant: "earth", type: "companionContainer" },
+    { id: "item:air_egg_i", tier: 1, variant: "air", type: "companionContainer" },
+    { id: "item:water_shell_i", tier: 1, variant: "water", type: "companionContainer" },
+
+    // Area artifacts used by Combat and Unveiling.
+    { id: "item:crossroads_waystone", tier: 1, variant: "exploration", type: "artifact" },
+    { id: "item:mossbound_heartstone", tier: 1, variant: "earth", type: "artifact" },
+    { id: "item:whispering_chime", tier: 1, variant: "air", type: "artifact" },
+    { id: "item:stillwater_idol", tier: 1, variant: "water", type: "artifact" },
+
     // Transmutation Catalyst placeholders; names and sale tiers can be tuned later.
     { id: "item:earth_catalyst_i", name: "Lesser Earth Catalyst", tier: 1, variant: "earth" },
     { id: "item:earth_catalyst_ii", name: "Weak Earth Catalyst", tier: 2, variant: "earth" },

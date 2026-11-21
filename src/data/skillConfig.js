@@ -1,5 +1,5 @@
 import { RESEARCH_CONFIG } from "./researchConfig"
-import { SPELLCRAFT_CONFIG } from "./SpellcraftConfig"
+import { SPELLCRAFT_CONFIG } from "./spellcraftConfig"
 import { TRANSMUTATION_CONFIG } from "./transmutationConfig"
 import { EXPLORATION_CONFIG } from "./explorationConfig"
 

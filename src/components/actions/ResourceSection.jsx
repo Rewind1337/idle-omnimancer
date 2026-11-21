@@ -27,15 +27,18 @@ export function ResourceSection({ title, resources = [], amountMultiplier = 1 })
                     {resources.map((resource, index) => {
                         const itemId = typeof resource === "string" ? resource : resource.item
                         const amount = typeof resource === "string" ? 1 : (resource.amount ?? 1)
+                        const amountLabel = typeof resource === "string" ? null : resource.amountLabel
                         const data = ITEM_DATA_BY_ID[itemId] ?? CURRENCY_DATA_BY_ID[itemId]
-                        const displayAmount = amountMultiplier === 1
+                        const displayAmount = amountLabel ?? (amountMultiplier === 1
                             ? amount
-                            : formatOutputRange(amount, amountMultiplier)
+                            : formatOutputRange(amount, amountMultiplier))
+                        const className = typeof resource === "string" ? "" : (resource.className ?? "")
 
                         return (
                             <Item
                                 key={itemId + "-" + index}
                                 layer={3}
+                                className={className}
                                 mode="compact"
                                 interactive={false}
                                 icon={data?.icon}

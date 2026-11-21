@@ -4,7 +4,6 @@ import { Flex } from "../components/Flex"
 import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
 import { Paper } from "../components/Paper"
-import { Badge } from "../components/Badge"
 import { HexMap } from "../components/maps/HexMap"
 import { SkillSummary } from "../components/skills/SkillSummary"
 import { ActionHeader } from "../components/actions/ActionHeader"
@@ -15,9 +14,8 @@ import { Button } from "../components/Button"
 import { Text } from "../components/Text"
 
 import { EXPLORATION_CONFIG } from "../data/explorationConfig"
-import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { WORLD_AREAS, WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
-import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
+import { SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
     canUnlockAction,
@@ -27,6 +25,7 @@ import {
     getActionEffectStacks,
     getActionMilestoneDetails,
     getActionOutputMultiplier,
+    getActionCompanionChance,
     getActionPreservationChance,
     getSkillProgress,
     getSkillMilestoneDetails,
@@ -66,6 +65,22 @@ function ExplorationActionCard({
     const outputMultiplier = isUnlocked
         ? getActionOutputMultiplier(player, EXPLORATION_CONFIG, action)
         : 1
+    const companionChance = isUnlocked
+        ? getActionCompanionChance(player, EXPLORATION_CONFIG, action)
+        : 0
+    const producedResources = [
+        ...(action.produces ?? []),
+        ...(action.companionContainer && companionChance > 0
+            ? [{
+                item: action.companionContainer,
+                amountLabel: (companionChance * 100).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                }) + "% chance",
+                className: "item-companion",
+            }]
+            : []),
+    ]
 
     return (
         <Paper layer={1} variant={elementVariant} className="action action-exploration">
@@ -133,21 +148,9 @@ function ExplorationActionCard({
                         />
                         <ActionResources
                             consumes={action.consumes ?? []}
-                            produces={action.produces ?? []}
+                            produces={producedResources}
                             outputMultiplier={outputMultiplier}
                         />
-                        {action.companionContainer && (
-                            <Badge
-                                variant={elementVariant}
-                                icon={cloneElement(
-                                    ITEM_DATA_BY_ID[action.companionContainer]?.icon ?? OTHER_ICONS.COMPANION_EGG,
-                                    { size: 20 }
-                                )}
-                            >
-                                {ITEM_DATA_BY_ID[action.companionContainer]?.name ?? humanize(action.companionContainer.replace(/^item:/, ""))}
-                                {" · "}{(EXPLORATION_CONFIG.companionChance.base * 100).toLocaleString()}% chance
-                            </Badge>
-                        )}
                     </>
                 ) : (
                     <ActionResources

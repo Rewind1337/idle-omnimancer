@@ -202,7 +202,7 @@ export const WORLD_DATA = {
         {
             id: "area:earth_tier_5",
             actionId: "action:earth_tier_5",
-            name: "earth_tier_5",
+            name: "The Deepstone Warrens",
             element: "earth",
             tier: 5,
             areaNumber: 14,
@@ -216,7 +216,7 @@ export const WORLD_DATA = {
         {
             id: "area:air_tier_5",
             actionId: "action:air_tier_5",
-            name: "air_tier_5",
+            name: "The Highwind Expanse",
             element: "air",
             tier: 5,
             areaNumber: 15,
@@ -230,7 +230,7 @@ export const WORLD_DATA = {
         {
             id: "area:water_tier_5",
             actionId: "action:water_tier_5",
-            name: "water_tier_5",
+            name: "The Mooncurrent Basin",
             element: "water",
             tier: 5,
             areaNumber: 16,
@@ -244,7 +244,7 @@ export const WORLD_DATA = {
         {
             id: "area:earth_tier_6",
             actionId: "action:earth_tier_6",
-            name: "earth_tier_6",
+            name: "The Verdant Crucible",
             element: "earth",
             tier: 6,
             areaNumber: 17,
@@ -258,7 +258,7 @@ export const WORLD_DATA = {
         {
             id: "area:air_tier_6",
             actionId: "action:air_tier_6",
-            name: "air_tier_6",
+            name: "The Stormwing Pinnacles",
             element: "air",
             tier: 6,
             areaNumber: 18,
@@ -272,7 +272,7 @@ export const WORLD_DATA = {
         {
             id: "area:water_tier_6",
             actionId: "action:water_tier_6",
-            name: "water_tier_6",
+            name: "The Glacial Mirror",
             element: "water",
             tier: 6,
             areaNumber: 19,
@@ -286,7 +286,7 @@ export const WORLD_DATA = {
         {
             id: "area:earth_tier_7",
             actionId: "action:earth_tier_7",
-            name: "earth_tier_7",
+            name: "The Obsidian Throne",
             element: "earth",
             tier: 7,
             areaNumber: 20,
@@ -300,7 +300,7 @@ export const WORLD_DATA = {
         {
             id: "area:air_tier_7",
             actionId: "action:air_tier_7",
-            name: "air_tier_7",
+            name: "The Celestial Rift",
             element: "air",
             tier: 7,
             areaNumber: 21,
@@ -314,7 +314,7 @@ export const WORLD_DATA = {
         {
             id: "area:water_tier_7",
             actionId: "action:water_tier_7",
-            name: "water_tier_7",
+            name: "The Leviathan Trench",
             element: "water",
             tier: 7,
             areaNumber: 22,
@@ -328,7 +328,7 @@ export const WORLD_DATA = {
         {
             id: "area:earth_tier_8",
             actionId: "action:earth_tier_8",
-            name: "earth_tier_8",
+            name: "The Primordial Forge",
             element: "earth",
             tier: 8,
             areaNumber: 23,
@@ -342,7 +342,7 @@ export const WORLD_DATA = {
         {
             id: "area:air_tier_8",
             actionId: "action:air_tier_8",
-            name: "air_tier_8",
+            name: "The Starfall Firmament",
             element: "air",
             tier: 8,
             areaNumber: 24,
@@ -356,7 +356,7 @@ export const WORLD_DATA = {
         {
             id: "area:water_tier_8",
             actionId: "action:water_tier_8",
-            name: "water_tier_8",
+            name: "The Worldtide Sanctum",
             element: "water",
             tier: 8,
             areaNumber: 25,
@@ -370,7 +370,7 @@ export const WORLD_DATA = {
         {
             id: "area:earth_tier_9",
             actionId: "action:earth_tier_9",
-            name: "earth_tier_9",
+            name: "The Worldcore Caldera",
             element: "earth",
             tier: 9,
             areaNumber: 26,
@@ -384,7 +384,7 @@ export const WORLD_DATA = {
         {
             id: "area:air_tier_9",
             actionId: "action:air_tier_9",
-            name: "air_tier_9",
+            name: "The Boundless Empyrean",
             element: "air",
             tier: 9,
             areaNumber: 27,
@@ -398,7 +398,7 @@ export const WORLD_DATA = {
         {
             id: "area:water_tier_9",
             actionId: "action:water_tier_9",
-            name: "water_tier_9",
+            name: "The Leviathan's Grave",
             element: "water",
             tier: 9,
             areaNumber: 28,
@@ -412,7 +412,7 @@ export const WORLD_DATA = {
         {
             id: "area:earth_tier_10",
             actionId: "action:earth_tier_10",
-            name: "earth_tier_10",
+            name: "The Genesis Bastion",
             element: "earth",
             tier: 10,
             areaNumber: 29,
@@ -426,7 +426,7 @@ export const WORLD_DATA = {
         {
             id: "area:air_tier_10",
             actionId: "action:air_tier_10",
-            name: "air_tier_10",
+            name: "The Origin Zenith",
             element: "air",
             tier: 10,
             areaNumber: 30,
@@ -440,7 +440,7 @@ export const WORLD_DATA = {
         {
             id: "area:water_tier_10",
             actionId: "action:water_tier_10",
-            name: "water_tier_10",
+            name: "The Eternal Deep",
             element: "water",
             tier: 10,
             areaNumber: 31,

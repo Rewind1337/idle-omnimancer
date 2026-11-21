@@ -377,6 +377,24 @@ Exploration is an **active skill**. Every area is an independent action with its
 | 11 | The Basalt Crown | Earth | IV | Basalt Heart | Basalt Crown Fragment |
 | 12 | The Skybreak Summit | Air | IV | Skybreak Aether | Skybreak Sigil |
 | 13 | The Tidal Abyss | Water | IV | Tidal Heart | Abyssal Crown |
+| 14 | The Deepstone Warrens | Earth | V | Deepstone Crystals | Deepstone Guardian Core |
+| 15 | The Highwind Expanse | Air | V | Highwind Plumes | Highwind Wisp Chime |
+| 16 | The Mooncurrent Basin | Water | V | Mooncurrent Pearls | Mooncurrent Tide Idol |
+| 17 | The Verdant Crucible | Earth | VI | Verdant Heartwood | Verdant Golem Core |
+| 18 | The Stormwing Pinnacles | Air | VI | Stormwing Feathers | Stormwing Wisp Chime |
+| 19 | The Glacial Mirror | Water | VI | Glacial Pearls | Glacial Tide Idol |
+| 20 | The Obsidian Throne | Earth | VII | Obsidian Fragments | Obsidian Golem Relic |
+| 21 | The Celestial Rift | Air | VII | Celestial Aether | Celestial Wisp Chime |
+| 22 | The Leviathan Trench | Water | VII | Abyssal Corals | Abyssal Tide Scepter |
+| 23 | The Primordial Forge | Earth | VIII | Primordial Ore | Primordial Golem Heart |
+| 24 | The Starfall Firmament | Air | VIII | Starfall Aether | Starfall Wisp Sigil |
+| 25 | The Worldtide Sanctum | Water | VIII | Worldtide Pearls | Worldtide Tide Crown |
+| 26 | The Worldcore Caldera | Earth | IX | Worldcore Shards | Worldcore Relic |
+| 27 | The Boundless Empyrean | Air | IX | Firmament Plumes | Firmament Wisp Chime |
+| 28 | The Leviathan's Grave | Water | IX | Leviathan Essence | Leviathan Tide Scepter |
+| 29 | The Genesis Bastion | Earth | X | Genesis Ore | Genesis Golem Core |
+| 30 | The Origin Zenith | Air | X | Origin Aether | Origin Wisp Sigil |
+| 31 | The Eternal Deep | Water | X | Eternal Tideheart | Eternal Tide Crown |
 
 - Every area currently has one unique guaranteed Exploration resource and one area-specific artifact reserved for Combat/Unveiling.
 - The area identity, element, tier, action ID, map position and reward IDs are defined centrally in `src/data/worldData.js`; item metadata and icons are defined in `src/data/itemData.js` and `src/data/iconLibrary.jsx`.
@@ -388,7 +406,7 @@ Exploration is an **active skill**. Every area is an independent action with its
 - Other area unlock costs are shared by tier: Tier I costs 10,000 coins, Tier II costs 30,000 coins, Tier III costs 75,000 coins and Tier IV costs 150,000 coins.
 - Area unlock cost and adjacency are separate requirements: a neighboring area can still be unaffordable until the player has enough coins.
 - Each area action levels independently from 1 to 100. Its level contributes to the overall Exploration skill level; level 100 in the skill requires every Exploration action to reach level 100.
-- Current base action duration is 6 seconds at Tier I, increasing by 1 second per tier. Base action XP is 12 at Tier I, increasing by 5 per tier. XP requirements follow the shared configured action progression curve.
+- Current base action duration is 5 seconds at Tier I, increasing by 1 second per tier. Base action XP is 12 at Tier I, increasing by 5 per tier. XP requirements follow the shared configured action progression curve.
 - Exploration skill milestones and area action milestones use the shared milestone system. Exact area-specific milestone rewards remain to be developed.
 
 ### 8.4 Area rewards and companion-container discoveries
@@ -396,7 +414,7 @@ Exploration is an **active skill**. Every area is an independent action with its
 - Each completed area action guarantees its configured area resource, subject to normal output multipliers and inventory-capacity rules.
 - Areas 5, 6 and 7 can additionally discover Tier-I containers: Earth Geodes, Air Eggs and Water Shells respectively.
 - Areas 11, 12 and 13 can additionally discover Tier-II containers: Earth Geodes, Air Eggs and Water Shells respectively.
-- The current base companion-container discovery chance is 0.1% per completed Exploration action in an area configured with a container. This is a separate chance roll, not a guaranteed action output and not multiplied by the normal resource-output multiplier.
+- The current base companion-container discovery chance is 0.1% per completed Exploration action in an area configured with a container. This is a separate chance roll, not a guaranteed action output; item-output bonuses also multiply the discovery chance, which is capped at 100%.
 - Areas without a configured container do not make a container discovery roll.
 - Containers remain in inventory until the player reaches their minimum Unveiling skill-level requirement and processes them through **Unveil Artifact or Companion**. Exact level requirements and unveiling rewards remain to be balanced.
 - Exploration does not drop Combat artifacts. Each area's artifact is defined now as its future area-specific Combat reward and may be revealed through Unveiling.

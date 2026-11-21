@@ -202,8 +202,7 @@ const canStoreActionOutputs = (player, skill, action) => {
         ? action.companionContainer
         : action.companionContainer?.item
     if (
-        outputMultiplier > 0 &&
-        skill.companionChance?.base > 0 &&
+        getActionCompanionChance(player, skill, action) > 0 &&
         companionContainerId &&
         ITEM_DATA_BY_ID[companionContainerId]
     ) {
@@ -504,6 +503,22 @@ export const getActionOutputMultiplier = (player, skill, action) => {
     return Math.max(0, 1 + bonuses.mult + bonuses.flat)
 }
 
+export const getActionCompanionChance = (player, skill, action) => {
+    const companionContainerId = typeof action.companionContainer === "string"
+        ? action.companionContainer
+        : action.companionContainer?.item
+    const baseChance = skill.companionChance?.base ?? 0
+
+    if (
+        !companionContainerId ||
+        !ITEM_DATA_BY_ID[companionContainerId] ||
+        !Number.isFinite(baseChance) ||
+        baseChance <= 0
+    ) return 0
+
+    return Math.max(0, Math.min(1, baseChance * getActionOutputMultiplier(player, skill, action)))
+}
+
 export const getActionPreservationChance = (player, skill, action) => {
     const bonuses = getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "preservation")
     return Math.max(0, Math.min(1, bonuses.mult + bonuses.flat))
@@ -777,10 +792,7 @@ const awardActionXP = (player, skill, action, actionState) => {
         ? action.companionContainer
         : action.companionContainer?.item
     // Item-output bonuses also improve the chance to discover companion containers.
-    const companionChance = Math.max(
-        0,
-        Math.min(1, (skill.companionChance?.base ?? 0) * outputMultiplier)
-    )
+    const companionChance = getActionCompanionChance(player, skill, action)
     if (
         companionContainerId &&
         ITEM_DATA_BY_ID[companionContainerId] &&

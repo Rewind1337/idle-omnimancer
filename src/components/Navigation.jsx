@@ -59,7 +59,7 @@ export function Navigation({
 
   return (
     <Paper
-      padding={0}
+      padding={2}
       variant="transparent"
       className={cx(
         'navigation',

@@ -1,5 +1,4 @@
 import { WORLD_DATA } from "./worldData"
-import { ITEM_DATA_BY_ID } from "./itemData"
 
 // Exploration tuning is an initial proposal. The game document intentionally
 // leaves durations, XP, rewards, area count and unlock quantities open for review.
@@ -53,12 +52,6 @@ export const EXPLORATION_CONFIG = {
     // Each area's guaranteed resources and chance-based discoveries share one
     // produces list. Only guaranteed item entries feed the current action loop.
     actions: WORLD_DATA.areas.map(area => {
-        const companionContainer = area.exploration.produces.find(itemId =>
-            ITEM_DATA_BY_ID[itemId]?.type === "companionContainer"
-        )
-        const artifact = area.combat.produces.find(itemId =>
-            ITEM_DATA_BY_ID[itemId]?.type === "artifact"
-        )
 
         return {
             id: area.actionId,
@@ -66,14 +59,7 @@ export const EXPLORATION_CONFIG = {
             name: area.name,
             tier: area.tier,
             element: area.element,
-            produces: area.exploration.produces.filter(itemId =>
-                ITEM_DATA_BY_ID[itemId]?.type !== "companionContainer"
-            ),
-            companionContainer: companionContainer
-                ? { item: companionContainer }
-                : null,
-            artifactItem: artifact ?? null,
-            combatProduces: area.combat.produces,
+            produces: area.exploration.produces,
             unlockedByDefault: area.unlockedByDefault,
         }
     }),

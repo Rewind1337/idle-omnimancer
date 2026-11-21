@@ -28,10 +28,10 @@ export const WORLD_DATA = {
             ],
             unlockedByDefault: true,
             exploration: {
-                produces: [{ item: "item:crossroads_field_notes", amount: 1 }],
+                produces: ["item:crossroads_field_notes"],
             },
             combat: {
-                produces: [{ id: "item:crossroads_waystone", amount: 1, baseChance: 0.001 }],
+                produces: ["item:crossroads_waystone"],
             },
         },
         {
@@ -47,17 +47,12 @@ export const WORLD_DATA = {
             unlockedByDefault: true,
             exploration: {
                 produces: [
-                    { item: "item:mossbound_ore", amount: 1 },
-                    {
-                        id: "item:earth_geode_i",
-                        amount: 1,
-                        baseChance: 0.001,
-                        minimumUnveilingSkillLevel: 1,
-                    },
+                    "item:mossbound_ore",
+                    "item:earth_geode_i"
                 ],
             },
             combat: {
-                produces: [{ id: "item:mossbound_heartstone", amount: 1, baseChance: 0.001 }],
+                produces: ["item:mossbound_heartstone"],
             },
         },
         {
@@ -73,17 +68,12 @@ export const WORLD_DATA = {
             unlockedByDefault: true,
             exploration: {
                 produces: [
-                    { item: "item:whispering_seeds", amount: 1 },
-                    {
-                        id: "item:air_egg_i",
-                        amount: 1,
-                        baseChance: 0.001,
-                        minimumUnveilingSkillLevel: 1,
-                    },
+                    "item:whispering_seeds",
+                    "item:air_egg_i",
                 ],
             },
             combat: {
-                produces: [{ id: "item:whispering_chime", amount: 1, baseChance: 0.001 }],
+                produces: ["item:whispering_chime"],
             },
         },
         {
@@ -99,17 +89,12 @@ export const WORLD_DATA = {
             unlockedByDefault: true,
             exploration: {
                 produces: [
-                    { item: "item:stillwater_reeds", amount: 1 },
-                    {
-                        id: "item:water_shell_i",
-                        amount: 1,
-                        baseChance: 0.001,
-                        minimumUnveilingSkillLevel: 1,
-                    },
+                    "item:stillwater_reeds",
+                    "item:water_shell_i",
                 ],
             },
             combat: {
-                produces: [{ id: "item:stillwater_idol", amount: 1, baseChance: 0.001 }],
+                produces: ["item:stillwater_idol"],
             },
         },
     ],

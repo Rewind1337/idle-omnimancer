@@ -117,6 +117,7 @@ export function ExplorationPage() {
                     <Heading h="2">The Known World</Heading>
                     <HexMap
                         areas={WORLD_AREAS}
+                        mapVariant={"exploration"}
                         startingAreaId={WORLD_DATA.map.startingAreaId}
                         selectedAreaId={selectedArea.id}
                         actionLevels={actionLevels}

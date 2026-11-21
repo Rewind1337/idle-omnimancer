@@ -45,11 +45,9 @@
         &:hover polygon,
         &:focus-visible polygon {
             filter: brightness(1.25);
-            stroke-width: 5;
         }
 
         &.is-selected polygon {
-            stroke-width: 5;
             filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
         }
 
@@ -103,7 +101,7 @@
         top: 8px;
         right: 8px;
         display: flex;
-        gap: 4px;
+        gap: 8px;
         width: auto;
 
         .button {

@@ -25,6 +25,11 @@
   .toast-layout {
     width: 100%;
     align-items: center;
+
+    > svg {
+      width: 64px;
+      height: 64px;
+    }
   }
 
   .toast-content {

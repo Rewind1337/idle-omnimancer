@@ -4,6 +4,8 @@ import { Button } from "../Button"
 import { Text } from "../Text"
 
 import "./HexMap.scss"
+import { Paper } from "../Paper"
+import { SearchX, ZoomIn, ZoomOut } from "lucide-react"
 
 const MAP_CENTER = { x: 400, y: 260 }
 const DEFAULT_HEX_SIZE = 65
@@ -49,9 +51,10 @@ export function HexMap({
     areas = [],
     startingAreaId = null,
     selectedAreaId = null,
-    onSelectArea = () => {},
+    onSelectArea = () => { },
     actionLevels = {},
     hexSize = DEFAULT_HEX_SIZE,
+    mapVariant = "primary",
     className = "",
     ariaLabel = "Hex map. Drag to pan and scroll to zoom.",
 }) {
@@ -154,7 +157,8 @@ export function HexMap({
     const resetView = () => setView({ x: 0, y: 0, scale: 1 })
 
     return (
-        <div
+        <Paper layer={1}
+            variant={mapVariant}
             ref={mapRef}
             className={`hex-map ${isDragging ? "is-dragging" : ""} ${className}`.trim()}
         >
@@ -228,14 +232,14 @@ export function HexMap({
             </svg>
 
             <div className="hex-map-controls">
-                <Button size="small" variant="secondary" onClick={() => zoomBy(1.15)} aria-label="Zoom in">+</Button>
-                <Button size="small" variant="secondary" onClick={() => zoomBy(0.87)} aria-label="Zoom out">−</Button>
-                <Button size="small" variant="secondary" onClick={resetView}>Reset</Button>
+                <Button variant={mapVariant} onClick={() => zoomBy(1.1)} icon={<ZoomIn />}>Zoom In</Button>
+                <Button variant={mapVariant} onClick={() => zoomBy(0.9)} icon={<ZoomOut />}>Zoom Out</Button>
+                <Button variant={mapVariant} onClick={resetView} icon={<SearchX />}>Reset</Button>
             </div>
 
             <Text size="small" className="hex-map-hint">
                 Drag to pan · Scroll or use + / − to zoom · {Math.round(view.scale * 100)}%
             </Text>
-        </div>
+        </Paper>
     )
 }

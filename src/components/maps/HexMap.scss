@@ -13,19 +13,16 @@
         &.is-selected:hover:not(:active) polygon {
             fill: var(--#{$family}-#{$variant}-hover);
             stroke: var(--#{$family}-#{$variant}-border);
-            stroke-width: 5;
         }
 
         &:active polygon {
             fill: var(--#{$family}-#{$variant}-active);
             stroke: var(--#{$family}-#{$variant}-border);
-            stroke-width: 5;
         }
 
         &.is-selected polygon {
             fill: var(--#{$family}-#{$variant}-toggled);
             stroke: var(--#{$family}-#{$variant}-border);
-            stroke-width: 5;
         }
 
         &.is-selected:active polygon {
@@ -46,9 +43,6 @@
     overflow: hidden;
     border: 1px solid var(--paper-border);
     border-radius: 8px;
-    background:
-        radial-gradient(circle at 50% 50%, rgba(60, 78, 78, 0.18), transparent 60%),
-        var(--paper-1);
     touch-action: none;
     user-select: none;
     overscroll-behavior: contain;

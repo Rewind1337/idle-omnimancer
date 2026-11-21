@@ -45,6 +45,49 @@ function ResponsivePage({
     </Button>
   )
 
+  const shopButton = (
+    <ShopButton
+      active={activePage === SHOP_NAVIGATION.id}
+      onClick={() => setActivePage(SHOP_NAVIGATION.id)}
+    />
+  )
+  const missionsButton = (
+    <MissionsButton
+      active={missionsModalVisible}
+      onClick={() => setMissionsModalVisible(true)}
+    />
+  )
+  const bagButton = (
+    <BagButton
+      active={bagModalVisible}
+      onClick={() => setBagModalVisible(true)}
+    />
+  )
+  const settingsButton = (
+    <Button
+      variant="primary"
+      size="medium"
+      className="w-min"
+      icon={OTHER_ICONS.SETTINGS}
+      aria-label="Settings"
+      title="Settings"
+      onClick={() => setSettingsModalVisible(true)}
+    />
+  )
+
+  const sideActionsLeft = (
+    <Flex direction="column" gap={8} className="navigation-side-actions">
+      {shopButton}
+      {missionsButton}
+      {bagButton}
+    </Flex>
+  )
+  const sideActionsRight = (
+    <Flex direction="column" gap={8} className="navigation-side-actions">
+      {settingsButton}
+    </Flex>
+  )
+
   const page = navigationPosition === "top" ? (
     <Flex direction="column" gap={4} className={cx('page', className)}>
       <Navigation activePage={activePage} setActivePage={setActivePage} position="top" mode={navigationMode} />
@@ -54,24 +97,27 @@ function ResponsivePage({
     </Flex>
   ) : navigationPosition === "side" ? (
     <Flex direction="row" align="start" className={cx('page', className)}>
-      <Navigation activePage={activePage} setActivePage={setActivePage} position="side" mode={navigationMode} />
+      <Navigation
+        activePage={activePage}
+        setActivePage={setActivePage}
+        position="side"
+        mode={navigationMode}
+        sideActionsLeft={sideActionsLeft}
+        sideActionsRight={sideActionsRight}
+      />
       <ScrollArea maxHeight={window.innerHeight - 8} padding={"0 8px 0 0"}>
         {children}
       </ScrollArea>
     </Flex>
   ) : null
 
-  const floatingButtons = <FloatingPanel>
-    <ShopButton
-      active={activePage === SHOP_NAVIGATION.id}
-      onClick={() => setActivePage(SHOP_NAVIGATION.id)}
-    />
-    <MissionsButton
-      active={missionsModalVisible}
-      onClick={() => setMissionsModalVisible(true)}
-    />
-    <BagButton active={bagModalVisible} onClick={() => { setBagModalVisible(true) }} />
-  </FloatingPanel>
+  const floatingButtons = navigationPosition === "top" ? (
+    <FloatingPanel>
+      {shopButton}
+      {missionsButton}
+      {bagButton}
+    </FloatingPanel>
+  ) : null
 
   return (
     <>
@@ -92,17 +138,11 @@ function ResponsivePage({
         onChange={onNavigationSettingsChange}
       />
       {floatingButtons}
-      <FloatingPanel position="right">
-        <Button
-          variant="primary"
-          size="medium"
-          className="w-min"
-          icon={OTHER_ICONS.SETTINGS}
-          aria-label="Settings"
-          title="Settings"
-          onClick={() => setSettingsModalVisible(true)}
-        />
-      </FloatingPanel>
+      {navigationPosition === "top" && (
+        <FloatingPanel position="right">
+          {settingsButton}
+        </FloatingPanel>
+      )}
     </>
   )
 }

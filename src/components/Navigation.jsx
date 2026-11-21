@@ -1,4 +1,5 @@
 import { Paper } from "./Paper"
+import { Flex } from "./Flex"
 import { Tabs } from "./Tabs"
 
 import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION } from "../data/navigationData"
@@ -15,6 +16,8 @@ export function Navigation({
   mode = "default",
   activePage,
   setActivePage,
+  sideActionsLeft = null,
+  sideActionsRight = null,
   ...props
 }) {
   const { player } = useGame()
@@ -65,16 +68,39 @@ export function Navigation({
       )}
       {...props}
     >
-      <Tabs
-        tabs={tabs}
-        value={activePage}
-        onChange={setActivePage}
-        size="large"
-        direction={position === "side" ? "column" : "row"}
-        wrap={position === "top" && mode === "compact"}
-        columns={columns}
-        className="navigation-tabs"
-      />
+      {position === "side" ? (
+        <Flex direction="column" align="stretch" gap={16} className="navigation-side-layout">
+          <Tabs
+            tabs={tabs}
+            value={activePage}
+            onChange={setActivePage}
+            size="large"
+            direction="column"
+            className="navigation-tabs"
+          />
+          {sideActionsLeft && (
+            <div className="navigation-side-section navigation-side-section-left" role="group" aria-label="Shop, missions and bag">
+              {sideActionsLeft}
+            </div>
+          )}
+          {sideActionsRight && (
+            <div className="navigation-side-section navigation-side-section-right" role="group" aria-label="Settings">
+              {sideActionsRight}
+            </div>
+          )}
+        </Flex>
+      ) : (
+        <Tabs
+          tabs={tabs}
+          value={activePage}
+          onChange={setActivePage}
+          size="large"
+          direction="row"
+          wrap={mode === "compact"}
+          columns={columns}
+          className="navigation-tabs"
+        />
+      )}
     </Paper>
   )
 }

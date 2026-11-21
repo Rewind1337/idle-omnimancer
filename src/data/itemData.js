@@ -104,6 +104,12 @@ const ITEM_DEFINITIONS = [
     { id: "item:air_egg_v", tier: 5, variant: "air", type: "companionContainer" },
     { id: "item:water_shell_v", tier: 5, variant: "water", type: "companionContainer" },
 
+    // Companion progression materials and the shared low-value duplicate reward.
+    { id: "item:earth_companion_xp", name: "Earth Companion XP", tier: 1, variant: "earth", type: "companionExperience", baseValue: 0 },
+    { id: "item:air_companion_xp", name: "Air Companion XP", tier: 1, variant: "air", type: "companionExperience", baseValue: 0 },
+    { id: "item:water_companion_xp", name: "Water Companion XP", tier: 1, variant: "water", type: "companionExperience", baseValue: 0 },
+    { id: "item:faded_trinket", name: "Faded Trinket", tier: 1, variant: "companions", type: "companionTrinket", baseValue: 1 },
+
     // Unique area artifacts reserved for the Combat and Unveiling systems.
     { id: "item:crossroads_waystone", tier: 1, variant: "exploration", type: "artifact" },
     { id: "item:mossbound_heartstone", tier: 1, variant: "earth", type: "artifact" },
@@ -176,8 +182,8 @@ const getItemClassification = (item) => {
     if (item.shopPrice !== undefined || item.variant === "shop") {
         return { group: "shop", type: "shopItem" }
     }
-    if (item.type === "companionContainer") {
-        return { group: "companions", type: "companionContainer" }
+    if (item.type === "companionContainer" || item.type === "companionExperience" || item.type === "companionTrinket") {
+        return { group: "companions", type: item.type }
     }
     if (item.type === "artifact") {
         return { group: "combat", type: "artifact" }

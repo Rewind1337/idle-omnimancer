@@ -359,6 +359,10 @@ export function GameProvider({ children }) {
         dispatch({ type: "TURN_IN_MISSION", missionId })
     }, [])
 
+    const selectActionItem = useCallback((skillId, actionId, itemId) => {
+        dispatch({ type: "SELECT_ACTION_ITEM", skillId, actionId, itemId })
+    }, [])
+
     const contextValue = useMemo(() => ({
         player,
         startAction,
@@ -370,7 +374,8 @@ export function GameProvider({ children }) {
         buyShopItem,
         sellItem,
         turnInMission,
-    }), [player, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyShopItem, sellItem, turnInMission])
+        selectActionItem,
+    }), [player, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyShopItem, sellItem, turnInMission, selectActionItem])
 
     const continueFromOffline = () => {
         setOfflineProgress(current => ({ ...current, visible: false }))

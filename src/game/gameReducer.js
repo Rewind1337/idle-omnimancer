@@ -7,6 +7,7 @@ import {
     canStartAction,
     canBuyShopItem,
     canUnlockAction,
+    canSelectActionItem,
     canUnlockSkill,
     getActionActivity,
     getNextBagSlotCost,
@@ -126,6 +127,35 @@ export const gameReducer = (state, action) => {
                         actions: {
                             ...state.skills[skillId].actions,
                             [actionId]: { ...current, running: true },
+                        },
+                    },
+                },
+            }
+        }
+
+        case "SELECT_ACTION_ITEM": {
+            const { skillId, actionId, itemId } = action
+            if (!canSelectActionItem(state, skillId, actionId, itemId)) return state
+
+            const currentSkill = state.skills[skillId]
+            const currentAction = currentSkill.actions[actionId]
+            const isActive = state.activeAction?.skillId === skillId &&
+                state.activeAction?.actionId === actionId
+
+            return {
+                ...state,
+                activeAction: isActive ? null : state.activeAction,
+                skills: {
+                    ...state.skills,
+                    [skillId]: {
+                        ...currentSkill,
+                        actions: {
+                            ...currentSkill.actions,
+                            [actionId]: {
+                                ...currentAction,
+                                selectedItemId: itemId,
+                                progressMs: 0,
+                            },
                         },
                     },
                 },

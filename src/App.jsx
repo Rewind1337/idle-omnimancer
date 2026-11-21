@@ -22,6 +22,7 @@ import { MissionsButton } from "./components/buttons/MissionsButton";
 import { FloatingPanel } from "./components/FloatingPanel";
 import { SettingsModal } from "./components/modals/SettingsModal";
 import { ExplorationPage } from "./pages/ExplorationPage";
+import { UnveilingPage } from "./pages/UnveilingPage";
 import { OTHER_ICONS } from "./data/iconLibrary";
 
 import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
@@ -193,6 +194,7 @@ function App() {
           {activeSkill?.skillId === "skill:spellcraft" && <SpellcraftPage />}
           {activeSkill?.skillId === "skill:transmutation" && <TransmutationPage />}
           {activeSkill?.skillId === "skill:exploration" && <ExplorationPage />}
+          {activeSkill?.skillId === "skill:unveiling" && <UnveilingPage />}
           {activePage === DEVELOPMENT_NAVIGATION.id && <DevelopmentPage />}
           {activePage === SHOP_NAVIGATION.id && <ShopPage setActivePage={setActivePage} />}
         </ResponsivePage>

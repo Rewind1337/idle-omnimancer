@@ -2,6 +2,7 @@ import { RESEARCH_CONFIG } from "./researchConfig"
 import { SPELLCRAFT_CONFIG } from "./spellcraftConfig"
 import { TRANSMUTATION_CONFIG } from "./transmutationConfig"
 import { EXPLORATION_CONFIG } from "./explorationConfig"
+import { UNVEILING_CONFIG } from "./unveilingConfig"
 
 // Shared progression limits. Keep these in one place so the save state,
 // progression tables and game engine all use the same maximum levels.
@@ -98,6 +99,7 @@ export const SKILL_CONFIGS = [
     SPELLCRAFT_CONFIG,
     TRANSMUTATION_CONFIG,
     EXPLORATION_CONFIG,
+    UNVEILING_CONFIG,
 ]
 
 export const SKILL_CONFIG_BY_ID = Object.fromEntries(

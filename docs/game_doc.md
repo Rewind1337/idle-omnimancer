@@ -514,8 +514,10 @@ Every action follows the standard independent level 1–100 progression and cont
 
 - The list establishes the intended one-action-per-other-tab structure; exact action names and eligible item groups can be refined.
 - Companion containers and unidentified objects are reserved for **Unveil Artifact or Companion**, not the Material Destruction actions.
+- Each Material Destruction action lets the player choose one currently owned item from its source group. Every completed action consumes exactly one copy of the selected item.
+- Destruction takes 6 seconds plus 1 second per item tier above Tier I.
+- Destruction XP is calculated from item sale value as **round(baseValue^0.7)**, with a minimum reward of 1 XP. This gives approximately 1 XP for value 1, 5 XP for value 10 and 25 XP for value 100.
 - Destroying an item removes it from the inventory. The player gives up its sale value and any other use it could have had in exchange for Unveiling progression.
-- Exact quantities consumed, XP values, action durations and further destruction actions remain undecided.
 
 ### 11.2 Unveil Artifact or Companion
 
@@ -525,13 +527,13 @@ Every action follows the standard independent level 1–100 progression and cont
   - Unidentified objects obtained through Combat, revealing a chance at the artifact from their source area and potentially other valuable, sellable resources.
 - Each container or unidentified object has a minimum required **overall Unveiling skill level**. The player cannot process it until the skill reaches that requirement.
 - Requirements are assigned according to the item's source area and its place in map progression: early-area finds have low requirements; late-game finds have much higher requirements.
-- Successfully processing a container or unidentified object awards a substantial amount of XP to **Unveil Artifact or Companion**.
-- Its XP reward should be high enough that the special action can reach higher action levels without requiring an excessive number of processing completions.
-- Because its action level contributes to the overall Unveiling skill level, this substantial XP reward should also make total Unveiling progression somewhat faster during the early game than if progression relied on Material Destruction alone.
-- This is an intended progression effect, not a finalized numerical bonus; exact XP values and scaling remain to be balanced.
+- Successfully processing a companion container awards 50 XP to **Unveil Artifact or Companion** and takes 15 seconds.
+- The first container opened for each element unlocks that element's companion.
+- Further openings have a 50% chance to produce the matching elemental Companion XP item, or a 50% chance to produce the shared **Faded Trinket**, a low-value sellable item.
+- Companion XP is represented by three separate inventory items: Earth Companion XP, Air Companion XP and Water Companion XP. These are not hidden per-companion counters.
 - **Unveil Artifact or Companion** levels independently from 1 to 100. Its action-level progress contributes to the overall Unveiling skill level like every other Unveiling action.
 - The requirement is checked against the overall Unveiling skill level, not the special action's individual level.
-- The processing time, exact XP rewards and scaling, item requirements, artifact chances and revealed reward tables remain undecided.
+- Unidentified-object rewards and higher-tier companion reward scaling remain to be balanced and will be connected when Combat's unidentified-object data is implemented.
 
 ### 11.3 Skill progression and unlock
 
@@ -539,7 +541,7 @@ Every action follows the standard independent level 1–100 progression and cont
 - Their combined progression contributes to the overall Unveiling skill level.
 - Unveiling skill level is the progression gate for opening higher-level companion containers and identifying higher-level unidentified objects.
 - Unlocking Unveiling grants both its first Material Destruction action (**Destroy Research Books**) and **Unveil Artifact or Companion**. The player does not need to purchase either action separately.
-- The skill's exact unlock requirements, including gold and any required resources, remain undecided.
+- Unlocking Unveiling costs 5 each of Mossbound Ore, Whispering Seeds and Stillwater Reeds, plus 10,000 coins.
 
 ---
 

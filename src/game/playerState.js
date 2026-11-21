@@ -32,6 +32,7 @@ export const createInitialPlayerState = () => {
                             level: 1,
                             xp: 0,
                             progressMs: 0,
+                            selectedItemId: null,
                             // Passive actions remain active once started.
                             // Active actions use the single player.activeAction slot.
                             running: false,
@@ -107,6 +108,13 @@ export const normalizePlayerState = (savedState) => {
                 (action.activity ?? skill.activity ?? "active") === "passive" &&
                 unlockedSkills.includes(skill.id) &&
                 Boolean(savedAction.running)
+            const selectedItemData = ITEM_DATA_BY_ID[savedAction.selectedItemId]
+            const selection = action.inputSelection
+            const hasValidSelectedItem = !selection || Boolean(
+                selectedItemData &&
+                ((selection.groups ?? []).includes(selectedItemData.group) ||
+                    (selection.types ?? []).includes(selectedItemData.type))
+            )
             const preserveProgress = savedState.version >= SAVE_VERSION ||
                 isActiveAction ||
                 isRunningPassiveAction
@@ -121,6 +129,7 @@ export const normalizePlayerState = (savedState) => {
                     ? Math.max(0, finiteNumber(savedAction.progressMs, 0))
                     : 0,
                 running: unlockedSkills.includes(skill.id) && Boolean(savedAction.running),
+                selectedItemId: hasValidSelectedItem ? (savedAction.selectedItemId ?? null) : null,
             }
         }
 

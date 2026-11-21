@@ -5,7 +5,7 @@ import {
     getActionXPTable,
     getSkillXPTable,
 } from "../data/skillConfig"
-import { ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
+import { ITEM_DATA, ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { humanize } from "../utility/helpers"
 
@@ -79,9 +79,46 @@ const getUnlockCostBalance = (player, itemId) => {
     return player.inventory?.[itemId] ?? 0
 }
 
+const isEligibleSelectedItem = (action, item) => {
+    const selection = action.inputSelection
+    if (!selection || !item) return false
+
+    return (selection.groups ?? []).includes(item.group) ||
+        (selection.types ?? []).includes(item.type)
+}
+
+export const getActionSelectableItems = (player, skillId, actionId) => {
+    const action = SKILL_CONFIG_BY_ID[skillId]?.actions.find(entry => entry.id === actionId)
+    if (!action?.inputSelection) return []
+
+    return ITEM_DATA
+        .filter(item => isEligibleSelectedItem(action, item) && (player.inventory?.[item.id] ?? 0) > 0)
+        .map(item => ({ ...item, amount: player.inventory[item.id] }))
+        .sort((a, b) => a.tier - b.tier || a.name.localeCompare(b.name))
+}
+
+export const canSelectActionItem = (player, skillId, actionId, itemId) => {
+    const action = SKILL_CONFIG_BY_ID[skillId]?.actions.find(entry => entry.id === actionId)
+    const item = ITEM_DATA_BY_ID[itemId]
+    return Boolean(
+        player.unlockedSkills?.includes(skillId) &&
+        player.skills?.[skillId]?.actions?.[actionId]?.unlocked &&
+        isEligibleSelectedItem(action, item) &&
+        (player.inventory?.[itemId] ?? 0) > 0
+    )
+}
+
 // Action inputs support the same string and { item, amount } formats as the
 // resource display. Invalid requirements fail safely instead of being ignored.
-const getActionConsumeTotals = (action) => {
+const getActionConsumeTotals = (action, player = null, skill = null) => {
+    if (action.inputSelection) {
+        const selectedItemId = player?.skills?.[skill?.id]?.actions?.[action.id]?.selectedItemId
+        const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
+        return isEligibleSelectedItem(action, selectedItem)
+            ? { [selectedItemId]: 1 }
+            : null
+    }
+
     const totals = {}
 
     for (const entry of Array.isArray(action.consumes) ? action.consumes : []) {
@@ -198,6 +235,23 @@ const canStoreActionOutputs = (player, skill, action) => {
     const possibleItemIds = outputMultiplier > 0
         ? getActionOutputs(action).map(output => output.item)
         : []
+    const selectedItemId = player.skills?.[skill.id]?.actions?.[action.id]?.selectedItemId
+    const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
+
+    if (action.processesCompanionContainers && selectedItem?.type === "companionContainer") {
+        const companionId = skill.companionRewards?.companionIdsByElement?.[selectedItem.variant]
+        if (!player.unlockedCompanions?.includes(companionId)) return true
+
+        const possibleRewards = [
+            skill.companionRewards?.experienceItemsByElement?.[selectedItem.variant],
+            skill.companionRewards?.commonItem,
+        ].filter(Boolean)
+        const rewardItemsToAdd = possibleRewards.filter(itemId => !(inventory[itemId] > 0))
+        if (rewardItemsToAdd.length > 0 && occupiedSlots >= (player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace)) {
+            return false
+        }
+    }
+
     const companionContainerId = typeof action.companionContainer === "string"
         ? action.companionContainer
         : action.companionContainer?.item
@@ -447,7 +501,13 @@ const getBonusForEffect = (totals, effect) =>
     totals[effect] ?? { flat: 0, mult: 0 }
 
 export const getActionDurationMs = (skill, action, player = null) => {
-    const baseSeconds = skill.time.base + skill.time.perTier * (action.tier - 1)
+    const selectedItemId = player?.skills?.[skill.id]?.actions?.[action.id]?.selectedItemId
+    const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
+    const durationConfig = action.time ?? skill.time
+    const durationTier = action.durationBySelectedItemTier
+        ? (selectedItem?.tier ?? action.tier)
+        : action.tier
+    const baseSeconds = durationConfig.base + (durationConfig.perTier ?? 0) * (durationTier - 1)
     const elementTimeMultiplier = skill.elementModifiers?.[action.element]?.timeMultiplier ?? 1
     const bonuses = player
         ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "actionTime")
@@ -458,7 +518,17 @@ export const getActionDurationMs = (skill, action, player = null) => {
 }
 
 export const getActionXPReward = (skill, action, player = null) => {
-    const baseXP = skill.actionXP.base + skill.actionXP.perTier * (action.tier - 1)
+    const selectedItemId = player?.skills?.[skill.id]?.actions?.[action.id]?.selectedItemId
+    const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
+    let baseXP = skill.actionXP.base + skill.actionXP.perTier * (action.tier - 1)
+
+    if (action.xpFormula?.type === "itemBaseValuePower" && selectedItem) {
+        const itemValue = Math.max(0, selectedItem.baseValue ?? 0)
+        baseXP = Math.max(1, Math.round(Math.pow(itemValue, action.xpFormula.exponent ?? 0.7)))
+    } else if (Number.isFinite(action.actionXPReward)) {
+        baseXP = action.actionXPReward
+    }
+
     const elementXPMultiplier = skill.elementModifiers?.[action.element]?.xpMultiplier ?? 1
     const bonuses = player
         ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "xpGain")
@@ -708,7 +778,7 @@ export const getActionProgress = (actionState, durationMs) =>
 
 const canPayActionCost = (player, skill, action) => {
     const manaCost = getActionManaCost(skill, action, player)
-    const consumeTotals = getActionConsumeTotals(action)
+    const consumeTotals = getActionConsumeTotals(action, player, skill)
     if (!consumeTotals) return false
 
     const hasInputs = Object.entries(consumeTotals).every(([itemId, amount]) =>
@@ -725,7 +795,7 @@ const payActionCost = (player, skill, action) => {
         player.mana.current = Math.max(0, player.mana.current - manaCost)
     }
 
-    const consumeTotals = getActionConsumeTotals(action) ?? {}
+    const consumeTotals = getActionConsumeTotals(action, player, skill) ?? {}
     const hasInputs = Object.keys(consumeTotals).length > 0
     const preservesInputs = hasInputs &&
         Math.random() < getActionPreservationChance(player, skill, action)
@@ -767,6 +837,28 @@ const awardActionXP = (player, skill, action, actionState) => {
     if (actionState.level >= GLOBAL_CONFIG.maxActionLevel) {
         actionState.level = GLOBAL_CONFIG.maxActionLevel
         actionState.xp = 0
+    }
+
+    const selectedItemId = action.inputSelection
+        ? player.skills?.[skill.id]?.actions?.[action.id]?.selectedItemId
+        : null
+    const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
+
+    if (action.processesCompanionContainers && selectedItem?.type === "companionContainer") {
+        const rewards = skill.companionRewards
+        const companionId = rewards?.companionIdsByElement?.[selectedItem.variant]
+        const unlockedCompanions = player.unlockedCompanions ?? []
+        if (companionId && !unlockedCompanions.includes(companionId)) {
+            player.unlockedCompanions = [...unlockedCompanions, companionId]
+        } else if (companionId) {
+            const experienceItem = rewards?.experienceItemsByElement?.[selectedItem.variant]
+            const rewardItem = Math.random() < (rewards?.experienceChance ?? 0.5)
+                ? experienceItem
+                : rewards?.commonItem
+            if (rewardItem && ITEM_DATA_BY_ID[rewardItem]) {
+                player.inventory[rewardItem] = (player.inventory[rewardItem] ?? 0) + 1
+            }
+        }
     }
 
     const outputMultiplier = getActionOutputMultiplier(player, skill, action)

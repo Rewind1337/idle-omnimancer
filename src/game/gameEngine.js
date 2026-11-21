@@ -369,7 +369,7 @@ export const getSkillMilestoneDetails = (player, skill) => {
             return {
                 id: "skill-" + skill.id + "-milestone-" + milestone.level + "-" + index,
                 title: getSkillName(skill.id) + " Level " + milestone.level,
-                source: milestone.reach === "local" ? null : getMilestoneTargetLabel(skill, milestone.reach),
+                source: getMilestoneTargetLabel(skill, milestone.reach),
                 effect: milestone.effect,
                 type: milestone.type,
                 value: milestone.value,
@@ -498,7 +498,7 @@ export const getActionEffectStacks = (player, skill, action) => {
         if (Number.isFinite(elementValue) && elementValue !== 1) {
             entries.push({
                 id: "element-" + skill.id + "-" + action.id + "-" + effect,
-                source: elementName + " element modifier",
+                source: elementName + " Element Modifier",
                 effect,
                 type: "mult",
                 value: elementValue,

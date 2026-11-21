@@ -72,7 +72,7 @@ function MissionCard({ mission, player, canTurnIn, onTurnIn }) {
                         disabled={!canTurnIn}
                         onClick={onTurnIn}
                     >
-                        {isCompleted ? "Completed" : "Turn In"}
+                        Turn In
                     </Button>
                 </Flex>
             </Flex>

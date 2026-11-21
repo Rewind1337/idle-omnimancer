@@ -25,14 +25,18 @@ export function Navigation({
 
   const tabs = [
     ...SKILL_NAVIGATION
-      .filter(skill => unlockedSkills.has(skill.skillId) || skill === nextLockedSkill)
+      .filter(skill =>
+        unlockedSkills.has(skill.skillId) ||
+        skill === nextLockedSkill ||
+        skill.skillId === "skill:exploration"
+      )
       .map(skill => {
         const isUnlocked = unlockedSkills.has(skill.skillId)
         const skillProgress = isUnlocked ? getSkillProgress(player, skill.skillId) : null
 
         return {
           ...skill,
-          disabled: !isUnlocked,
+          disabled: !isUnlocked && skill.skillId !== "skill:exploration",
           badge: skillProgress ? "Lv. " + skillProgress.level : null,
           badgeIcon: null,
         }

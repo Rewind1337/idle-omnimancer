@@ -81,6 +81,8 @@ function TransmutationAction({ action, player, isActive, isUnlocked, actionState
                             tier={action.tier}
                             isUnlocked={isUnlocked}
                             actionMilestones={actionMilestones}
+                            actionXPTable={xpTable}
+                            xpConfig={TRANSMUTATION_CONFIG.neededXP}
                         />
                         {isUnlocked ? (
                             <ActionProgress
@@ -142,6 +144,7 @@ export function TransmutationPage() {
         <Flex direction="column" className={cx("page-flex page-flex-transmutation")} padding={32} gap={32}>
             <Paper layer={0}>
                 <SkillSummary
+                    skillId={skillId}
                     title={humanize(TRANSMUTATION_CONFIG.id)}
                     skillProgress={skillProgress}
                     milestones={getSkillMilestoneDetails(player, TRANSMUTATION_CONFIG)}

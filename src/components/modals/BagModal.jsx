@@ -4,6 +4,7 @@ import '../Modal.scss'
 
 import { Modal } from '../Modal'
 import { Heading } from '../Heading'
+import { Text } from '../Text'
 import { Flex } from '../Flex'
 import { Paper } from '../Paper'
 import { Item } from '../Item'
@@ -152,7 +153,7 @@ export function BagModal({
                         </Flex>
                     </Paper>
 
-                    {selectedItem && selectedData && (
+                    {selectedItem && selectedData ? (
                         <Paper layer={2} className="bag-item-selection">
                             <Flex direction="column" gap={12}>
                                 <Heading h="3">{selectedData.name}</Heading>
@@ -221,6 +222,12 @@ export function BagModal({
                                     </Button>
                                 </Flex>
                             </Flex>
+                        </Paper>
+                    ) : (
+                        <Paper layer={2} className="bag-item-selection">
+                            <Text size="small" className="w-100 align-center">
+                                Select an item to start selling.
+                            </Text>
                         </Paper>
                     )}
                 </Flex>

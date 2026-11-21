@@ -4,15 +4,24 @@ import { Paper } from "../Paper"
 import { Progress } from "../Progress"
 import { OTHER_ICONS } from "../../data/iconLibrary"
 import { Heading } from "../Heading"
+import { Text } from "../Text"
 import { EffectStack } from "../EffectStack"
+import { getSkillXPTable } from "../../data/skillConfig"
 
-export function SkillSummary({ title, skillProgress, variant, icon, milestones = [] }) {
-    const totalPercentage = skillProgress.maxXP > 0
+const formatXP = value => Number(value).toLocaleString()
+
+export function SkillSummary({ title, skillId, skillProgress, variant, icon, milestones = [], progressEnabled = true }) {
+    const totalPercentage = progressEnabled && skillProgress?.maxXP > 0
         ? (skillProgress.totalXP / skillProgress.maxXP) * 100
         : 0
-    const levelPercentage = skillProgress.neededXP > 0
+    const levelPercentage = progressEnabled && skillProgress?.neededXP > 0
         ? (skillProgress.xp / skillProgress.neededXP) * 100
         : 100
+    const nextSkillLevels = progressEnabled && skillId
+        ? (getSkillXPTable(skillId) ?? [])
+            .filter(entry => entry.level >= skillProgress.level && entry.neededXP !== null)
+            .slice(0, 3)
+        : []
 
     return (
         <Paper className="skill-summary" layer={1} variant={variant} padding={16}>
@@ -23,14 +32,32 @@ export function SkillSummary({ title, skillProgress, variant, icon, milestones =
                 <Flex direction="column">
                     <Flex>
                         <h1>{title}</h1>
-                        <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">
-                            <Heading h="4" className="w-100 align-center">Skill XP earned from completed action level-ups, toward the next Skill level.</Heading>
-                        </Flex>}>
-                            {skillProgress.xp} / {skillProgress.neededXP} XP
-                        </Badge>
+                        {progressEnabled && (
+                            <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">
+                                <Heading h="4" className="w-100 align-center">Skill XP is earned from completed Action level-ups. Each Action level gained contributes 1 Skill XP.</Heading>
+                            </Flex>}>
+                                {skillProgress.xp} / {skillProgress.neededXP} XP
+                            </Badge>
+                        )}
                         <Badge variant="transparent" interactive icon={OTHER_ICONS.STAR} tooltip={
                             <Flex direction="column" gap={8}>
-                                <Heading h="4" className="w-100 align-center">Total progress in this skill, derived from the levels of all its actions.</Heading>
+                                {progressEnabled ? (
+                                    <>
+                                        <Heading h="4" className="w-100 align-center">Total progress in this skill, derived from the levels of all its Actions.</Heading>
+                                        {nextSkillLevels.length > 0 && (
+                                            <Flex direction="column" gap={4}>
+                                                <Heading h="5">Next Skill Levels</Heading>
+                                                {nextSkillLevels.map(entry => (
+                                                    <Text key={entry.level} size="small">
+                                                        Level {entry.level + 1}: {formatXP(entry.neededXP)} Skill XP
+                                                    </Text>
+                                                ))}
+                                            </Flex>
+                                        )}
+                                    </>
+                                ) : (
+                                    <Heading h="4" className="w-100 align-center">Skill progression is not connected yet. This page is currently a development preview.</Heading>
+                                )}
                                 {milestones.length > 0 && (
                                     <>
                                         <div className="divider tooltip-divider"></div>
@@ -44,16 +71,18 @@ export function SkillSummary({ title, skillProgress, variant, icon, milestones =
                                 )}
                             </Flex>
                         }>
-                            Level {skillProgress.level} / 100
+                            {progressEnabled ? `Level ${skillProgress.level} / 100` : "Preview"}
                         </Badge>
                     </Flex>
-                    <Flex className="skill-progress" direction="column" gap={4}>
-                        <Heading h="3">Progress to next Level</Heading>
-                        <Progress corners="rounded" variant={variant} percentage={levelPercentage} />
-                        <hr style={{ marginBlock: 8, borderColor: "transparent" }} />
-                        <Heading h="3">Total Skill Progress</Heading>
-                        <Progress corners="rounded" variant={variant} percentage={totalPercentage} />
-                    </Flex>
+                    {progressEnabled && (
+                        <Flex className="skill-progress" direction="column" gap={4}>
+                            <Heading h="3">Progress to next Level</Heading>
+                            <Progress corners="rounded" variant={variant} percentage={levelPercentage} />
+                            <hr style={{ marginBlock: 8, borderColor: "transparent" }} />
+                            <Heading h="3">Total Skill Progress</Heading>
+                            <Progress corners="rounded" variant={variant} percentage={totalPercentage} />
+                        </Flex>
+                    )}
                 </Flex>
             </Flex>
         </Paper>

@@ -1,5 +1,4 @@
 import { Flex } from "./Flex"
-
 import { cx } from '../utility/helpers'
 import { Paper } from "./Paper"
 
@@ -8,13 +7,16 @@ export function FloatingPanel({
   direction = "row",
   className = '',
   margin = 8,
+  position = "left",
 }) {
+  const isRight = position === "right"
 
   return (
     <Paper layer={0} className={cx("floating-panel", "w-min", className)} style={{
       zIndex: 99,
-      position: "absolute",
-      left: margin + 8,
+      position: "fixed",
+      left: isRight ? "auto" : margin + 8,
+      right: isRight ? margin + 8 : "auto",
       bottom: margin,
     }}>
       <Flex direction={direction}>

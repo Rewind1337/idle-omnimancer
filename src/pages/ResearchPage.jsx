@@ -62,7 +62,7 @@ function ResearchAction({ action, player, isActive, isUnlocked, actionState, can
                     <Flex direction="column">
                         <ActionHeader name={humanize(action.id)} level={actionState.level}
                             currentXP={actionState.xp} neededXP={neededXP}
-                            tier={action.tier} isUnlocked={isUnlocked} actionMilestones={actionMilestones} />
+                            tier={action.tier} isUnlocked={isUnlocked} actionMilestones={actionMilestones} actionXPTable={xpTable} xpConfig={RESEARCH_CONFIG.neededXP} />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
                                 canStart={canStart} durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
@@ -103,6 +103,7 @@ export function ResearchPage() {
         <Flex direction="column" className={cx("page-flex page-flex-research")} padding={32} gap={32}>
             <Paper layer={0}>
                 <SkillSummary
+                    skillId={skillId}
                     title={humanize(RESEARCH_CONFIG.id)}
                     skillProgress={skillProgress}
                     milestones={getSkillMilestoneDetails(player, RESEARCH_CONFIG)}

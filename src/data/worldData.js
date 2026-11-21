@@ -15,22 +15,22 @@ export const WORLD_DATA = {
     // Provisional item definitions for the initial world. These can be registered
     // in itemData once the area rewards and item values have been reviewed.
     items: [
-        // Exploration & Combat resources
-        { id: "item:crossroads_field_notes", name: "Crossroads Field Notes", tier: 1, variant: "exploration", type: "resource" },
-        { id: "item:mossbound_ore", name: "Mossbound Ore", tier: 1, variant: "earth", type: "resource" },
-        { id: "item:whispering_seeds", name: "Whispering Seeds", tier: 1, variant: "air", type: "resource" },
-        { id: "item:stillwater_reeds", name: "Stillwater Reeds", tier: 1, variant: "water", type: "resource" },
+        // Exploration resources.
+        { id: "item:crossroads_field_notes", variant: "exploration", type: "resource" },
+        { id: "item:mossbound_ore", variant: "earth", type: "resource" },
+        { id: "item:whispering_seeds", variant: "air", type: "resource" },
+        { id: "item:stillwater_reeds", variant: "water", type: "resource" },
 
-        // Companion containers are found through Exploration and opened through Unveiling.
-        { id: "item:earth_geode_i", name: "Earth Geode", tier: 1, variant: "earth", type: "companionContainer" },
-        { id: "item:air_egg_i", name: "Air Egg", tier: 1, variant: "air", type: "companionContainer" },
-        { id: "item:water_shell_i", name: "Water Shell", tier: 1, variant: "water", type: "companionContainer" },
+        // Companion container IDs carry their tier suffix, just like catalysts.
+        { id: "item:earth_geode_i", variant: "earth", type: "companionContainer" },
+        { id: "item:air_egg_i", variant: "air", type: "companionContainer" },
+        { id: "item:water_shell_i", variant: "water", type: "companionContainer" },
 
-        // Area artifacts are intended to be obtained through Combat and opened through Unveiling.
-        { id: "item:crossroads_waystone", name: "Crossroads Waystone", tier: 1, variant: "exploration", type: "artifact" },
-        { id: "item:mossbound_heartstone", name: "Mossbound Heartstone", tier: 1, variant: "earth", type: "artifact" },
-        { id: "item:whispering_chime", name: "Whispering Chime", tier: 1, variant: "air", type: "artifact" },
-        { id: "item:stillwater_idol", name: "Stillwater Idol", tier: 1, variant: "water", type: "artifact" },
+        // Area artifacts are intended for Combat and Unveiling.
+        { id: "item:crossroads_waystone", variant: "exploration", type: "artifact" },
+        { id: "item:mossbound_heartstone", variant: "earth", type: "artifact" },
+        { id: "item:whispering_chime", variant: "air", type: "artifact" },
+        { id: "item:stillwater_idol", variant: "water", type: "artifact" },
     ],
 
     areas: [

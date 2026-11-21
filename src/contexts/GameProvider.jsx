@@ -9,12 +9,16 @@ import {
 
 import { GameContext } from "./GameContext"
 import { gameReducer } from "../game/gameReducer"
-import { advanceGame } from "../game/gameEngine"
+import { advanceGame, getSkillProgress } from "../game/gameEngine"
 import {
     loadPlayerState,
     savePlayerState,
 } from "../game/playerState"
 import { ITEM_DATA_BY_ID, CURRENCY_DATA_BY_ID } from "../data/itemData"
+import { SKILL_CONFIGS } from "../data/skillConfig"
+import { SKILL_NAVIGATION } from "../data/navigationData"
+import { humanize } from "../utility/helpers"
+import { useToast } from "../hooks/useToast"
 import { OfflineProgressModal } from "../components/modals/OfflineProgressModal"
 
 const TICK_INTERVAL_MS = 100
@@ -25,6 +29,33 @@ const MAX_OFFLINE_CHUNK_MS = 6 * 60 * 60 * 1000
 const MAX_OFFLINE_CHUNKS = 300
 
 const formatGainAmount = amount => Number(amount).toLocaleString()
+const formatMilestoneNumber = value => Number(value.toFixed(2)).toString()
+
+const getSkillName = skillId =>
+    SKILL_NAVIGATION.find(entry => entry.skillId === skillId)?.name ??
+    humanize(skillId.replace(/^skill:/, ""))
+
+const getMilestoneEffectDescription = (skill, milestone) => {
+    const effectLabels = {
+        actionTime: "Action Speed",
+        xpGain: "Action XP",
+        manaCost: "Mana Cost",
+        itemOutput: "Item Output",
+        preservation: "Preservation Chance",
+        manaCapacity: "Mana Capacity",
+        manaRegeneration: "Mana Regeneration",
+    }
+    const target = milestone.reach === "global"
+        ? "All Skills"
+        : milestone.reach === "local"
+            ? getSkillName(skill.id)
+            : getSkillName(milestone.reach)
+    const amount = milestone.type === "mult"
+        ? formatMilestoneNumber((milestone.value - 1) * 100) + "%"
+        : "+" + formatMilestoneNumber(milestone.value)
+
+    return amount + " " + (effectLabels[milestone.effect] ?? humanize(milestone.effect)) + " for " + target + "."
+}
 
 const getOfflineGains = (previous, next) => {
     const gains = []
@@ -56,7 +87,10 @@ const getOfflineGains = (previous, next) => {
 
 export function GameProvider({ children }) {
     const [player, dispatch] = useReducer(gameReducer, undefined, loadPlayerState)
+    const { showToast } = useToast()
     const playerRef = useRef(player)
+    const notificationPlayerRef = useRef(player)
+    const suppressNotificationsRef = useRef(false)
     const lastTickRef = useRef(0)
     const offlineTaskRef = useRef(null)
     const [isGameReady, setIsGameReady] = useState(false)
@@ -72,6 +106,78 @@ export function GameProvider({ children }) {
     useEffect(() => {
         playerRef.current = player
     }, [player])
+
+    // Notify about live progression changes. Offline catch-up is handled as a
+    // summary, so its many level-ups do not create a flood of individual toasts.
+    useEffect(() => {
+        const previousPlayer = notificationPlayerRef.current
+        notificationPlayerRef.current = player
+
+        if (previousPlayer === player) return
+        if (suppressNotificationsRef.current) {
+            suppressNotificationsRef.current = false
+            return
+        }
+
+        for (const skill of SKILL_CONFIGS) {
+            for (const action of skill.actions) {
+                const previousLevel = previousPlayer.skills?.[skill.id]?.actions?.[action.id]?.level ?? 1
+                const currentLevel = player.skills?.[skill.id]?.actions?.[action.id]?.level ?? 1
+
+                if (currentLevel > previousLevel) {
+                    const actionName = action.name ?? humanize(action.id.replace(/^action:/, ""))
+                    showToast({
+                        title: "Action Level Up",
+                        message: actionName + " reached Level " + currentLevel + ".",
+                        type: skill.variant,
+                        duration: 3800,
+                    })
+                }
+            }
+
+            const previousSkillLevel = getSkillProgress(previousPlayer, skill.id)?.level ?? 1
+            const currentSkillLevel = getSkillProgress(player, skill.id)?.level ?? 1
+
+            if (currentSkillLevel > previousSkillLevel) {
+                const skillName = getSkillName(skill.id)
+                showToast({
+                    title: "Skill Level Up",
+                    message: skillName + " reached Level " + currentSkillLevel + ".",
+                    type: skill.variant,
+                    duration: 4500,
+                })
+
+                if (player.unlockedSkills?.includes(skill.id)) {
+                    for (const milestone of skill.milestones ?? []) {
+                        if (
+                            Number.isFinite(milestone.level) &&
+                            previousSkillLevel < milestone.level &&
+                            currentSkillLevel >= milestone.level
+                        ) {
+                            showToast({
+                                title: "Skill Milestone Reached",
+                                message: skillName + " Level " + milestone.level + ": " +
+                                    getMilestoneEffectDescription(skill, milestone),
+                                type: skill.variant,
+                                duration: 14000,
+                            })
+                        }
+                    }
+                }
+            }
+        }
+
+        const previousSlots = previousPlayer.inventorySlots ?? 0
+        const currentSlots = player.inventorySlots ?? previousSlots
+        if (currentSlots > previousSlots) {
+            showToast({
+                title: "Bag Slot Purchased",
+                message: "Bag capacity increased from " + previousSlots + " to " + currentSlots + " slots.",
+                type: "success",
+                duration: 3800,
+            })
+        }
+    }, [player, showToast])
 
     // Show the modal first, then simulate the offline interval in manageable chunks.
     // The task lives in a ref so React StrictMode's effect replay can resume it safely.
@@ -114,6 +220,7 @@ export function GameProvider({ children }) {
                     task.totalMs,
                     task.startAt + task.totalMs
                 )
+                suppressNotificationsRef.current = true
                 dispatch({ type: "HYDRATE_PLAYER", player: updatedPlayer })
             }
             task.done = true
@@ -157,6 +264,7 @@ export function GameProvider({ children }) {
             if (completed) {
                 task.done = true
                 task.timeoutId = null
+                suppressNotificationsRef.current = true
                 dispatch({ type: "HYDRATE_PLAYER", player: task.player })
                 setIsGameReady(true)
             } else {

@@ -69,7 +69,7 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
                         <ActionHeader name={action.name ?? humanize(action.id)} level={actionState.level}
                             currentXP={actionState.xp} neededXP={neededXP}
                             tier={action.tier} isUnlocked={isUnlocked} skillName="Spellcraft"
-                            actionMilestones={actionMilestones} />
+                            actionMilestones={actionMilestones} actionXPTable={xpTable} xpConfig={SPELLCRAFT_CONFIG.neededXP} />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
                                 canStart={canStart} durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
@@ -113,6 +113,7 @@ export function SpellcraftPage() {
             <Paper layer={0}>
                 <Flex direction="column">
                     <SkillSummary
+                        skillId={skillId}
                         title={humanize(SPELLCRAFT_CONFIG.id)}
                         skillProgress={skillProgress}
                         milestones={getSkillMilestoneDetails(player, SPELLCRAFT_CONFIG)}

@@ -1,0 +1,12 @@
+.modal-settings {
+    .modal-wrapper {
+        width: min(100%, 680px);
+    }
+
+    .settings-option-buttons {
+        .button {
+            width: auto;
+            min-width: 112px;
+        }
+    }
+}

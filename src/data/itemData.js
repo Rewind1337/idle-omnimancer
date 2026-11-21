@@ -51,22 +51,45 @@ const ITEM_DEFINITIONS = [
     { id: "item:firmament_core", tier: 8, variant: "air" },
     { id: "item:primordial_tide", tier: 8, variant: "water" },
 
-    // Exploration resources.
+    // Unique resources produced by each Exploration area.
     { id: "item:crossroads_field_notes", tier: 1, variant: "exploration", type: "resource" },
     { id: "item:mossbound_ore", tier: 1, variant: "earth", type: "resource" },
     { id: "item:whispering_seeds", tier: 1, variant: "air", type: "resource" },
     { id: "item:stillwater_reeds", tier: 1, variant: "water", type: "resource" },
+    { id: "item:ironroot_ore", tier: 2, variant: "earth", type: "resource" },
+    { id: "item:zephyr_plumes", tier: 2, variant: "air", type: "resource" },
+    { id: "item:moonlit_pearls", tier: 2, variant: "water", type: "resource" },
+    { id: "item:shatterstone_fragments", tier: 3, variant: "earth", type: "resource" },
+    { id: "item:stormglass_shards", tier: 3, variant: "air", type: "resource" },
+    { id: "item:abyssal_ink", tier: 3, variant: "water", type: "resource" },
+    { id: "item:basalt_heart", tier: 4, variant: "earth", type: "resource" },
+    { id: "item:skybreak_aether", tier: 4, variant: "air", type: "resource" },
+    { id: "item:tidal_heart", tier: 4, variant: "water", type: "resource" },
 
-    // Tier-I companion containers.
+    // Tier-I companion containers discovered in tier-II areas.
     { id: "item:earth_geode_i", tier: 1, variant: "earth", type: "companionContainer" },
     { id: "item:air_egg_i", tier: 1, variant: "air", type: "companionContainer" },
     { id: "item:water_shell_i", tier: 1, variant: "water", type: "companionContainer" },
 
-    // Area artifacts used by Combat and Unveiling.
+    // Tier-II companion containers discovered in tier-IV areas.
+    { id: "item:earth_geode_ii", tier: 2, variant: "earth", type: "companionContainer" },
+    { id: "item:air_egg_ii", tier: 2, variant: "air", type: "companionContainer" },
+    { id: "item:water_shell_ii", tier: 2, variant: "water", type: "companionContainer" },
+
+    // Unique area artifacts reserved for the Combat and Unveiling systems.
     { id: "item:crossroads_waystone", tier: 1, variant: "exploration", type: "artifact" },
     { id: "item:mossbound_heartstone", tier: 1, variant: "earth", type: "artifact" },
     { id: "item:whispering_chime", tier: 1, variant: "air", type: "artifact" },
     { id: "item:stillwater_idol", tier: 1, variant: "water", type: "artifact" },
+    { id: "item:ironroot_golem_core", tier: 2, variant: "earth", type: "artifact" },
+    { id: "item:zephyr_wisp_chime", tier: 2, variant: "air", type: "artifact" },
+    { id: "item:fenwarden_idol", tier: 2, variant: "water", type: "artifact" },
+    { id: "item:cragbound_relic", tier: 3, variant: "earth", type: "artifact" },
+    { id: "item:tempest_eye", tier: 3, variant: "air", type: "artifact" },
+    { id: "item:drowned_scepter", tier: 3, variant: "water", type: "artifact" },
+    { id: "item:basalt_crown_fragment", tier: 4, variant: "earth", type: "artifact" },
+    { id: "item:skybreak_sigil", tier: 4, variant: "air", type: "artifact" },
+    { id: "item:abyssal_crown", tier: 4, variant: "water", type: "artifact" },
 
     // Transmutation Catalyst placeholders; names and sale tiers can be tuned later.
     { id: "item:earth_catalyst_i", name: "Lesser Earth Catalyst", tier: 1, variant: "earth" },

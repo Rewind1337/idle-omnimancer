@@ -57,6 +57,26 @@
     .hex-map-area {
         cursor: pointer;
         outline: none;
+        transition: opacity 160ms ease, filter 160ms ease;
+
+        &[data-visible="false"] {
+            opacity: 0.2;
+            filter: grayscale(0.85);
+            pointer-events: none;
+            cursor: default;
+        }
+
+        &[data-visible="true"][data-unlocked="false"] {
+            opacity: 0.84;
+
+            polygon {
+                stroke-dasharray: 7 4;
+            }
+        }
+
+        &[data-visible="true"][data-unlocked="true"] {
+            opacity: 1;
+        }
 
         polygon {
             stroke-width: 3;

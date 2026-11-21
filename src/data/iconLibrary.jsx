@@ -25,6 +25,7 @@ export const OTHER_ICONS = {
     MISSION_DONE: <ClipboardCheck />,
     ARTIFACT: <PackageQuestionMark />,
     COMPANION_CONTAINER: <Egg />,
+    SHELL: <Shell />,
 }
 
 export const BAG_ICONS = {}
@@ -192,4 +193,42 @@ export const ITEM_SPRITES = {
     "item:earth_catalyst_viii": TRANSMUTATION_ITEM_ICONS[7],
     "item:air_catalyst_viii": TRANSMUTATION_ITEM_ICONS[7],
     "item:water_catalyst_viii": TRANSMUTATION_ITEM_ICONS[7],
+
+    // Exploration resources reuse matching elemental action artwork.
+    "item:crossroads_field_notes": RESEARCH_ACTION_ICONS[0],
+    "item:mossbound_ore": SPELLCRAFT_ACTION_ICONS.EARTH[0],
+    "item:whispering_seeds": SPELLCRAFT_ACTION_ICONS.AIR[0],
+    "item:stillwater_reeds": SPELLCRAFT_ACTION_ICONS.WATER[0],
+    "item:ironroot_ore": SPELLCRAFT_ACTION_ICONS.EARTH[1],
+    "item:zephyr_plumes": SPELLCRAFT_ACTION_ICONS.AIR[1],
+    "item:moonlit_pearls": SPELLCRAFT_ACTION_ICONS.WATER[1],
+    "item:shatterstone_fragments": SPELLCRAFT_ACTION_ICONS.EARTH[2],
+    "item:stormglass_shards": SPELLCRAFT_ACTION_ICONS.AIR[2],
+    "item:abyssal_ink": SPELLCRAFT_ACTION_ICONS.WATER[2],
+    "item:basalt_heart": SPELLCRAFT_ACTION_ICONS.EARTH[3],
+    "item:skybreak_aether": SPELLCRAFT_ACTION_ICONS.AIR[3],
+    "item:tidal_heart": SPELLCRAFT_ACTION_ICONS.WATER[3],
+
+    // Containers use distinct imagery for their element.
+    "item:earth_geode_i": SPELLCRAFT_ACTION_ICONS.EARTH[4],
+    "item:air_egg_i": OTHER_ICONS.COMPANION_CONTAINER,
+    "item:water_shell_i": OTHER_ICONS.SHELL,
+    "item:earth_geode_ii": SPELLCRAFT_ACTION_ICONS.EARTH[6],
+    "item:air_egg_ii": OTHER_ICONS.COMPANION_CONTAINER,
+    "item:water_shell_ii": OTHER_ICONS.SHELL,
+
+    // Area artifacts are distinct inventory items for the future Combat system.
+    "item:crossroads_waystone": OTHER_ICONS.ARTIFACT,
+    "item:mossbound_heartstone": OTHER_ICONS.ARTIFACT,
+    "item:whispering_chime": OTHER_ICONS.ARTIFACT,
+    "item:stillwater_idol": OTHER_ICONS.ARTIFACT,
+    "item:ironroot_golem_core": OTHER_ICONS.ARTIFACT,
+    "item:zephyr_wisp_chime": OTHER_ICONS.ARTIFACT,
+    "item:fenwarden_idol": OTHER_ICONS.ARTIFACT,
+    "item:cragbound_relic": OTHER_ICONS.ARTIFACT,
+    "item:tempest_eye": OTHER_ICONS.ARTIFACT,
+    "item:drowned_scepter": OTHER_ICONS.ARTIFACT,
+    "item:basalt_crown_fragment": OTHER_ICONS.ARTIFACT,
+    "item:skybreak_sigil": OTHER_ICONS.ARTIFACT,
+    "item:abyssal_crown": OTHER_ICONS.ARTIFACT,
 }

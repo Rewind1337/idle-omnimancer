@@ -1,6 +1,13 @@
 // Shared location data for systems that use the world map.
 // Keep area identity and axial positions here; item metadata lives in itemData.
 
+const AREA_UNLOCK_COSTS = {
+    1: [{ item: "currency:coins", amount: 10000 }],
+    2: [{ item: "currency:coins", amount: 30000 }],
+    3: [{ item: "currency:coins", amount: 75000 }],
+    4: [{ item: "currency:coins", amount: 150000 }],
+}
+
 export const WORLD_DATA = {
     id: "world:known_world",
     name: "The Known World",
@@ -21,12 +28,8 @@ export const WORLD_DATA = {
             tier: 1,
             areaNumber: 1,
             position: { q: 0, r: 0 },
-            exploration: {
-                produces: ["item:crossroads_field_notes"]
-            },
-            combat: {
-                produces: ["item:crossroads_waystone"],
-            },
+            exploration: { produces: ["item:crossroads_field_notes"] },
+            combat: { produces: ["item:crossroads_waystone"] },
         },
         {
             id: "area:mossbound_foothills",
@@ -38,11 +41,9 @@ export const WORLD_DATA = {
             position: { q: -1, r: 0 },
             exploration: {
                 produces: ["item:mossbound_ore"],
-                unlockCosts: [{ item: "currency:coins", amount: 10000 }]
+                unlockCosts: AREA_UNLOCK_COSTS[1],
             },
-            combat: {
-                produces: ["item:mossbound_heartstone"],
-            },
+            combat: { produces: ["item:mossbound_heartstone"] },
         },
         {
             id: "area:whispering_fields",
@@ -54,11 +55,9 @@ export const WORLD_DATA = {
             position: { q: 1, r: -1 },
             exploration: {
                 produces: ["item:whispering_seeds"],
-                unlockCosts: [{ item: "currency:coins", amount: 10000 }]
+                unlockCosts: AREA_UNLOCK_COSTS[1],
             },
-            combat: {
-                produces: ["item:whispering_chime"],
-            },
+            combat: { produces: ["item:whispering_chime"] },
         },
         {
             id: "area:stillwater_pools",
@@ -70,164 +69,135 @@ export const WORLD_DATA = {
             position: { q: 0, r: 1 },
             exploration: {
                 produces: ["item:stillwater_reeds"],
-                unlockCosts: [{ item: "currency:coins", amount: 10000 }]
+                unlockCosts: AREA_UNLOCK_COSTS[1],
             },
-            combat: {
-                produces: ["item:stillwater_idol"],
-            },
+            combat: { produces: ["item:stillwater_idol"] },
         },
         {
-            id: "area:earth_tier_2",
-            actionId: "action:explore_earth_tier_2",
-            name: "earth_tier_2",
+            id: "area:ironroot_ravine",
+            actionId: "action:explore_ironroot_ravine",
+            name: "The Ironroot Ravine",
             element: "earth",
             tier: 2,
             areaNumber: 5,
             position: { q: -2, r: 1 },
             exploration: {
-                produces: ["item:<some new item here>", "item:earth_geode_i"],
-                unlockCosts: [{ item: "currency:coins", amount: 30000 }]
+                produces: ["item:ironroot_ore", "item:earth_geode_i"],
+                unlockCosts: AREA_UNLOCK_COSTS[2],
             },
-            combat: {
-                produces: ["item:<some new item here>"],
-            },
+            combat: { produces: ["item:ironroot_golem_core"] },
         },
         {
-            id: "area:earth_tier_3",
-            actionId: "action:explore_earth_tier_3",
-            name: "earth_tier_3",
-            element: "earth",
-            tier: 3,
-            areaNumber: 8,
-            position: { q: -2, r: 0 },
-            exploration: {
-                produces: ["item:<some new item here>"],
-                unlockCosts: [{ item: "currency:coins", amount: 75000 }]
-            },
-            combat: {
-                produces: ["item:<some new item here>"],
-            },
-        },
-        {
-            id: "area:earth_tier_4",
-            actionId: "action:explore_earth_tier_4",
-            name: "earth_tier_4",
-            element: "earth",
-            tier: 4,
-            areaNumber: 11,
-            position: { q: -1, r: -1 },
-            exploration: {
-                produces: ["item:<some new item here>", "item:earth_geode_ii"],
-                unlockCosts: [{ item: "currency:coins", amount: 150000 }]
-            },
-            combat: {
-                produces: ["item:<some new item here>"],
-            },
-        },
-        {
-            id: "area:air_tier_2",
-            actionId: "action:explore_air_tier_2",
-            name: "air_tier_2",
+            id: "area:zephyr_heights",
+            actionId: "action:explore_zephyr_heights",
+            name: "The Zephyr Heights",
             element: "air",
             tier: 2,
             areaNumber: 6,
             position: { q: 1, r: -2 },
             exploration: {
-                produces: [
-                    "item:<some new item here>",
-                    "item:air_egg_i",
-                ],
+                produces: ["item:zephyr_plumes", "item:air_egg_i"],
+                unlockCosts: AREA_UNLOCK_COSTS[2],
             },
-            combat: {
-                produces: ["item:<some new item here>"],
-            },
+            combat: { produces: ["item:zephyr_wisp_chime"] },
         },
         {
-            id: "area:air_tier_3",
-            actionId: "action:explore_air_tier_3",
-            name: "air_tier_3",
-            element: "air",
-            tier: 3,
-            areaNumber: 9,
-            position: { q: 2, r: -2 },
-            exploration: {
-                produces: [
-                    "item:<some new item here>",
-                ],
-            },
-            combat: {
-                produces: ["item:<some new item here>"],
-            },
-        },
-        {
-            id: "area:air_tier_4",
-            actionId: "action:explore_air_tier_4",
-            name: "air_tier_4",
-            element: "air",
-            tier: 4,
-            areaNumber: 12,
-            position: { q: 2, r: -1 },
-            exploration: {
-                produces: [
-                    "item:<some new item here>",
-                    "item:air_egg_ii",
-                ],
-            },
-            combat: {
-                produces: ["item:<some new item here>"],
-            },
-        },
-        {
-            id: "area:water_tier_2",
-            actionId: "action:explore_water_tier_2",
-            name: "water_tier_2",
+            id: "area:moonlit_fen",
+            actionId: "action:explore_moonlit_fen",
+            name: "The Moonlit Fen",
             element: "water",
             tier: 2,
             areaNumber: 7,
             position: { q: 1, r: 1 },
             exploration: {
-                produces: [
-                    "item:<some new item here>",
-                    "item:water_shell_i",
-                ],
+                produces: ["item:moonlit_pearls", "item:water_shell_i"],
+                unlockCosts: AREA_UNLOCK_COSTS[2],
             },
-            combat: {
-                produces: ["item:<some new item here>"],
-            },
+            combat: { produces: ["item:fenwarden_idol"] },
         },
         {
-            id: "area:water_tier_3",
-            actionId: "action:explore_water_tier_3",
-            name: "water_tier_3",
+            id: "area:shattered_crags",
+            actionId: "action:explore_shattered_crags",
+            name: "The Shattered Crags",
+            element: "earth",
+            tier: 3,
+            areaNumber: 8,
+            position: { q: -2, r: 0 },
+            exploration: {
+                produces: ["item:shatterstone_fragments"],
+                unlockCosts: AREA_UNLOCK_COSTS[3],
+            },
+            combat: { produces: ["item:cragbound_relic"] },
+        },
+        {
+            id: "area:tempest_reach",
+            actionId: "action:explore_tempest_reach",
+            name: "The Tempest Reach",
+            element: "air",
+            tier: 3,
+            areaNumber: 9,
+            position: { q: 2, r: -2 },
+            exploration: {
+                produces: ["item:stormglass_shards"],
+                unlockCosts: AREA_UNLOCK_COSTS[3],
+            },
+            combat: { produces: ["item:tempest_eye"] },
+        },
+        {
+            id: "area:drowned_sanctum",
+            actionId: "action:explore_drowned_sanctum",
+            name: "The Drowned Sanctum",
             element: "water",
             tier: 3,
             areaNumber: 10,
             position: { q: 0, r: 2 },
             exploration: {
-                produces: [
-                    "item:<some new item here>",
-                ],
+                produces: ["item:abyssal_ink"],
+                unlockCosts: AREA_UNLOCK_COSTS[3],
             },
-            combat: {
-                produces: ["item:<some new item here>"],
-            },
+            combat: { produces: ["item:drowned_scepter"] },
         },
         {
-            id: "area:water_tier_4",
-            actionId: "action:explore_water_tier_4",
-            name: "water_tier_4",
+            id: "area:basalt_crown",
+            actionId: "action:explore_basalt_crown",
+            name: "The Basalt Crown",
+            element: "earth",
+            tier: 4,
+            areaNumber: 11,
+            position: { q: -1, r: -1 },
+            exploration: {
+                produces: ["item:basalt_heart", "item:earth_geode_ii"],
+                unlockCosts: AREA_UNLOCK_COSTS[4],
+            },
+            combat: { produces: ["item:basalt_crown_fragment"] },
+        },
+        {
+            id: "area:skybreak_summit",
+            actionId: "action:explore_skybreak_summit",
+            name: "The Skybreak Summit",
+            element: "air",
+            tier: 4,
+            areaNumber: 12,
+            position: { q: 2, r: -1 },
+            exploration: {
+                produces: ["item:skybreak_aether", "item:air_egg_ii"],
+                unlockCosts: AREA_UNLOCK_COSTS[4],
+            },
+            combat: { produces: ["item:skybreak_sigil"] },
+        },
+        {
+            id: "area:tidal_abyss",
+            actionId: "action:explore_tidal_abyss",
+            name: "The Tidal Abyss",
             element: "water",
             tier: 4,
             areaNumber: 13,
             position: { q: -1, r: 2 },
             exploration: {
-                produces: [
-                    "item:<some new item here>",
-                ],
+                produces: ["item:tidal_heart", "item:water_shell_ii"],
+                unlockCosts: AREA_UNLOCK_COSTS[4],
             },
-            combat: {
-                produces: ["item:<some new item here>"],
-            },
+            combat: { produces: ["item:abyssal_crown"] },
         },
     ],
 }

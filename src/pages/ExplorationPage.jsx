@@ -14,6 +14,7 @@ import { ActionResources } from "../components/actions/ActionResources"
 import { Button } from "../components/Button"
 
 import { EXPLORATION_CONFIG } from "../data/explorationConfig"
+import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { WORLD_AREAS, WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
 import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
@@ -131,25 +132,17 @@ function ExplorationActionCard({
                             produces={action.produces ?? []}
                             outputMultiplier={outputMultiplier}
                         />
-                        {(action.companionContainer || action.artifactItem) && (
-                            <Flex direction="row" wrap gap={8}>
-                                {action.companionContainer && (
-                                    <Badge
-                                        variant={elementVariant}
-                                        icon={cloneElement(OTHER_ICONS.COMPANION_CONTAINER, { size: 20 })}
-                                    >
-                                        Companion Container: {humanize(action.companionContainer.item.replace(/^item:/, ""))}
-                                    </Badge>
+                        {action.companionContainer && (
+                            <Badge
+                                variant={elementVariant}
+                                icon={cloneElement(
+                                    ITEM_DATA_BY_ID[action.companionContainer]?.icon ?? OTHER_ICONS.COMPANION_CONTAINER,
+                                    { size: 20 }
                                 )}
-                                {action.artifactItem && (
-                                    <Badge
-                                        variant={elementVariant}
-                                        icon={cloneElement(OTHER_ICONS.ARTIFACT, { size: 20 })}
-                                    >
-                                        Combat Artifact: {humanize(action.artifactItem.replace(/^item:/, ""))}
-                                    </Badge>
-                                )}
-                            </Flex>
+                            >
+                                {ITEM_DATA_BY_ID[action.companionContainer]?.name ?? humanize(action.companionContainer.replace(/^item:/, ""))}
+                                {" · "}{(EXPLORATION_CONFIG.companionChance.base * 100).toLocaleString()}% chance
+                            </Badge>
                         )}
                     </>
                 ) : (
@@ -177,6 +170,9 @@ export function ExplorationPage() {
     const isUnlocked = Boolean(actionState.unlocked)
     const isActive = player.activeAction?.skillId === skillId &&
         player.activeAction?.actionId === selectedAction.id
+    const unlockedAreaIds = WORLD_AREAS
+        .filter(area => Boolean(player.skills?.[skillId]?.actions?.[area.actionId]?.unlocked))
+        .map(area => area.id)
 
     return (
         <Flex direction="column" className="page-flex page-flex-exploration" padding={32} gap={24}>
@@ -209,6 +205,7 @@ export function ExplorationPage() {
                             area.id,
                             player.skills?.[skillId]?.actions?.[area.actionId]?.level ?? 1,
                         ]))}
+                        unlockedAreaIds={unlockedAreaIds}
                         onSelectArea={setSelectedAreaId}
                     />
                 </Flex>

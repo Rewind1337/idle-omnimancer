@@ -19,6 +19,14 @@ const getAreaPosition = (area, hexSize) => ({
     y: hexSize * 1.5 * area.position.r,
 })
 
+const isHexAdjacent = (first, second) => {
+    const deltaQ = first.position.q - second.position.q
+    const deltaR = first.position.r - second.position.r
+    return (
+        Math.abs(deltaQ) + Math.abs(deltaR) + Math.abs(deltaQ + deltaR)
+    ) / 2 === 1
+}
+
 const getHexPoints = hexSize => Array.from({ length: 6 }, (_, index) => {
     const angle = (Math.PI / 3) * index - Math.PI / 2
     return `${Math.cos(angle) * hexSize},${Math.sin(angle) * hexSize}`
@@ -34,6 +42,7 @@ export function HexMap({
     selectedAreaId = null,
     onSelectArea = () => { },
     actionLevels = {},
+    unlockedAreaIds = [],
     hexSize = DEFAULT_HEX_SIZE,
     mapVariant = "primary",
     className = "",
@@ -49,6 +58,20 @@ export function HexMap({
         [areas]
     )
     const hexPoints = useMemo(() => getHexPoints(hexSize), [hexSize])
+    const unlockedAreaSet = useMemo(() => new Set(unlockedAreaIds), [unlockedAreaIds])
+    const visibleAreaSet = useMemo(() => {
+        const visible = new Set(unlockedAreaIds)
+
+        for (const area of areas) {
+            if (visible.has(area.id)) continue
+            const hasUnlockedNeighbor = areas.some(neighbor =>
+                unlockedAreaSet.has(neighbor.id) && isHexAdjacent(area, neighbor)
+            )
+            if (hasUnlockedNeighbor) visible.add(area.id)
+        }
+
+        return visible
+    }, [areas, unlockedAreaIds, unlockedAreaSet])
 
     const orderedAreas = useMemo(() => {
         if (!selectedAreaId) return areas
@@ -98,7 +121,7 @@ export function HexMap({
     const handlePointerDown = event => {
         if (event.button !== 0) return
 
-        const area = event.target.closest?.("[data-area-id]")
+        const area = event.target.closest?.('[data-area-id][data-visible="true"]')
         dragRef.current = {
             startX: event.clientX,
             startY: event.clientY,
@@ -164,6 +187,8 @@ export function HexMap({
                         const position = getAreaPosition(area, hexSize)
                         const lines = area.name.split(" ")
                         const isSelected = selectedAreaId === area.id
+                        const isUnlocked = unlockedAreaSet.has(area.id)
+                        const isVisible = visibleAreaSet.has(area.id)
                         const variant = area.element ?? "neutral"
                         const actionLevel = actionLevels[area.id] ?? actionLevels[area.actionId] ?? 1
                         const numberY = -((lines.length - 1) * 7) - 15
@@ -175,13 +200,16 @@ export function HexMap({
                                 className={`hex-map-area hex-map-area-${variant}`}
                                 transform={`translate(${position.x} ${position.y})`}
                                 data-area-id={area.id}
+                                data-visible={isVisible}
+                                data-unlocked={isUnlocked}
                                 data-checked={isSelected}
-                                role="button"
-                                tabIndex={0}
+                                role={isVisible ? "button" : undefined}
+                                tabIndex={isVisible ? 0 : -1}
+                                aria-disabled={!isVisible}
                                 aria-label={`Select ${area.name}, Action Level ${actionLevel}`}
                                 aria-pressed={isSelected}
                                 onKeyDown={event => {
-                                    if (event.key === "Enter" || event.key === " ") {
+                                    if (isVisible && (event.key === "Enter" || event.key === " ")) {
                                         event.preventDefault()
                                         onSelectArea(area.id)
                                     }

@@ -195,10 +195,21 @@ const canStoreActionOutputs = (player, skill, action) => {
         .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0)
         .length
     const outputMultiplier = getActionOutputMultiplier(player, skill, action)
-    const newItemIds = outputMultiplier > 0
-        ? [...new Set(getActionOutputs(action).map(output => output.item))]
-            .filter(itemId => ITEM_DATA_BY_ID[itemId] && !(inventory[itemId] > 0))
+    const possibleItemIds = outputMultiplier > 0
+        ? getActionOutputs(action).map(output => output.item)
         : []
+    const companionContainerId = typeof action.companionContainer === "string"
+        ? action.companionContainer
+        : action.companionContainer?.item
+    if (
+        skill.companionChance?.base > 0 &&
+        companionContainerId &&
+        ITEM_DATA_BY_ID[companionContainerId]
+    ) {
+        possibleItemIds.push(companionContainerId)
+    }
+    const newItemIds = [...new Set(possibleItemIds)]
+        .filter(itemId => ITEM_DATA_BY_ID[itemId] && !(inventory[itemId] > 0))
     const inventorySlots = Number.isFinite(player.inventorySlots)
         ? Math.max(0, player.inventorySlots)
         : GLOBAL_CONFIG.startingBagSpace
@@ -230,9 +241,27 @@ export const canUnlockAction = (player, skillId, actionId) => {
     const actionState = player.skills[skillId]?.actions[actionId]
     if (!action || !actionState || actionState.unlocked) return false
 
-    // Prevent skipping earlier actions, even if a caller dispatches an unlock
-    // directly instead of using the currently displayed action card.
-    if (getNextLockedAction(player, skillId)?.id !== actionId) return false
+    if (skill.unlockRule === "adjacent") {
+        const targetPosition = action.position
+        if (!targetPosition) return false
+
+        const hasUnlockedNeighbor = skill.actions.some(otherAction => {
+            if (otherAction.id === actionId || !otherAction.position) return false
+            if (!player.skills?.[skillId]?.actions?.[otherAction.id]?.unlocked) return false
+
+            const deltaQ = targetPosition.q - otherAction.position.q
+            const deltaR = targetPosition.r - otherAction.position.r
+            const hexDistance = (
+                Math.abs(deltaQ) + Math.abs(deltaR) + Math.abs(deltaQ + deltaR)
+            ) / 2
+
+            return hexDistance === 1
+        })
+        if (!hasUnlockedNeighbor) return false
+    } else {
+        // Other skills retain sequential unlocks so later actions cannot be skipped.
+        if (getNextLockedAction(player, skillId)?.id !== actionId) return false
+    }
 
     const costs = getUnlockCostTotals(action.unlockCosts)
     if (!costs) return false
@@ -736,6 +765,21 @@ const awardActionXP = (player, skill, action, actionState) => {
         } else if (ITEM_DATA_BY_ID[item]) {
             player.inventory[item] = (player.inventory[item] ?? 0) + outputAmount
         }
+    }
+
+    // Some areas have a chance to reveal their matching elemental container.
+    const companionContainerId = typeof action.companionContainer === "string"
+        ? action.companionContainer
+        : action.companionContainer?.item
+    const companionChance = Math.max(0, Math.min(1, skill.companionChance?.base ?? 0))
+    if (
+        companionContainerId &&
+        ITEM_DATA_BY_ID[companionContainerId] &&
+        companionChance > 0 &&
+        Math.random() < companionChance
+    ) {
+        player.inventory[companionContainerId] =
+            (player.inventory[companionContainerId] ?? 0) + 1
     }
 }
 

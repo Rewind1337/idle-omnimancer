@@ -202,6 +202,7 @@ const canStoreActionOutputs = (player, skill, action) => {
         ? action.companionContainer
         : action.companionContainer?.item
     if (
+        outputMultiplier > 0 &&
         skill.companionChance?.base > 0 &&
         companionContainerId &&
         ITEM_DATA_BY_ID[companionContainerId]
@@ -775,7 +776,11 @@ const awardActionXP = (player, skill, action, actionState) => {
     const companionContainerId = typeof action.companionContainer === "string"
         ? action.companionContainer
         : action.companionContainer?.item
-    const companionChance = Math.max(0, Math.min(1, skill.companionChance?.base ?? 0))
+    // Item-output bonuses also improve the chance to discover companion containers.
+    const companionChance = Math.max(
+        0,
+        Math.min(1, (skill.companionChance?.base ?? 0) * outputMultiplier)
+    )
     if (
         companionContainerId &&
         ITEM_DATA_BY_ID[companionContainerId] &&

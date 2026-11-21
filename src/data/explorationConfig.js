@@ -29,7 +29,7 @@ export const EXPLORATION_CONFIG = {
     },
 
     time: {
-        base: 6,
+        base: 5,
         perTier: 1,
     },
 
@@ -39,8 +39,8 @@ export const EXPLORATION_CONFIG = {
     },
 
     neededXP: {
-        base: 25,
-        perTier: 10,
+        base: 16,
+        perTier: 7,
         perLevelMult: 1.126,
         perLevelFlat: 2,
         perTierMult: 1.001,
@@ -49,9 +49,15 @@ export const EXPLORATION_CONFIG = {
 
     milestones: [
         { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 1.1 },
+        { level: 20, reach: "skill:spellcraft", type: "mult", effect: "actionTime", value: 1.2 },
+        { level: 30, reach: "global", type: "mult", effect: "itemOutput", value: 1.2 },
     ],
 
-    actionMilestones: [],
+    actionMilestones: [
+        { levels: 1, type: "mult", effect: "itemOutput", value: 1.01 },
+        { levels: 10, type: "mult", effect: "actionTime", value: 1.05 },
+        { levels: 25, type: "mult", effect: "xpGain", value: 1.20 },
+    ],
 
     actions: WORLD_DATA.areas.map(area => {
         const companionContainer = area.exploration.produces.find(itemId =>

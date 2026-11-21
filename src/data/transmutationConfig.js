@@ -24,17 +24,17 @@ export const TRANSMUTATION_CONFIG = {
     // Initial timing and XP values are placeholders for balancing.
     time: {
         base: 3,
-        perTier: 1,
+        perTier: 0.5,
     },
 
     actionXP: {
-        base: 9,
+        base: 8,
         perTier: 6,
     },
 
     neededXP: {
-        base: 18,
-        perTier: 8,
+        base: 14,
+        perTier: 6,
         perLevelMult: 1.124,
         perLevelFlat: 2,
         perTierMult: 1.0012,

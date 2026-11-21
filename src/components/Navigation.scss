@@ -1,3 +1,4 @@
+/* Navigation button sizing is shared across skill and utility sections. */
 .navigation {
   &.navigation-top {
     .button {
@@ -12,6 +13,63 @@
 
     .button {
       width: 100%;
+      height: 48px;
+      min-height: 48px;
+      padding: 4px 8px;
+      font-size: 24px;
+      line-height: 1.2;
+
+      > .flex {
+        width: 100%;
+        height: 100%;
+        align-items: center;
+      }
+
+      .button-icon {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        flex: 0 0 32px;
+
+        svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      .button-content {
+        width: auto;
+        min-width: 0;
+        flex: 1 1 auto;
+        transform: none;
+      }
+
+      .button-badge {
+        flex: 0 0 auto;
+        min-height: 28px;
+        padding: 2px 6px;
+        line-height: 1;
+
+        .badge-icon {
+          display: grid;
+          place-items: center;
+          width: 18px;
+          height: 18px;
+          flex: 0 0 18px;
+        }
+
+        .badge-content {
+          width: auto;
+          font-size: 16px;
+          white-space: nowrap;
+        }
+
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
     }
 
     .navigation-side-layout {
@@ -41,6 +99,16 @@
 
     .button-content {
       display: none;
+    }
+  }
+}
+
+/* Keep compact side-navigation icons centered without stretching the SVG itself. */
+.navigation.navigation-side.navigation-compact {
+  .button {
+    .button-icon {
+      width: 100%;
+      flex: 1 1 auto;
     }
   }
 }

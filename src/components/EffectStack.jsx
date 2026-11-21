@@ -122,7 +122,7 @@ export function EffectStack({
             )}
             {formulas.length > 0 && <hr />}
             {formulas.length > 0 && formulas.map((formula, index) => (
-                <Text key={formula} size="small">{formula}</Text>
+                <Text key={formula + "-" + index} size="small">{formula}</Text>
             ))}
         </Flex>
     )

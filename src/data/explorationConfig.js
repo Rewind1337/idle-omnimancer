@@ -11,9 +11,9 @@ export const EXPLORATION_CONFIG = {
     // The 10,000 Coin cost is twice the current Transmutation unlock cost.
     unlockCosts: [
         { item: "item:translated_scrolls", amount: 100 },
-        { item: "item:earth_catalyst_i", amount: 5 },
-        { item: "item:air_catalyst_i", amount: 5 },
-        { item: "item:water_catalyst_i", amount: 5 },
+        { item: "item:earth_catalyst_i", amount: 25 },
+        { item: "item:air_catalyst_i", amount: 25 },
+        { item: "item:water_catalyst_i", amount: 25 },
         { item: "currency:coins", amount: 10000 },
     ],
 
@@ -24,18 +24,18 @@ export const EXPLORATION_CONFIG = {
     // Provisional starting values; area tier increases duration and XP.
     time: {
         base: 6,
-        perTier: 2,
+        perTier: 1,
     },
 
     actionXP: {
-        base: 10,
+        base: 12,
         perTier: 5,
     },
 
     neededXP: {
-        base: 24,
+        base: 25,
         perTier: 10,
-        perLevelMult: 1.14,
+        perLevelMult: 1.126,
         perLevelFlat: 2,
         perTierMult: 1.001,
         finalMultPerLevel: 0.999,
@@ -43,18 +43,11 @@ export const EXPLORATION_CONFIG = {
 
     milestones: [
         { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 1.1 },
-        { level: 20, reach: "skill:combat", type: "mult", effect: "combatOutput", value: 1.1 },
-        { level: 30, reach: "skill:combat", type: "mult", effect: "combatXP", value: 1.1 },
-        { level: 40, reach: "skill:combat", type: "mult", effect: "artifactChance", value: 1.05 },
     ],
 
     // Each area is its own action. These milestones are intended to affect the
     // same area's future Combat and discovery systems.
     actionMilestones: [
-        { levels: 10, type: "mult", effect: "combatOutput", value: 1.02 },
-        { levels: 10, type: "mult", effect: "combatXP", value: 1.02 },
-        { levels: 20, type: "mult", effect: "artifactChance", value: 1.05 },
-        { levels: 20, type: "mult", effect: "companionContainerChance", value: 1.05 },
     ],
 
     // The shared map is the source of truth for area identity, position, links,

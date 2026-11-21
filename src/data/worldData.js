@@ -15,22 +15,22 @@ export const WORLD_DATA = {
     // Provisional item definitions for the initial world. These can be registered
     // in itemData once the area rewards and item values have been reviewed.
     items: [
-        // Exploration resources
-        { id: "item:crossroads_field_notes", name: "Field Notes", tier: 1, variant: "exploration", type: "resource" },
+        // Exploration & Combat resources
+        { id: "item:crossroads_field_notes", name: "Crossroads Field Notes", tier: 1, variant: "exploration", type: "resource" },
         { id: "item:mossbound_ore", name: "Mossbound Ore", tier: 1, variant: "earth", type: "resource" },
         { id: "item:whispering_seeds", name: "Whispering Seeds", tier: 1, variant: "air", type: "resource" },
         { id: "item:stillwater_reeds", name: "Stillwater Reeds", tier: 1, variant: "water", type: "resource" },
 
-        // Area artifacts are intended to be obtained through Combat.
+        // Companion containers are found through Exploration and opened through Unveiling.
+        { id: "item:earth_geode_i", name: "Earth Geode", tier: 1, variant: "earth", type: "companionContainer" },
+        { id: "item:air_egg_i", name: "Air Egg", tier: 1, variant: "air", type: "companionContainer" },
+        { id: "item:water_shell_i", name: "Water Shell", tier: 1, variant: "water", type: "companionContainer" },
+
+        // Area artifacts are intended to be obtained through Combat and opened through Unveiling.
         { id: "item:crossroads_waystone", name: "Crossroads Waystone", tier: 1, variant: "exploration", type: "artifact" },
         { id: "item:mossbound_heartstone", name: "Mossbound Heartstone", tier: 1, variant: "earth", type: "artifact" },
         { id: "item:whispering_chime", name: "Whispering Chime", tier: 1, variant: "air", type: "artifact" },
         { id: "item:stillwater_idol", name: "Stillwater Idol", tier: 1, variant: "water", type: "artifact" },
-
-        // Companion containers are found through Exploration and opened through Unveiling.
-        { id: "item:earth_geode", name: "Earth Geode", tier: 1, variant: "earth", type: "companionContainer" },
-        { id: "item:air_egg", name: "Air Egg", tier: 1, variant: "air", type: "companionContainer" },
-        { id: "item:water_shell", name: "Water Shell", tier: 1, variant: "water", type: "companionContainer" },
     ],
 
     areas: [
@@ -41,6 +41,7 @@ export const WORLD_DATA = {
             description: "A quiet neutral meeting point where the first paths through the world converge.",
             element: null,
             tier: 1,
+            areaNumber: 1,
             position: { q: 0, r: 0 },
             connections: [
                 "area:mossbound_foothills",
@@ -63,13 +64,14 @@ export const WORLD_DATA = {
             description: "Rolling green slopes hide old stone, rich seams and traces of deep-rooted magic.",
             element: "earth",
             tier: 1,
+            areaNumber: 2,
             position: { q: -1, r: 0 },
             connections: ["area:the_crossroads"],
             unlockedByDefault: true,
             exploration: {
                 resourceRewards: [{ item: "item:mossbound_ore", amount: 1 }],
                 companionContainer: {
-                    item: "item:earth_geode",
+                    item: "item:earth_geode_i",
                     baseChance: 0.01,
                     minimumUnveilingSkillLevel: 1,
                 },
@@ -85,13 +87,14 @@ export const WORLD_DATA = {
             description: "Open grasslands carry strange winds and scatter seeds touched by the air.",
             element: "air",
             tier: 1,
+            areaNumber: 3,
             position: { q: 1, r: -1 },
             connections: ["area:the_crossroads"],
             unlockedByDefault: true,
             exploration: {
                 resourceRewards: [{ item: "item:whispering_seeds", amount: 1 }],
                 companionContainer: {
-                    item: "item:air_egg",
+                    item: "item:air_egg_i",
                     baseChance: 0.01,
                     minimumUnveilingSkillLevel: 1,
                 },
@@ -107,13 +110,14 @@ export const WORLD_DATA = {
             description: "Sheltered pools gather clear water, soft reeds and quiet traces of elemental life.",
             element: "water",
             tier: 1,
+            areaNumber: 4,
             position: { q: 0, r: 1 },
             connections: ["area:the_crossroads"],
             unlockedByDefault: true,
             exploration: {
                 resourceRewards: [{ item: "item:stillwater_reeds", amount: 1 }],
                 companionContainer: {
-                    item: "item:water_shell",
+                    item: "item:water_shell_i",
                     baseChance: 0.01,
                     minimumUnveilingSkillLevel: 1,
                 },

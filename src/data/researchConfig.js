@@ -88,49 +88,49 @@ export const RESEARCH_CONFIG = {
             id: "action:translate_ancient_scrolls",
             tier: 3,
             produces: ["item:translated_scrolls"],
-            unlockCosts: [{ amount: 2e2, item: "item:bound_notes" }, { amount: 1e2, item: "currency:coins" }]
+            unlockCosts: [{ amount: 2e2, item: "item:bound_notes" }, { amount: 5e1, item: "currency:coins" }]
         },
         {
             id: "action:examine_arcane_manuscripts",
             tier: 4,
             produces: ["item:arcane_manuscript"],
-            unlockCosts: [{ amount: 3e2, item: "item:translated_scrolls" }, { amount: 1e3, item: "currency:coins" }]
+            unlockCosts: [{ amount: 3e2, item: "item:translated_scrolls" }, { amount: 2e2, item: "currency:coins" }]
         },
         {
             id: "action:decipher_sealed_tomes",
             tier: 5,
             produces: ["item:sealed_grimoire"],
-            unlockCosts: [{ amount: 4e2, item: "item:arcane_manuscript" }, { amount: 1e4, item: "currency:coins" }]
+            unlockCosts: [{ amount: 4e2, item: "item:arcane_manuscript" }, { amount: 5e2, item: "currency:coins" }]
         },
         {
             id: "action:explore_lost_archives",
             tier: 6,
             produces: ["item:lost_archive_record"],
-            unlockCosts: [{ amount: 5e2, item: "item:sealed_grimoire" }, { amount: 1e5, item: "currency:coins" }]
+            unlockCosts: [{ amount: 5e2, item: "item:sealed_grimoire" }, { amount: 2e3, item: "currency:coins" }]
         },
         {
             id: "action:recover_forgotten_texts",
             tier: 7,
             produces: ["item:forgotten_texts"],
-            unlockCosts: [{ amount: 6e2, item: "item:lost_archive_record" }, { amount: 1e6, item: "currency:coins" }]
+            unlockCosts: [{ amount: 6e2, item: "item:lost_archive_record" }, { amount: 5e3, item: "currency:coins" }]
         },
         {
             id: "action:investigate_forbidden_lore",
             tier: 8,
             produces: ["item:forbidden_codex"],
-            unlockCosts: [{ amount: 7e2, item: "item:forgotten_texts" }, { amount: 1e7, item: "currency:coins" }]
+            unlockCosts: [{ amount: 7e2, item: "item:forgotten_texts" }, { amount: 2e4, item: "currency:coins" }]
         },
         {
             id: "action:unravel_primordial_mysteries",
             tier: 9,
             produces: ["item:primordial_chronicle"],
-            unlockCosts: [{ amount: 8e2, item: "item:forbidden_codex" }, { amount: 1e8, item: "currency:coins" }]
+            unlockCosts: [{ amount: 8e2, item: "item:forbidden_codex" }, { amount: 5e4, item: "currency:coins" }]
         },
         {
             id: "action:research_the_first_truth",
             tier: 10,
             produces: ["item:genesis_testament"],
-            unlockCosts: [{ amount: 9e2, item: "item:primordial_chronicle" }, { amount: 1e9, item: "currency:coins" }]
+            unlockCosts: [{ amount: 9e2, item: "item:primordial_chronicle" }, { amount: 2e5, item: "currency:coins" }]
         },
     ],
 }

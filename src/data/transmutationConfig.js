@@ -60,7 +60,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "earth",
             name: "Lesser Earth Transmutation",
             consumes: [
-                { item: "item:loose_notes", amount: 2 },
                 { item: "item:dust", amount: 1 },
             ],
             produces: [{ item: "item:earth_catalyst_i", amount: 1 }],
@@ -72,7 +71,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "air",
             name: "Lesser Air Transmutation",
             consumes: [
-                { item: "item:loose_notes", amount: 2 },
                 { item: "item:breath", amount: 1 },
             ],
             produces: [{ item: "item:air_catalyst_i", amount: 1 }],
@@ -87,7 +85,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "water",
             name: "Lesser Water Transmutation",
             consumes: [
-                { item: "item:loose_notes", amount: 2 },
                 { item: "item:droplet", amount: 1 },
             ],
             produces: [{ item: "item:water_catalyst_i", amount: 1 }],
@@ -102,7 +99,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "earth",
             name: "Weak Earth Transmutation",
             consumes: [
-                { item: "item:bound_notes", amount: 2 },
                 { item: "item:pebble", amount: 2 },
             ],
             produces: [{ item: "item:earth_catalyst_ii", amount: 1 }],
@@ -117,7 +113,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "air",
             name: "Weak Air Transmutation",
             consumes: [
-                { item: "item:bound_notes", amount: 2 },
                 { item: "item:breeze", amount: 2 },
             ],
             produces: [{ item: "item:air_catalyst_ii", amount: 1 }],
@@ -132,7 +127,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "water",
             name: "Weak Water Transmutation",
             consumes: [
-                { item: "item:bound_notes", amount: 2 },
                 { item: "item:ripple", amount: 2 },
             ],
             produces: [{ item: "item:water_catalyst_ii", amount: 1 }],
@@ -147,7 +141,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "earth",
             name: "Regular Earth Transmutation",
             consumes: [
-                { item: "item:translated_scrolls", amount: 3 },
                 { item: "item:stone", amount: 3 },
             ],
             produces: [{ item: "item:earth_catalyst_iii", amount: 1 }],
@@ -162,7 +155,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "air",
             name: "Regular Air Transmutation",
             consumes: [
-                { item: "item:translated_scrolls", amount: 3 },
                 { item: "item:gust", amount: 3 },
             ],
             produces: [{ item: "item:air_catalyst_iii", amount: 1 }],
@@ -177,7 +169,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "water",
             name: "Regular Water Transmutation",
             consumes: [
-                { item: "item:translated_scrolls", amount: 3 },
                 { item: "item:stream", amount: 3 },
             ],
             produces: [{ item: "item:water_catalyst_iii", amount: 1 }],
@@ -192,7 +183,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "earth",
             name: "Greater Earth Transmutation",
             consumes: [
-                { item: "item:arcane_manuscript", amount: 3 },
                 { item: "item:shard", amount: 4 },
             ],
             produces: [{ item: "item:earth_catalyst_iv", amount: 1 }],
@@ -207,7 +197,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "air",
             name: "Greater Air Transmutation",
             consumes: [
-                { item: "item:arcane_manuscript", amount: 3 },
                 { item: "item:gale", amount: 4 },
             ],
             produces: [{ item: "item:air_catalyst_iv", amount: 1 }],
@@ -222,7 +211,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "water",
             name: "Greater Water Transmutation",
             consumes: [
-                { item: "item:arcane_manuscript", amount: 3 },
                 { item: "item:wave", amount: 4 },
             ],
             produces: [{ item: "item:water_catalyst_iv", amount: 1 }],
@@ -237,7 +225,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "earth",
             name: "Superior Earth Transmutation",
             consumes: [
-                { item: "item:sealed_grimoire", amount: 4 },
                 { item: "item:crystal", amount: 5 },
             ],
             produces: [{ item: "item:earth_catalyst_v", amount: 1 }],
@@ -252,7 +239,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "air",
             name: "Superior Air Transmutation",
             consumes: [
-                { item: "item:sealed_grimoire", amount: 4 },
                 { item: "item:tempest", amount: 5 },
             ],
             produces: [{ item: "item:air_catalyst_v", amount: 1 }],
@@ -267,7 +253,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "water",
             name: "Superior Water Transmutation",
             consumes: [
-                { item: "item:sealed_grimoire", amount: 4 },
                 { item: "item:torrent", amount: 5 },
             ],
             produces: [{ item: "item:water_catalyst_v", amount: 1 }],
@@ -282,7 +267,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "earth",
             name: "Exalted Earth Transmutation",
             consumes: [
-                { item: "item:lost_archive_record", amount: 4 },
                 { item: "item:core", amount: 6 },
             ],
             produces: [{ item: "item:earth_catalyst_vi", amount: 1 }],
@@ -297,7 +281,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "air",
             name: "Exalted Air Transmutation",
             consumes: [
-                { item: "item:lost_archive_record", amount: 4 },
                 { item: "item:cyclone", amount: 6 },
             ],
             produces: [{ item: "item:air_catalyst_vi", amount: 1 }],
@@ -312,7 +295,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "water",
             name: "Exalted Water Transmutation",
             consumes: [
-                { item: "item:lost_archive_record", amount: 4 },
                 { item: "item:maelstrom", amount: 6 },
             ],
             produces: [{ item: "item:water_catalyst_vi", amount: 1 }],
@@ -327,7 +309,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "earth",
             name: "Supreme Earth Transmutation",
             consumes: [
-                { item: "item:forgotten_texts", amount: 5 },
                 { item: "item:mountain_heart", amount: 7 },
             ],
             produces: [{ item: "item:earth_catalyst_vii", amount: 1 }],
@@ -342,7 +323,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "air",
             name: "Supreme Air Transmutation",
             consumes: [
-                { item: "item:forgotten_texts", amount: 5 },
                 { item: "item:skycore", amount: 7 },
             ],
             produces: [{ item: "item:air_catalyst_vii", amount: 1 }],
@@ -357,7 +337,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "water",
             name: "Supreme Water Transmutation",
             consumes: [
-                { item: "item:forgotten_texts", amount: 5 },
                 { item: "item:abyssal_heart", amount: 7 },
             ],
             produces: [{ item: "item:water_catalyst_vii", amount: 1 }],
@@ -372,7 +351,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "earth",
             name: "Transcendent Earth Transmutation",
             consumes: [
-                { item: "item:forbidden_codex", amount: 5 },
                 { item: "item:worldheart", amount: 8 },
             ],
             produces: [{ item: "item:earth_catalyst_viii", amount: 1 }],
@@ -387,7 +365,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "air",
             name: "Transcendent Air Transmutation",
             consumes: [
-                { item: "item:forbidden_codex", amount: 5 },
                 { item: "item:firmament_core", amount: 8 },
             ],
             produces: [{ item: "item:air_catalyst_viii", amount: 1 }],
@@ -402,7 +379,6 @@ export const TRANSMUTATION_CONFIG = {
             element: "water",
             name: "Transcendent Water Transmutation",
             consumes: [
-                { item: "item:forbidden_codex", amount: 5 },
                 { item: "item:primordial_tide", amount: 8 },
             ],
             produces: [{ item: "item:water_catalyst_viii", amount: 1 }],

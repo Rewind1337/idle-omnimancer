@@ -122,8 +122,31 @@ export const SHOP_ITEM_DEFINITIONS = []
 
 const ALL_ITEM_DEFINITIONS = [...ITEM_DEFINITIONS, ...SHOP_ITEM_DEFINITIONS]
 
+const getItemClassification = (item) => {
+    if (item.shopPrice !== undefined || item.variant === "shop") {
+        return { group: "shop", type: "shopItem" }
+    }
+    if (item.type === "companionContainer") {
+        return { group: "companions", type: "companionContainer" }
+    }
+    if (item.type === "artifact") {
+        return { group: "combat", type: "artifact" }
+    }
+    if (item.type === "resource") {
+        return { group: "exploration", type: "resource" }
+    }
+    if (item.id.includes("_catalyst_")) {
+        return { group: "transmutation", type: "catalyst" }
+    }
+    if (item.variant === "research") {
+        return { group: "research", type: "researchMaterial" }
+    }
+    return { group: "spellcraft", type: "essence" }
+}
+
 export const ITEM_DATA = ALL_ITEM_DEFINITIONS.map(item => ({
     ...item,
+    ...getItemClassification(item),
     baseValue: item.baseValue ?? getBaseItemValue(item.tier),
     name: item.name ?? humanize(item.id.replace(/^item:/, "")),
     icon: item.icon ?? ITEM_SPRITES[item.id] ?? OTHER_ICONS.STAR,
@@ -163,3 +186,16 @@ export const CURRENCY_DATA = [
 export const CURRENCY_DATA_BY_ID = Object.fromEntries(
     CURRENCY_DATA.map(currency => [currency.id, currency])
 )
+
+
+// Return only owned items in a source group or semantic type. These helpers are
+// shared by inventory filtering and Unveiling's Material Destruction actions.
+export const getInventoryItemsByGroup = (inventory, group) =>
+    ITEM_DATA
+        .filter(item => item.group === group && (inventory?.[item.id] ?? 0) > 0)
+        .map(item => ({ ...item, amount: inventory[item.id] }))
+
+export const getInventoryItemsByType = (inventory, type) =>
+    ITEM_DATA
+        .filter(item => item.type === type && (inventory?.[item.id] ?? 0) > 0)
+        .map(item => ({ ...item, amount: inventory[item.id] }))

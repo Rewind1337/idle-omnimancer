@@ -206,7 +206,9 @@ export function HexMap({
                                 role={isVisible ? "button" : undefined}
                                 tabIndex={isVisible ? 0 : -1}
                                 aria-disabled={!isVisible}
-                                aria-label={`Select ${area.name}, Action Level ${actionLevel}`}
+                                aria-label={isUnlocked
+                                    ? `Select ${area.name}, Action Level ${actionLevel}`
+                                    : `Select ${area.name}, locked area`}
                                 aria-pressed={isSelected}
                                 onKeyDown={event => {
                                     if (isVisible && (event.key === "Enter" || event.key === " ")) {
@@ -226,9 +228,11 @@ export function HexMap({
                                         </tspan>
                                     ))}
                                 </text>
-                                <text className="hex-map-area-level" x="0" y="39">
-                                    Lv. {actionLevel}
-                                </text>
+                                {isUnlocked && (
+                                    <text className="hex-map-area-level" x="0" y="39">
+                                        Lv. {actionLevel}
+                                    </text>
+                                )}
                             </g>
                         )
                     })}

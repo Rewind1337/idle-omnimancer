@@ -346,72 +346,62 @@ Higher tiers should require more advanced Research materials and elemental essen
 
 ## 8. Skill Four — Exploration
 
-**Purpose:** Explore a growing world map, develop individual areas and discover resources and elemental companion containers.
+**Purpose:** Explore a growing world map, develop individual areas and discover area resources and elemental companion containers.
 
-Exploration is an **active skill**. Each unlocked area is an individual Exploration action and uses the normal action-level rules.
+Exploration is an **active skill**. Every area is an independent action with its own level, XP, duration, rewards and unlock state. The areas share a hex map with Combat.
 
-### 8.1 Shared hex map and starting layout
+### 8.1 Shared hex map and adjacency
 
-- Exploration is represented by a hexagonal map.
-- The map begins with a central, neutral hex tile and three immediately adjacent starting areas:
-  - **Neutral — The Crossroads**
-  - **Earth — The Mossbound Foothills**
-  - **Air — The Whispering Fields**
-  - **Water — The Stillwater Pools**
-- The Crossroads has no elemental alignment.
-- The three elemental areas establish the initial directions or branches of the map.
-- New areas branch from unlocked areas. Later branches may overlap, cross or connect; the map is not limited to three permanently separate paths.
-- The map is shared with Combat and other future systems that use locations.
-- No detailed map layout or fixed number of areas is defined yet.
+- The map uses axial hex coordinates (`q`, `r`). Two areas are adjacent when their hex distance is exactly one: `(abs(dq) + abs(dr) + abs(dq + dr)) / 2 === 1`.
+- The Crossroads is the neutral starting area and is unlocked automatically when Exploration is unlocked.
+- The Crossroads and its immediate neighbors form the initial visible map cluster. Further tiles become visible when they are directly adjacent to any unlocked area.
+- A visible locked area can be selected to inspect its requirements. A distant, non-visible area is faded and cannot be selected.
+- **Area unlocking is adjacency-based, not sequential.** Any locked area may be unlocked when at least one directly adjacent area is already unlocked and its configured costs can be paid. Unlocking one branch does not require unlocking earlier-numbered areas or maxing another area.
+- The current branch layout includes the Crossroads connected to areas 2–4; area 2 connects onward to areas 5, 8 and 11; area 3 connects to areas 6, 9 and 12; area 4 connects to areas 7, 10 and 13. Hex geometry may create additional valid connections where coordinates are adjacent.
+- The map is shared with Combat and future systems that use locations.
 
-### 8.2 Area structure and progression
+### 8.2 Current areas
 
-Each area has:
+| Area | Name | Element | Tier | Exploration resource | Combat artifact |
+|---:|---|---|---:|---|---|
+| 1 | The Crossroads | Neutral | I | Crossroads Field Notes | Crossroads Waystone |
+| 2 | The Mossbound Foothills | Earth | I | Mossbound Ore | Mossbound Heartstone |
+| 3 | The Whispering Fields | Air | I | Whispering Seeds | Whispering Chime |
+| 4 | The Stillwater Pools | Water | I | Stillwater Reeds | Stillwater Idol |
+| 5 | The Ironroot Ravine | Earth | II | Ironroot Ore | Ironroot Golem Core |
+| 6 | The Zephyr Heights | Air | II | Zephyr Plumes | Zephyr Wisp Chime |
+| 7 | The Moonlit Fen | Water | II | Moonlit Pearls | Fenwarden Idol |
+| 8 | The Shattered Crags | Earth | III | Shatterstone Fragments | Cragbound Relic |
+| 9 | The Tempest Reach | Air | III | Stormglass Shards | Tempest Eye |
+| 10 | The Drowned Sanctum | Water | III | Abyssal Ink | Drowned Scepter |
+| 11 | The Basalt Crown | Earth | IV | Basalt Heart | Basalt Crown Fragment |
+| 12 | The Skybreak Summit | Air | IV | Skybreak Aether | Skybreak Sigil |
+| 13 | The Tidal Abyss | Water | IV | Tidal Heart | Abyssal Crown |
 
-- A unique name.
-- An elemental alignment (Earth, Air, Water or none for the neutral starting tile).
-- Its own action level from 1 to 100.
-- Its own XP progression, duration and resource rewards.
-- A position and connection to other areas on the shared map.
+- Every area currently has one unique guaranteed Exploration resource and one area-specific artifact reserved for Combat/Unveiling.
+- The area identity, element, tier, action ID, map position and reward IDs are defined centrally in `src/data/worldData.js`; item metadata and icons are defined in `src/data/itemData.js` and `src/data/iconLibrary.jsx`.
 
-Progression rules:
+### 8.3 Unlock costs and action progression
 
-- Every area is an independent Exploration action.
-- Its level contributes to the overall Exploration skill level.
-- Exploration skill level 100 requires every Exploration area/action in the skill to reach level 100.
-- Different areas may share resource types, particularly within the same tier; every area does not need a unique resource.
-- The exact area count, names beyond the starting areas, rewards, durations and unlock conditions are undecided.
+- Exploration itself currently costs 5 each of Earth Catalyst I, Air Catalyst I and Water Catalyst I, plus 10,000 coins.
+- The Crossroads action is free and unlocked by default with the skill.
+- Other area unlock costs are shared by tier: Tier I costs 10,000 coins, Tier II costs 30,000 coins, Tier III costs 75,000 coins and Tier IV costs 150,000 coins.
+- Area unlock cost and adjacency are separate requirements: a neighboring area can still be unaffordable until the player has enough coins.
+- Each area action levels independently from 1 to 100. Its level contributes to the overall Exploration skill level; level 100 in the skill requires every Exploration action to reach level 100.
+- Current base action duration is 6 seconds at Tier I, increasing by 1 second per tier. Base action XP is 12 at Tier I, increasing by 5 per tier. XP requirements follow the shared configured action progression curve.
+- Exploration skill milestones and area action milestones use the shared milestone system. Exact area-specific milestone rewards remain to be developed.
 
-### 8.3 Area levels and milestones
+### 8.4 Area rewards and companion-container discoveries
 
-An area's individual Exploration level should improve the corresponding area's Combat and discovery potential.
-
-Planned effects include:
-
-- Increased Combat output in that area.
-- Increased Combat XP in that area.
-- Increased chance to obtain that area's artifact.
-- Action milestone rewards, following the general action-milestone system.
-- Potentially increased chance to discover companion containers.
-
-Area milestones occur at selected action-level intervals (every X levels), like other action milestones. Their thresholds and rewards can be adjusted during balancing; no final schedule is fixed.
-
-### 8.4 Companion-container discoveries
-
-- Completing an Exploration action has a low chance to find a companion container associated with that area's element.
-- Every discovered container carries a minimum required **Unveiling skill level** before it can be opened.
-- The requirement is based on where the container is found and the area's place in map progression: containers from early areas have low requirements, while containers from later, more dangerous areas require a much higher Unveiling skill level.
-- Containers remain in the inventory until the player reaches the requirement and processes them through **Unveil Artifact or Companion**.
-- Container types reflect the element:
-  - **Earth:** Geodes, containing Earth companions.
-  - **Air:** Eggs, containing Air companions.
-  - **Water:** **Shells**, containing Water companions.
-- Containers are obtained through Exploration and are later hatched to obtain companions.
-- Area action milestones may increase the chance to find containers.
-- Not every area needs its own unique companion or unique container type.
+- Each completed area action guarantees its configured area resource, subject to normal output multipliers and inventory-capacity rules.
+- Areas 5, 6 and 7 can additionally discover Tier-I containers: Earth Geodes, Air Eggs and Water Shells respectively.
+- Areas 11, 12 and 13 can additionally discover Tier-II containers: Earth Geodes, Air Eggs and Water Shells respectively.
+- The current base companion-container discovery chance is 0.1% per completed Exploration action in an area configured with a container. This is a separate chance roll, not a guaranteed action output and not multiplied by the normal resource-output multiplier.
+- Areas without a configured container do not make a container discovery roll.
+- Containers remain in inventory until the player reaches their minimum Unveiling skill-level requirement and processes them through **Unveil Artifact or Companion**. Exact level requirements and unveiling rewards remain to be balanced.
+- Exploration does not drop Combat artifacts. Each area's artifact is defined now as its future area-specific Combat reward and may be revealed through Unveiling.
 
 ---
-
 ## 9. Passive Skill — Combat
 
 **Purpose:** Fight continuously in a selected Exploration area and produce combat rewards.
@@ -454,23 +444,18 @@ Combat must remain independent of the player's currently selected active action.
 
 **Purpose:** Collect elemental companions by unveiling containers discovered through Exploration.
 
-Companions are a collection system connected to Exploration. The working name for the system is **Companions**; its final interface placement and progression structure are not yet defined.
+Companions are a collection system connected to Exploration and Unveiling. Their final interface placement and progression structure are not yet implemented.
 
 ### 10.1 Containers and elemental identity
 
-- Companions are obtained by opening containers found through Exploration through Unveiling's **Unveil Artifact or Companion** action.
-- Each container has a minimum required Unveiling skill level based on its source area and map progression; early-area containers require a lower level than late-game containers.
-- Earth Geodes contain Earth companions.
-- Air Eggs contain Air companions.
-- Water Shells contain Water companions.
-- Containers are tied to their corresponding elemental type.
-- Not every Exploration area needs a unique companion or a unique container.
+- Companions are obtained by processing containers found through Exploration with Unveiling's **Unveil Artifact or Companion** action.
+- Earth Geodes contain Earth companions; Air Eggs contain Air companions; Water Shells contain Water companions.
+- Container items are classified in the inventory as the `companions` group and `companionContainer` type, separate from ordinary Exploration resources.
+- The current world contains Tier-I containers in areas 5–7 and Tier-II containers in areas 11–13. Their minimum Unveiling skill-level requirements are intended to scale with their source area's progression.
+- Containers are tied to their corresponding elemental type. Not every area needs a unique companion or unique container.
 
 ### 10.2 Undecided companion design
 
-The following are intentionally open:
-
-- The exact appearance and design of Water Shells.
 - The number and variety of companions.
 - Hatching requirements, timing and duplicate handling.
 - Whether companions have levels, rarity, growth, upgrades or other progression.
@@ -478,10 +463,9 @@ The following are intentionally open:
 - How companions are displayed, equipped, assigned or otherwise used.
 - Whether companions can be obtained through any method besides Exploration containers.
 
-Do not assume a companion rescue system; the current primary acquisition concept is elemental containers discovered through Exploration and then hatched.
+Do not assume a companion rescue system; the current acquisition concept is elemental containers discovered through Exploration and then unveiled.
 
 ---
-
 ## 11. Skill Five — Unveiling
 
 **Purpose:** Uncover hidden properties and secrets by sacrificing ordinary materials, then identify unidentified objects and open companion containers.
@@ -496,6 +480,9 @@ Every action follows the standard independent level 1–100 progression and cont
 
 - Each Material Destruction action consumes eligible physical items from one other skill tab in exchange for XP.
 - Every source tab has its own Material Destruction action. These actions level independently and contribute to the overall Unveiling skill level.
+- Item definitions expose a source `group` and a semantic `type`. The current groups are `research`, `spellcraft`, `transmutation`, `exploration`, `combat`, and `companions`; regular Material Destruction actions select owned items from their corresponding source group.
+- The current semantic types are `researchMaterial`, `essence`, `catalyst`, `resource`, `artifact`, `companionContainer`, and `shopItem`. These classifications are metadata for inventory filtering and system eligibility, not additional item IDs.
+- Companion containers are in the `companions` group and are excluded from ordinary Exploration Material Destruction; they are processed only by **Unveil Artifact or Companion**.
 - The first action is **Destroy Research Books**.
 - The initial action structure is:
 
@@ -789,7 +776,8 @@ The bag stores produced resources and other physical items. It is central to pro
 The bag should support:
 
 - Item quantities.
-- Sorting and filtering by category, skill, element and tier.
+- Sorting and filtering by source group, semantic item type, element and tier. Item definitions carry `group` and `type` metadata, and inventory helpers can return the owned items for a given group or type.
+- The current classification supports future filters and Unveiling eligibility: Research materials, Spellcraft essences, Transmutation Catalysts, Exploration resources, Combat artifacts, Companion containers and Shop goods.
 - Selling one item, selected quantities or multiple items.
 - Displaying each item's current sale value and the total value of a selected quantity.
 

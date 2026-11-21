@@ -140,7 +140,7 @@ function ExplorationActionCard({
                             <Badge
                                 variant={elementVariant}
                                 icon={cloneElement(
-                                    ITEM_DATA_BY_ID[action.companionContainer]?.icon ?? OTHER_ICONS.COMPANION_CONTAINER,
+                                    ITEM_DATA_BY_ID[action.companionContainer]?.icon ?? OTHER_ICONS.COMPANION_EGG,
                                     { size: 20 }
                                 )}
                             >
@@ -190,7 +190,7 @@ export function ExplorationPage() {
                     skillProgress={skillProgress}
                     milestones={getSkillMilestoneDetails(player, EXPLORATION_CONFIG)}
                     variant="exploration"
-                    progressEnabled={false}
+                    progressEnabled
                     icon={
                         <Icon size={64} variant="exploration" outerRunes="solid" outerShape={3}
                             innerRunes="gap" innerShape={5}>

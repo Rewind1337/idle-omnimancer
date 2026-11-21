@@ -583,7 +583,7 @@ Values apply independently to Earth, Air and Water Transmutation actions of the 
 - Transmutation: 6, 9, 12, 15, 18 seconds for the initial example tiers.
 - The initial output for each action is one resource per completion, before bonuses.
 
-Exploration and Combat values have not yet been established.
+Exploration uses the configured values summarized in Section 8.3. Combat values have not yet been established.
 
 ### 11.2 Initial action XP requirements
 
@@ -720,7 +720,7 @@ Gold is a shared currency used for action unlocks, skill unlocks, inventory expa
 | Research | Available from the beginning; Research I is free. |
 | Spellcraft | 100 Loose Notes and 1,000 coins. |
 | Transmutation | Gold + Research materials + elemental essences produced by Spellcraft. |
-| Exploration | Unlocked after Transmutation in the intended skill order. Its unlock should follow a similar resource-and-gold approach, but use a different resource requirement and cost somewhat more gold than Transmutation. The exact resource and quantities are undecided. |
+| Exploration | 5 Earth Catalyst I, 5 Air Catalyst I, 5 Water Catalyst I and 10,000 coins. Unlocking the skill also unlocks The Crossroads. |
 | Unveiling | Active skill; unlocking it also unlocks its first Material Destruction action, Destroy Research Books, and **Unveil Artifact or Companion**. Gold/resource requirements are undecided. |
 | Combat | Passive skill; unlock and start requirements are not yet defined. |
 
@@ -843,7 +843,7 @@ A possible initial progression:
 6. Retain or sell essences as needed.
 7. Gather Research materials, elemental essences and gold to unlock Transmutation.
 8. Combine earlier resources into Catalysts; retain or sell the output.
-9. Unlock Exploration after Transmutation using its eventual resource and gold requirements.
+9. Unlock Exploration after Transmutation using 5 each of the Tier-I Earth, Air and Water Catalysts plus 10,000 coins; The Crossroads becomes available immediately.
 10. Explore the starting areas and expand the map; develop individual area levels and discover resources or companion containers.
 11. Unlock and start passive Combat when its requirements are met; select an unlocked Exploration area and let Combat run independently.
 12. Unlock Unveiling when its requirements are met. Develop the skill by destroying eligible materials through its regular actions.

@@ -238,8 +238,12 @@ export const canUnlockAction = (player, skillId, actionId) => {
     if (!player.unlockedSkills?.includes(skillId)) return false
     const skill = SKILL_CONFIG_BY_ID[skillId]
     const action = skill?.actions.find(entry => entry.id === actionId)
-    const actionState = player.skills[skillId]?.actions[actionId]
-    if (!action || !actionState || actionState.unlocked) return false
+    // Older in-memory sessions may not yet contain actions added by newer
+    // world-data updates. Treat a missing entry as its configured initial state.
+    const actionState = player.skills?.[skillId]?.actions?.[actionId] ?? {
+        unlocked: Boolean(action?.unlockedByDefault),
+    }
+    if (!action || actionState.unlocked) return false
 
     if (skill.unlockRule === "adjacent") {
         const targetPosition = action.position

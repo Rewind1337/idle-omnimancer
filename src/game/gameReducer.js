@@ -137,8 +137,18 @@ export const gameReducer = (state, action) => {
 
             const skill = SKILL_CONFIG_BY_ID[action.skillId]
             const actionConfig = skill?.actions.find(entry => entry.id === action.actionId)
-            const current = state.skills[action.skillId]?.actions[action.actionId]
-            if (!actionConfig || !current || !canUnlockAction(state, action.skillId, action.actionId)) return state
+            if (!actionConfig || !canUnlockAction(state, action.skillId, action.actionId)) return state
+
+            // Keep unlocks compatible with an older in-memory player state that
+            // predates an action added to the current skill/world configuration.
+            const current = state.skills?.[action.skillId]?.actions?.[action.actionId] ?? {
+                unlocked: Boolean(actionConfig.unlockedByDefault),
+                level: 1,
+                xp: 0,
+                progressMs: 0,
+                running: false,
+            }
+            const currentSkill = state.skills?.[action.skillId] ?? { actions: {} }
 
             const inventory = { ...state.inventory }
             const currencies = { ...state.currencies }
@@ -158,9 +168,9 @@ export const gameReducer = (state, action) => {
                 skills: {
                     ...state.skills,
                     [action.skillId]: {
-                        ...state.skills[action.skillId],
+                        ...currentSkill,
                         actions: {
-                            ...state.skills[action.skillId].actions,
+                            ...currentSkill.actions,
                             [action.actionId]: { ...current, unlocked: true },
                         },
                     },

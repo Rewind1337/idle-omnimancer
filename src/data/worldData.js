@@ -1,5 +1,5 @@
 // Shared location data for systems that use the world map.
-// Keep area identity, positions and connections here; item metadata lives in itemData.
+// Keep area identity and axial positions here; item metadata lives in itemData.
 
 export const WORLD_DATA = {
     id: "world:known_world",
@@ -21,11 +21,6 @@ export const WORLD_DATA = {
             tier: 1,
             areaNumber: 1,
             position: { q: 0, r: 0 },
-            connections: [
-                "area:mossbound_foothills",
-                "area:whispering_fields",
-                "area:stillwater_pools",
-            ],
             unlockedByDefault: true,
             exploration: {
                 produces: ["item:crossroads_field_notes"],
@@ -43,7 +38,6 @@ export const WORLD_DATA = {
             tier: 1,
             areaNumber: 2,
             position: { q: -1, r: 0 },
-            connections: ["area:the_crossroads"],
             unlockedByDefault: true,
             exploration: {
                 produces: [
@@ -64,7 +58,6 @@ export const WORLD_DATA = {
             tier: 1,
             areaNumber: 3,
             position: { q: 1, r: -1 },
-            connections: ["area:the_crossroads"],
             unlockedByDefault: true,
             exploration: {
                 produces: [
@@ -85,7 +78,6 @@ export const WORLD_DATA = {
             tier: 1,
             areaNumber: 4,
             position: { q: 0, r: 1 },
-            connections: ["area:the_crossroads"],
             unlockedByDefault: true,
             exploration: {
                 produces: [

@@ -1,3 +1,43 @@
+@use '../../scss/tokens.scss' as *;
+
+// Apply a shared set of interactive states to one token family and variant.
+@mixin hex-map-area-variant($family, $variant) {
+    &.hex-map-area-#{$variant} {
+        polygon {
+            fill: var(--#{$family}-#{$variant});
+            stroke: var(--#{$family}-#{$variant}-active);
+        }
+
+        &:not(.is-selected):hover:not(:active) polygon,
+        &:not(.is-selected):focus-visible polygon,
+        &.is-selected:hover:not(:active) polygon {
+            fill: var(--#{$family}-#{$variant}-hover);
+            stroke: var(--#{$family}-#{$variant}-border);
+            stroke-width: 5;
+        }
+
+        &:active polygon {
+            fill: var(--#{$family}-#{$variant}-active);
+            stroke: var(--#{$family}-#{$variant}-border);
+            stroke-width: 5;
+        }
+
+        &.is-selected polygon {
+            fill: var(--#{$family}-#{$variant}-toggled);
+            stroke: var(--#{$family}-#{$variant}-border);
+            stroke-width: 5;
+        }
+
+        &.is-selected:active polygon {
+            fill: var(--#{$family}-#{$variant}-active);
+        }
+
+        text {
+            fill: var(--#{$family}-#{$variant}-text-on-dark);
+        }
+    }
+}
+
 .hex-map {
     position: relative;
     width: 100%;
@@ -25,54 +65,31 @@
         cursor: grabbing;
     }
 
-    .hex-map-connections {
-        line {
-            stroke: rgba(180, 190, 180, 0.35);
-            stroke-width: 5;
-            stroke-linecap: round;
-        }
-    }
-
     .hex-map-area {
         cursor: pointer;
         outline: none;
 
         polygon {
             stroke-width: 3;
-            transition: fill 120ms ease, stroke 120ms ease, filter 120ms ease;
+            transition: fill 120ms ease, stroke 120ms ease, stroke-width 120ms ease;
         }
 
-        &:hover polygon,
-        &:focus-visible polygon {
-            filter: brightness(1.25);
+        // Apply the button palette to neutral and elemental map areas.
+        @each $variant in $button-colors {
+            @include hex-map-area-variant(button, $variant);
         }
 
-        &.is-selected polygon {
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
+        // Keep map areas compatible with all skill color variants.
+        @each $variant in $skill-colors {
+            @include hex-map-area-variant(skill, $variant);
         }
 
-        &.hex-map-area-neutral polygon {
-            fill: var(--button-secondary);
-            stroke: var(--button-secondary-border);
-        }
-
-        &.hex-map-area-earth polygon {
-            fill: var(--button-earth);
-            stroke: var(--button-earth-border);
-        }
-
-        &.hex-map-area-air polygon {
-            fill: var(--button-air);
-            stroke: var(--button-air-border);
-        }
-
-        &.hex-map-area-water polygon {
-            fill: var(--button-water);
-            stroke: var(--button-water-border);
+        // Keep map areas compatible with all resource color variants.
+        @each $variant in $resource-colors {
+            @include hex-map-area-variant(resource, $variant);
         }
 
         text {
-            fill: white;
             text-anchor: middle;
             pointer-events: none;
             font-family: var(--font-heading);
@@ -92,7 +109,6 @@
         .hex-map-area-level {
             font-size: 12px;
             font-weight: 700;
-            fill: rgba(255, 255, 255, 0.95);
         }
     }
 

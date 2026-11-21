@@ -1,5 +1,5 @@
 /* Color Tokens */
-$button-colors: primary, secondary, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling, companions;
+$button-colors: primary, secondary, neutral, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling, companions;
 $skill-colors: research, spellcraft, shop, transmutation, exploration, combat, unveiling, companions;
 $resource-colors: mana;
 
@@ -28,6 +28,17 @@ $resource-colors: mana;
   --button-secondary-dark: hsla(35, 30%, 15%, 1);
   --button-secondary-text-on-dark: hsla(35, 25%, 84%, 1);
   --button-secondary-text-on-light: hsla(35, 25%, 18%, 1);
+
+
+  /* Neutral Button Colors */
+  --button-neutral: hsla(220, 5%, 30%, 1);
+  --button-neutral-hover: hsla(220, 5%, 36%, 1);
+  --button-neutral-active: hsla(220, 6%, 23%, 1);
+  --button-neutral-toggled: hsla(220, 6%, 40%, 1);
+  --button-neutral-border: hsla(220, 7%, 49%, 1);
+  --button-neutral-dark: hsla(220, 6%, 16%, 1);
+  --button-neutral-text-on-dark: hsla(220, 5%, 89%, 1);
+  --button-neutral-text-on-light: hsla(220, 6%, 15%, 1);
 
   /* Element Button Colors */
   --button-earth: hsla(82, 30%, 25%, 1);

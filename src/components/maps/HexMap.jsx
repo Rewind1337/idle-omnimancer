@@ -24,25 +24,6 @@ const getHexPoints = hexSize => Array.from({ length: 6 }, (_, index) => {
     return `${Math.cos(angle) * hexSize},${Math.sin(angle) * hexSize}`
 }).join(" ")
 
-const getConnectionLines = (areas, areaById, hexSize) => {
-    const seenConnections = new Set()
-
-    return areas.flatMap(area => (area.connections ?? []).flatMap(connectionId => {
-        const connectedArea = areaById[connectionId]
-        if (!connectedArea) return []
-
-        const key = [area.id, connectedArea.id].sort().join("::")
-        if (seenConnections.has(key)) return []
-        seenConnections.add(key)
-
-        return [{
-            id: key,
-            start: getAreaPosition(area, hexSize),
-            end: getAreaPosition(connectedArea, hexSize),
-        }]
-    }))
-}
-
 /**
  * Reusable axial hex map. The owning page supplies its areas, selected tile,
  * and per-area levels; the component only handles map rendering and navigation.
@@ -68,10 +49,6 @@ export function HexMap({
         [areas]
     )
     const hexPoints = useMemo(() => getHexPoints(hexSize), [hexSize])
-    const connectionLines = useMemo(
-        () => getConnectionLines(areas, areaById, hexSize),
-        [areas, areaById, hexSize]
-    )
 
     const startingArea = areaById[startingAreaId] ?? areas[0] ?? null
     const startingPosition = startingArea
@@ -174,17 +151,6 @@ export function HexMap({
                 onLostPointerCapture={cancelDragging}
             >
                 <g transform={`translate(${MAP_CENTER.x + view.x - startingPosition.x * view.scale} ${MAP_CENTER.y + view.y - startingPosition.y * view.scale}) scale(${view.scale})`}>
-                    <g className="hex-map-connections">
-                        {connectionLines.map(connection => (
-                            <line
-                                key={connection.id}
-                                x1={connection.start.x}
-                                y1={connection.start.y}
-                                x2={connection.end.x}
-                                y2={connection.end.y}
-                            />
-                        ))}
-                    </g>
                     {areas.map(area => {
                         const position = getAreaPosition(area, hexSize)
                         const lines = area.name.split(" ")

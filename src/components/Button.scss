@@ -167,6 +167,69 @@
     }
   }
 
+  @each $variant in $resource-colors {
+    &[data-variant="#{$variant}"] {
+      background: var(--resource-#{$variant});
+      outline-color: var(--resource-#{$variant}-active);
+
+      &:not(:disabled):hover {
+          background: var(--resource-#{$variant}-hover);
+          cursor: pointer;
+
+          &:active {
+              background: var(--resource-#{$variant}-active);
+              outline-color: var(--resource-#{$variant}-border);
+          }
+      }
+
+      &[data-checked="true"],
+      &[data-checked="true"]:not(:disabled):hover:active {
+        background: var(--resource-#{$variant}-active);
+        outline-color: var(--resource-#{$variant}-border);
+      }
+
+      &[data-checked="true"]:not(:disabled):hover {
+          background: var(--resource-#{$variant}-hover);
+          outline-color: var(--resource-#{$variant}-border);
+      }
+
+      &.button-toggled {
+        outline-color: var(--resource-#{$variant}-border);
+        background-image: repeating-linear-gradient(
+          -36.5deg,
+          var(--resource-#{$variant}) 0 12px,
+          var(--resource-#{$variant}-border) 12px 19px,
+          var(--resource-#{$variant}) 19px 31px
+        );
+        background-size: 104.5px 100%;
+
+        animation: button-toggle-effect 1s linear infinite;
+
+        &:hover {
+          background-image: repeating-linear-gradient(
+            -36.5deg,
+            var(--resource-#{$variant}-hover) 0 12px,
+            var(--resource-#{$variant}-border) 12px 19px,
+            var(--resource-#{$variant}-hover) 19px 31px
+          );
+          background-size: 104.5px 100%;
+
+          &:active {
+            &:hover {
+              background-image: repeating-linear-gradient(
+                -36.5deg,
+                var(--resource-#{$variant}-active) 0 12px,
+                var(--resource-#{$variant}-border) 12px 19px,
+                var(--resource-#{$variant}-active) 19px 31px
+              );
+              background-size: 104.5px 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+
   &.button-transparent {
     background: transparent;
     outline-color: rgba(255, 255, 255, 0.15);

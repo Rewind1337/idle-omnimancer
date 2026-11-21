@@ -58,6 +58,17 @@
     }
   }
 
+  @each $variant in $resource-colors {
+    &[data-variant="#{$variant}"] {
+      &:hover {
+        border-color: var(--resource-#{$variant})
+      }
+      &:hover .paper {
+        border-color: var(--resource-#{$variant})
+      }
+    }
+  }
+
   &.paper-transparent {
     background-color: transparent;
   }

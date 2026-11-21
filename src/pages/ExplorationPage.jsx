@@ -12,6 +12,7 @@ import { ActionDetails } from "../components/actions/ActionDetails"
 import { ActionProgress } from "../components/actions/ActionProgress"
 import { ActionResources } from "../components/actions/ActionResources"
 import { Button } from "../components/Button"
+import { Text } from "../components/Text"
 
 import { EXPLORATION_CONFIG } from "../data/explorationConfig"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
@@ -42,6 +43,7 @@ function ExplorationActionCard({
     action,
     player,
     actionState,
+    isSkillUnlocked,
     isUnlocked,
     isActive,
     canUnlock,
@@ -93,7 +95,9 @@ function ExplorationActionCard({
                             actionXPTable={actionXPTable}
                             xpConfig={EXPLORATION_CONFIG.neededXP}
                         />
-                        {isUnlocked ? (
+                        {!isSkillUnlocked ? (
+                            <Text size="small">Unlock Exploration in the Shop to begin exploring.</Text>
+                        ) : isUnlocked ? (
                             <ActionProgress
                                 actionState={actionState}
                                 isActive={isActive}
@@ -146,7 +150,9 @@ function ExplorationActionCard({
                         )}
                     </>
                 ) : (
-                    <ActionResources requires={action.unlockCosts ?? []} />
+                    <ActionResources
+                        requires={isSkillUnlocked ? (action.unlockCosts ?? []) : EXPLORATION_CONFIG.unlockCosts}
+                    />
                 )}
             </Flex>
         </Paper>
@@ -167,6 +173,7 @@ export function ExplorationPage() {
         progressMs: 0,
         unlocked: Boolean(selectedAction.unlockedByDefault),
     }
+    const isSkillUnlocked = player.unlockedSkills?.includes(skillId) ?? false
     const isUnlocked = Boolean(actionState.unlocked)
     const isActive = player.activeAction?.skillId === skillId &&
         player.activeAction?.actionId === selectedAction.id
@@ -215,6 +222,7 @@ export function ExplorationPage() {
                 action={selectedAction}
                 player={player}
                 actionState={actionState}
+                isSkillUnlocked={isSkillUnlocked}
                 isUnlocked={isUnlocked}
                 isActive={isActive}
                 canUnlock={canUnlockAction(player, skillId, selectedAction.id)}

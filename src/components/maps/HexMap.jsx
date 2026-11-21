@@ -60,7 +60,7 @@ export function HexMap({
     const hexPoints = useMemo(() => getHexPoints(hexSize), [hexSize])
     const unlockedAreaSet = useMemo(() => new Set(unlockedAreaIds), [unlockedAreaIds])
     const visibleAreaSet = useMemo(() => {
-        const visible = new Set(unlockedAreaIds)
+        const visible = new Set([startingAreaId, ...unlockedAreaIds].filter(Boolean))
 
         for (const area of areas) {
             if (visible.has(area.id)) continue
@@ -71,7 +71,7 @@ export function HexMap({
         }
 
         return visible
-    }, [areas, unlockedAreaIds, unlockedAreaSet])
+    }, [areas, startingAreaId, unlockedAreaIds, unlockedAreaSet])
 
     const orderedAreas = useMemo(() => {
         if (!selectedAreaId) return areas

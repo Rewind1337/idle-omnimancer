@@ -82,20 +82,23 @@ function ExplorationMap({ selectedAreaId, onSelectArea }) {
     }
 
     const handlePointerMove = event => {
-        if (!dragRef.current) return
+        const drag = dragRef.current
+        if (!drag) return
 
-        const deltaX = event.clientX - dragRef.current.startX
-        const deltaY = event.clientY - dragRef.current.startY
+        const deltaX = event.clientX - drag.startX
+        const deltaY = event.clientY - drag.startY
         if (Math.abs(deltaX) + Math.abs(deltaY) > 4) {
-            dragRef.current.moved = true
+            drag.moved = true
             setIsDragging(true)
         }
 
-        if (dragRef.current.moved) {
+        if (drag.moved) {
+            // Capture the drag values before scheduling the updater: pointer-up
+            // clears dragRef, but this update may run afterwards.
             setView(current => ({
                 ...current,
-                x: dragRef.current.viewX + deltaX,
-                y: dragRef.current.viewY + deltaY,
+                x: drag.viewX + deltaX,
+                y: drag.viewY + deltaY,
             }))
         }
     }

@@ -6,6 +6,12 @@ const AREA_UNLOCK_COSTS = {
     2: [{ item: "currency:coins", amount: 30000 }],
     3: [{ item: "currency:coins", amount: 75000 }],
     4: [{ item: "currency:coins", amount: 150000 }],
+    5: [{ item: "currency:coins", amount: 300000 }],
+    6: [{ item: "currency:coins", amount: 600000 }],
+    7: [{ item: "currency:coins", amount: 1200000 }],
+    8: [{ item: "currency:coins", amount: 2400000 }],
+    9: [{ item: "currency:coins", amount: 4800000 }],
+    10: [{ item: "currency:coins", amount: 9600000 }],
 }
 
 export const WORLD_DATA = {
@@ -209,7 +215,7 @@ export const WORLD_DATA = {
             position: { q: -3, r: 2 },
             exploration: {
                 produces: ["item:deepstone_crystals"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[5],
             },
             combat: { produces: ["item:deepstone_guardian_core"] },
         },
@@ -223,7 +229,7 @@ export const WORLD_DATA = {
             position: { q: 1, r: -3 },
             exploration: {
                 produces: ["item:highwind_plumes"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[5],
             },
             combat: { produces: ["item:highwind_wisp_chime"] },
         },
@@ -237,7 +243,7 @@ export const WORLD_DATA = {
             position: { q: 2, r: 1 },
             exploration: {
                 produces: ["item:mooncurrent_pearls"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[5],
             },
             combat: { produces: ["item:mooncurrent_tide_idol"] },
         },
@@ -251,7 +257,7 @@ export const WORLD_DATA = {
             position: { q: -3, r: 0 },
             exploration: {
                 produces: ["item:verdant_heartwood", "item:earth_geode_iii"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[6],
             },
             combat: { produces: ["item:verdant_golem_core"] },
         },
@@ -265,7 +271,7 @@ export const WORLD_DATA = {
             position: { q: 3, r: -3 },
             exploration: {
                 produces: ["item:stormwing_feathers", "item:air_egg_iii"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[6],
             },
             combat: { produces: ["item:stormwing_wisp_chime"] },
         },
@@ -279,7 +285,7 @@ export const WORLD_DATA = {
             position: { q: 0, r: 3 },
             exploration: {
                 produces: ["item:glacial_pearls", "item:water_shell_iii"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[6],
             },
             combat: { produces: ["item:glacial_tide_idol"] },
         },
@@ -293,7 +299,7 @@ export const WORLD_DATA = {
             position: { q: -1, r: -2 },
             exploration: {
                 produces: ["item:obsidian_fragments"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[7],
             },
             combat: { produces: ["item:obsidian_golem_relic"] },
         },
@@ -307,7 +313,7 @@ export const WORLD_DATA = {
             position: { q: 3, r: -1 },
             exploration: {
                 produces: ["item:celestial_aether"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[7],
             },
             combat: { produces: ["item:celestial_wisp_chime"] },
         },
@@ -321,7 +327,7 @@ export const WORLD_DATA = {
             position: { q: -2, r: 3 },
             exploration: {
                 produces: ["item:abyssal_corals"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[7],
             },
             combat: { produces: ["item:abyssal_tide_scepter"] },
         },
@@ -335,7 +341,7 @@ export const WORLD_DATA = {
             position: { q: -3, r: 3 },
             exploration: {
                 produces: ["item:primordial_ore", "item:earth_geode_iv"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[8],
             },
             combat: { produces: ["item:primordial_golem_heart"] },
         },
@@ -349,7 +355,7 @@ export const WORLD_DATA = {
             position: { q: 0, r: -3 },
             exploration: {
                 produces: ["item:starfall_aether", "item:air_egg_iv"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[8],
             },
             combat: { produces: ["item:starfall_wisp_sigil"] },
         },
@@ -363,7 +369,7 @@ export const WORLD_DATA = {
             position: { q: 3, r: 0 },
             exploration: {
                 produces: ["item:worldtide_pearls", "item:water_shell_iv"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[8],
             },
             combat: { produces: ["item:worldtide_tide_crown"] },
         },
@@ -377,7 +383,7 @@ export const WORLD_DATA = {
             position: { q: -4, r: 2 },
             exploration: {
                 produces: ["item:worldcore_shards"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[9],
             },
             combat: { produces: ["item:worldcore_relic"] },
         },
@@ -391,7 +397,7 @@ export const WORLD_DATA = {
             position: { q: 2, r: -4 },
             exploration: {
                 produces: ["item:firmament_plumes"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[9],
             },
             combat: { produces: ["item:firmament_wisp_chime"] },
         },
@@ -405,7 +411,7 @@ export const WORLD_DATA = {
             position: { q: 2, r: 2 },
             exploration: {
                 produces: ["item:leviathan_essence"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[9],
             },
             combat: { produces: ["item:leviathan_tide_scepter"] },
         },
@@ -419,7 +425,7 @@ export const WORLD_DATA = {
             position: { q: -4, r: 1 },
             exploration: {
                 produces: ["item:genesis_ore", "item:earth_geode_v"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[10],
             },
             combat: { produces: ["item:genesis_golem_core"] },
         },
@@ -433,7 +439,7 @@ export const WORLD_DATA = {
             position: { q: 3, r: -4 },
             exploration: {
                 produces: ["item:origin_aether", "item:air_egg_v"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[10],
             },
             combat: { produces: ["item:origin_wisp_sigil"] },
         },
@@ -447,7 +453,7 @@ export const WORLD_DATA = {
             position: { q: 1, r: 3 },
             exploration: {
                 produces: ["item:eternal_tideheart", "item:water_shell_v"],
-                unlockCosts: AREA_UNLOCK_COSTS[2],
+                unlockCosts: AREA_UNLOCK_COSTS[10],
             },
             combat: { produces: ["item:eternal_tide_crown"] },
         },

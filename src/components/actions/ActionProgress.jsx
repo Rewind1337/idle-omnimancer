@@ -13,15 +13,18 @@ export function ActionProgress({
     variant = "research",
     actionLabel = "Research",
     canStart = true,
+    leadingControl = null,
 }) {
     const actionCompletionPercentage = getActionProgress(actionState, durationMs)
     const actionLevelPercentage = neededXP > 0 ? (currentXP / neededXP) * 100 : 100
 
     return (
-        <Flex className="action-progress">
-            <Progress corners="rounded" size="medium" layer={2} variant={variant}
+        <Flex className={leadingControl ? "action-progress action-progress-with-leading-control" : "action-progress"}>
+            {leadingControl}
+            <Progress className={leadingControl ? "action-progress-bar" : ""}
+                corners="rounded" size="medium" layer={2} variant={variant}
                 percentage={actionLevelPercentage} animated={isActive} />
-            <Flex direction="column" className="w-30">
+            <Flex direction="column" className={leadingControl ? "w-30 action-progress-toggle" : "w-30"}>
                 <Button variant={variant} className="w-100" size="medium"
                     disabled={!isActive && !canStart}
                     toggled={isActive} onClick={onToggle}

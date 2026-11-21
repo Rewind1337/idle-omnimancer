@@ -9,6 +9,7 @@ export function ActionDetails({
     actionXP,
     manaCost = null,
     outputMultiplier = 1,
+    itemValue = null,
     preservationChance = 0,
     effectStacks = {},
 }) {
@@ -38,6 +39,14 @@ export function ActionDetails({
                         formulas={["Mana = max(0, base cost × element modifier × max(0.01, 1 + Σ multiplier bonuses) − Σ flat discounts)"]} />
                 </Flex>}>
                     {manaCost.toFixed(1)} Mana
+                </Badge>
+            )}
+            {Number.isFinite(itemValue) && (
+                <Badge variant="transparent" interactive icon={OTHER_ICONS.COINS}
+                    tooltip={<Flex direction="column" gap={8}>
+                        <Heading h="4" className="w-100 align-center">Current selected item's sale value.</Heading>
+                    </Flex>}>
+                    {itemValue.toLocaleString()} coins
                 </Badge>
             )}
             <Badge variant="transparent" interactive icon={OTHER_ICONS.FLAME} tooltip={<Flex direction="column" gap={8}>

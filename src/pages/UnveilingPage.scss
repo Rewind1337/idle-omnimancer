@@ -1,0 +1,23 @@
+.action-unveiling {
+    .action-progress-with-leading-control {
+        align-items: center;
+        gap: 8px;
+
+        .action-progress-leading {
+            flex: 0 0 auto;
+            width: auto;
+            white-space: nowrap;
+        }
+
+        .action-progress-bar {
+            flex: 1 1 0;
+            width: 0;
+            min-width: 0;
+        }
+
+        .action-progress-toggle {
+            flex: 0 0 30%;
+            width: auto;
+        }
+    }
+}

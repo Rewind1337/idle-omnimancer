@@ -160,7 +160,7 @@ const getActionOutputs = (action) => {
 
 // Trace the configured production and consumption paths for an item. This is
 // intentionally based on base action amounts, before any runtime multipliers.
-export const getItemActionSources = (itemId) => {
+export const getItemActionSources = (itemId, player = null) => {
     const obtainedBy = []
     const consumedBy = []
 
@@ -197,12 +197,47 @@ export const getItemActionSources = (itemId) => {
                 })
             }
 
-            const consumedAmount = getActionConsumeTotals(action)?.[itemId] ?? 0
+            const companionContainerId = typeof action.companionContainer === "string"
+                ? action.companionContainer
+                : action.companionContainer?.item
+            if (companionContainerId === itemId) {
+                const companionChance = player
+                    ? getActionCompanionChance(player, skill, action)
+                    : (skill.companionChance?.base ?? 0)
+
+                if (companionChance > 0) {
+                    obtainedBy.push({
+                        id: "obtain-companion-" + skill.id + "-" + action.id,
+                        name: actionName,
+                        amount: 1,
+                        amountLabel: (companionChance * 100).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        }) + "% chance",
+                        type: "action",
+                        badgeVariant: skill.variant
+                    })
+                }
+            }
+
+            const selection = action.inputSelection
+            const selectedItemIsEligible = Boolean(
+                selection &&
+                ITEM_DATA_BY_ID[itemId] &&
+                (!Number.isFinite(selection.minTier) || ITEM_DATA_BY_ID[itemId].tier >= selection.minTier) &&
+                (!Number.isFinite(selection.maxTier) || ITEM_DATA_BY_ID[itemId].tier <= selection.maxTier) &&
+                ((selection.groups ?? []).includes(ITEM_DATA_BY_ID[itemId].group) ||
+                    (selection.types ?? []).includes(ITEM_DATA_BY_ID[itemId].type))
+            )
+            const consumedAmount = selection
+                ? (selectedItemIsEligible ? 1 : 0)
+                : (getActionConsumeTotals(action, player, skill)?.[itemId] ?? 0)
             if (consumedAmount > 0) {
                 consumedBy.push({
                     id: "consume-" + skill.id + "-" + action.id,
                     name: actionName,
                     amount: consumedAmount,
+                    amountLabel: selection ? "1 per action" : null,
                     type: "action",
                     badgeVariant: skill.variant
                 })

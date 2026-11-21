@@ -22,7 +22,7 @@ function ItemActionList({ title, actions, emptyLabel }) {
                     <Badge size="small" variant={action.badgeVariant}>{action.type}</Badge>
                     <Heading h="5" weight={400} className="align-left flex-grow">{action.name}</Heading>
                     <Heading h="5" size="small">
-                        {formatAmount(action.amount)}
+                        {action.amountLabel ?? formatAmount(action.amount)}
                     </Heading>
                 </Flex>
             )) : (
@@ -36,7 +36,7 @@ export function ItemTooltip({ itemId, name }) {
     const { player } = useGame()
     const itemData = ITEM_DATA_BY_ID[itemId]
     const amountHeld = player.inventory?.[itemId] ?? 0
-    const { obtainedBy, consumedBy } = getItemActionSources(itemId)
+    const { obtainedBy, consumedBy } = getItemActionSources(itemId, player)
 
     return (
         <Flex direction="column" align="start" gap={8} className="item-tooltip">

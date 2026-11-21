@@ -4,8 +4,6 @@ import { Flex } from "../components/Flex"
 import { Paper } from "../components/Paper"
 import { Icon } from "../components/Icon"
 import { Button } from "../components/Button"
-import { Text } from "../components/Text"
-import { Item } from "../components/Item"
 import { SkillSummary } from "../components/skills/SkillSummary"
 import { ActionHeader } from "../components/actions/ActionHeader"
 import { ActionDetails } from "../components/actions/ActionDetails"
@@ -32,6 +30,8 @@ import {
     getVisibleActions,
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
+
+import "./UnveilingPage.scss"
 
 function UnveilingActionCard({
     action,
@@ -60,7 +60,6 @@ function UnveilingActionCard({
         ? getActionOutputMultiplier(player, UNVEILING_CONFIG, action)
         : 1
     const selectedItem = ITEM_DATA_BY_ID[actionState.selectedItemId]
-    const selectedItemAmount = player.inventory?.[actionState.selectedItemId] ?? 0
 
     return (
         <Paper layer={1} variant="unveiling" className="action action-unveiling">
@@ -79,36 +78,6 @@ function UnveilingActionCard({
                     />
                     {isUnlocked ? (
                         <>
-                            {action.inputSelection && (
-                                <Flex direction="column" gap={6}>
-                                    <Button
-                                        variant="unveiling"
-                                        size="medium"
-                                        className="w-100"
-                                        disabled={isActive}
-                                        onClick={onChooseItems}
-                                    >
-                                        {selectedItem ? "Change Item" : "Choose Items"}
-                                    </Button>
-                                    {selectedItem && (
-                                        <Flex direction="row" gap={8} align="center">
-                                            <Item
-                                                layer={2}
-                                                mode="wide"
-                                                interactive={false}
-                                                icon={selectedItem.icon}
-                                                name={selectedItem.name}
-                                                itemId={selectedItem.id}
-                                                amount={selectedItemAmount}
-                                                variant={selectedItem.variant}
-                                            />
-                                            {selectedItemAmount <= 0 && (
-                                                <Text size="small">No copies remaining. Choose another item.</Text>
-                                            )}
-                                        </Flex>
-                                    )}
-                                </Flex>
-                            )}
                             <ActionProgress
                                 actionState={actionState}
                                 isActive={isActive}
@@ -119,6 +88,17 @@ function UnveilingActionCard({
                                 currentXP={actionState.xp}
                                 variant="unveiling"
                                 actionLabel="Unveil"
+                                leadingControl={action.inputSelection ? (
+                                    <Button
+                                        variant="unveiling"
+                                        size="medium"
+                                        className="action-progress-leading"
+                                        disabled={isActive}
+                                        onClick={onChooseItems}
+                                    >
+                                        {selectedItem ? "Change" : "Choose"}
+                                    </Button>
+                                ) : null}
                             />
                         </>
                     ) : (
@@ -140,6 +120,7 @@ function UnveilingActionCard({
                             actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(UNVEILING_CONFIG, action, player)}
                             outputMultiplier={outputMultiplier}
+                            itemValue={selectedItem?.baseValue ?? null}
                             preservationChance={getActionPreservationChance(player, UNVEILING_CONFIG, action)}
                             effectStacks={effectStacks}
                         />
@@ -168,15 +149,46 @@ export function UnveilingPage() {
     const skillId = UNVEILING_CONFIG.id
     const skillProgress = getSkillProgress(player, skillId)
     const visibleActions = getVisibleActions(player, skillId)
+    const processingAction = visibleActions.find(action => action.processesCompanionContainers)
+    const destructionActions = visibleActions.filter(action => !action.processesCompanionContainers)
     const [selectionActionId, setSelectionActionId] = useState(null)
     const selectionAction = visibleActions.find(action => action.id === selectionActionId)
     const selectableItems = selectionAction
         ? getActionSelectableItems(player, skillId, selectionAction.id)
         : []
 
+    const renderActionCard = action => {
+        const actionState = player.skills?.[skillId]?.actions?.[action.id] ?? {
+            level: 1, xp: 0, progressMs: 0, unlocked: false, selectedItemId: null,
+        }
+        const isUnlocked = Boolean(actionState.unlocked)
+        const isActive = player.activeAction?.skillId === skillId &&
+            player.activeAction?.actionId === action.id
+
+        return (
+            <UnveilingActionCard
+                key={action.id}
+                action={action}
+                player={player}
+                actionState={actionState}
+                isUnlocked={isUnlocked}
+                isActive={isActive}
+                canStart={canStartAction(player, skillId, action.id)}
+                canUnlock={canUnlockAction(player, skillId, action.id)}
+                onUnlock={() => unlockAction(skillId, action.id)}
+                onChooseItems={() => setSelectionActionId(action.id)}
+                onToggle={() => {
+                    if (isActive) stopAction(skillId, action.id)
+                    else startAction(skillId, action.id)
+                }}
+            />
+        )
+    }
+
     return (
         <Flex direction="column" className="page-flex page-flex-unveiling" padding={32} gap={32}>
             <Paper layer={0}>
+                <Flex direction="column" gap={16}>
                 <SkillSummary
                     skillId={skillId}
                     title="Unveiling"
@@ -190,37 +202,13 @@ export function UnveilingPage() {
                         </Icon>
                     }
                 />
+                    {processingAction && renderActionCard(processingAction)}
+                </Flex>
             </Paper>
 
             <Paper layer={0}>
                 <Flex direction="column" gap={16}>
-                    {visibleActions.map(action => {
-                        const actionState = player.skills?.[skillId]?.actions?.[action.id] ?? {
-                            level: 1, xp: 0, progressMs: 0, unlocked: false, selectedItemId: null,
-                        }
-                        const isUnlocked = Boolean(actionState.unlocked)
-                        const isActive = player.activeAction?.skillId === skillId &&
-                            player.activeAction?.actionId === action.id
-
-                        return (
-                            <UnveilingActionCard
-                                key={action.id}
-                                action={action}
-                                player={player}
-                                actionState={actionState}
-                                isUnlocked={isUnlocked}
-                                isActive={isActive}
-                                canStart={canStartAction(player, skillId, action.id)}
-                                canUnlock={canUnlockAction(player, skillId, action.id)}
-                                onUnlock={() => unlockAction(skillId, action.id)}
-                                onChooseItems={() => setSelectionActionId(action.id)}
-                                onToggle={() => {
-                                    if (isActive) stopAction(skillId, action.id)
-                                    else startAction(skillId, action.id)
-                                }}
-                            />
-                        )
-                    })}
+                    {destructionActions.map(renderActionCard)}
                 </Flex>
             </Paper>
 

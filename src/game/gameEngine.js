@@ -82,6 +82,8 @@ const getUnlockCostBalance = (player, itemId) => {
 const isEligibleSelectedItem = (action, item) => {
     const selection = action.inputSelection
     if (!selection || !item) return false
+    if (Number.isFinite(selection.minTier) && item.tier < selection.minTier) return false
+    if (Number.isFinite(selection.maxTier) && item.tier > selection.maxTier) return false
 
     return (selection.groups ?? []).includes(item.group) ||
         (selection.types ?? []).includes(item.type)

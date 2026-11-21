@@ -529,8 +529,9 @@ Every action follows the standard independent level 1–100 progression and cont
 - Requirements are assigned according to the item's source area and its place in map progression: early-area finds have low requirements; late-game finds have much higher requirements.
 - Successfully processing a companion container awards 50 XP to **Unveil Artifact or Companion** and takes 15 seconds.
 - The first container opened for each element unlocks that element's companion.
-- Further openings have a 50% chance to produce the matching elemental Companion XP item, or a 50% chance to produce the shared **Faded Trinket**, a low-value sellable item.
+- Further Tier-I openings have a 50% chance to produce the matching elemental Companion XP item, or a 50% chance to produce the shared **Faded Trinket**, a low-value sellable item.
 - Companion XP is represented by three separate inventory items: Earth Companion XP, Air Companion XP and Water Companion XP. These are not hidden per-companion counters.
+- Higher-tier container reward tables are not configured yet; only Tier-I containers are currently selectable by Unveil Artifact or Companion.
 - **Unveil Artifact or Companion** levels independently from 1 to 100. Its action-level progress contributes to the overall Unveiling skill level like every other Unveiling action.
 - The requirement is checked against the overall Unveiling skill level, not the special action's individual level.
 - Unidentified-object rewards and higher-tier companion reward scaling remain to be balanced and will be connected when Combat's unidentified-object data is implemented.

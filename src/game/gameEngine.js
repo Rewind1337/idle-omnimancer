@@ -368,8 +368,8 @@ export const getSkillMilestoneDetails = (player, skill) => {
 
             return {
                 id: "skill-" + skill.id + "-milestone-" + milestone.level + "-" + index,
-                title: "Level " + milestone.level,
-                source: getMilestoneTargetLabel(skill, milestone.reach),
+                title: getSkillName(skill.id) + " Level " + milestone.level,
+                source: milestone.reach === "local" ? null : getMilestoneTargetLabel(skill, milestone.reach),
                 effect: milestone.effect,
                 type: milestone.type,
                 value: milestone.value,
@@ -522,8 +522,7 @@ export const getActionEffectStacks = (player, skill, action) => {
 
                 entries.push({
                     id: "skill-" + sourceSkill.id + "-" + milestone.level + "-" + effect + "-" + milestoneIndex,
-                    title: "Level " + milestone.level,
-                    source: getSkillName(sourceSkill.id),
+                    title: getSkillName(sourceSkill.id) + " Level " + milestone.level,
                     effect,
                     type: milestone.type,
                     value: milestone.value,
@@ -615,8 +614,7 @@ export const getManaEffectStacks = (player) => {
         if (levelBonus > 0) {
             entriesByEffect[effect].push({
                 id: "spellcraft-level-" + effect,
-                title: "Level " + skillLevel,
-                source: "Spellcraft progression",
+                title: "Spellcraft Level " + skillLevel,
                 effect,
                 type: "flat",
                 value: levelBonus,
@@ -641,8 +639,7 @@ export const getManaEffectStacks = (player) => {
 
             entriesByEffect[milestone.effect].push({
                 id: "skill-" + sourceSkill.id + "-" + milestone.level + "-" + milestone.effect + "-" + milestoneIndex,
-                title: "Level " + milestone.level,
-                source: getSkillName(sourceSkill.id),
+                title: getSkillName(sourceSkill.id) + " Level " + milestone.level,
                 effect: milestone.effect,
                 type: milestone.type,
                 value: milestone.value,

@@ -32,13 +32,13 @@ const formatEffectDescription = (entry) => {
 
     if (mode === "element") {
         const elementLabels = {
-            actionTime: "action duration",
-            xpGain: "action XP",
-            manaCost: "Mana cost",
+            actionTime: "Action Speed",
+            xpGain: "Action XP",
+            manaCost: "Mana Cost",
         }
         const elementValue = effect === "actionTime" && value > 0 ? 1 / value : value
-        const elementLabel = effect === "actionTime" ? "action speed" : (elementLabels[effect] ?? label)
-        return "x" + formatMultiplier(elementValue) + " " + elementLabel
+        const elementLabel = elementLabels[effect] ?? label
+        return "x" + formatNumber(elementValue) + " " + elementLabel
     }
 
     // Multiplier effects are shown as their resulting factor instead of a signed percentage.

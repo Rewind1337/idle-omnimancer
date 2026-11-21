@@ -15,7 +15,7 @@ import { useGame } from "../../hooks/useGame"
 
 import "./MissionsModal.scss"
 
-function MissionCard({ mission, player, isCompleted, canTurnIn, onTurnIn }) {
+function MissionCard({ mission, player, canTurnIn, onTurnIn }) {
     const objectiveItem = ITEM_DATA_BY_ID[mission.objective.item]
     const ownedAmount = player.inventory?.[mission.objective.item] ?? 0
 
@@ -26,7 +26,6 @@ function MissionCard({ mission, player, isCompleted, canTurnIn, onTurnIn }) {
                     <Flex direction="row" gap={6}>
                         <Heading h="3">{mission.title}</Heading>
                         <Badge variant="secondary">Tier {mission.tier}</Badge>
-                        {isCompleted && <Badge variant="secondary">Completed</Badge>}
                     </Flex>
                 </Flex>
 
@@ -93,7 +92,9 @@ export function MissionsModal({ visible, setVisible }) {
     const progressPercentage = requiredCount
         ? Math.min(100, completedCount / requiredCount * 100)
         : 100
-    const availableMissions = MISSION_DATA.missions.filter(mission => mission.tier <= missionTier)
+    const availableTierMissions = MISSION_DATA.missions.filter(mission => mission.tier <= missionTier)
+    const availableMissions = availableTierMissions.filter(mission => !completedMissionIds.has(mission.id))
+    const completedMissionsCount = availableTierMissions.length - availableMissions.length
     const fame = CURRENCY_DATA_BY_ID["currency:fame"]
     const fameBalance = player.currencies?.fame ?? 0
 
@@ -138,7 +139,10 @@ export function MissionsModal({ visible, setVisible }) {
                             </Text>
                         </Flex>
                     </Paper>
-                    <Heading h="3">Available Missions</Heading>
+                    <Flex direction="row" justify="space-between" wrap gap={12}>
+                        <Heading h="3">Available Missions: {availableMissions.length}</Heading>
+                        <Heading h="3">Completed Missions: {completedMissionsCount}</Heading>
+                    </Flex>
                     {availableMissions.length > 0 ? (
                         <Grid
                             columns={{ xsmall: 1, small: 1, medium: 2, large: 2 }}
@@ -146,10 +150,9 @@ export function MissionsModal({ visible, setVisible }) {
                             className="missions-modal-list"
                         >
                             {availableMissions.map(mission => {
-                                const isCompleted = completedMissionIds.has(mission.id)
                                 const objective = mission.objective
                                 const ownedAmount = player.inventory?.[objective.item] ?? 0
-                                const canTurnIn = !isCompleted &&
+                                const canTurnIn =
                                     mission.tier <= missionTier &&
                                     objective.type === "turnIn" &&
                                     Boolean(ITEM_DATA_BY_ID[objective.item]) &&
@@ -162,7 +165,6 @@ export function MissionsModal({ visible, setVisible }) {
                                         key={mission.id}
                                         mission={mission}
                                         player={player}
-                                        isCompleted={isCompleted}
                                         canTurnIn={canTurnIn}
                                         onTurnIn={() => turnInMission(mission.id)}
                                     />
@@ -171,7 +173,11 @@ export function MissionsModal({ visible, setVisible }) {
                         </Grid>
                     ) : (
                         <Paper layer={2} variant="secondary">
-                            <Text>No missions have been configured for this tier yet.</Text>
+                            <Text>
+                                {completedMissionsCount > 0
+                                    ? "All currently available missions have been completed."
+                                    : "No missions have been configured for this tier yet."}
+                            </Text>
                         </Paper>
                     )}
                 </Flex>

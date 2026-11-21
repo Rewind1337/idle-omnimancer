@@ -368,7 +368,7 @@ export const getSkillMilestoneDetails = (player, skill) => {
 
             return {
                 id: "skill-" + skill.id + "-milestone-" + milestone.level + "-" + index,
-                title: getSkillName(skill.id) + " - Level " + milestone.level,
+                title: "Level " + milestone.level,
                 source: getMilestoneTargetLabel(skill, milestone.reach),
                 effect: milestone.effect,
                 type: milestone.type,
@@ -396,7 +396,7 @@ export const getActionMilestoneDetails = (player, skill, action) => {
 
             return {
                 id: "action-" + skill.id + "-" + action.id + "-milestone-" + milestone.levels + "-" + index,
-                title: "Every " + milestone.levels + " Action Levels",
+                title: "Every " + milestone.levels + " Levels",
                 effect: milestone.effect,
                 type: milestone.type,
                 value: milestone.value,
@@ -522,13 +522,14 @@ export const getActionEffectStacks = (player, skill, action) => {
 
                 entries.push({
                     id: "skill-" + sourceSkill.id + "-" + milestone.level + "-" + effect + "-" + milestoneIndex,
-                    source: getSkillName(sourceSkill.id) + " - Level " + milestone.level,
+                    title: "Level " + milestone.level,
+                    source: getSkillName(sourceSkill.id),
                     effect,
                     type: milestone.type,
                     value: milestone.value,
                     stacks: 1,
                     mode: "milestone",
-                    variant: skill.variant
+                    variant: sourceSkill.variant
                 })
             }
         }
@@ -586,8 +587,75 @@ export const getManaRegeneration = (player) => {
 
     const skillLevel = getSkillProgress(player, skill.id)?.level ?? 1
     const levelBonus = Math.max(0, skillLevel - 1) * (skill.mana.regenPerLevel ?? 0)
-    return Math.max(0, (skill.mana.regen ?? 0) + levelBonus)
+    const baseRegeneration = (skill.mana.regen ?? 0) + levelBonus
+    const bonuses = getBonusForEffect(
+        getSkillMilestoneBonuses(player, skill.id),
+        "manaRegeneration"
+    )
+    return Math.max(0, baseRegeneration * Math.max(0, 1 + bonuses.mult) + bonuses.flat)
 }
+
+// Collect the effects that contribute specifically to Spellcraft's Mana pool.
+// These include its intrinsic per-level growth and milestones from any unlocked skill.
+export const getManaEffectStacks = (player) => {
+    const skill = SKILL_CONFIG_BY_ID["skill:spellcraft"]
+    const effectNames = ["manaCapacity", "manaRegeneration"]
+    const entriesByEffect = Object.fromEntries(effectNames.map(effect => [effect, []]))
+
+    if (!skill?.mana) return entriesByEffect
+
+    const skillLevel = getSkillProgress(player, skill.id)?.level ?? 1
+    const levelBonuses = {
+        manaCapacity: Math.max(0, skillLevel - 1) * (skill.mana.capacityPerLevel ?? 0),
+        manaRegeneration: Math.max(0, skillLevel - 1) * (skill.mana.regenPerLevel ?? 0),
+    }
+
+    for (const effect of effectNames) {
+        const levelBonus = levelBonuses[effect]
+        if (levelBonus > 0) {
+            entriesByEffect[effect].push({
+                id: "spellcraft-level-" + effect,
+                title: "Level " + skillLevel,
+                source: "Spellcraft progression",
+                effect,
+                type: "flat",
+                value: levelBonus,
+                stacks: 1,
+                mode: "progression",
+                variant: skill.variant,
+            })
+        }
+    }
+
+    for (const sourceSkill of Object.values(SKILL_CONFIG_BY_ID)) {
+        if (!player.unlockedSkills?.includes(sourceSkill.id)) continue
+
+        const sourceLevel = getSkillProgress(player, sourceSkill.id)?.level ?? 1
+        for (const [milestoneIndex, milestone] of (sourceSkill.milestones ?? []).entries()) {
+            if (
+                !effectNames.includes(milestone.effect) ||
+                !Number.isFinite(milestone.level) ||
+                sourceLevel < milestone.level ||
+                !milestoneTargetsSkill(sourceSkill, skill.id, milestone)
+            ) continue
+
+            entriesByEffect[milestone.effect].push({
+                id: "skill-" + sourceSkill.id + "-" + milestone.level + "-" + milestone.effect + "-" + milestoneIndex,
+                title: "Level " + milestone.level,
+                source: getSkillName(sourceSkill.id),
+                effect: milestone.effect,
+                type: milestone.type,
+                value: milestone.value,
+                stacks: 1,
+                mode: "milestone",
+                variant: sourceSkill.variant,
+            })
+        }
+    }
+
+    return entriesByEffect
+}
+
 
 export const getActionProgress = (actionState, durationMs) =>
     Math.min(100, Math.max(0, (actionState.progressMs / durationMs) * 100))
@@ -722,9 +790,14 @@ const advanceRunningActions = (player, deltaMs) => {
             if (activity === "active") {
                 advanceOneAction(player, skill, action, actionState, deltaMs, true)
 
-                // An action at its maximum level no longer occupies the active
-                // slot. The player can select another action immediately.
-                if (actionState.level >= GLOBAL_CONFIG.maxActionLevel) {
+                // An active process stops when it reaches its level cap or can no
+                // longer afford the next cycle. In the latter case, discard any
+                // unfinished progress so restarting never grants a free partial cycle.
+                if (
+                    actionState.level >= GLOBAL_CONFIG.maxActionLevel ||
+                    !canPayActionCost(player, skill, action)
+                ) {
+                    actionState.progressMs = 0
                     player.activeAction = null
                 }
             }

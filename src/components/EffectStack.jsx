@@ -11,7 +11,8 @@ const EFFECT_LABELS = {
     manaCost: "Mana Cost",
     itemOutput: "Item Output",
     preservation: "Preservation Chance",
-    manaCapacity: "maximum Mana",
+    manaCapacity: "Mana Capacity",
+    manaRegeneration: "Mana Regeneration",
 }
 
 const formatNumber = (value) => Number(value.toFixed(2)).toString()
@@ -35,7 +36,9 @@ const formatEffectDescription = (entry) => {
             xpGain: "action XP",
             manaCost: "Mana cost",
         }
-        return "x" + formatMultiplier(value) + " " + (elementLabels[effect] ?? label)
+        const elementValue = effect === "actionTime" && value > 0 ? 1 / value : value
+        const elementLabel = effect === "actionTime" ? "action speed" : (elementLabels[effect] ?? label)
+        return "x" + formatMultiplier(elementValue) + " " + elementLabel
     }
 
     // Multiplier effects are shown as their resulting factor instead of a signed percentage.
@@ -51,6 +54,9 @@ const formatEffectDescription = (entry) => {
     }
     if (effect === "manaCapacity" && type === "flat") {
         return formatSigned(delta) + " maximum Mana"
+    }
+    if (effect === "manaRegeneration" && type === "flat") {
+        return formatSigned(delta) + " Mana / second"
     }
     if (effect === "itemOutput" && type === "flat") {
         return formatSigned(delta) + "× " + label
@@ -115,7 +121,9 @@ export function EffectStack({
                 <Text>{emptyLabel}</Text>
             )}
             {formulas.length > 0 && <hr />}
-            {formulas.length > 0 && formulas.map(f => <Text size="small">{f}</Text>)}
+            {formulas.length > 0 && formulas.map((formula, index) => (
+                <Text key={formula} size="small">{formula}</Text>
+            ))}
         </Flex>
     )
 }

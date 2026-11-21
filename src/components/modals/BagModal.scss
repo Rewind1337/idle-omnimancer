@@ -1,0 +1,24 @@
+.modal-backdrop.modal-bag {
+    .bag-total-value,
+    .bag-inventory,
+    .bag-item-selection {
+        min-width: 0;
+    }
+
+    // Keep the purchase button fitted to the full empty inventory slot.
+    .item.item-empty.bag-buy-slot {
+        padding: 0 !important;
+
+        > .item-empty-content,
+        .tooltip-block,
+        .bag-buy-slot-button,
+        .bag-buy-slot-button > .flex {
+            width: 100%;
+            height: 100%;
+        }
+
+        .tooltip-block {
+            align-items: stretch;
+        }
+    }
+}

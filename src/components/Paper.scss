@@ -2,6 +2,19 @@
 @use '../scss/tokens.scss' as *;
 
 /* Paper Component Styles */
+// Apply the matching variant border to a paper and nested papers on hover.
+@mixin paper-variant($family, $variant) {
+
+    &[data-variant="#{$variant}"] {
+      &:hover {
+        border-color: var(--#{$family}-#{$variant})
+      }
+      &:hover .paper {
+        border-color: var(--#{$family}-#{$variant})
+      }
+    }
+}
+
 .paper {
   padding: 8px;
   border-radius: 8px;
@@ -37,36 +50,15 @@
   }
 
   @each $variant in $button-colors {
-    &[data-variant="#{$variant}"] {
-      &:hover {
-        border-color: var(--button-#{$variant})
-      }
-      &:hover .paper {
-        border-color: var(--button-#{$variant})
-      }
-    }
+    @include paper-variant(button, $variant);
   }
 
   @each $variant in $skill-colors {
-    &[data-variant="#{$variant}"] {
-      &:hover {
-        border-color: var(--skill-#{$variant})
-      }
-      &:hover .paper {
-        border-color: var(--skill-#{$variant})
-      }
-    }
+    @include paper-variant(skill, $variant);
   }
 
   @each $variant in $resource-colors {
-    &[data-variant="#{$variant}"] {
-      &:hover {
-        border-color: var(--resource-#{$variant})
-      }
-      &:hover .paper {
-        border-color: var(--resource-#{$variant})
-      }
-    }
+    @include paper-variant(resource, $variant);
   }
 
   &.paper-transparent {

@@ -2,6 +2,25 @@
 @use '../scss/tokens.scss' as *;
 
 /* Badge Component Styles */
+// Apply shared badge colors and interactive states to any token family.
+@mixin badge-variant($family, $variant) {
+
+        &[data-variant="#{$variant}"] {
+            background: var(--#{$family}-#{$variant});
+            outline-color: var(--#{$family}-#{$variant}-active);
+
+            &.badge-interactive:hover {
+                background: var(--#{$family}-#{$variant}-hover);
+                cursor: pointer;
+            }
+
+            &.button-toggled {
+                background: var(--#{$family}-#{$variant}-toggled);
+                outline-color: var(--#{$family}-#{$variant}-border);
+            }
+        }
+}
+
 .badge {
     display: grid;
     align-items: center;
@@ -22,57 +41,18 @@
     }
 
     @each $variant in $button-colors {
-        &[data-variant="#{$variant}"] {
-            background: var(--button-#{$variant});
-            outline-color: var(--button-#{$variant}-active);
+    @include badge-variant(button, $variant);
+  }
 
-            &.badge-interactive:hover {
-                background: var(--button-#{$variant}-hover);
-                cursor: pointer;
-            }
+  @each $variant in $skill-colors {
+    @include badge-variant(skill, $variant);
+  }
 
-            &.button-toggled {
-                background: var(--button-#{$variant}-toggled);
-                outline-color: var(--button-#{$variant}-border);
-            }
-        }
-    }
+  @each $variant in $resource-colors {
+    @include badge-variant(resource, $variant);
+  }
 
-    @each $variant in $skill-colors {
-        &[data-variant="#{$variant}"] {
-            background: var(--skill-#{$variant});
-            outline-color: var(--skill-#{$variant}-active);
-
-            &.badge-interactive:hover {
-                background: var(--skill-#{$variant}-hover);
-                cursor: pointer;
-            }
-
-            &.button-toggled {
-                background: var(--skill-#{$variant}-toggled);
-                outline-color: var(--skill-#{$variant}-border);
-            }
-        }
-    }
-
-    @each $variant in $resource-colors {
-        &[data-variant="#{$variant}"] {
-            background: var(--resource-#{$variant});
-            outline-color: var(--resource-#{$variant}-active);
-
-            &.badge-interactive:hover {
-                background: var(--resource-#{$variant}-hover);
-                cursor: pointer;
-            }
-
-            &.button-toggled {
-                background: var(--resource-#{$variant}-toggled);
-                outline-color: var(--resource-#{$variant}-border);
-            }
-        }
-    }
-
-    &[data-variant="transparent"] {
+  &[data-variant="transparent"] {
         background: transparent;
             outline-color: rgba(255, 255, 255, 0.15);
 

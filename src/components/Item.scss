@@ -41,20 +41,4 @@
         }
     }
 
-    // The purchase button occupies the complete empty item slot.
-    &.item-empty.bag-buy-slot {
-        padding: 0 !important;
-
-        > .item-empty-content,
-        .tooltip-block,
-        .bag-buy-slot-button,
-        .bag-buy-slot-button > .flex {
-            width: 100%;
-            height: 100%;
-        }
-
-        .tooltip-block {
-            align-items: stretch;
-        }
-    }
 }

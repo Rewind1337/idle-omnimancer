@@ -53,11 +53,11 @@ export const EXPLORATION_CONFIG = {
     // Each area's guaranteed resources and chance-based discoveries share one
     // produces list. Only guaranteed item entries feed the current action loop.
     actions: WORLD_DATA.areas.map(area => {
-        const companionContainer = area.exploration.produces.find(output =>
-            output.id && ITEM_DATA_BY_ID[output.id]?.type === "companionContainer"
+        const companionContainer = area.exploration.produces.find(itemId =>
+            ITEM_DATA_BY_ID[itemId]?.type === "companionContainer"
         )
-        const artifact = area.combat.produces.find(output =>
-            ITEM_DATA_BY_ID[output.id]?.type === "artifact"
+        const artifact = area.combat.produces.find(itemId =>
+            ITEM_DATA_BY_ID[itemId]?.type === "artifact"
         )
 
         return {
@@ -66,11 +66,11 @@ export const EXPLORATION_CONFIG = {
             name: area.name,
             tier: area.tier,
             element: area.element,
-            produces: area.exploration.produces.filter(output => output.item),
+            produces: area.exploration.produces,
             companionContainer: companionContainer
-                ? { ...companionContainer, item: companionContainer.id }
+                ? { item: companionContainer }
                 : null,
-            artifactItem: artifact?.id ?? null,
+            artifactItem: artifact ?? null,
             combatProduces: area.combat.produces,
             unlockedByDefault: area.unlockedByDefault,
         }

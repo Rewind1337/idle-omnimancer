@@ -1,86 +1,139 @@
 import { cloneElement, useState } from "react"
 
-import { Badge } from "../components/Badge"
 import { Flex } from "../components/Flex"
 import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
 import { Paper } from "../components/Paper"
-import { Text } from "../components/Text"
 import { HexMap } from "../components/maps/HexMap"
 import { SkillSummary } from "../components/skills/SkillSummary"
+import { ActionHeader } from "../components/actions/ActionHeader"
+import { ActionDetails } from "../components/actions/ActionDetails"
+import { ActionProgress } from "../components/actions/ActionProgress"
+import { ActionResources } from "../components/actions/ActionResources"
+import { Button } from "../components/Button"
 
 import { EXPLORATION_CONFIG } from "../data/explorationConfig"
 import { WORLD_AREAS, WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
-import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
+import { SKILL_ICONS } from "../data/iconLibrary"
+import { getActionXPTable } from "../data/skillConfig"
+import {
+    canUnlockAction,
+    canStartAction,
+    getActionDurationMs,
+    getActionXPReward,
+    getActionEffectStacks,
+    getActionMilestoneDetails,
+    getActionOutputMultiplier,
+    getActionPreservationChance,
+    getSkillProgress,
+    getSkillMilestoneDetails,
+} from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 import { humanize } from "../utility/helpers"
 
 import "./ExplorationPage.scss"
 
-function ExplorationActionCard({ area }) {
-    const action = EXPLORATION_CONFIG.actions.find(entry => entry.areaId === area.id)
-    const resourceRewards = action?.produces ?? []
-    const container = action?.companionContainer
+const INNER_SHAPES = [3, 4, 5, 6, 7, 8, 9, 10]
+const OUTER_RUNES = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide"]
+
+function ExplorationActionCard({
+    action,
+    player,
+    actionState,
+    isUnlocked,
+    isActive,
+    canUnlock,
+    canStart,
+    onToggle,
+    onUnlock,
+}) {
+    const elementVariant = action.element ?? "exploration"
+    const durationMs = isUnlocked ? getActionDurationMs(EXPLORATION_CONFIG, action, player) : 0
+    const actionXPTable = isUnlocked ? getActionXPTable(action.id) : null
+    const neededXP = !isUnlocked || actionState.level >= 100
+        ? null
+        : actionXPTable?.[actionState.level - 1]?.neededXP ?? null
+    const actionMilestones = isUnlocked
+        ? getActionMilestoneDetails(player, EXPLORATION_CONFIG, action)
+        : []
+    const effectStacks = isUnlocked
+        ? getActionEffectStacks(player, EXPLORATION_CONFIG, action)
+        : {}
+    const outputMultiplier = isUnlocked
+        ? getActionOutputMultiplier(player, EXPLORATION_CONFIG, action)
+        : 1
 
     return (
-        <Paper layer={1} variant={area.element ?? "exploration"} className="exploration-action-card">
-            <Flex direction="column" align="stretch" gap={12}>
-                <Flex direction="row" justify="space-between" wrap gap={8}>
-                    <Heading h="2">{action?.name ?? area.name}</Heading>
-                    <Badge variant={area.element ?? "exploration"}>
-                        {area.element ? humanize(area.element) : "Neutral"} · Tier {area.tier}
-                    </Badge>
-                </Flex>
-                <Text>{area.description}</Text>
-
-                <Flex direction="column" align="stretch" gap={6}>
-                    <Heading h="4">Exploration Rewards</Heading>
-                    {resourceRewards.length > 0 ? (
-                        <Flex direction="row" wrap gap={8}>
-                            {resourceRewards.map(reward => (
-                                <Badge key={reward.item} variant={area.element ?? "exploration"}>
-                                    +{reward.amount.toLocaleString()} {humanize(reward.item.replace(/^item:/, ""))}
-                                </Badge>
-                            ))}
-                        </Flex>
-                    ) : (
-                        <Text size="small">No resource rewards configured.</Text>
-                    )}
-                </Flex>
-
-                {container && (
-                    <Flex direction="column" align="stretch" gap={4}>
-                        <Badge
-                            variant={area.element ?? "exploration"}
-                            icon={cloneElement(OTHER_ICONS.COMPANION_CONTAINER, { size: 20 })}
+        <Paper layer={1} variant={elementVariant} className="action action-exploration">
+            <Flex direction="column">
+                <Flex direction="row">
+                    <Paper round layer="0" interactive className="w-min" padding={4}>
+                        <Icon
+                            size={48}
+                            variant={elementVariant}
+                            outerRunes={OUTER_RUNES[action.tier - 1] ?? "wide"}
+                            outerShape={7}
+                            innerRunes="gap"
+                            innerShape={INNER_SHAPES[action.tier - 1] ?? 10}
                         >
-                            Companion Container
-                        </Badge>
-                        <Text size="small">
-                            {humanize(container.item.replace(/^item:/, ""))} ·
-                            {" "}{((container.baseChance ?? 0) * 100).toLocaleString()}% base chance
-                            · Unveiling Level {container.minimumUnveilingSkillLevel ?? 1} required
-                        </Text>
+                            {cloneElement(SKILL_ICONS.EXPLORATION, { size: 48 })}
+                        </Icon>
+                    </Paper>
+                    <Flex direction="column">
+                        <ActionHeader
+                            name={action.name ?? humanize(action.id)}
+                            level={actionState.level}
+                            currentXP={actionState.xp}
+                            neededXP={neededXP}
+                            tier={action.tier}
+                            isUnlocked={isUnlocked}
+                            actionMilestones={actionMilestones}
+                            actionXPTable={actionXPTable}
+                            xpConfig={EXPLORATION_CONFIG.neededXP}
+                        />
+                        {isUnlocked ? (
+                            <ActionProgress
+                                actionState={actionState}
+                                isActive={isActive}
+                                onToggle={onToggle}
+                                canStart={canStart}
+                                durationMs={durationMs}
+                                neededXP={neededXP}
+                                currentXP={actionState.xp}
+                                variant={elementVariant}
+                                actionLabel="Explore"
+                            />
+                        ) : (
+                            <Button
+                                variant={elementVariant}
+                                className="w-100"
+                                size="medium"
+                                disabled={!canUnlock}
+                                onClick={onUnlock}
+                            >
+                                Unlock
+                            </Button>
+                        )}
                     </Flex>
+                </Flex>
+                {isUnlocked ? (
+                    <>
+                        <ActionDetails
+                            actionTime={durationMs / 1000}
+                            actionXP={getActionXPReward(EXPLORATION_CONFIG, action, player)}
+                            outputMultiplier={outputMultiplier}
+                            preservationChance={getActionPreservationChance(player, EXPLORATION_CONFIG, action)}
+                            effectStacks={effectStacks}
+                        />
+                        <ActionResources
+                            consumes={action.consumes ?? []}
+                            produces={action.produces ?? []}
+                            outputMultiplier={outputMultiplier}
+                        />
+                    </>
+                ) : (
+                    <ActionResources requires={action.unlockCosts ?? []} />
                 )}
-
-                {action?.artifactItem && (
-                    <Flex direction="column" align="stretch" gap={4}>
-                        <Badge
-                            variant={area.element ?? "exploration"}
-                            icon={cloneElement(OTHER_ICONS.ARTIFACT, { size: 20 })}
-                        >
-                            Combat Artifact
-                        </Badge>
-                        <Text size="small">
-                            {humanize(action.artifactItem.replace(/^item:/, ""))}
-                        </Text>
-                    </Flex>
-                )}
-
-                <Text size="small" className="exploration-action-id">
-                    {action?.id ?? area.actionId}
-                </Text>
             </Flex>
         </Paper>
     )
@@ -88,19 +141,30 @@ function ExplorationActionCard({ area }) {
 
 export function ExplorationPage() {
     const [selectedAreaId, setSelectedAreaId] = useState(WORLD_DATA.map.startingAreaId)
-    const { player } = useGame()
+    const { player, startAction, stopAction, unlockAction } = useGame()
+    const skillId = EXPLORATION_CONFIG.id
+    const skillProgress = getSkillProgress(player, skillId)
     const selectedArea = WORLD_AREA_BY_ID[selectedAreaId] ?? WORLD_AREAS[0]
-    const explorationActions = player.skills?.[EXPLORATION_CONFIG.id]?.actions ?? {}
-    const actionLevels = Object.fromEntries(WORLD_AREAS.map(area => [
-        area.id,
-        explorationActions[area.actionId]?.level ?? 1,
-    ]))
+    const selectedAction = EXPLORATION_CONFIG.actions.find(action => action.areaId === selectedArea.id)
+    const storedActionState = player.skills?.[skillId]?.actions?.[selectedAction.id]
+    const actionState = storedActionState ?? {
+        level: 1,
+        xp: 0,
+        progressMs: 0,
+        unlocked: Boolean(selectedAction.unlockedByDefault),
+    }
+    const isUnlocked = Boolean(actionState.unlocked)
+    const isActive = player.activeAction?.skillId === skillId &&
+        player.activeAction?.actionId === selectedAction.id
 
     return (
         <Flex direction="column" className="page-flex page-flex-exploration" padding={32} gap={24}>
             <Paper layer={0}>
                 <SkillSummary
+                    skillId={skillId}
                     title="Exploration"
+                    skillProgress={skillProgress}
+                    milestones={getSkillMilestoneDetails(player, EXPLORATION_CONFIG)}
                     variant="exploration"
                     progressEnabled={false}
                     icon={
@@ -117,16 +181,32 @@ export function ExplorationPage() {
                     <Heading h="2">The Known World</Heading>
                     <HexMap
                         areas={WORLD_AREAS}
-                        mapVariant={"exploration"}
+                        mapVariant="exploration"
                         startingAreaId={WORLD_DATA.map.startingAreaId}
                         selectedAreaId={selectedArea.id}
-                        actionLevels={actionLevels}
+                        actionLevels={Object.fromEntries(WORLD_AREAS.map(area => [
+                            area.id,
+                            player.skills?.[skillId]?.actions?.[area.actionId]?.level ?? 1,
+                        ]))}
                         onSelectArea={setSelectedAreaId}
                     />
                 </Flex>
             </Paper>
 
-            <ExplorationActionCard area={selectedArea} />
+            <ExplorationActionCard
+                action={selectedAction}
+                player={player}
+                actionState={actionState}
+                isUnlocked={isUnlocked}
+                isActive={isActive}
+                canUnlock={canUnlockAction(player, skillId, selectedAction.id)}
+                canStart={canStartAction(player, skillId, selectedAction.id)}
+                onUnlock={() => unlockAction(skillId, selectedAction.id)}
+                onToggle={() => {
+                    if (isActive) stopAction(skillId, selectedAction.id)
+                    else startAction(skillId, selectedAction.id)
+                }}
+            />
         </Flex>
     )
 }

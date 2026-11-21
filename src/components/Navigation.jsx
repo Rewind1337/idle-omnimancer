@@ -42,6 +42,7 @@ export function Navigation({
           disabled: !isUnlocked && skill.skillId !== "skill:exploration",
           badge: skillProgress ? "Lv. " + skillProgress.level : null,
           badgeIcon: null,
+          toggled: player.activeAction?.skillId === skill.skillId,
         }
       }),
     DEVELOPMENT_NAVIGATION,

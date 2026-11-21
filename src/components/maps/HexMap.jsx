@@ -50,6 +50,15 @@ export function HexMap({
     )
     const hexPoints = useMemo(() => getHexPoints(hexSize), [hexSize])
 
+    const orderedAreas = useMemo(() => {
+        if (!selectedAreaId) return areas
+
+        const selectedArea = areas.find(area => area.id === selectedAreaId)
+        if (!selectedArea) return areas
+
+        return [...areas.filter(area => area.id !== selectedAreaId), selectedArea]
+    }, [areas, selectedAreaId])
+
     const startingArea = areaById[startingAreaId] ?? areas[0] ?? null
     const startingPosition = startingArea
         ? getAreaPosition(startingArea, hexSize)
@@ -151,7 +160,7 @@ export function HexMap({
                 onLostPointerCapture={cancelDragging}
             >
                 <g transform={`translate(${MAP_CENTER.x + view.x - startingPosition.x * view.scale} ${MAP_CENTER.y + view.y - startingPosition.y * view.scale}) scale(${view.scale})`}>
-                    {areas.map(area => {
+                    {orderedAreas.map(area => {
                         const position = getAreaPosition(area, hexSize)
                         const lines = area.name.split(" ")
                         const isSelected = selectedAreaId === area.id
@@ -163,9 +172,10 @@ export function HexMap({
                         return (
                             <g
                                 key={area.id}
-                                className={`hex-map-area hex-map-area-${variant} ${isSelected ? "is-selected" : ""}`}
+                                className={`hex-map-area hex-map-area-${variant}`}
                                 transform={`translate(${position.x} ${position.y})`}
                                 data-area-id={area.id}
+                                data-checked={isSelected}
                                 role="button"
                                 tabIndex={0}
                                 aria-label={`Select ${area.name}, Action Level ${actionLevel}`}

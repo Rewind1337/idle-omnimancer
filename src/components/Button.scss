@@ -2,6 +2,72 @@
 @use '../scss/tokens.scss' as *;
 
 /* Button Component Styles */
+// Apply the shared button interaction states to any token family.
+@mixin button-variant($family, $variant) {
+
+    &[data-variant="#{$variant}"] {
+      background: var(--#{$family}-#{$variant});
+      outline-color: var(--#{$family}-#{$variant}-active);
+
+      &:not(:disabled):hover {
+          background: var(--#{$family}-#{$variant}-hover);
+          cursor: pointer;
+
+          &:active {
+              background: var(--#{$family}-#{$variant}-active);
+              outline-color: var(--#{$family}-#{$variant}-border);
+          }
+      }
+
+      &[data-checked="true"],
+      &[data-checked="true"]:not(:disabled):hover:active {
+        background: var(--#{$family}-#{$variant}-active);
+        outline-color: var(--#{$family}-#{$variant}-border);
+      }
+
+      &[data-checked="true"]:not(:disabled):hover {
+          background: var(--#{$family}-#{$variant}-hover);
+          outline-color: var(--#{$family}-#{$variant}-border);
+      }
+
+      &.button-toggled {
+        outline-color: var(--#{$family}-#{$variant}-border);
+        outline-width: 3px;
+        background-image: repeating-linear-gradient(
+          -36.5deg,
+          var(--#{$family}-#{$variant}) 0 12px,
+          var(--#{$family}-#{$variant}-border) 12px 19px,
+          var(--#{$family}-#{$variant}) 19px 31px
+        );
+        background-size: 104.5px 100%;
+
+        animation: button-toggle-effect 1s linear infinite;
+
+        &:hover {
+          background-image: repeating-linear-gradient(
+            -36.5deg,
+            var(--#{$family}-#{$variant}-hover) 0 12px,
+            var(--#{$family}-#{$variant}-border) 12px 19px,
+            var(--#{$family}-#{$variant}-hover) 19px 31px
+          );
+          background-size: 104.5px 100%;
+
+          &:active {
+            &:hover {
+              background-image: repeating-linear-gradient(
+                -36.5deg,
+                var(--#{$family}-#{$variant}-active) 0 12px,
+                var(--#{$family}-#{$variant}-border) 12px 19px,
+                var(--#{$family}-#{$variant}-active) 19px 31px
+              );
+            background-size: 104.5px 100%;
+            }
+          }
+        }
+      }
+    }
+}
+
 .button {
   display: flex;
   font-family: var(--font-heading);
@@ -41,193 +107,15 @@
   * {font-family: inherit;}
 
   @each $variant in $button-colors {
-    &[data-variant="#{$variant}"] {
-      background: var(--button-#{$variant});
-      outline-color: var(--button-#{$variant}-active);
-
-      &:not(:disabled):hover {
-          background: var(--button-#{$variant}-hover);
-          cursor: pointer;
-
-          &:active {
-              background: var(--button-#{$variant}-active);
-              outline-color: var(--button-#{$variant}-border);
-          }
-      }
-
-      &[data-checked="true"],
-      &[data-checked="true"]:not(:disabled):hover:active {
-        background: var(--button-#{$variant}-active);
-        outline-color: var(--button-#{$variant}-border);
-      }
-
-      &[data-checked="true"]:not(:disabled):hover {
-          background: var(--button-#{$variant}-hover);
-          outline-color: var(--button-#{$variant}-border);
-      }
-
-      &.button-toggled {
-        outline-color: var(--button-#{$variant}-border);
-        outline-width: 3px;
-        background-image: repeating-linear-gradient(
-          -36.5deg,
-          var(--button-#{$variant}) 0 12px,
-          var(--button-#{$variant}-border) 12px 19px,
-          var(--button-#{$variant}) 19px 31px
-        );
-        background-size: 104.5px 100%;
-
-        animation: button-toggle-effect 1s linear infinite;
-
-        &:hover {
-          background-image: repeating-linear-gradient(
-            -36.5deg,
-            var(--button-#{$variant}-hover) 0 12px,
-            var(--button-#{$variant}-border) 12px 19px,
-            var(--button-#{$variant}-hover) 19px 31px
-          );
-          background-size: 104.5px 100%;
-
-          &:active {
-            &:hover {
-              background-image: repeating-linear-gradient(
-                -36.5deg,
-                var(--button-#{$variant}-active) 0 12px,
-                var(--button-#{$variant}-border) 12px 19px,
-                var(--button-#{$variant}-active) 19px 31px
-              );
-            background-size: 104.5px 100%;
-            }
-          }
-        }
-      }
-    }
+    @include button-variant(button, $variant);
   }
 
   @each $variant in $skill-colors {
-    &[data-variant="#{$variant}"] {
-      background: var(--skill-#{$variant});
-      outline-color: var(--skill-#{$variant}-active);
-
-      &:not(:disabled):hover {
-          background: var(--skill-#{$variant}-hover);
-          cursor: pointer;
-
-          &:active {
-              background: var(--skill-#{$variant}-active);
-              outline-color: var(--skill-#{$variant}-border);
-          }
-      }
-
-      &[data-checked="true"],
-      &[data-checked="true"]:not(:disabled):hover:active {
-        background: var(--skill-#{$variant}-active);
-        outline-color: var(--skill-#{$variant}-border);
-      }
-
-      &[data-checked="true"]:not(:disabled):hover {
-          background: var(--skill-#{$variant}-hover);
-          outline-color: var(--skill-#{$variant}-border);
-      }
-
-      &.button-toggled {
-        outline-color: var(--skill-#{$variant}-border);
-        background-image: repeating-linear-gradient(
-          -36.5deg,
-          var(--skill-#{$variant}) 0 12px,
-          var(--skill-#{$variant}-border) 12px 19px,
-          var(--skill-#{$variant}) 19px 31px
-        );
-        background-size: 104.5px 100%;
-
-        animation: button-toggle-effect 1s linear infinite;
-
-        &:hover {
-          background-image: repeating-linear-gradient(
-            -36.5deg,
-            var(--skill-#{$variant}-hover) 0 12px,
-            var(--skill-#{$variant}-border) 12px 19px,
-            var(--skill-#{$variant}-hover) 19px 31px
-          );
-          background-size: 104.5px 100%;
-
-          &:active {
-            &:hover {
-              background-image: repeating-linear-gradient(
-                -36.5deg,
-                var(--skill-#{$variant}-active) 0 12px,
-                var(--skill-#{$variant}-border) 12px 19px,
-                var(--skill-#{$variant}-active) 19px 31px
-              );
-              background-size: 104.5px 100%;
-            }
-          }
-        }
-      }
-    }
+    @include button-variant(skill, $variant);
   }
 
   @each $variant in $resource-colors {
-    &[data-variant="#{$variant}"] {
-      background: var(--resource-#{$variant});
-      outline-color: var(--resource-#{$variant}-active);
-
-      &:not(:disabled):hover {
-          background: var(--resource-#{$variant}-hover);
-          cursor: pointer;
-
-          &:active {
-              background: var(--resource-#{$variant}-active);
-              outline-color: var(--resource-#{$variant}-border);
-          }
-      }
-
-      &[data-checked="true"],
-      &[data-checked="true"]:not(:disabled):hover:active {
-        background: var(--resource-#{$variant}-active);
-        outline-color: var(--resource-#{$variant}-border);
-      }
-
-      &[data-checked="true"]:not(:disabled):hover {
-          background: var(--resource-#{$variant}-hover);
-          outline-color: var(--resource-#{$variant}-border);
-      }
-
-      &.button-toggled {
-        outline-color: var(--resource-#{$variant}-border);
-        background-image: repeating-linear-gradient(
-          -36.5deg,
-          var(--resource-#{$variant}) 0 12px,
-          var(--resource-#{$variant}-border) 12px 19px,
-          var(--resource-#{$variant}) 19px 31px
-        );
-        background-size: 104.5px 100%;
-
-        animation: button-toggle-effect 1s linear infinite;
-
-        &:hover {
-          background-image: repeating-linear-gradient(
-            -36.5deg,
-            var(--resource-#{$variant}-hover) 0 12px,
-            var(--resource-#{$variant}-border) 12px 19px,
-            var(--resource-#{$variant}-hover) 19px 31px
-          );
-          background-size: 104.5px 100%;
-
-          &:active {
-            &:hover {
-              background-image: repeating-linear-gradient(
-                -36.5deg,
-                var(--resource-#{$variant}-active) 0 12px,
-                var(--resource-#{$variant}-border) 12px 19px,
-                var(--resource-#{$variant}-active) 19px 31px
-              );
-              background-size: 104.5px 100%;
-            }
-          }
-        }
-      }
-    }
+    @include button-variant(resource, $variant);
   }
 
   &.button-transparent {

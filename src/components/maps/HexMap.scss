@@ -1,6 +1,6 @@
 @use '../../scss/tokens.scss' as *;
 
-// Apply a shared set of interactive states to one token family and variant.
+// Apply the shared checked, hover and pressed states to map tiles.
 @mixin hex-map-area-variant($family, $variant) {
     &.hex-map-area-#{$variant} {
         polygon {
@@ -8,25 +8,20 @@
             stroke: var(--#{$family}-#{$variant}-active);
         }
 
-        &:not(.is-selected):hover:not(:active) polygon,
-        &:not(.is-selected):focus-visible polygon,
-        &.is-selected:hover:not(:active) polygon {
+        &:hover:not(:active) polygon,
+        &:focus-visible polygon {
             fill: var(--#{$family}-#{$variant}-hover);
             stroke: var(--#{$family}-#{$variant}-border);
         }
 
-        &:active polygon {
+        &:active polygon,
+        &[data-checked="true"] polygon {
             fill: var(--#{$family}-#{$variant}-active);
             stroke: var(--#{$family}-#{$variant}-border);
         }
 
-        &.is-selected polygon {
-            fill: var(--#{$family}-#{$variant}-toggled);
-            stroke: var(--#{$family}-#{$variant}-border);
-        }
-
-        &.is-selected:active polygon {
-            fill: var(--#{$family}-#{$variant}-active);
+        &[data-checked="true"]:hover:not(:active) polygon {
+            fill: var(--#{$family}-#{$variant}-hover);
         }
 
         text {

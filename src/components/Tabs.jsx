@@ -36,7 +36,8 @@ export function Tabs({
                 icon={option.icon}
                 badge={option.badge ?? option.level ?? null}
                 badgeIcon={option.badgeIcon}
-                checked={isActive}
+                checked={isActive && !option.toggled}
+                toggled={option.toggled ?? false}
                 disabled={option.disabled ?? false}
                 className={cx('tab', option.className)}
                 onClick={() => {

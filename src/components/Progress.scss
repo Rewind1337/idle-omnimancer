@@ -1,35 +1,36 @@
 /* Color Tokens */
 @use '../scss/tokens.scss' as *;
 
+// Apply a shared progress-bar palette for both animated and static progress.
+@mixin progress-bar-variant($family, $variant, $animated: false, $animated-end: active) {
+    &[data-variant="#{$variant}"] {
+        @if $animated {
+            background-color: var(--#{$family}-#{$variant});
+            outline-color: var(--#{$family}-#{$variant}-border);
+            background-image: repeating-linear-gradient(
+                -62.5deg,
+                var(--#{$family}-#{$variant}-hover) 0 0,
+                var(--#{$family}-#{$variant}-border) 10px 10px,
+                var(--#{$family}-#{$variant}-#{$animated-end}) 20px 31px
+            );
+            background-size: 104.5px 100%;
+            animation: progress-bar-effect 1s linear infinite;
+        } @else {
+            background-color: var(--#{$family}-#{$variant}-hover);
+            outline-color: var(--#{$family}-#{$variant}-border);
+        }
+    }
+}
+
 /* Progress Component Styles */
 .progress-wrapper {
-    &[data-corners="sharp"] {
-        border-radius: 0;
-    }
-
-    &[data-corners="rounded"] {
-        border-radius: 8px;
-    }
-
-    &[data-size="xsmall"] {
-        height: 10px;
-    }
-
-    &[data-size="small"] {
-        height: 20px;
-    }
-
-    &[data-size="medium"] {
-        height: 40px;
-    }
-
-    &[data-size="large"] {
-        height: 60px;
-    }
-
-    &.relative-position {
-        position: relative;
-    }
+    &[data-corners="sharp"] { border-radius: 0; }
+    &[data-corners="rounded"] { border-radius: 8px; }
+    &[data-size="xsmall"] { height: 10px; }
+    &[data-size="small"] { height: 20px; }
+    &[data-size="medium"] { height: 40px; }
+    &[data-size="large"] { height: 60px; }
+    &.relative-position { position: relative; }
 }
 
 .progress-bar {
@@ -41,89 +42,34 @@
     align-items: center;
     overflow: hidden;
     border-radius: inherit;
-
     transition: width 0.5s ease-in-out;
 
     &[data-animated="true"] {
         @each $variant in $button-colors {
-            &[data-variant="#{$variant}"] {
-                background-color: var(--button-#{$variant});
-                outline-color: var(--button-#{$variant}-border);
-                background-image: repeating-linear-gradient(
-                -62.5deg,
-                var(--button-#{$variant}-hover) 0 0,
-                var(--button-#{$variant}-border) 10px 10px,
-                var(--button-#{$variant}-hover) 20px 31px
-                );
-                background-size: 104.5px 100%;
-
-                animation: progress-bar-effect 1s linear infinite;
-            }
+            @include progress-bar-variant(button, $variant, true, hover);
         }
-
         @each $variant in $skill-colors {
-            &[data-variant="#{$variant}"] {
-                background-color: var(--skill-#{$variant});
-                outline-color: var(--skill-#{$variant}-border);
-                background-image: repeating-linear-gradient(
-                -62.5deg,
-                var(--skill-#{$variant}-hover) 0 0,
-                var(--skill-#{$variant}-border) 10px 10px,
-                var(--skill-#{$variant}-active)20px 31px
-                );
-                background-size: 104.5px 100%;
-
-                animation: progress-bar-effect 1s linear infinite;
-            }
+            @include progress-bar-variant(skill, $variant, true, active);
         }
-
         @each $variant in $resource-colors {
-            &[data-variant="#{$variant}"] {
-                background-color: var(--resource-#{$variant});
-                outline-color: var(--resource-#{$variant}-border);
-                background-image: repeating-linear-gradient(
-                -62.5deg,
-                var(--resource-#{$variant}-hover) 0 0,
-                var(--resource-#{$variant}-border) 10px 10px,
-                var(--resource-#{$variant}-active) 20px 31px
-                );
-                background-size: 104.5px 100%;
-
-                animation: progress-bar-effect 1s linear infinite;
-            }
+            @include progress-bar-variant(resource, $variant, true, active);
         }
     }
 
     &[data-animated="false"] {
         @each $variant in $button-colors {
-            &[data-variant="#{$variant}"] {
-                background-color: var(--button-#{$variant}-hover);
-                outline-color: var(--button-#{$variant}-border);
-            }
+            @include progress-bar-variant(button, $variant);
         }
-
         @each $variant in $skill-colors {
-            &[data-variant="#{$variant}"] {
-                background-color: var(--skill-#{$variant}-hover);
-                outline-color: var(--skill-#{$variant}-border);
-            }
+            @include progress-bar-variant(skill, $variant);
         }
-
         @each $variant in $resource-colors {
-            &[data-variant="#{$variant}"] {
-                background-color: var(--resource-#{$variant}-hover);
-                outline-color: var(--resource-#{$variant}-border);
-            }
+            @include progress-bar-variant(resource, $variant);
         }
     }
 }
 
 @keyframes progress-bar-effect {
-    from {
-        background-position: 0 0;
-    }
-
-    to {
-        background-position: 104.5px 0;
-    }
+    from { background-position: 0 0; }
+    to { background-position: 104.5px 0; }
 }

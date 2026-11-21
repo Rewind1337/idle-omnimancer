@@ -1,6 +1,7 @@
 import { useState } from "react"
 
 import '../Modal.scss'
+import "./BagModal.scss"
 
 import { Modal } from '../Modal'
 import { Heading } from '../Heading'
@@ -88,6 +89,7 @@ export function BagModal({
         <Modal
             visible={visible}
             variant={null}
+            className="modal-bag"
             onBackdropClick={() => { setVisible(false) }}
             header={<Heading h="1">Bag</Heading>}
             footer={closeBagButton}

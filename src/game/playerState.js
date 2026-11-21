@@ -6,6 +6,7 @@ import {
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { MISSION_DATA } from "../data/missionData"
+import { COMPANION_IDS } from "../data/unveilingConfig"
 
 export const SAVE_KEY = "omnimancer-idle-save"
 export const SAVE_VERSION = 3
@@ -57,6 +58,7 @@ export const createInitialPlayerState = () => {
         inventorySlots: DEFAULT_INVENTORY_SLOTS,
         missionTier: MISSION_DATA.startingTier,
         completedMissions: [],
+        unlockedCompanions: [],
         currencies: {
             coins: 0,
             fame: 0,
@@ -152,6 +154,10 @@ export const normalizePlayerState = (savedState) => {
         ))]
         : initial.completedMissions
 
+    const unlockedCompanions = Array.isArray(savedState.unlockedCompanions)
+        ? [...new Set(savedState.unlockedCompanions.filter(id => COMPANION_IDS.includes(id)))]
+        : initial.unlockedCompanions
+
     let missionTier = clampInteger(
         savedState.missionTier,
         MISSION_DATA.startingTier,
@@ -182,6 +188,7 @@ export const normalizePlayerState = (savedState) => {
         inventorySlots,
         missionTier,
         completedMissions,
+        unlockedCompanions,
         currencies: {
             coins: Math.max(0, finiteNumber(
                 savedState.currencies?.coins,

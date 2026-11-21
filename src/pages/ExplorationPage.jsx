@@ -4,6 +4,7 @@ import { Flex } from "../components/Flex"
 import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
 import { Paper } from "../components/Paper"
+import { Badge } from "../components/Badge"
 import { HexMap } from "../components/maps/HexMap"
 import { SkillSummary } from "../components/skills/SkillSummary"
 import { ActionHeader } from "../components/actions/ActionHeader"
@@ -14,7 +15,7 @@ import { Button } from "../components/Button"
 
 import { EXPLORATION_CONFIG } from "../data/explorationConfig"
 import { WORLD_AREAS, WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
-import { SKILL_ICONS } from "../data/iconLibrary"
+import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
     canUnlockAction,
@@ -130,6 +131,26 @@ function ExplorationActionCard({
                             produces={action.produces ?? []}
                             outputMultiplier={outputMultiplier}
                         />
+                        {(action.companionContainer || action.artifactItem) && (
+                            <Flex direction="row" wrap gap={8}>
+                                {action.companionContainer && (
+                                    <Badge
+                                        variant={elementVariant}
+                                        icon={cloneElement(OTHER_ICONS.COMPANION_CONTAINER, { size: 20 })}
+                                    >
+                                        Companion Container: {humanize(action.companionContainer.item.replace(/^item:/, ""))}
+                                    </Badge>
+                                )}
+                                {action.artifactItem && (
+                                    <Badge
+                                        variant={elementVariant}
+                                        icon={cloneElement(OTHER_ICONS.ARTIFACT, { size: 20 })}
+                                    >
+                                        Combat Artifact: {humanize(action.artifactItem.replace(/^item:/, ""))}
+                                    </Badge>
+                                )}
+                            </Flex>
+                        )}
                     </>
                 ) : (
                     <ActionResources requires={action.unlockCosts ?? []} />

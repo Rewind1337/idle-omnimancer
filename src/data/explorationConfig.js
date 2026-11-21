@@ -66,7 +66,9 @@ export const EXPLORATION_CONFIG = {
             name: area.name,
             tier: area.tier,
             element: area.element,
-            produces: area.exploration.produces,
+            produces: area.exploration.produces.filter(itemId =>
+                ITEM_DATA_BY_ID[itemId]?.type !== "companionContainer"
+            ),
             companionContainer: companionContainer
                 ? { item: companionContainer }
                 : null,

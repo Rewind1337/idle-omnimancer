@@ -14,7 +14,7 @@ import { ActionProgress } from "../components/actions/ActionProgress"
 import { ActionResources } from "../components/actions/ActionResources"
 
 import { cx, humanize } from "../utility/helpers"
-import { SPELLCRAFT_CONFIG } from "../data/SpellcraftConfig"
+import { SPELLCRAFT_CONFIG } from "../data/spellcraftConfig"
 import { getActionXPTable } from "../data/skillConfig"
 import { SKILL_ICONS, SPELLCRAFT_ACTION_ICONS } from "../data/iconLibrary"
 import {

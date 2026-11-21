@@ -66,12 +66,10 @@ const ITEM_DEFINITIONS = [
     { id: "item:skybreak_aether", tier: 4, variant: "air", type: "resource" },
     { id: "item:tidal_heart", tier: 4, variant: "water", type: "resource" },
 
-    // Tier-I companion containers discovered in tier-II areas.
+    // Companion containers discovered by exploration for use in the Unveiling systems & Companion Tab.
     { id: "item:earth_geode_i", tier: 1, variant: "earth", type: "companionContainer" },
     { id: "item:air_egg_i", tier: 1, variant: "air", type: "companionContainer" },
     { id: "item:water_shell_i", tier: 1, variant: "water", type: "companionContainer" },
-
-    // Tier-II companion containers discovered in tier-IV areas.
     { id: "item:earth_geode_ii", tier: 2, variant: "earth", type: "companionContainer" },
     { id: "item:air_egg_ii", tier: 2, variant: "air", type: "companionContainer" },
     { id: "item:water_shell_ii", tier: 2, variant: "water", type: "companionContainer" },

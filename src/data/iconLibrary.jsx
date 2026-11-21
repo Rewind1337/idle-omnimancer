@@ -1,4 +1,4 @@
-import { Settings, PackageQuestionMark, Egg, ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck, CircleFadingArrowUp, Circle, CircleChevronDown, CircleChevronUp, CircleChevronsDown, CircleChevronsUp, CircleDivide, CircleEllipsis, CircleEqual, CircleExclamationPoint, CircleLetterA, CircleLetterB, CircleLetterC, CircleLetterD, CircleLetterE, CircleLetterF, CircleLetterG, CircleLetterH, CircleLetterI, CircleLetterJ, Ellipsis } from "lucide-react";
+import { Settings, PackageQuestionMark, Egg, ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck, CircleFadingArrowUp, Circle, CircleChevronDown, CircleChevronUp, CircleChevronsDown, CircleChevronsUp, CircleDivide, CircleEllipsis, CircleEqual, CircleExclamationPoint, CircleLetterA, CircleLetterB, CircleLetterC, CircleLetterD, CircleLetterE, CircleLetterF, CircleLetterG, CircleLetterH, CircleLetterI, CircleLetterJ, Ellipsis, Tally4, Sprout, BookUser, Astroid, HeartPulse, HeartCrack, Milk, Lens, Blend, CloudOff } from "lucide-react";
 
 export const OTHER_ICONS = {
     STAR: <Star />,
@@ -24,8 +24,9 @@ export const OTHER_ICONS = {
     SETTINGS: <Settings />,
     MISSION_DONE: <ClipboardCheck />,
     ARTIFACT: <PackageQuestionMark />,
-    COMPANION_CONTAINER: <Egg />,
-    SHELL: <Shell />,
+    COMPANION_GEODE: <Stone />,
+    COMPANION_EGG: <Egg />,
+    COMPANION_SHELL: <Shell />,
 }
 
 export const BAG_ICONS = {}
@@ -194,28 +195,28 @@ export const ITEM_SPRITES = {
     "item:air_catalyst_viii": TRANSMUTATION_ITEM_ICONS[7],
     "item:water_catalyst_viii": TRANSMUTATION_ITEM_ICONS[7],
 
-    // Exploration resources reuse matching elemental action artwork.
-    "item:crossroads_field_notes": RESEARCH_ACTION_ICONS[0],
-    "item:mossbound_ore": SPELLCRAFT_ACTION_ICONS.EARTH[0],
-    "item:whispering_seeds": SPELLCRAFT_ACTION_ICONS.AIR[0],
-    "item:stillwater_reeds": SPELLCRAFT_ACTION_ICONS.WATER[0],
-    "item:ironroot_ore": SPELLCRAFT_ACTION_ICONS.EARTH[1],
-    "item:zephyr_plumes": SPELLCRAFT_ACTION_ICONS.AIR[1],
-    "item:moonlit_pearls": SPELLCRAFT_ACTION_ICONS.WATER[1],
-    "item:shatterstone_fragments": SPELLCRAFT_ACTION_ICONS.EARTH[2],
-    "item:stormglass_shards": SPELLCRAFT_ACTION_ICONS.AIR[2],
-    "item:abyssal_ink": SPELLCRAFT_ACTION_ICONS.WATER[2],
-    "item:basalt_heart": SPELLCRAFT_ACTION_ICONS.EARTH[3],
-    "item:skybreak_aether": SPELLCRAFT_ACTION_ICONS.AIR[3],
-    "item:tidal_heart": SPELLCRAFT_ACTION_ICONS.WATER[3],
+    // Exploration resources
+    "item:crossroads_field_notes": <BookUser />,
+    "item:mossbound_ore": <Stone />,
+    "item:whispering_seeds": <Sprout />,
+    "item:stillwater_reeds": <Tally4 />,
+    "item:ironroot_ore": <Stone />,
+    "item:zephyr_plumes": <Feather />,
+    "item:moonlit_pearls": <Lens />,
+    "item:shatterstone_fragments": <Astroid />,
+    "item:stormglass_shards": <Blend />,
+    "item:abyssal_ink": <Milk />,
+    "item:basalt_heart": <HeartCrack />,
+    "item:skybreak_aether": <CloudOff />,
+    "item:tidal_heart": <HeartPulse />,
 
     // Containers use distinct imagery for their element.
-    "item:earth_geode_i": SPELLCRAFT_ACTION_ICONS.EARTH[4],
-    "item:air_egg_i": OTHER_ICONS.COMPANION_CONTAINER,
-    "item:water_shell_i": OTHER_ICONS.SHELL,
-    "item:earth_geode_ii": SPELLCRAFT_ACTION_ICONS.EARTH[6],
-    "item:air_egg_ii": OTHER_ICONS.COMPANION_CONTAINER,
-    "item:water_shell_ii": OTHER_ICONS.SHELL,
+    "item:earth_geode_i": OTHER_ICONS.COMPANION_GEODE,
+    "item:air_egg_i": OTHER_ICONS.COMPANION_EGG,
+    "item:water_shell_i": OTHER_ICONS.COMPANION_SHELL,
+    "item:earth_geode_ii": OTHER_ICONS.COMPANION_GEODE,
+    "item:air_egg_ii": OTHER_ICONS.COMPANION_EGG,
+    "item:water_shell_ii": OTHER_ICONS.COMPANION_SHELL,
 
     // Area artifacts are distinct inventory items for the future Combat system.
     "item:crossroads_waystone": OTHER_ICONS.ARTIFACT,

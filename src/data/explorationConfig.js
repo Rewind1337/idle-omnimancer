@@ -8,10 +8,9 @@ export const EXPLORATION_CONFIG = {
     unlockRule: "adjacent",
 
     unlockCosts: [
-        { item: "item:translated_scrolls", amount: 100 },
-        { item: "item:earth_catalyst_i", amount: 25 },
-        { item: "item:air_catalyst_i", amount: 25 },
-        { item: "item:water_catalyst_i", amount: 25 },
+        { item: "item:earth_catalyst_i", amount: 5 },
+        { item: "item:air_catalyst_i", amount: 5 },
+        { item: "item:water_catalyst_i", amount: 5 },
         { item: "currency:coins", amount: 10000 },
     ],
 

@@ -206,25 +206,3 @@ export const COMPANION_DATA_BY_CONTAINER_ID = Object.fromEntries(
     COMPANION_DATA.map(companion => [companion.containerId, companion])
 )
 
-// Preserve discoveries and assignments made before companion identities were renamed.
-export const COMPANION_ID_MIGRATIONS = {
-    "companion:earth": "companion:cloverhop",
-    "companion:air": "companion:stormfinch",
-    "companion:water": "companion:brineclaw",
-    "companion:mossling": "companion:cloverhop",
-    "companion:breezeling": "companion:stormfinch",
-    "companion:rillfin": "companion:brineclaw",
-    "companion:ironroot_warden": "companion:ironback",
-    "companion:zephyr_wisp": "companion:cloudtail",
-    "companion:mooncurrent_nymph": "companion:mooncoil",
-    "companion:verdant_colossus": "companion:fernpanda",
-    "companion:stormwing_sylph": "companion:thunderstripe",
-    "companion:glacial_leviathan": "companion:frostscale",
-    "companion:obsidian_sentinel": "companion:obsidian_scarab",
-    "companion:celestial_tempest": "companion:starhound",
-    "companion:abyssal_sovereign": "companion:abyssal_lynx",
-    "companion:worldcore_titan": "companion:worldroot_taurus",
-    "companion:empyrean_archon": "companion:empyrean_gemini",
-    "companion:eternal_tidecaller": "companion:eternal_aquarius",
-    "companion:wayfinder_spark": "companion:wayfinder_wyrm"
-}

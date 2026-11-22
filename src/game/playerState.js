@@ -6,11 +6,10 @@ import {
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { MISSION_DATA } from "../data/missionData"
-import { COMPANION_IDS, COMPANION_DATA, COMPANION_ID_MIGRATIONS } from "../data/companionData"
+import { COMPANION_IDS, COMPANION_DATA } from "../data/companionData"
 import { COMPANION_CONFIG } from "../data/companionConfig"
 
 export const SAVE_KEY = "omnimancer-idle-save"
-export const SAVE_VERSION = 6
 export const DEFAULT_INVENTORY_SLOTS = GLOBAL_CONFIG.startingBagSpace
 
 // The save contains only serializable player data. Configurations, functions,
@@ -48,7 +47,6 @@ export const createInitialPlayerState = () => {
     const spellcraft = SKILL_CONFIG_BY_ID["skill:spellcraft"]
 
     return {
-        version: SAVE_VERSION,
         lastUpdatedAt: Date.now(),
         unlockedSkills: SKILL_NAVIGATION
             .filter(({ skillId }) => defaultUnlockedSkills.has(skillId))
@@ -79,20 +77,16 @@ export const createInitialPlayerState = () => {
     }
 }
 
-// Merge saved values into the current config shape. This means newly added
-// skills/actions receive defaults while existing player progress is retained.
-const migrateCompanionId = companionId => COMPANION_ID_MIGRATIONS[companionId] ?? companionId
-
+// Rebuild saved data from known game definitions instead of trusting arbitrary save objects.
 export const normalizePlayerState = (savedState) => {
     const initial = createInitialPlayerState()
-    if (!savedState || typeof savedState !== "object") return initial
+    if (!isRecord(savedState)) return initial
 
     const validSkillIds = new Set(SKILL_NAVIGATION.map(({ skillId }) => skillId))
     const unlockedSkillIds = new Set(initial.unlockedSkills)
     const unlockedCompanions = [...new Set(
         (Array.isArray(savedState.unlockedCompanions) ? savedState.unlockedCompanions : [])
-            .map(migrateCompanionId)
-            .filter(id => COMPANION_IDS.includes(id))
+            .filter(id => typeof id === "string" && COMPANION_IDS.includes(id))
     )]
 
     if (unlockedCompanions.length > 0) unlockedSkillIds.add("skill:companions")
@@ -107,50 +101,44 @@ export const normalizePlayerState = (savedState) => {
         .filter(({ skillId }) => unlockedSkillIds.has(skillId))
         .map(({ skillId }) => skillId)
 
-    const activeAction = isKnownAction(savedState.activeAction, unlockedSkills)
-        ? savedState.activeAction
-        : null
-
     const skills = { ...initial.skills }
 
     for (const skill of SKILL_CONFIGS) {
-        const savedSkill = savedState.skills?.[skill.id]
+        const savedSkill = getOwn(savedState.skills, skill.id)
+        const savedActions = isRecord(savedSkill?.actions) ? savedSkill.actions : {}
         const actions = { ...initial.skills[skill.id].actions }
 
         for (const action of skill.actions) {
-            const savedAction = savedSkill?.actions?.[action.id]
-            if (!savedAction || typeof savedAction !== "object") continue
+            const savedAction = getOwn(savedActions, action.id)
+            if (!isRecord(savedAction)) continue
 
             const defaultAction = actions[action.id]
-            const isActiveAction = activeAction?.skillId === skill.id &&
-                activeAction?.actionId === action.id
-            const isRunningPassiveAction =
-                (action.activity ?? skill.activity ?? "active") === "passive" &&
-                unlockedSkills.includes(skill.id) &&
-                Boolean(savedAction.running)
-            const selectedItemData = ITEM_DATA_BY_ID[savedAction.selectedItemId]
+            const isPassiveAction =
+                (action.activity ?? skill.activity ?? "active") === "passive"
+            const unlocked = unlockedSkills.includes(skill.id) &&
+                (savedAction.unlocked === true || defaultAction.unlocked)
+            const selectedItemId = savedAction.selectedItemId
+            const selectedItemData = typeof selectedItemId === "string" &&
+                hasOwn(ITEM_DATA_BY_ID, selectedItemId)
+                ? ITEM_DATA_BY_ID[selectedItemId]
+                : null
             const selection = action.inputSelection
-            const hasValidSelectedItem = !selection || Boolean(
-                selectedItemData &&
-                ((selection.groups ?? []).includes(selectedItemData.group) ||
-                    (selection.types ?? []).includes(selectedItemData.type))
-            )
-            // Version 5 is the first save format whose idle partial-action progress is trusted.
-            const preserveProgress = savedState.version >= 5 ||
-                isActiveAction ||
-                isRunningPassiveAction
+            const hasValidSelectedItem = selection
+                ? Boolean(
+                    selectedItemData &&
+                    ((selection.groups ?? []).includes(selectedItemData.group) ||
+                        (selection.types ?? []).includes(selectedItemData.type))
+                )
+                : selectedItemId == null
 
             actions[action.id] = {
                 ...defaultAction,
-                unlocked: unlockedSkills.includes(skill.id) &&
-                    (Boolean(savedAction.unlocked) || defaultAction.unlocked),
+                unlocked,
                 level: clampInteger(savedAction.level, 1, GLOBAL_CONFIG.maxActionLevel, 1),
                 xp: Math.max(0, finiteNumber(savedAction.xp, 0)),
-                progressMs: preserveProgress
-                    ? Math.max(0, finiteNumber(savedAction.progressMs, 0))
-                    : 0,
-                running: unlockedSkills.includes(skill.id) && Boolean(savedAction.running),
-                selectedItemId: hasValidSelectedItem ? (savedAction.selectedItemId ?? null) : null,
+                progressMs: Math.max(0, finiteNumber(savedAction.progressMs, 0)),
+                running: isPassiveAction && unlocked && savedAction.running === true,
+                selectedItemId: hasValidSelectedItem ? (selectedItemId ?? null) : null,
             }
         }
 
@@ -167,9 +155,11 @@ export const normalizePlayerState = (savedState) => {
         skills[skill.id] = { actions }
     }
 
+    const activeAction = isKnownAction(savedState.activeAction, unlockedSkills, skills)
+
     const inventory = Object.fromEntries(
         Object.entries(normalizeNumberMap(savedState.inventory))
-            .filter(([itemId]) => ITEM_DATA_BY_ID[itemId])
+            .filter(([itemId]) => hasOwn(ITEM_DATA_BY_ID, itemId))
     )
     const occupiedSlots = Object.values(inventory).filter(amount => amount > 0).length
     const inventorySlots = Math.max(
@@ -183,24 +173,11 @@ export const normalizePlayerState = (savedState) => {
         ))]
         : initial.completedMissions
 
-    // Re-key progress for renamed companions. When both a legacy and current
-    // key exist, retain the entry with the higher level (then higher XP).
-    const migratedCompanionProgress = Object.entries(savedState.companionProgress ?? {})
-        .reduce((result, [companionId, progress]) => {
-            const id = migrateCompanionId(companionId)
-            const current = result[id]
-            const level = Number(progress?.level) || 0
-            const currentLevel = Number(current?.level) || 0
-            const xp = Number(progress?.xp) || 0
-            const currentXP = Number(current?.xp) || 0
-            if (!current || level > currentLevel || (level === currentLevel && xp > currentXP)) {
-                result[id] = progress
-            }
-            return result
-        }, {})
-
+    const savedCompanionProgress = isRecord(savedState.companionProgress)
+        ? savedState.companionProgress
+        : {}
     const companionProgress = Object.fromEntries(COMPANION_DATA.map(companion => {
-        const savedProgress = migratedCompanionProgress[companion.id]
+        const savedProgress = getOwn(savedCompanionProgress, companion.id)
         const isUnlocked = unlockedCompanions.includes(companion.id)
         const level = clampInteger(
             savedProgress?.level,
@@ -217,9 +194,11 @@ export const normalizePlayerState = (savedState) => {
     }))
 
     const validSlotIds = Object.keys(COMPANION_CONFIG.slots)
-    const savedActiveSlots = savedState.activeCompanionSlots ?? {}
+    const savedActiveSlots = isRecord(savedState.activeCompanionSlots)
+        ? savedState.activeCompanionSlots
+        : {}
     const savedUnlockedSlots = Array.isArray(savedState.unlockedCompanionSlots)
-        ? savedState.unlockedCompanionSlots
+        ? savedState.unlockedCompanionSlots.filter(slotId => typeof slotId === "string")
         : []
     const unlockedCompanionSlots = [...new Set([
         "any",
@@ -227,14 +206,9 @@ export const normalizePlayerState = (savedState) => {
     ].filter(slotId =>
         validSlotIds.includes(slotId) && COMPANION_CONFIG.slots[slotId]
     ))]
-    const savedSlotAssignments = Object.fromEntries(
-        Object.entries(savedActiveSlots).map(([slotId, companionId]) =>
-            [slotId, migrateCompanionId(companionId)]
-        )
-    )
     const assignedCompanions = new Set()
     const activeCompanionSlots = Object.fromEntries(validSlotIds.map(slotId => {
-        const companionId = savedSlotAssignments[slotId] ?? null
+        const companionId = getOwn(savedActiveSlots, slotId) ?? null
         const companion = COMPANION_DATA.find(entry => entry.id === companionId)
         const slot = COMPANION_CONFIG.slots[slotId]
         const compatible = slot.element === null ||
@@ -249,12 +223,9 @@ export const normalizePlayerState = (savedState) => {
         return [slotId, valid ? companionId : null]
     }))
 
-    let missionTier = clampInteger(
-        savedState.missionTier,
-        MISSION_DATA.startingTier,
-        MISSION_DATA.tierRequirements.length + 1,
-        initial.missionTier
-    )
+    // Mission tier is derived from validated completions, never trusted as a
+    // separately supplied unlock flag in the save.
+    let missionTier = MISSION_DATA.startingTier
 
     while (missionTier <= MISSION_DATA.tierRequirements.length) {
         const requiredCount = MISSION_DATA.tierRequirements[missionTier - 1]
@@ -270,8 +241,10 @@ export const normalizePlayerState = (savedState) => {
 
     return {
         ...initial,
-        version: SAVE_VERSION,
-        lastUpdatedAt: Math.max(0, finiteNumber(savedState.lastUpdatedAt, Date.now())),
+        lastUpdatedAt: Math.min(
+            Date.now(),
+            Math.max(0, finiteNumber(savedState.lastUpdatedAt, Date.now()))
+        ),
         unlockedSkills,
         activeAction,
         skills,
@@ -284,47 +257,70 @@ export const normalizePlayerState = (savedState) => {
         unlockedCompanionSlots,
         activeCompanionSlots,
         currencies: {
-            coins: Math.max(0, finiteNumber(
-                savedState.currencies?.coins,
-                finiteNumber(savedState.currencies?.gold, 0)
-            )),
-            fame: Math.max(0, finiteNumber(savedState.currencies?.fame, initial.currencies.fame)),
+            coins: Math.max(0, finiteNumber(getOwn(savedState.currencies, "coins"), 0)),
+            fame: Math.max(0, finiteNumber(getOwn(savedState.currencies, "fame"), initial.currencies.fame)),
         },
-        mana: {
-            current: Math.max(0, finiteNumber(savedState.mana?.current, initial.mana.current)),
-            max: Math.max(0, finiteNumber(savedState.mana?.max, initial.mana.max)),
-        },
+        mana: (() => {
+            const savedMana = isRecord(savedState.mana) ? savedState.mana : {}
+            const max = Math.max(0, finiteNumber(savedMana.max, initial.mana.max))
+            return {
+                current: Math.min(max, Math.max(0, finiteNumber(savedMana.current, initial.mana.current))),
+                max,
+            }
+        })(),
     }
 }
 
-const finiteNumber = (value, fallback) => {
-    const number = Number(value)
-    return Number.isFinite(number) ? number : fallback
-}
+const isRecord = value =>
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value)
 
-const clampInteger = (value, min, max, fallback) => {
-    const number = Number(value)
-    return Number.isFinite(number)
-        ? Math.min(max, Math.max(min, Math.floor(number)))
+const hasOwn = (value, key) =>
+    isRecord(value) && Object.prototype.hasOwnProperty.call(value, key)
+
+const getOwn = (value, key) =>
+    hasOwn(value, key) ? value[key] : undefined
+
+const finiteNumber = (value, fallback) =>
+    typeof value === "number" && Number.isFinite(value) ? value : fallback
+
+const clampInteger = (value, min, max, fallback) =>
+    typeof value === "number" && Number.isFinite(value)
+        ? Math.min(max, Math.max(min, Math.floor(value)))
         : fallback
-}
 
 const normalizeNumberMap = (value) => {
-    if (!value || typeof value !== "object" || Array.isArray(value)) return {}
+    if (!isRecord(value)) return {}
 
     return Object.fromEntries(
         Object.entries(value)
-            .filter(([, amount]) => Number.isFinite(Number(amount)) && Number(amount) >= 0)
-            .map(([id, amount]) => [id, Number(amount)])
+            .filter(([, amount]) =>
+                typeof amount === "number" && Number.isFinite(amount) && amount > 0
+            )
     )
 }
 
-const isKnownAction = (selection, unlockedSkills) => {
-    if (!selection || typeof selection !== "object") return false
-    if (!unlockedSkills.includes(selection.skillId)) return false
+const isKnownAction = (selection, unlockedSkills, skills) => {
+    if (!isRecord(selection)) return null
+    const { skillId, actionId } = selection
+    if (
+        typeof skillId !== "string" ||
+        typeof actionId !== "string" ||
+        !unlockedSkills.includes(skillId) ||
+        !hasOwn(SKILL_CONFIG_BY_ID, skillId)
+    ) return null
 
-    const skill = SKILL_CONFIG_BY_ID[selection.skillId]
-    return Boolean(skill?.actions.some(action => action.id === selection.actionId))
+    const skill = SKILL_CONFIG_BY_ID[skillId]
+    const action = skill.actions.find(entry => entry.id === actionId)
+    const actionState = skills[skillId]?.actions?.[actionId]
+    const isPassiveAction = (action?.activity ?? skill.activity ?? "active") === "passive"
+    const isMaxLevelActiveAction = action?.tracksProgress !== false &&
+        actionState?.level >= GLOBAL_CONFIG.maxActionLevel
+
+    return action && !isPassiveAction && !isMaxLevelActiveAction && actionState?.unlocked
+        ? { skillId, actionId }
+        : null
 }
 
 // Read and validate a save. A malformed or inaccessible save safely falls back

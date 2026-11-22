@@ -302,7 +302,7 @@ export function CompanionPage() {
                                 <hr />
                                 <EffectStack title="XP effects" icon={OTHER_ICONS.SPARKLES}
                                     entries={actionEffectStacks.xpGain ?? []}
-                                    formulas={["XP = base XP × applicable XP bonuses"]} />
+                                    formulas={["XP = max(0, base XP × element modifier × max(0, 1 + Σ multiplier bonuses) + Σ flat bonuses)"]} />
                             </Flex>}>
                             +{actionXPReward.toLocaleString()} XP
                         </Badge>

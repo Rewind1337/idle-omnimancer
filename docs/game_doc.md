@@ -476,23 +476,23 @@ The Companions skill unlocks automatically when the player unveils their first c
 ### 10.2 Companion levels, skill progression and training
 
 - Every discovered companion levels independently from 1 to 100.
-- Companion XP is awarded by the single **Tend to Companions** action. Each completion takes 5 seconds and grants 5 XP to every companion currently assigned to an unlocked active slot.
+- Companion XP is awarded by the single **Tend to Companions** action. Each completion takes 5 seconds and grants the action's calculated XP reward to every assigned companion below level 100. The action itself receives that exact same XP amount, including applicable XP bonuses.
 - The coin cost per completion is 10 times the combined levels of all assigned companions. For example, three active companions at level 15 cost 450 coins per cycle.
-- XP is awarded in full to each active companion; it is not divided between slots. Two active companions each receive 5 XP per completion, for 10 total Companion XP.
+- XP is awarded in full to each eligible companion; it is not divided between slots. Two eligible companions each receive the full action XP reward.
 - **Tend to Companions** has its own action level and action XP progression. Its first level requires 50 XP.
 - Companion skill XP is derived from the sum of all 16 companion levels rather than action levels. Its maximum progression pool is 16 × 100 = 1,600 companion levels. For example, three companions at level 100 contribute 300 / 1,600, or 18.75% of the Companion skill's total progression.
 - Each companion's level-up requirement increases over time. The current initial curve starts at 20 XP, then applies a 1.1 per-level multiplier plus 2 additional XP per level.
-- There are four horizontal slots. The **Any Element** slot is unlocked by default; Earth, Air and Water slots cost 1,000,000, 2,000,000 and 3,000,000 coins respectively.
+- There are four vertically stacked slots. The **Any Element** slot is unlocked by default; Earth, Air and Water slots cost 1,000,000, 2,000,000 and 3,000,000 coins respectively.
 - Element-specific slots accept a companion of that element or a neutral companion. The Any Element slot accepts any companion. A companion can occupy only one slot at a time.
-- Companion effects begin at x1.05 at level 1, then gain their configured per-level progression. Reduction effects apply the same starting benefit in the opposite direction.
+- Most companion effects start with a 5% benefit at level 1 (or a 5% cost reduction) and then gain their configured per-level progression. Input preservation is an exception: it has no 5% starting bonus.
 - The Companions page shows all four slots, the training action, the companion collection, each companion's level and XP, and both of its effects.
 
 ### 10.3 Companion effects
 
 - Every companion has exactly two effects:
-  - A permanent effect that is always active after discovery and applies globally. Its effect strength scales by 1.00 + 0.01 × (level − 1).
-  - An active effect that applies only while the companion occupies its elemental slot and targets the configured skill. Its effect strength scales by 1.00 + 0.025 × (level − 1).
-- Both effects start at x1.00 at level 1. For example, at level 10 the permanent effect strength is x1.09 and the active effect strength is x1.225.
+  - A permanent effect that is always active after discovery and applies globally. Ordinary permanent effects start with a 5% benefit at level 1 and gain another 1 percentage point per level thereafter.
+  - An active effect that applies only while the companion occupies its elemental slot and targets the configured skill. Ordinary active effects start with a 5% benefit at level 1 and gain another 2.5 percentage points per level thereafter.
+- Input preservation has no shared 5% starting bonus: Ironroot Warden grants +0.1% per companion level globally, while Rillfin grants +0.25% per level to Transmutation while assigned. At level 100, these effects provide +10% and +25% preservation respectively.
 - For cost-reduction effects, the effective cost multiplier decreases as the reduction grows; the current implementation floors the resulting cost multiplier at x0.10.
 - Companion effects can improve sell value, action XP, action time, item output, input preservation, Mana cost, Mana capacity, Mana regeneration, companion-container chance and unlock costs.
 - One companion has a permanent Companion Chance bonus and an active Artifact Chance bonus. Artifact Chance is reserved for the future Combat reward system; Combat itself is not part of this Companion implementation.

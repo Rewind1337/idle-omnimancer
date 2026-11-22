@@ -31,7 +31,7 @@ export const COMPANION_CONFIG = {
             name: "Tend to Companions",
             tier: 1,
             time: { base: 5, perTier: 0 },
-            companionTraining: { xpPerCompanion: 5, coinsPerCombinedLevel: 10 },
+            companionTraining: { coinsPerCombinedLevel: 10 },
             unlockedByDefault: true,
         },
     ],

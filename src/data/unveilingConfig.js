@@ -1,9 +1,7 @@
 // Unveiling consumes selected inventory items to reveal what is hidden within them.
-export const COMPANION_IDS = [
-    "companion:earth",
-    "companion:air",
-    "companion:water",
-]
+import { COMPANION_IDS } from "./companionData"
+
+export { COMPANION_IDS }
 
 export const UNVEILING_CONFIG = {
     id: "skill:unveiling",
@@ -37,18 +35,11 @@ export const UNVEILING_CONFIG = {
     actionMilestones: [],
 
     companionRewards: {
-        companionIdsByElement: {
-            earth: "companion:earth",
-            air: "companion:air",
-            water: "companion:water",
-        },
         experienceItemsByElement: {
             earth: "item:earth_companion_xp",
             air: "item:air_companion_xp",
             water: "item:water_companion_xp",
         },
-        commonItem: "item:faded_trinket",
-        experienceChance: 0.5,
     },
 
     actions: [
@@ -104,7 +95,7 @@ export const UNVEILING_CONFIG = {
             time: { base: 15, perTier: 0 },
             actionXPReward: 50,
             // Unidentified objects will be added when Combat defines their item and reward data.
-            inputSelection: { types: ["companionContainer"], maxTier: 1 },
+            inputSelection: { types: ["companionContainer"], maxTier: 5 },
             processesCompanionContainers: true,
             unlockedByDefault: true,
         },

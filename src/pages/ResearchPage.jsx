@@ -26,6 +26,7 @@ import {
     getActionPreservationChance,
     getSkillProgress,
     getVisibleActions,
+    getActionUnlockCosts,
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 
@@ -86,7 +87,7 @@ function ResearchAction({ action, player, isActive, isUnlocked, actionState, can
                             outputMultiplier={outputMultiplier} />
                     </>
                 ) : (
-                    <ActionResources requires={action.unlockCosts ?? []} />
+                    <ActionResources requires={getActionUnlockCosts(player, skillId, action.id)} />
                 )}
             </Flex>
         </Paper>

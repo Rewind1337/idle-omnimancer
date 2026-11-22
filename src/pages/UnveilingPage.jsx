@@ -28,6 +28,7 @@ import {
     getSkillProgress,
     getSkillMilestoneDetails,
     getVisibleActions,
+    getActionUnlockCosts,
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 
@@ -131,7 +132,7 @@ function UnveilingActionCard({
                         />
                     </>
                 ) : (
-                    <ActionResources requires={action.unlockCosts ?? []} />
+                    <ActionResources requires={getActionUnlockCosts(player, skillId, action.id)} />
                 )}
             </Flex>
         </Paper>

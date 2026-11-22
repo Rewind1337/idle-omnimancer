@@ -30,6 +30,7 @@ import {
     getSkillMilestoneDetails,
     getSkillProgress,
     getVisibleActions,
+    getActionUnlockCosts,
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 
@@ -94,7 +95,7 @@ function SpellcraftAction({ action, player, isActive, isUnlocked, actionState, c
                             outputMultiplier={outputMultiplier} />
                     </>
                 ) : (
-                    <ActionResources requires={action.unlockCosts ?? []} />
+                    <ActionResources requires={getActionUnlockCosts(player, skillId, action.id)} />
                 )}
             </Flex>
         </Paper>

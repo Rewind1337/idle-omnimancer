@@ -23,9 +23,13 @@ import { FloatingPanel } from "./components/FloatingPanel";
 import { SettingsModal } from "./components/modals/SettingsModal";
 import { ExplorationPage } from "./pages/ExplorationPage";
 import { UnveilingPage } from "./pages/UnveilingPage";
-import { OTHER_ICONS } from "./data/iconLibrary";
+import { CompanionPage } from "./pages/CompanionPage";
+import { OTHER_ICONS, SKILL_ICONS } from "./data/iconLibrary";
+import { useGame } from "./hooks/useGame";
 
 import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
+
+const COMPANIONS_NAVIGATION = SKILL_NAVIGATION.find(skill => skill.skillId === "skill:companions")
 
 function ResponsivePage({
   children,
@@ -39,6 +43,8 @@ function ResponsivePage({
   const [bagModalVisible, setBagModalVisible] = useState(false)
   const [missionsModalVisible, setMissionsModalVisible] = useState(false)
   const [settingsModalVisible, setSettingsModalVisible] = useState(false)
+  const { player } = useGame()
+  const companionsUnlocked = player.unlockedSkills?.includes("skill:companions")
 
   const closeBagButton = (
     <Button variant="primary" onClick={() => setBagModalVisible(false)}>
@@ -58,6 +64,17 @@ function ResponsivePage({
       onClick={() => setMissionsModalVisible(true)}
     />
   )
+  const companionsButton = companionsUnlocked ? (
+    <Button
+      variant="companions"
+      size="medium"
+      icon={SKILL_ICONS.COMPANIONS}
+      toggled={activePage === COMPANIONS_NAVIGATION?.id}
+      onClick={() => setActivePage(COMPANIONS_NAVIGATION.id)}
+    >
+      Companions
+    </Button>
+  ) : null
   const bagButton = (
     <BagButton
       active={bagModalVisible}
@@ -78,6 +95,7 @@ function ResponsivePage({
 
   const sideActionsLeft = (
     <Flex direction="column" gap={8} className="navigation-side-actions">
+      {companionsButton}
       {shopButton}
       {missionsButton}
       {bagButton}
@@ -114,6 +132,7 @@ function ResponsivePage({
 
   const floatingButtons = navigationPosition === "top" ? (
     <FloatingPanel>
+      {companionsButton}
       {shopButton}
       {missionsButton}
       {bagButton}
@@ -195,6 +214,7 @@ function App() {
           {activeSkill?.skillId === "skill:transmutation" && <TransmutationPage />}
           {activeSkill?.skillId === "skill:exploration" && <ExplorationPage />}
           {activeSkill?.skillId === "skill:unveiling" && <UnveilingPage />}
+          {activeSkill?.skillId === "skill:companions" && <CompanionPage />}
           {activePage === DEVELOPMENT_NAVIGATION.id && <DevelopmentPage />}
           {activePage === SHOP_NAVIGATION.id && <ShopPage setActivePage={setActivePage} />}
         </ResponsivePage>

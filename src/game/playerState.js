@@ -6,10 +6,11 @@ import {
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { MISSION_DATA } from "../data/missionData"
-import { COMPANION_IDS } from "../data/unveilingConfig"
+import { COMPANION_IDS, COMPANION_DATA } from "../data/companionData"
+import { COMPANION_CONFIG } from "../data/companionConfig"
 
 export const SAVE_KEY = "omnimancer-idle-save"
-export const SAVE_VERSION = 3
+export const SAVE_VERSION = 4
 export const DEFAULT_INVENTORY_SLOTS = GLOBAL_CONFIG.startingBagSpace
 
 // The save contains only serializable player data. Configurations, functions,
@@ -59,6 +60,14 @@ export const createInitialPlayerState = () => {
         missionTier: MISSION_DATA.startingTier,
         completedMissions: [],
         unlockedCompanions: [],
+        companionProgress: Object.fromEntries(COMPANION_DATA.map(companion => [
+            companion.id,
+            { level: 0, xp: 0 },
+        ])),
+        unlockedCompanionSlots: Object.entries(COMPANION_CONFIG.slots)
+            .filter(([, slot]) => slot.unlockedByDefault)
+            .map(([element]) => element),
+        activeCompanionSlots: { earth: null, air: null, water: null },
         currencies: {
             coins: 0,
             fame: 0,
@@ -78,6 +87,18 @@ export const normalizePlayerState = (savedState) => {
 
     const validSkillIds = new Set(SKILL_NAVIGATION.map(({ skillId }) => skillId))
     const unlockedSkillIds = new Set(initial.unlockedSkills)
+    const legacyCompanionIds = {
+        "companion:earth": COMPANION_DATA[0].id,
+        "companion:air": COMPANION_DATA[1].id,
+        "companion:water": COMPANION_DATA[2].id,
+    }
+    const unlockedCompanions = [...new Set(
+        (Array.isArray(savedState.unlockedCompanions) ? savedState.unlockedCompanions : [])
+            .map(id => legacyCompanionIds[id] ?? id)
+            .filter(id => COMPANION_IDS.includes(id))
+    )]
+
+    if (unlockedCompanions.length > 0) unlockedSkillIds.add("skill:companions")
 
     if (Array.isArray(savedState.unlockedSkills)) {
         for (const skillId of savedState.unlockedSkills) {
@@ -135,6 +156,16 @@ export const normalizePlayerState = (savedState) => {
             }
         }
 
+        if (unlockedSkills.includes(skill.id)) {
+            for (const action of skill.actions) {
+                if (!action.unlockedByDefault) continue
+                actions[action.id] = {
+                    ...actions[action.id],
+                    unlocked: true,
+                }
+            }
+        }
+
         skills[skill.id] = { actions }
     }
 
@@ -154,9 +185,41 @@ export const normalizePlayerState = (savedState) => {
         ))]
         : initial.completedMissions
 
-    const unlockedCompanions = Array.isArray(savedState.unlockedCompanions)
-        ? [...new Set(savedState.unlockedCompanions.filter(id => COMPANION_IDS.includes(id)))]
-        : initial.unlockedCompanions
+    const companionProgress = Object.fromEntries(COMPANION_DATA.map(companion => {
+        const savedProgress = savedState.companionProgress?.[companion.id]
+        const isUnlocked = unlockedCompanions.includes(companion.id)
+        const level = clampInteger(
+            savedProgress?.level,
+            0,
+            COMPANION_CONFIG.companionLeveling.maxLevel,
+            isUnlocked ? 1 : 0
+        )
+        return [companion.id, {
+            level: isUnlocked ? Math.max(1, level) : 0,
+            xp: isUnlocked && level < COMPANION_CONFIG.companionLeveling.maxLevel
+                ? Math.max(0, finiteNumber(savedProgress?.xp, 0))
+                : 0,
+        }]
+    }))
+
+    const validElements = Object.keys(COMPANION_CONFIG.slots)
+    const unlockedCompanionSlots = [...new Set([
+        "earth",
+        ...(Array.isArray(savedState.unlockedCompanionSlots) ? savedState.unlockedCompanionSlots : []),
+    ].filter(element =>
+        validElements.includes(element) && COMPANION_CONFIG.slots[element]
+    ))]
+    const activeCompanionSlots = Object.fromEntries(validElements.map(element => {
+        const companionId = savedState.activeCompanionSlots?.[element] ?? null
+        const companion = COMPANION_DATA.find(entry => entry.id === companionId)
+        return [element,
+            unlockedCompanionSlots.includes(element) &&
+            companion?.element === element &&
+            unlockedCompanions.includes(companionId)
+                ? companionId
+                : null
+        ]
+    }))
 
     let missionTier = clampInteger(
         savedState.missionTier,
@@ -189,6 +252,9 @@ export const normalizePlayerState = (savedState) => {
         missionTier,
         completedMissions,
         unlockedCompanions,
+        companionProgress,
+        unlockedCompanionSlots,
+        activeCompanionSlots,
         currencies: {
             coins: Math.max(0, finiteNumber(
                 savedState.currencies?.coins,

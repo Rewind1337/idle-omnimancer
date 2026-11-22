@@ -13,6 +13,10 @@ const EFFECT_LABELS = {
     preservation: "Preservation Chance",
     manaCapacity: "Mana Capacity",
     manaRegeneration: "Mana Regeneration",
+    sellValue: "Sell Value",
+    unlockCostReduction: "Unlock Cost",
+    companionChance: "Companion Chance",
+    artifactChance: "Artifact Chance",
 }
 
 const formatNumber = (value) => Number(value.toFixed(2)).toString()

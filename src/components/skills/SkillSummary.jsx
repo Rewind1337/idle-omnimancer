@@ -10,7 +10,17 @@ import { getSkillXPTable } from "../../data/skillConfig"
 
 const formatXP = value => Number(value).toLocaleString()
 
-export function SkillSummary({ title, skillId, skillProgress, variant, icon, milestones = [], progressEnabled = true }) {
+export function SkillSummary({
+    title,
+    skillId,
+    skillProgress,
+    variant,
+    icon,
+    milestones = [],
+    progressEnabled = true,
+    skillXPTooltip = "Skill XP is earned from completed Action level-ups. Each Action level gained contributes 1 Skill XP.",
+    totalProgressTooltip = "Total progress in this skill, derived from the levels of all its Actions.",
+}) {
     const totalPercentage = progressEnabled && skillProgress?.maxXP > 0
         ? (skillProgress.totalXP / skillProgress.maxXP) * 100
         : 0
@@ -34,7 +44,7 @@ export function SkillSummary({ title, skillId, skillProgress, variant, icon, mil
                         <h1>{title}</h1>
                         {progressEnabled && (
                             <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">
-                                <Heading h="4" className="w-100 align-center">Skill XP is earned from completed Action level-ups. Each Action level gained contributes 1 Skill XP.</Heading>
+                                <Heading h="4" className="w-100 align-center">{skillXPTooltip}</Heading>
                             </Flex>}>
                                 {skillProgress.xp} / {skillProgress.neededXP} XP
                             </Badge>
@@ -43,7 +53,7 @@ export function SkillSummary({ title, skillId, skillProgress, variant, icon, mil
                             <Flex direction="column" gap={8}>
                                 {progressEnabled ? (
                                     <>
-                                        <Heading h="4" className="w-100 align-center">Total progress in this skill, derived from the levels of all its Actions.</Heading>
+                                        <Heading h="4" className="w-100 align-center">{totalProgressTooltip}</Heading>
                                         {nextSkillLevels.length > 0 && (
                                             <Flex direction="column" gap={4}>
                                                 <Heading h="5">Next Skill Levels</Heading>

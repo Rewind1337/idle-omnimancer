@@ -3,6 +3,7 @@ import { SPELLCRAFT_CONFIG } from "./spellcraftConfig"
 import { TRANSMUTATION_CONFIG } from "./transmutationConfig"
 import { EXPLORATION_CONFIG } from "./explorationConfig"
 import { UNVEILING_CONFIG } from "./unveilingConfig"
+import { COMPANION_CONFIG } from "./companionConfig"
 
 // Shared progression limits. Keep these in one place so the save state,
 // progression tables and game engine all use the same maximum levels.
@@ -48,6 +49,25 @@ export const generateActionXPTable = (config, tier) => {
 // converts that total into the skill's level and its remaining XP.
 export const generateSkillXPTable = (config) => {
     const maxSkillLevel = GLOBAL_CONFIG.maxSkillLevel
+
+    if (config.progression?.type === "companionLevels") {
+        const maxXP = config.progression.companionCount * config.companionLeveling.maxLevel
+        return Array.from({ length: maxSkillLevel }, (_, index) => {
+            const level = index + 1
+            const totalXP = level === maxSkillLevel
+                ? maxXP
+                : Math.floor((level - 1) * maxXP / (maxSkillLevel - 1))
+            const nextTotalXP = level === maxSkillLevel
+                ? null
+                : Math.floor(level * maxXP / (maxSkillLevel - 1))
+
+            return {
+                level,
+                neededXP: nextTotalXP === null ? null : nextTotalXP - totalXP,
+                totalXP,
+            }
+        })
+    }
     const maxActionLevel = GLOBAL_CONFIG.maxActionLevel
     const actionCount = config.actions.length
     const firstLevelXP = config.skillXP.firstLevelXP
@@ -100,6 +120,7 @@ export const SKILL_CONFIGS = [
     TRANSMUTATION_CONFIG,
     EXPLORATION_CONFIG,
     UNVEILING_CONFIG,
+    COMPANION_CONFIG,
 ]
 
 export const SKILL_CONFIG_BY_ID = Object.fromEntries(

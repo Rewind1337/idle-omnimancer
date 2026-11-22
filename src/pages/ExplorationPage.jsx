@@ -15,6 +15,7 @@ import { Text } from "../components/Text"
 
 import { EXPLORATION_CONFIG } from "../data/explorationConfig"
 import { WORLD_AREAS, WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
+import { COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
 import { SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
@@ -29,6 +30,8 @@ import {
     getActionPreservationChance,
     getSkillProgress,
     getSkillMilestoneDetails,
+    getActionUnlockCosts,
+    getSkillUnlockCosts,
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 import { humanize } from "../utility/helpers"
@@ -154,7 +157,9 @@ function ExplorationActionCard({
                     </>
                 ) : (
                     <ActionResources
-                        requires={isSkillUnlocked ? (action.unlockCosts ?? []) : EXPLORATION_CONFIG.unlockCosts}
+                        requires={isSkillUnlocked
+                            ? getActionUnlockCosts(player, skillId, action.id)
+                            : getSkillUnlockCosts(player, skillId)}
                     />
                 )}
             </Flex>
@@ -183,6 +188,13 @@ export function ExplorationPage() {
     const unlockedAreaIds = WORLD_AREAS
         .filter(area => Boolean(player.skills?.[skillId]?.actions?.[area.actionId]?.unlocked))
         .map(area => area.id)
+    const unlockedCompanions = new Set(player.unlockedCompanions ?? [])
+    const areaMarkers = Object.fromEntries(EXPLORATION_CONFIG.actions.flatMap(action => {
+        const companion = COMPANION_DATA_BY_CONTAINER_ID[action.companionContainer]
+        return companion && !unlockedCompanions.has(companion.id)
+            ? [[action.areaId, "companion"]]
+            : []
+    }))
 
     return (
         <Flex direction="column" className="page-flex page-flex-exploration" padding={32} gap={24}>
@@ -216,6 +228,7 @@ export function ExplorationPage() {
                             player.skills?.[skillId]?.actions?.[area.actionId]?.level ?? 1,
                         ]))}
                         unlockedAreaIds={unlockedAreaIds}
+                        areaMarkers={areaMarkers}
                         onSelectArea={setSelectedAreaId}
                     />
                 </Flex>

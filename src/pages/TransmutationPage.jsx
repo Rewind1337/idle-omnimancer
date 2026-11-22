@@ -29,6 +29,7 @@ import {
     getSkillMilestoneDetails,
     getSkillProgress,
     getVisibleActions,
+    getActionUnlockCosts,
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 
@@ -126,7 +127,7 @@ function TransmutationAction({ action, player, isActive, isUnlocked, actionState
                         />
                     </>
                 ) : (
-                    <ActionResources requires={action.unlockCosts ?? []} />
+                    <ActionResources requires={getActionUnlockCosts(player, skillId, action.id)} />
                 )}
             </Flex>
         </Paper>

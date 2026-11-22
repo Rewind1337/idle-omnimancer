@@ -8,6 +8,8 @@ import {
 import { ITEM_DATA, ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { humanize } from "../utility/helpers"
+import { COMPANION_DATA, COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
+import { COMPANION_CONFIG } from "../data/companionConfig"
 
 
 
@@ -79,14 +81,22 @@ const getUnlockCostBalance = (player, itemId) => {
     return player.inventory?.[itemId] ?? 0
 }
 
-const isEligibleSelectedItem = (action, item) => {
+const isEligibleSelectedItem = (action, item, player = null) => {
     const selection = action.inputSelection
     if (!selection || !item) return false
     if (Number.isFinite(selection.minTier) && item.tier < selection.minTier) return false
     if (Number.isFinite(selection.maxTier) && item.tier > selection.maxTier) return false
 
-    return (selection.groups ?? []).includes(item.group) ||
+    const matchesSelection = (selection.groups ?? []).includes(item.group) ||
         (selection.types ?? []).includes(item.type)
+    if (!matchesSelection) return false
+
+    if (Number.isFinite(item.requiredUnveilingLevel) && player) {
+        const unveilingLevel = getSkillProgress(player, "skill:unveiling")?.level ?? 1
+        if (unveilingLevel < item.requiredUnveilingLevel) return false
+    }
+
+    return true
 }
 
 export const getActionSelectableItems = (player, skillId, actionId) => {
@@ -94,7 +104,7 @@ export const getActionSelectableItems = (player, skillId, actionId) => {
     if (!action?.inputSelection) return []
 
     return ITEM_DATA
-        .filter(item => isEligibleSelectedItem(action, item) && (player.inventory?.[item.id] ?? 0) > 0)
+        .filter(item => isEligibleSelectedItem(action, item, player) && (player.inventory?.[item.id] ?? 0) > 0)
         .map(item => ({ ...item, amount: player.inventory[item.id] }))
         .sort((a, b) => a.tier - b.tier || a.name.localeCompare(b.name))
 }
@@ -105,7 +115,7 @@ export const canSelectActionItem = (player, skillId, actionId, itemId) => {
     return Boolean(
         player.unlockedSkills?.includes(skillId) &&
         player.skills?.[skillId]?.actions?.[actionId]?.unlocked &&
-        isEligibleSelectedItem(action, item) &&
+        isEligibleSelectedItem(action, item, player) &&
         (player.inventory?.[itemId] ?? 0) > 0
     )
 }
@@ -116,7 +126,7 @@ const getActionConsumeTotals = (action, player = null, skill = null) => {
     if (action.inputSelection) {
         const selectedItemId = player?.skills?.[skill?.id]?.actions?.[action.id]?.selectedItemId
         const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
-        return isEligibleSelectedItem(action, selectedItem)
+        return isEligibleSelectedItem(action, selectedItem, player)
             ? { [selectedItemId]: 1 }
             : null
     }
@@ -166,8 +176,10 @@ export const getItemActionSources = (itemId, player = null) => {
 
     for (const skill of SKILL_CONFIGS) {
         if (Array.isArray(skill.unlockCosts)) {
-            const skillCost = skill.unlockCosts
-                .filter(cost => cost.item === itemId)
+            const skillCost = (player
+                ? getSkillUnlockCosts(player, skill.id)
+                : skill.unlockCosts
+            ).filter(cost => cost.item === itemId)
                 .reduce((total, cost) => total + (cost.amount ?? 0), 0)
 
             if (skillCost > 0) {
@@ -192,6 +204,27 @@ export const getItemActionSources = (itemId, player = null) => {
                     id: "obtain-" + skill.id + "-" + action.id,
                     name: actionName,
                     amount: outputAmount,
+                    type: "action",
+                    badgeVariant: skill.variant
+                })
+            }
+
+            if (
+                action.processesCompanionContainers &&
+                Object.values(skill.companionRewards?.experienceItemsByElement ?? {}).includes(itemId)
+            ) {
+                const candyAmounts = COMPANION_DATA
+                    .filter(companion => skill.companionRewards?.experienceItemsByElement?.[companion.element] === itemId)
+                    .map(companion => companion.duplicateCandyAmount ?? companion.tier ?? 1)
+                const minimumAmount = Math.min(...candyAmounts)
+                const maximumAmount = Math.max(...candyAmounts)
+                obtainedBy.push({
+                    id: "unveil-reward-" + skill.id + "-" + itemId,
+                    name: actionName,
+                    amount: minimumAmount,
+                    amountLabel: minimumAmount === maximumAmount
+                        ? String(minimumAmount) + " per duplicate"
+                        : String(minimumAmount) + "–" + String(maximumAmount) + " per duplicate",
                     type: "action",
                     badgeVariant: skill.variant
                 })
@@ -222,12 +255,7 @@ export const getItemActionSources = (itemId, player = null) => {
 
             const selection = action.inputSelection
             const selectedItemIsEligible = Boolean(
-                selection &&
-                ITEM_DATA_BY_ID[itemId] &&
-                (!Number.isFinite(selection.minTier) || ITEM_DATA_BY_ID[itemId].tier >= selection.minTier) &&
-                (!Number.isFinite(selection.maxTier) || ITEM_DATA_BY_ID[itemId].tier <= selection.maxTier) &&
-                ((selection.groups ?? []).includes(ITEM_DATA_BY_ID[itemId].group) ||
-                    (selection.types ?? []).includes(ITEM_DATA_BY_ID[itemId].type))
+                selection && isEligibleSelectedItem(action, ITEM_DATA_BY_ID[itemId], player)
             )
             const consumedAmount = selection
                 ? (selectedItemIsEligible ? 1 : 0)
@@ -243,7 +271,10 @@ export const getItemActionSources = (itemId, player = null) => {
                 })
             }
 
-            const unlockAmount = (action.unlockCosts ?? [])
+            const actionUnlockCosts = player
+                ? getActionUnlockCosts(player, skill.id, action.id)
+                : (action.unlockCosts ?? [])
+            const unlockAmount = actionUnlockCosts
                 .filter(cost => cost.item === itemId)
                 .reduce((total, cost) => total + (cost.amount ?? 0), 0)
 
@@ -276,17 +307,17 @@ const canStoreActionOutputs = (player, skill, action) => {
     const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
 
     if (action.processesCompanionContainers && selectedItem?.type === "companionContainer") {
-        const companionId = skill.companionRewards?.companionIdsByElement?.[selectedItem.variant]
-        if (!player.unlockedCompanions?.includes(companionId)) return true
+        const companion = COMPANION_DATA_BY_CONTAINER_ID[selectedItem.id]
+        if (!companion || !player.unlockedCompanions?.includes(companion.id)) return true
 
-        const possibleRewards = [
-            skill.companionRewards?.experienceItemsByElement?.[selectedItem.variant],
-            skill.companionRewards?.commonItem,
-        ].filter(Boolean)
-        const rewardItemsToAdd = possibleRewards.filter(itemId => !(inventory[itemId] > 0))
-        if (rewardItemsToAdd.length > 0 && occupiedSlots >= (player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace)) {
-            return false
-        }
+        const duplicateReward = skill.companionRewards?.experienceItemsByElement?.[selectedItem.variant]
+        const inventorySlots = player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
+        const rewardItemsToAdd = duplicateReward && !(inventory[duplicateReward] > 0)
+            ? [duplicateReward]
+            : []
+        const containerSlotFreed = (inventory[selectedItem.id] ?? 0) === 1
+        const availableSlots = inventorySlots - occupiedSlots + (containerSlotFreed ? 1 : 0)
+        if (rewardItemsToAdd.length > 0 && availableSlots <= 0) return false
     }
 
     const companionContainerId = typeof action.companionContainer === "string"
@@ -317,7 +348,7 @@ export const canUnlockSkill = (player, skillId) => {
         skill.unlockCosts.length === 0
     ) return false
 
-    const costs = getUnlockCostTotals(skill.unlockCosts)
+    const costs = getUnlockCostTotals(getSkillUnlockCosts(player, skillId))
     if (!costs) return false
 
     return Object.entries(costs).every(([itemId, amount]) =>
@@ -358,7 +389,7 @@ export const canUnlockAction = (player, skillId, actionId) => {
         if (getNextLockedAction(player, skillId)?.id !== actionId) return false
     }
 
-    const costs = getUnlockCostTotals(action.unlockCosts)
+    const costs = getUnlockCostTotals(getActionUnlockCosts(player, skillId, actionId))
     if (!costs) return false
     return Object.entries(costs).every(([itemId, amount]) =>
         getUnlockCostBalance(player, itemId) >= amount
@@ -370,12 +401,14 @@ export const getSkillProgress = (player, skillId) => {
     const table = getSkillXPTable(skillId)
     if (!skill || !table) return null
 
-    // Skill XP intentionally comes from completed action levels only. Partial
-    // action XP does not contribute until that action actually levels up.
-    const totalXP = skill.actions.reduce((total, action) => {
-        const level = player.skills[skillId]?.actions[action.id]?.level ?? 1
-        return total + (level - 1)
-    }, 0)
+    // Companion Skill XP is the sum of all 15 companion levels.
+    const totalXP = skill.progression?.type === "companionLevels"
+        ? COMPANION_DATA.reduce((total, companion) =>
+            total + (player.companionProgress?.[companion.id]?.level ?? 0), 0)
+        : skill.actions.reduce((total, action) => {
+            const level = player.skills[skillId]?.actions[action.id]?.level ?? 1
+            return total + (level - 1)
+        }, 0)
 
     let current = table[0]
     for (const entry of table) {
@@ -426,6 +459,57 @@ const milestoneTargetsSkill = (sourceSkill, targetSkillId, milestone) =>
     (milestone.reach === "local" && sourceSkill.id === targetSkillId) ||
     milestone.reach === targetSkillId
 
+// Permanent companion effects apply globally; active-slot effects target one skill.
+const getCompanionEffectMultiplier = (effect, level, perLevel) => {
+    const growth = Math.max(0, level - 1) * perLevel
+    if (effect === "manaCost" || effect === "unlockCostReduction") {
+        return Math.max(0.1, 1 - growth)
+    }
+    return 1 + growth
+}
+
+const getCompanionEffectEntries = (player, targetSkillId, effect) => {
+    const unlocked = new Set(player.unlockedCompanions ?? [])
+    const active = new Set(Object.values(player.activeCompanionSlots ?? {}).filter(Boolean))
+    const entries = []
+
+    for (const companion of COMPANION_DATA) {
+        if (!unlocked.has(companion.id)) continue
+        const level = player.companionProgress?.[companion.id]?.level ?? 1
+        if (level <= 0) continue
+
+        const permanent = companion.permanentEffect
+        if (permanent?.effect === effect) {
+            entries.push({
+                id: "companion-permanent-" + companion.id + "-" + effect,
+                companion,
+                kind: "Permanent",
+                effect,
+                type: permanent.type ?? "mult",
+                value: getCompanionEffectMultiplier(effect, level, permanent.perLevel ?? 0.01),
+            })
+        }
+
+        const activeEffect = companion.activeEffect
+        if (
+            active.has(companion.id) &&
+            activeEffect?.effect === effect &&
+            activeEffect.targetSkillId === targetSkillId
+        ) {
+            entries.push({
+                id: "companion-active-" + companion.id + "-" + effect,
+                companion,
+                kind: "Active",
+                effect,
+                type: activeEffect.type ?? "mult",
+                value: getCompanionEffectMultiplier(effect, level, activeEffect.perLevel ?? 0.025),
+            })
+        }
+    }
+
+    return entries
+}
+
 const getMilestoneTargetLabel = (sourceSkill, reach) => {
     if (reach === "global") return "All Skills"
 
@@ -459,7 +543,49 @@ const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
         }
     }
 
+    const companionEffects = effect
+        ? [effect]
+        : [
+            "sellValue",
+            "xpGain",
+            "actionTime",
+            "itemOutput",
+            "preservation",
+            "manaCost",
+            "manaCapacity",
+            "manaRegeneration",
+            "unlockCostReduction",
+            "companionChance",
+            "artifactChance",
+        ]
+    for (const companionEffect of companionEffects) {
+        for (const companionEntry of getCompanionEffectEntries(player, targetSkillId, companionEffect)) {
+            addMilestoneBonus(totals, companionEntry)
+        }
+    }
+
     return totals
+}
+
+export const getSkillUnlockCosts = (player, skillId) => {
+    const skill = SKILL_CONFIG_BY_ID[skillId]
+    const reduction = getBonusForEffect(getSkillMilestoneBonuses(player, skillId), "unlockCostReduction")
+    const multiplier = Math.max(0.01, 1 + reduction.mult + reduction.flat)
+    return (skill?.unlockCosts ?? []).map(cost => ({ ...cost, amount: Math.ceil(cost.amount * multiplier) }))
+}
+
+export const getActionUnlockCosts = (player, skillId, actionId) => {
+    const action = SKILL_CONFIG_BY_ID[skillId]?.actions.find(entry => entry.id === actionId)
+    const reduction = getBonusForEffect(getSkillMilestoneBonuses(player, skillId), "unlockCostReduction")
+    const multiplier = Math.max(0.01, 1 + reduction.mult + reduction.flat)
+    return (action?.unlockCosts ?? []).map(cost => ({ ...cost, amount: Math.ceil(cost.amount * multiplier) }))
+}
+
+export const getCompanionSlotUnlockCost = (player, element) => {
+    const baseCost = COMPANION_CONFIG.slots[element]?.unlockCost
+    if (!Number.isFinite(baseCost) || baseCost <= 0) return 0
+    const reduction = getBonusForEffect(getSkillMilestoneBonuses(player, "skill:companions"), "unlockCostReduction")
+    return Math.ceil(baseCost * Math.max(0.01, 1 + reduction.mult + reduction.flat))
 }
 
 const getActionMilestoneBonuses = (player, skill, action) => {
@@ -610,6 +736,20 @@ export const getActionOutputMultiplier = (player, skill, action) => {
     return Math.max(0, 1 + bonuses.mult + bonuses.flat)
 }
 
+export const getSellValueMultiplier = (player) => {
+    const bonuses = getBonusForEffect(getSkillMilestoneBonuses(player, "skill:companions"), "sellValue")
+    return Math.max(0, 1 + bonuses.mult + bonuses.flat)
+}
+
+export const getActionArtifactChance = (player, skill, action) => {
+    const baseChance = skill.artifactChance?.base ?? 0
+    const bonuses = getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "artifactChance")
+    if (!Number.isFinite(baseChance) || baseChance <= 0) return 0
+    return Math.max(0, Math.min(1,
+        baseChance * getActionOutputMultiplier(player, skill, action) * Math.max(0, 1 + bonuses.mult + bonuses.flat)
+    ))
+}
+
 export const getActionCompanionChance = (player, skill, action) => {
     const companionContainerId = typeof action.companionContainer === "string"
         ? action.companionContainer
@@ -623,7 +763,11 @@ export const getActionCompanionChance = (player, skill, action) => {
         baseChance <= 0
     ) return 0
 
-    return Math.max(0, Math.min(1, baseChance * getActionOutputMultiplier(player, skill, action)))
+    const bonuses = getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "companionChance")
+    const companionMultiplier = Math.max(0, 1 + bonuses.mult + bonuses.flat)
+    return Math.max(0, Math.min(1,
+        baseChance * getActionOutputMultiplier(player, skill, action) * companionMultiplier
+    ))
 }
 
 export const getActionPreservationChance = (player, skill, action) => {
@@ -634,7 +778,7 @@ export const getActionPreservationChance = (player, skill, action) => {
 // Return active contributors from element modifiers, applicable skill milestones
 // and repeated action milestones. These records are used by the action tooltips.
 export const getActionEffectStacks = (player, skill, action) => {
-    const effectNames = ["actionTime", "xpGain", "manaCost", "itemOutput", "preservation"]
+    const effectNames = ["actionTime", "xpGain", "manaCost", "itemOutput", "preservation", "manaCapacity", "manaRegeneration", "sellValue", "unlockCostReduction", "companionChance", "artifactChance"]
     const elementProperties = {
         actionTime: "timeMultiplier",
         xpGain: "xpMultiplier",
@@ -713,6 +857,20 @@ export const getActionEffectStacks = (player, skill, action) => {
                 stacks,
                 mode: "milestone",
                 variant: skill.variant
+            })
+        }
+
+        for (const companionEntry of getCompanionEffectEntries(player, skill.id, effect)) {
+            entries.push({
+                id: companionEntry.id,
+                title: companionEntry.companion.name + " - " + companionEntry.kind,
+                source: companionEntry.companion.name,
+                effect,
+                type: companionEntry.type,
+                value: companionEntry.value,
+                stacks: 1,
+                mode: "companion",
+                variant: "companions",
             })
         }
 
@@ -806,6 +964,21 @@ export const getManaEffectStacks = (player) => {
         }
     }
 
+    for (const effect of effectNames) {
+        for (const companionEntry of getCompanionEffectEntries(player, skill.id, effect)) {
+            entriesByEffect[effect].push({
+                id: companionEntry.id,
+                title: companionEntry.companion.name + " - " + companionEntry.kind,
+                effect,
+                type: companionEntry.type,
+                value: companionEntry.value,
+                stacks: 1,
+                mode: "companion",
+                variant: "companions",
+            })
+        }
+    }
+
     return entriesByEffect
 }
 
@@ -813,7 +986,42 @@ export const getManaEffectStacks = (player) => {
 export const getActionProgress = (actionState, durationMs) =>
     Math.min(100, Math.max(0, (actionState.progressMs / durationMs) * 100))
 
+export const getActiveCompanionIds = (player) => Object.values(player.activeCompanionSlots ?? {})
+    .filter(companionId => companionId && player.unlockedCompanions?.includes(companionId))
+
+export const getTrainableActiveCompanionIds = (player) => getActiveCompanionIds(player)
+    .filter(companionId => {
+        const level = player.companionProgress?.[companionId]?.level
+        return Number.isFinite(level) &&
+            level >= 1 &&
+            level < COMPANION_CONFIG.companionLeveling.maxLevel
+    })
+
+export const getCompanionLevelXPRequirement = (level) => {
+    const config = COMPANION_CONFIG.companionLeveling.neededXP
+    return Math.ceil(
+        config.base * Math.pow(config.perLevelMult, Math.max(0, level - 1)) +
+        config.perLevelFlat * Math.max(0, level - 1)
+    )
+}
+
+export const getCompanionLevelProgress = (player, companionId) => {
+    const companionState = player.companionProgress?.[companionId]
+    if (!companionState || companionState.level <= 0) return null
+
+    const level = companionState.level
+    return {
+        level,
+        xp: companionState.xp,
+        neededXP: level >= COMPANION_CONFIG.companionLeveling.maxLevel
+            ? null
+            : getCompanionLevelXPRequirement(level),
+    }
+}
+
 const canPayActionCost = (player, skill, action) => {
+    if (action.companionTraining && getTrainableActiveCompanionIds(player).length === 0) return false
+
     const manaCost = getActionManaCost(skill, action, player)
     const consumeTotals = getActionConsumeTotals(action, player, skill)
     if (!consumeTotals) return false
@@ -857,6 +1065,23 @@ const payActionCost = (player, skill, action) => {
 }
 
 const awardActionXP = (player, skill, action, actionState) => {
+    if (action.companionTraining) {
+        for (const companionId of getTrainableActiveCompanionIds(player)) {
+            const companionState = player.companionProgress?.[companionId]
+            if (!companionState || companionState.level >= COMPANION_CONFIG.companionLeveling.maxLevel) continue
+
+            companionState.xp += action.companionTraining.xpPerCompanion
+            const neededXP = getCompanionLevelXPRequirement(companionState.level)
+            if (companionState.xp >= neededXP) {
+                companionState.level += 1
+                companionState.xp = 0
+            }
+        }
+        return
+    }
+
+    if (action.tracksProgress === false) return
+
     const table = getActionXPTable(action.id)
 
     if (actionState.level < GLOBAL_CONFIG.maxActionLevel) {
@@ -883,17 +1108,38 @@ const awardActionXP = (player, skill, action, actionState) => {
 
     if (action.processesCompanionContainers && selectedItem?.type === "companionContainer") {
         const rewards = skill.companionRewards
-        const companionId = rewards?.companionIdsByElement?.[selectedItem.variant]
+        const companion = COMPANION_DATA_BY_CONTAINER_ID[selectedItem.id]
         const unlockedCompanions = player.unlockedCompanions ?? []
-        if (companionId && !unlockedCompanions.includes(companionId)) {
-            player.unlockedCompanions = [...unlockedCompanions, companionId]
-        } else if (companionId) {
+
+        if (companion && !unlockedCompanions.includes(companion.id)) {
+            player.unlockedCompanions = [...unlockedCompanions, companion.id]
+            player.companionProgress ??= {}
+            player.companionProgress[companion.id] = { level: 1, xp: 0 }
+
+            // The Companions skill and its training action unlock with the first pet.
+            const companionSkillId = "skill:companions"
+            const companionSkill = SKILL_CONFIG_BY_ID[companionSkillId]
+            if (companionSkill && !player.unlockedSkills.includes(companionSkillId)) {
+                player.unlockedSkills = [...player.unlockedSkills, companionSkillId]
+                const currentSkill = player.skills[companionSkillId] ?? { actions: {} }
+                const actions = { ...currentSkill.actions }
+                for (const actionConfig of companionSkill.actions) {
+                    if (!actionConfig.unlockedByDefault) continue
+                    actions[actionConfig.id] = {
+                        ...(actions[actionConfig.id] ?? {
+                            level: 1, xp: 0, progressMs: 0, selectedItemId: null, running: false,
+                        }),
+                        unlocked: true,
+                    }
+                }
+                player.skills[companionSkillId] = { ...currentSkill, actions }
+            }
+        } else if (companion) {
             const experienceItem = rewards?.experienceItemsByElement?.[selectedItem.variant]
-            const rewardItem = Math.random() < (rewards?.experienceChance ?? 0.5)
-                ? experienceItem
-                : rewards?.commonItem
-            if (rewardItem && ITEM_DATA_BY_ID[rewardItem]) {
-                player.inventory[rewardItem] = (player.inventory[rewardItem] ?? 0) + 1
+            const rewardAmount = companion.duplicateCandyAmount ?? companion.tier ?? 1
+            if (experienceItem && ITEM_DATA_BY_ID[experienceItem]) {
+                player.inventory[experienceItem] =
+                    (player.inventory[experienceItem] ?? 0) + rewardAmount
             }
         }
     }
@@ -940,7 +1186,7 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
 
     // Passive processes continue producing even after their progression level
     // reaches the cap. Active actions stop at their maximum level.
-    while (remainingMs > 0 && (!isActive || actionState.level < GLOBAL_CONFIG.maxActionLevel)) {
+    while (remainingMs > 0 && (!isActive || action.tracksProgress === false || actionState.level < GLOBAL_CONFIG.maxActionLevel)) {
         // Check Mana before starting each cycle, including automatic repeats.
         if (actionState.progressMs === 0 && !canPayActionCost(player, skill, action)) break
 
@@ -985,7 +1231,7 @@ const advanceRunningActions = (player, deltaMs) => {
                 // longer afford the next cycle. In the latter case, discard any
                 // unfinished progress so restarting never grants a free partial cycle.
                 if (
-                    actionState.level >= GLOBAL_CONFIG.maxActionLevel ||
+                    (action.tracksProgress !== false && actionState.level >= GLOBAL_CONFIG.maxActionLevel) ||
                     !canPayActionCost(player, skill, action)
                 ) {
                     actionState.progressMs = 0
@@ -1047,11 +1293,14 @@ export const canStartAction = (player, skillId, actionId) => {
     const action = skill?.actions.find(entry => entry.id === actionId)
     const state = player.skills[skillId]?.actions[actionId]
 
-    if (!player.unlockedSkills?.includes(skillId) || !skill || !action || !state?.unlocked || state.level >= GLOBAL_CONFIG.maxActionLevel) {
+    if (!player.unlockedSkills?.includes(skillId) || !skill || !action || !state?.unlocked || (action.tracksProgress !== false && state.level >= GLOBAL_CONFIG.maxActionLevel)) {
         return false
     }
 
-    // Require enough Mana to begin; completion checks and deducts it again.
+    // Training requires at least one companion in an active slot.
+    if (action.companionTraining && getActiveCompanionIds(player).length === 0) return false
+
+    // Require enough inputs and Mana to begin; completion checks them again.
     return canPayActionCost(player, skill, action)
 }
 

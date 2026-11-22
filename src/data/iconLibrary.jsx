@@ -218,7 +218,7 @@ export const ITEM_SPRITES = {
     "item:glacial_pearls": <Lens />,
     "item:obsidian_fragments": <Astroid />,
     "item:celestial_aether": <Asterisk />,
-    "item:abyssal_bones": <Bone />,
+    "item:abyssal_corals": <Bone />,
     "item:primordial_ore": <Volleyball />,
     "item:starfall_aether": <Asterisk />,
     "item:worldtide_pearls": <Lens />,
@@ -245,6 +245,11 @@ export const ITEM_SPRITES = {
     "item:earth_geode_v": OTHER_ICONS.COMPANION_GEODE,
     "item:air_egg_v": OTHER_ICONS.COMPANION_EGG,
     "item:water_shell_v": OTHER_ICONS.COMPANION_SHELL,
+
+    // Duplicate companion rewards use the existing elemental Candy items.
+    "item:earth_companion_xp": <Candy />,
+    "item:air_companion_xp": <Candy />,
+    "item:water_companion_xp": <Candy />,
 
     // Area artifacts are distinct inventory items for the future Combat system.
     "item:crossroads_waystone": OTHER_ICONS.ARTIFACT,
@@ -279,8 +284,4 @@ export const ITEM_SPRITES = {
     "item:origin_wisp_sigil": OTHER_ICONS.ARTIFACT,
     "item:eternal_tide_crown": OTHER_ICONS.ARTIFACT,
 
-    // Companion progression materials
-    "item:earth_companion_xp": <Candy />,
-    "item:air_companion_xp": <Candy />,
-    "item:water_companion_xp": <Candy />,
 }

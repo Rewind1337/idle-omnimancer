@@ -1,0 +1,48 @@
+.page-flex-companions {
+    .companion-training-progress {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .companion-slot-grid,
+    .companion-collection-grid {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .companion-slot-card {
+        flex: 1 1 260px;
+        min-width: min(100%, 250px);
+        max-width: 100%;
+    }
+
+    .companion-slot-selected,
+    .companion-slot-empty {
+        width: 100%;
+    }
+
+    .companion-slot-empty {
+        min-height: 110px;
+    }
+
+    .companion-collection-card {
+        flex: 1 1 280px;
+        min-width: min(100%, 260px);
+        max-width: 100%;
+    }
+
+    .companion-effect {
+        padding: 8px;
+        border: 1px solid var(--paper-border);
+        border-radius: 6px;
+    }
+}
+
+.companion-selection-option {
+    height: auto;
+    min-height: 56px;
+
+    > .flex {
+        align-items: center;
+    }
+}

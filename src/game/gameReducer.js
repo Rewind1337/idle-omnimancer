@@ -1,6 +1,8 @@
 import { GLOBAL_CONFIG, SKILL_CONFIG_BY_ID } from "../data/skillConfig"
 import { CURRENCY_DATA_BY_ID, ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
 import { MISSION_DATA } from "../data/missionData"
+import { COMPANION_CONFIG } from "../data/companionConfig"
+import { COMPANION_DATA_BY_ID } from "../data/companionData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import {
     advanceGame,
@@ -11,6 +13,10 @@ import {
     canUnlockSkill,
     getActionActivity,
     getNextBagSlotCost,
+    getActionUnlockCosts,
+    getSkillUnlockCosts,
+    getSellValueMultiplier,
+    getCompanionSlotUnlockCost,
 } from "./gameEngine"
 
 export const gameReducer = (state, action) => {
@@ -133,6 +139,78 @@ export const gameReducer = (state, action) => {
             }
         }
 
+        case "UNLOCK_COMPANION_SLOT": {
+            if (!state.unlockedSkills?.includes("skill:companions")) return state
+            const { element } = action
+            const slot = COMPANION_CONFIG.slots[element]
+            const unlockedSlots = state.unlockedCompanionSlots ?? ["earth"]
+            const cost = getCompanionSlotUnlockCost(state, element)
+
+            if (
+                !slot ||
+                unlockedSlots.includes(element) ||
+                !Number.isFinite(cost) ||
+                cost <= 0 ||
+                (state.currencies?.coins ?? 0) < cost
+            ) return state
+
+            return {
+                ...state,
+                unlockedCompanionSlots: [...unlockedSlots, element],
+                currencies: {
+                    ...state.currencies,
+                    coins: (state.currencies?.coins ?? 0) - cost,
+                },
+            }
+        }
+
+        case "SELECT_COMPANION": {
+            if (!state.unlockedSkills?.includes("skill:companions")) return state
+            const { element, companionId } = action
+            const unlockedSlots = state.unlockedCompanionSlots ?? ["earth"]
+            const companion = COMPANION_DATA_BY_ID[companionId]
+            if (!unlockedSlots.includes(element)) return state
+            if (companionId !== null && (
+                !companion ||
+                companion.element !== element ||
+                !state.unlockedCompanions?.includes(companionId)
+            )) return state
+
+            const activeCompanionSlots = {
+                ...(state.activeCompanionSlots ?? { earth: null, air: null, water: null }),
+                [element]: companionId,
+            }
+            const noActiveCompanions = !Object.values(activeCompanionSlots).some(Boolean)
+            const stopTraining = noActiveCompanions &&
+                state.activeAction?.skillId === "skill:companions"
+
+            let skills = state.skills
+            if (stopTraining) {
+                const trainingActionId = COMPANION_CONFIG.actions[0].id
+                const currentSkill = state.skills["skill:companions"]
+                const currentAction = currentSkill?.actions?.[trainingActionId]
+                if (currentAction) {
+                    skills = {
+                        ...state.skills,
+                        "skill:companions": {
+                            ...currentSkill,
+                            actions: {
+                                ...currentSkill.actions,
+                                [trainingActionId]: { ...currentAction, progressMs: 0 },
+                            },
+                        },
+                    }
+                }
+            }
+
+            return {
+                ...state,
+                activeAction: stopTraining ? null : state.activeAction,
+                skills,
+                activeCompanionSlots,
+            }
+        }
+
         case "SELECT_ACTION_ITEM": {
             const { skillId, actionId, itemId } = action
             if (!canSelectActionItem(state, skillId, actionId, itemId)) return state
@@ -182,7 +260,7 @@ export const gameReducer = (state, action) => {
 
             const inventory = { ...state.inventory }
             const currencies = { ...state.currencies }
-            for (const { item, amount } of actionConfig.unlockCosts ?? []) {
+            for (const { item, amount } of getActionUnlockCosts(state, action.skillId, action.actionId)) {
                 if (item.startsWith("currency:")) {
                     const currencyId = item.slice("currency:".length)
                     currencies[currencyId] = (currencies[currencyId] ?? 0) - amount
@@ -261,7 +339,7 @@ export const gameReducer = (state, action) => {
             if (remainingAmount > 0) inventory[itemId] = remainingAmount
             else delete inventory[itemId]
 
-            const saleValue = amount * itemData.baseValue
+            const saleValue = amount * itemData.baseValue * getSellValueMultiplier(state)
 
             return {
                 ...state,
@@ -369,7 +447,7 @@ export const gameReducer = (state, action) => {
             const inventory = { ...state.inventory }
             const currencies = { ...state.currencies }
 
-            for (const { item, amount } of skillConfig.unlockCosts) {
+            for (const { item, amount } of getSkillUnlockCosts(state, action.skillId)) {
                 if (item.startsWith("currency:")) {
                     const currencyId = item.slice("currency:".length)
                     currencies[currencyId] = (currencies[currencyId] ?? 0) - amount

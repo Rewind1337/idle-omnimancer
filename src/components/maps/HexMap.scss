@@ -83,6 +83,23 @@
             transition: fill 120ms ease, stroke 120ms ease, stroke-width 120ms ease;
         }
 
+        .hex-map-area-marker {
+            pointer-events: none;
+
+            circle {
+                fill: rgba(0, 0, 0, 0.82);
+                stroke: rgba(255, 255, 255, 0.85);
+                stroke-width: 1.5;
+            }
+
+            text {
+                fill: #fff !important;
+                font-size: 13px;
+                font-weight: 800;
+                text-anchor: middle;
+            }
+        }
+
         // Apply the button palette to neutral and elemental map areas.
         @each $variant in $button-colors {
             @include hex-map-area-variant(button, $variant);

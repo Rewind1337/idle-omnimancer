@@ -24,7 +24,7 @@
 | Exploration | Active | Explore named areas on a shared hex map, develop each area and discover resources and companion containers. |
 | Unveiling | Active | Use Material Destruction actions to gain insight; unveil eligible unidentified objects and companion containers once the skill-level requirement is met. |
 | Combat | Passive | Continuously fight in a selected unlocked Exploration area; produce combat rewards, unidentified objects and chances at area artifacts. |
-| Companions | Collection system | Obtain elemental companions by using Unveil Artifact or Companion on containers discovered through Exploration after meeting their Unveiling level requirements. Further progression and effects are undecided. |
+| Companions | Collection system | Collect and train 15 elemental companions, assign them to Earth/Air/Water slots, and gain permanent global plus stronger slot-based skill effects. The skill unlocks after the first companion is unveiled. |
 
 Research, Spellcraft and Transmutation establish the initial resource and progression loop. Exploration is planned as the fourth active skill, followed by Unveiling as a fifth active skill. Combat is the first planned passive skill.
 
@@ -89,11 +89,11 @@ Passive skills or other future systems may use a different progression structure
 ### 3.3 Skill progression
 
 - Every skill has its own level, with a maximum of **100**.
-- Skill XP is derived from the combined progression of every action belonging to that skill.
+- For normal skills, Skill XP is derived from the combined progression of every action belonging to that skill. The Companions skill is an explicit exception: it derives XP from the sum of all 15 companion levels.
 - Improving actions contributes to the overall skill, but one heavily developed action must not be enough to max out the skill.
 - Early skill levels should be achievable after relatively little action progression. Higher levels should require increasingly broad development across the skill.
 - Each skill has its own progression scalar. Skills can have different numbers of actions and different curves.
-- A skill **cannot reach level 100 until every action belonging to it has reached action level 100**.
+- A normal action-based skill **cannot reach level 100 until every action belonging to it has reached action level 100**. The Companions skill instead reaches level 100 when all 15 companions reach level 100.
 - The exact formula that converts action progression into skill XP remains undecided.
 
 Skills level independently. Research progress does not automatically increase Spellcraft, Transmutation or Exploration skill levels.
@@ -385,7 +385,7 @@ Exploration is an **active skill**. Every area is an independent action with its
 | 19 | The Glacial Mirror | Water | VI | Glacial Pearls | Glacial Tide Idol |
 | 20 | The Obsidian Throne | Earth | VII | Obsidian Fragments | Obsidian Golem Relic |
 | 21 | The Celestial Rift | Air | VII | Celestial Aether | Celestial Wisp Chime |
-| 22 | The Leviathan Trench | Water | VII | Abyssal Corals | Abyssal Tide Scepter |
+| 22 | The Leviathan Trench | Water | VII | Abyssal Bones | Abyssal Tide Scepter |
 | 23 | The Primordial Forge | Earth | VIII | Primordial Ore | Primordial Golem Heart |
 | 24 | The Starfall Firmament | Air | VIII | Starfall Aether | Starfall Wisp Sigil |
 | 25 | The Worldtide Sanctum | Water | VIII | Worldtide Pearls | Worldtide Tide Crown |
@@ -403,7 +403,7 @@ Exploration is an **active skill**. Every area is an independent action with its
 
 - Exploration itself currently costs 5 each of Earth Catalyst I, Air Catalyst I and Water Catalyst I, plus 10,000 coins.
 - The Crossroads action is free and unlocked by default with the skill.
-- Other area unlock costs are shared by tier: Tier I costs 10,000 coins, Tier II costs 30,000 coins, Tier III costs 75,000 coins and Tier IV costs 150,000 coins.
+- Other area unlock costs are shared by tier: Tier I costs 10,000 coins, Tier II costs 30,000 coins, Tier III costs 75,000 coins, Tier IV costs 150,000 coins, Tier V costs 300,000 coins, Tier VI costs 600,000 coins, Tier VII costs 1,200,000 coins, Tier VIII costs 2,400,000 coins, Tier IX costs 4,800,000 coins and Tier X costs 9,600,000 coins.
 - Area unlock cost and adjacency are separate requirements: a neighboring area can still be unaffordable until the player has enough coins.
 - Each area action levels independently from 1 to 100. Its level contributes to the overall Exploration skill level; level 100 in the skill requires every Exploration action to reach level 100.
 - Current base action duration is 5 seconds at Tier I, increasing by 1 second per tier. Base action XP is 12 at Tier I, increasing by 5 per tier. XP requirements follow the shared configured action progression curve.
@@ -412,11 +412,10 @@ Exploration is an **active skill**. Every area is an independent action with its
 ### 8.4 Area rewards and companion-container discoveries
 
 - Each completed area action guarantees its configured area resource, subject to normal output multipliers and inventory-capacity rules.
-- Areas 5, 6 and 7 can additionally discover Tier-I containers: Earth Geodes, Air Eggs and Water Shells respectively.
-- Areas 11, 12 and 13 can additionally discover Tier-II containers: Earth Geodes, Air Eggs and Water Shells respectively.
-- The current base companion-container discovery chance is 0.1% per completed Exploration action in an area configured with a container. This is a separate chance roll, not a guaranteed action output; item-output bonuses also multiply the discovery chance, which is capped at 100%.
+- Areas 5–7 can additionally discover Tier-I containers; areas 11–13 discover Tier-II; areas 17–19 discover Tier-III; areas 23–25 discover Tier-IV; and areas 29–31 discover Tier-V containers. Each tier has an Earth Geode, Air Egg and Water Shell.
+- The current base companion-container discovery chance is 0.1% per completed Exploration action in an area configured with a container. This is a separate chance roll, not a guaranteed action output; item-output bonuses and Companion effects can multiply the discovery chance, which is capped at 100%.
 - Areas without a configured container do not make a container discovery roll.
-- Containers remain in inventory until the player reaches their minimum Unveiling skill-level requirement and processes them through **Unveil Artifact or Companion**. Exact level requirements and unveiling rewards remain to be balanced.
+- The minimum Unveiling skill levels are 5, 10, 15, 20 and 25 for container tiers I–V respectively. Container item tooltips display the applicable requirement.
 - Exploration does not drop Combat artifacts. Each area's artifact is defined now as its future area-specific Combat reward and may be revealed through Unveiling.
 
 ---
@@ -460,30 +459,43 @@ Combat must remain independent of the player's currently selected active action.
 
 ## 10. Companions
 
-**Purpose:** Collect elemental companions by unveiling containers discovered through Exploration.
+**Purpose:** Collect, assign and develop elemental companions discovered through Exploration and unveiled through Unveiling.
 
-Companions are a collection system connected to Exploration and Unveiling. Their final interface placement and progression structure are not yet implemented.
+The Companions skill unlocks automatically when the player unveils their first companion container. After unlocking, its page is accessed through the left floating action panel; it is intentionally excluded from the top navigation.
 
-### 10.1 Containers and elemental identity
+### 10.1 Containers, companions and duplicate rewards
 
-- Companions are obtained by processing containers found through Exploration with Unveiling's **Unveil Artifact or Companion** action.
-- Earth Geodes contain Earth companions; Air Eggs contain Air companions; Water Shells contain Water companions.
-- Container items are classified in the inventory as the `companions` group and `companionContainer` type, separate from ordinary Exploration resources.
-- The current world contains Tier-I containers in areas 5–7 and Tier-II containers in areas 11–13. Their minimum Unveiling skill-level requirements are intended to scale with their source area's progression.
-- Containers are tied to their corresponding elemental type. Not every area needs a unique companion or unique container.
+- There are 15 companions: one unique companion for every combination of Earth, Air and Water across companion tiers I–V.
+- Earth Geodes contain Earth companions, Air Eggs contain Air companions, and Water Shells contain Water companions. Each container maps to exactly one companion.
+- The first successful unveiling of a container unlocks its matching companion. Each companion starts at level 1.
+- Further openings of that same container award the matching elemental Companion Candy item instead of unlocking a duplicate companion.
+- Candy quantity scales with container tier: Tier I gives 1 Candy, Tier II gives 2, Tier III gives 3, Tier IV gives 4 and Tier V gives 5.
+- Earth, Air and Water Companion Candy remain separate inventory items. Their existing item IDs are retained for compatibility and their displayed names are Earth Companion Candy, Air Companion Candy and Water Companion Candy.
+- Container tiers have the following minimum Unveiling requirements: Tier I at Unveiling level 5, Tier II at level 10, Tier III at level 15, Tier IV at level 20 and Tier V at level 25.
 
-### 10.2 Undecided companion design
+### 10.2 Companion levels, skill progression and training
 
-- The number and variety of companions.
-- Hatching requirements, timing and duplicate handling.
-- Whether companions have levels, rarity, growth, upgrades or other progression.
-- Whether companions provide bonuses, and if so, what those bonuses affect.
-- How companions are displayed, equipped, assigned or otherwise used.
-- Whether companions can be obtained through any method besides Exploration containers.
+- Every discovered companion levels independently from 1 to 100.
+- Companion XP is awarded by the single **Tend to Companions** action. Each completion takes 5 seconds, costs 20 coins and grants 5 XP to every companion currently assigned to an unlocked active slot.
+- XP is awarded in full to each active companion; it is not divided between slots. Two active companions each receive 5 XP per completion, for 10 total Companion XP.
+- The training action has no action level, action XP or XP requirement of its own.
+- Companion skill XP is derived from the sum of all 15 companion levels rather than action levels. Its maximum progression pool is 15 × 100 = 1,500 companion levels. For example, three companions at level 100 contribute 300 / 1,500, or 20% of the Companion skill's total progression.
+- Each companion's level-up requirement increases over time. The current initial curve starts at 20 XP, then applies a 1.1 per-level multiplier plus 2 additional XP per level.
+- There are three elemental slots. The Earth slot is unlocked by default. The Air slot costs 10,000,000 coins and the Water slot costs 100,000,000 coins to unlock. These are initial balancing values and may be adjusted later.
+- A slot can contain one discovered companion matching that slot's element. The player can change or clear the selected companion through the slot's selection modal.
+- The Companions page shows the three slots, the training action, the companion collection, each companion's level and XP, and both of its effects.
 
-Do not assume a companion rescue system; the current acquisition concept is elemental containers discovered through Exploration and then unveiled.
+### 10.3 Companion effects
 
----
+- Every companion has exactly two effects:
+  - A permanent effect that is always active after discovery and applies globally. Its effect strength scales by 1.00 + 0.01 × (level − 1).
+  - An active effect that applies only while the companion occupies its elemental slot and targets the configured skill. Its effect strength scales by 1.00 + 0.025 × (level − 1).
+- Both effects start at x1.00 at level 1. For example, at level 10 the permanent effect strength is x1.09 and the active effect strength is x1.225.
+- For cost-reduction effects, the effective cost multiplier decreases as the reduction grows; the current implementation floors the resulting cost multiplier at x0.10.
+- Companion effects can improve sell value, action XP, action time, item output, input preservation, Mana cost, Mana capacity, Mana regeneration, companion-container chance and unlock costs.
+- One companion has a permanent Companion Chance bonus and an active Artifact Chance bonus. Artifact Chance is reserved for the future Combat reward system; Combat itself is not part of this Companion implementation.
+- Item-output bonuses continue to improve companion-container discovery chances, and the Companion Chance bonus applies as an additional multiplier. Drop chances remain capped at 100%.
+
 ## 11. Skill Five — Unveiling
 
 **Purpose:** Uncover hidden properties and secrets by sacrificing ordinary materials, then identify unidentified objects and open companion containers.
@@ -522,19 +534,13 @@ Every action follows the standard independent level 1–100 progression and cont
 ### 11.2 Unveil Artifact or Companion
 
 - Unlocking Unveiling also unlocks **Unveil Artifact or Companion** immediately, alongside the first Material Destruction action, **Destroy Research Books**.
-- **Unveil Artifact or Companion** can process both:
-  - Companion containers (Geodes, Eggs and Shells), opening them to reveal a companion.
-  - Unidentified objects obtained through Combat, revealing a chance at the artifact from their source area and potentially other valuable, sellable resources.
-- Each container or unidentified object has a minimum required **overall Unveiling skill level**. The player cannot process it until the skill reaches that requirement.
-- Requirements are assigned according to the item's source area and its place in map progression: early-area finds have low requirements; late-game finds have much higher requirements.
-- Successfully processing a companion container awards 50 XP to **Unveil Artifact or Companion** and takes 15 seconds.
-- The first container opened for each element unlocks that element's companion.
-- Further Tier-I openings have a 50% chance to produce the matching elemental Companion XP item, or a 50% chance to produce the shared **Faded Trinket**, a low-value sellable item.
-- Companion XP is represented by three separate inventory items: Earth Companion XP, Air Companion XP and Water Companion XP. These are not hidden per-companion counters.
-- Higher-tier container reward tables are not configured yet; only Tier-I containers are currently selectable by Unveil Artifact or Companion.
+- **Unveil Artifact or Companion** currently processes eligible companion containers. Unidentified Combat objects and artifact identification will be added with the Combat reward system once their reward rules are finalized.
+- Each companion container has a minimum required overall Unveiling skill level: Tier I at level 5, Tier II at level 10, Tier III at level 15, Tier IV at level 20 and Tier V at level 25. The container tooltip displays its requirement.
+- Successfully processing a companion container takes 15 seconds and awards 50 XP to **Unveil Artifact or Companion**.
+- The first opening of each unique container unlocks its matching companion. Further openings award the matching elemental Companion Candy item in a tier-scaled quantity: 1 for Tier I, 2 for Tier II, up to 5 for Tier V.
 - **Unveil Artifact or Companion** levels independently from 1 to 100. Its action-level progress contributes to the overall Unveiling skill level like every other Unveiling action.
 - The requirement is checked against the overall Unveiling skill level, not the special action's individual level.
-- Unidentified-object rewards and higher-tier companion reward scaling remain to be balanced and will be connected when Combat's unidentified-object data is implemented.
+
 
 ### 11.3 Skill progression and unlock
 
@@ -954,21 +960,17 @@ The following details remain open for design, balancing or implementation:
 - Exploration area count, map layout beyond the starting tiles, later area names, connections and unlock conditions.
 - Exploration action durations, XP, resource tables and output values.
 - Area milestone thresholds and rewards, including exact container chance bonuses.
-- The exact Water companion-container type and name.
 - The exact list and names of Unveiling's Material Destruction actions, including eligible items from each source tab.
 - Destruction quantities, action durations, XP values and progression curves.
 - The **Unveil Artifact or Companion** action's processing time, XP rewards and scaling.
-- The minimum Unveiling skill level assigned to each companion container and unidentified object, including the mapping from source area/map progression to requirement.
+- Minimum Unveiling skill-level requirements for unidentified Combat objects and their mapping from source-area progression.
 - The reward tables, artifact chances and other valuable resources revealed by identification.
 - Unveiling's gold/resource unlock requirements and exact unlock timing.
-- Companion variety, rarity, hatching requirements, timing and duplicate handling.
-- Companion levels, growth, upgrades, bonuses and use/equipment model.
-- Companion interface placement and any separate unlock conditions.
+- Companion-to-artifact reward rules for unidentified Combat objects remain to be finalized alongside Combat.
 - Combat unlock requirements and timing.
 - Combat's XP/progression model, formulas, encounters, output, reward tables and identification system.
 - Unidentified object types, identification costs and artifact chances.
 - The artifact associated with each area and its exact effects or use.
-- Whether containers or companions have acquisition methods beyond the current Exploration concept.
 
 ### Economy, inventory and systems
 - Exact unlock costs and gold curves.

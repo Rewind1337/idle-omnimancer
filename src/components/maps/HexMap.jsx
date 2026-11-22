@@ -43,6 +43,7 @@ export function HexMap({
     onSelectArea = () => { },
     actionLevels = {},
     unlockedAreaIds = [],
+    areaMarkers = {},
     hexSize = DEFAULT_HEX_SIZE,
     mapVariant = "primary",
     className = "",
@@ -191,6 +192,7 @@ export function HexMap({
                         const isVisible = visibleAreaSet.has(area.id)
                         const variant = area.element ?? "neutral"
                         const actionLevel = actionLevels[area.id] ?? actionLevels[area.actionId] ?? 1
+                        const showAreaMarker = Boolean(areaMarkers[area.id])
                         const numberY = -((lines.length - 1) * 7) - 15
                         const nameY = -((lines.length - 1) * 7)
 
@@ -218,6 +220,12 @@ export function HexMap({
                                 }}
                             >
                                 <polygon points={hexPoints} />
+                                {isVisible && showAreaMarker && (
+                                    <g className="hex-map-area-marker" transform="translate(29 -28)" aria-hidden="true">
+                                        <circle cx="0" cy="0" r="9" />
+                                        <text x="0" y="4">?</text>
+                                    </g>
+                                )}
                                 <text className="hex-map-area-number" x="0" y={numberY}>
                                     Area {area.areaNumber}
                                 </text>

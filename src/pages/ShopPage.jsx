@@ -19,6 +19,8 @@ import {
     canBuyShopItem,
     getNextBagSlotCost,
     getVisibleActions,
+    getActionUnlockCosts,
+    getSkillUnlockCosts,
 } from "../game/gameEngine"
 import { humanize } from "../utility/helpers"
 import { useGame } from "../hooks/useGame"
@@ -157,7 +159,7 @@ function getAvailableUnlocks(player, unlockSkill, unlockAction) {
                 subtitle: "Skill",
                 icon: skillTab.icon,
                 variant: skillTab.variant,
-                requirements: skill.unlockCosts,
+                requirements: getSkillUnlockCosts(player, skill.id),
                 buttonLabel: "Unlock Skill",
                 canUnlock: canUnlockSkill(player, skill.id),
                 onUnlock: () => unlockSkill(skill.id),
@@ -175,7 +177,7 @@ function getAvailableUnlocks(player, unlockSkill, unlockAction) {
             subtitle: skillTab.name + " Action · Tier " + nextAction.tier,
             icon: skillTab.icon,
             variant: skillTab.variant,
-            requirements: nextAction.unlockCosts ?? [],
+            requirements: getActionUnlockCosts(player, skill.id, nextAction.id),
             buttonLabel: "Unlock Action",
             canUnlock: canUnlockAction(player, skill.id, nextAction.id),
             onUnlock: () => unlockAction(skill.id, nextAction.id),

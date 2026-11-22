@@ -363,6 +363,14 @@ export function GameProvider({ children }) {
         dispatch({ type: "SELECT_ACTION_ITEM", skillId, actionId, itemId })
     }, [])
 
+    const unlockCompanionSlot = useCallback(element => {
+        dispatch({ type: "UNLOCK_COMPANION_SLOT", element })
+    }, [])
+
+    const selectCompanion = useCallback((element, companionId) => {
+        dispatch({ type: "SELECT_COMPANION", element, companionId })
+    }, [])
+
     const contextValue = useMemo(() => ({
         player,
         startAction,
@@ -375,7 +383,9 @@ export function GameProvider({ children }) {
         sellItem,
         turnInMission,
         selectActionItem,
-    }), [player, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyShopItem, sellItem, turnInMission, selectActionItem])
+        unlockCompanionSlot,
+        selectCompanion,
+    }), [player, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
 
     const continueFromOffline = () => {
         setOfflineProgress(current => ({ ...current, visible: false }))

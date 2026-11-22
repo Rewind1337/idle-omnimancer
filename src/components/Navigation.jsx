@@ -22,12 +22,13 @@ export function Navigation({
 }) {
   const { player } = useGame()
   const unlockedSkills = new Set(player.unlockedSkills)
-  const nextLockedSkill = SKILL_NAVIGATION.find(
+  const topSkills = SKILL_NAVIGATION.filter(skill => !skill.floatingPanel)
+  const nextLockedSkill = topSkills.find(
     skill => !unlockedSkills.has(skill.skillId)
   )
 
   const tabs = [
-    ...SKILL_NAVIGATION
+    ...topSkills
       .filter(skill =>
         unlockedSkills.has(skill.skillId) ||
         skill === nextLockedSkill
@@ -79,7 +80,7 @@ export function Navigation({
             className="navigation-tabs"
           />
           {sideActionsLeft && (
-            <div className="navigation-side-section navigation-side-section-left" role="group" aria-label="Shop, missions and bag">
+            <div className="navigation-side-section navigation-side-section-left" role="group" aria-label="Companions, shop, missions and bag">
               {sideActionsLeft}
             </div>
           )}

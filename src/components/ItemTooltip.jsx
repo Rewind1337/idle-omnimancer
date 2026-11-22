@@ -3,7 +3,7 @@ import { Heading } from "./Heading"
 import { Text } from "./Text"
 
 import { ITEM_DATA_BY_ID } from "../data/itemData"
-import { getItemActionSources } from "../game/gameEngine"
+import { getItemActionSources, getSellValueMultiplier } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 import { Badge } from "./Badge"
 
@@ -36,6 +36,7 @@ export function ItemTooltip({ itemId, name }) {
     const { player } = useGame()
     const itemData = ITEM_DATA_BY_ID[itemId]
     const amountHeld = player.inventory?.[itemId] ?? 0
+    const sellValue = (itemData?.baseValue ?? 0) * getSellValueMultiplier(player)
     const { obtainedBy, consumedBy } = getItemActionSources(itemId, player)
 
     return (
@@ -44,9 +45,9 @@ export function ItemTooltip({ itemId, name }) {
 
             <Flex direction="column" align="start" gap={4} className="item-tooltip-summary">
                 <Flex direction="row" align="center" justify="space-between">
-                    <Heading h="5" className="w-70">Value each:</Heading>
+                    <Heading h="5" className="w-70">Sell value each:</Heading>
                     <Flex direction="row" align="end" justify="end">
-                        <Heading h="5">{formatAmount(itemData?.baseValue ?? 0)}</Heading>
+                        <Heading h="5">{formatAmount(sellValue)}</Heading>
                         {OTHER_ICONS.COINS}
                     </Flex>
                 </Flex>
@@ -58,13 +59,20 @@ export function ItemTooltip({ itemId, name }) {
                     </Flex>
                 </Flex>
                 <Flex direction="row" align="center" justify="space-between">
-                    <Heading h="5" className="w-70">Value Stack ({amountHeld}):</Heading>
+                    <Heading h="5" className="w-70">Sell value stack ({amountHeld}):</Heading>
                     <Flex direction="row" align="end" justify="end">
-                        <Heading h="5">{formatAmount(itemData?.baseValue * amountHeld)}</Heading>
+                        <Heading h="5">{formatAmount(sellValue * amountHeld)}</Heading>
                         {OTHER_ICONS.COINS}
                     </Flex>
                 </Flex>
             </Flex>
+
+            {Number.isFinite(itemData?.requiredUnveilingLevel) && (
+                <Flex direction="row" align="center" justify="space-between" className="item-tooltip-requirement">
+                    <Heading h="5">Unveiling requirement:</Heading>
+                    <Badge variant="unveiling">Requires Unveiling {itemData.requiredUnveilingLevel}</Badge>
+                </Flex>
+            )}
 
             <hr />
 

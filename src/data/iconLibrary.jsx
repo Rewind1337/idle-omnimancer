@@ -1,4 +1,14 @@
-import { Settings, PackageQuestionMark, Egg, ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet, Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles, Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck, CircleFadingArrowUp, Circle, CircleChevronDown, CircleChevronUp, CircleChevronsDown, CircleChevronsUp, CircleDivide, CircleEllipsis, CircleEqual, CircleExclamationPoint, CircleLetterA, CircleLetterB, CircleLetterC, CircleLetterD, CircleLetterE, CircleLetterF, CircleLetterG, CircleLetterH, CircleLetterI, CircleLetterJ, Ellipsis, Tally4, Sprout, BookUser, Astroid, HeartPulse, Milk, Lens, Gem, Volleyball, TreePine, Asterisk, Bone, Candy, Package, Squirrel, Award, Bird, BowArrow, Bug, Cat, Club, Dog, Dumbbell, Fish, FishingHook, FishingRod, Flower, Headphones, HikingStick, HockeyStick, Kayak, Key, KeyRound, KeySquare, Medal, Megaphone, Panda, Pyramid, Rabbit, Rat, Shrimp, Shirt, ShoppingBasket, Snail, Spade, Square, SquareStar, Torus, Triangle, TriangleRight, Trophy, Turtle, UtilityPole, VectorPolygon, VectorSquare, Whistle, Worm, ZodiacAquarius, ZodiacGemini, ZodiacTaurus } from "lucide-react";
+import {
+    Settings, PackageQuestionMark, Egg, ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus,
+    BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet,
+    Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles,
+    Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck, CircleFadingArrowUp,
+    Circle, CircleChevronDown, CircleChevronUp, CircleChevronsDown, CircleChevronsUp, CircleDivide, CircleEllipsis, CircleEqual, CircleExclamationPoint, CircleLetterA, CircleLetterB,
+    CircleLetterC, CircleLetterD, CircleLetterE, CircleLetterF, CircleLetterG, CircleLetterH, CircleLetterI, CircleLetterJ, Tally4, Sprout, BookUser, Astroid, HeartPulse,
+    Milk, Lens, Gem, Volleyball, TreePine, Asterisk, Bone, Candy, Package, Squirrel, Award, Bird, BowArrow, Bug, Cat, Club, Dog, Dumbbell, Fish, FishingHook, FishingRod, Flower, Headphones,
+    HikingStick, HockeyStick, Kayak, Key, KeyRound, KeySquare, Medal, Megaphone, Panda, Pyramid, Rabbit, Rat, Shrimp, Shirt, ShoppingBasket, Snail, Spade, Square, SquareStar, Torus,
+    Triangle, TriangleRight, Trophy, Turtle, UtilityPole, VectorPolygon, VectorSquare, Whistle, Worm, ZodiacAquarius, ZodiacGemini, ZodiacTaurus, Scan
+} from "lucide-react";
 
 export const COMPANION_ICONS = {
     CLOVERHOP: <Rabbit />,
@@ -102,7 +112,8 @@ export const SKILL_ICONS = {
 }
 
 export const ELEMENT_ICONS = {
-    ALL: <Ellipsis />,
+    ALL: <Scan />,
+    NEUTRAL: <Pyramid />,
     EARTH: <Mountain />,
     AIR: <Wind />,
     WATER: <Waves />

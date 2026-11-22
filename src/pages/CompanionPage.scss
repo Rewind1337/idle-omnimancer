@@ -4,7 +4,7 @@
         min-width: 0;
 
         .progress-bar {
-            transition: none;
+            transition: width 0.1s linear;
         }
     }
 
@@ -31,20 +31,10 @@
         width: 100%;
     }
 
-    .companion-slot-empty {
-        min-height: 110px;
-    }
-
     .companion-collection-card {
         flex: 1 1 280px;
         min-width: min(100%, 260px);
         max-width: 100%;
-    }
-
-    .companion-effect {
-        padding: 8px;
-        border: 1px solid var(--paper-border);
-        border-radius: 6px;
     }
 }
 

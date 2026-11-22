@@ -29,9 +29,9 @@ function MissionCard({ mission, player, canTurnIn, onTurnIn }) {
     return (
         <Paper layer={2} variant="secondary" className="mission-card">
             <Flex direction="column">
-                <Flex direction="row" justify="space-between" align="center" wrap gap={8}>
+                <Flex direction="row" justify="space-between" align="center" gap={8}>
                     <Heading h="3">{mission.title}</Heading>
-                    <Flex direction="row" wrap gap={6}>
+                    <Flex direction="row" justify="end" wrap gap={6}>
                         <Badge
                             variant="secondary"
                             interactive
@@ -103,10 +103,6 @@ export function MissionsModal({ visible, setVisible }) {
     const completedMissionsCount = availableTierMissions.length - availableMissions.length
     const fame = CURRENCY_DATA_BY_ID["currency:fame"]
     const fameBalance = player.currencies?.fame ?? 0
-    const missionProgressTooltip = requiredCount
-        ? "Complete " + requiredCount.toLocaleString() + " missions from Tier " + missionTier +
-            " to unlock Mission Tier " + (missionTier + 1) + "."
-        : "You have reached the highest configured mission tier."
 
     return (
         <Modal
@@ -116,26 +112,19 @@ export function MissionsModal({ visible, setVisible }) {
             onBackdropClick={close}
             header={
                 <Flex direction="column" align="stretch" gap={12}>
-                    <Flex direction="row" justify="space-between" align="center" wrap gap={12}>
-                        <Heading h="1">Missions</Heading>
-                        <Flex direction="row" wrap gap={6}>
-                            <Badge variant="secondary" interactive icon={fame?.icon} tooltip="Fame is earned by completing missions. Each mission grants Fame equal to its tier: Tier 1 grants 1 Fame, Tier 2 grants 2 Fame, and so on.">
-                                {fameBalance.toLocaleString()} Fame
-                            </Badge>
-                            <Badge variant="secondary" icon={OTHER_ICONS.STAR}>
-                                {completedMissionsCount.toLocaleString()} Completed Missions
-                            </Badge>
-                        </Flex>
-                    </Flex>
                     <Paper layer={2} variant="secondary" className="mission-tier-panel">
                         <Flex direction="column" align="stretch" gap={8}>
                             <Flex direction="row" justify="space-between" align="center" wrap gap={8}>
+                                <Heading h="1">Missions</Heading>
                                 <Heading h="3">Mission Tier {missionTier}</Heading>
-                                <Badge variant="secondary" interactive tooltip={missionProgressTooltip}>
-                                    {requiredCount
-                                        ? completedCount.toLocaleString() + " / " + requiredCount.toLocaleString()
-                                        : "Maximum Tier"}
-                                </Badge>
+                                <Flex direction="row" wrap align="end" justify="space-between" gap={6}>
+                                    <Badge variant="secondary" interactive icon={fame?.icon} tooltip="Fame is earned by completing missions. Each mission grants Fame equal to its tier: Tier 1 grants 1 Fame, Tier 2 grants 2 Fame, and so on.">
+                                        {fameBalance.toLocaleString()} Fame
+                                    </Badge>
+                                    <Badge variant="secondary" icon={OTHER_ICONS.STAR}>
+                                        {completedMissionsCount.toLocaleString()} Completed Missions
+                                    </Badge>
+                                </Flex>
                             </Flex>
                             <Progress
                                 percentage={progressPercentage}
@@ -143,6 +132,7 @@ export function MissionsModal({ visible, setVisible }) {
                                     ? completedCount.toLocaleString() + " / " + requiredCount.toLocaleString() + " Missions Completed"
                                     : "All mission tiers unlocked"}
                                 size="medium"
+                                corners="rounded"
                                 variant="secondary"
                             />
                         </Flex>

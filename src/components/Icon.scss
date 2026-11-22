@@ -174,7 +174,7 @@
     }
 }
 
-.icon:hover {
+.icon:not(.no-hover):hover {
     > * {
         transition: background-color 0.3s ease-out, outline-color 0.3s ease-out, color 0.3s ease-out, scale 1s ease-out;
     }

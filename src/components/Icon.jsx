@@ -12,6 +12,7 @@ export function Icon({
   outerRunes = null,
   innerShape = null,
   innerRunes = null,
+  interactive = true,
   style = {},
   ...props
 }) {
@@ -37,7 +38,7 @@ export function Icon({
 
   return (
     <div
-      className={cx('icon', isFancyIcon && 'icon-frame', className)}
+      className={cx('icon', isFancyIcon && 'icon-frame', !interactive && 'no-hover', className)}
       data-variant={variant}
       style={iconStyle}
       {...props}

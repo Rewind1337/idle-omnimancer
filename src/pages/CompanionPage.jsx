@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { cloneElement, useState } from "react"
 
 import { ActionHeader } from "../components/actions/ActionHeader"
 import { Badge } from "../components/Badge"
@@ -15,7 +15,6 @@ import { CompanionSelectionModal } from "../components/modals/CompanionSelection
 
 import { COMPANION_CONFIG } from "../data/companionConfig"
 import { COMPANION_DATA } from "../data/companionData"
-import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { getActionXPTable } from "../data/skillConfig"
 import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 import {
@@ -74,70 +73,60 @@ const getEffectValue = (effect, perLevel, level) => {
     return "x" + multiplier.toFixed(2)
 }
 
+const InnerShapeMap = ["dot", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
+const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]
+
 function CompanionSlotCard({ slotId, slot, companion, unlocked, player, onUnlock, onChoose }) {
     const unlockCost = getCompanionSlotUnlockCost(player, slotId)
     const slotVariant = slot.element ?? "companions"
     const companionProgress = companion
         ? getCompanionLevelProgress(player, companion.id)
         : null
-    const emptySlotIcon = slot.element === null
-        ? ITEM_DATA_BY_ID["item:neutral_prism_i"]?.icon ?? OTHER_ICONS.ARTIFACT
-        : ITEM_DATA_BY_ID[
-            slot.element === "earth" ? "item:earth_geode_i" :
-                slot.element === "air" ? "item:air_egg_i" : "item:water_shell_i"
-        ]?.icon
 
     return (
-        <Paper layer={1} variant={slotVariant} className="companion-slot-card">
+        <Paper layer={1} className="companion-slot-card">
             <Flex direction="column" gap={12}>
                 <Flex justify="space-between">
                     <Heading h="2">{slot.name}</Heading>
-                    {unlocked
-                        ? <Badge variant={slotVariant}>Unlocked</Badge>
-                        : <Badge variant="transparent">Locked</Badge>}
+                    {!unlocked && <Button variant={slotVariant} size="medium"
+                        disabled={(player.currencies?.coins ?? 0) < unlockCost}
+                        onClick={onUnlock}>
+                        Unlock · {unlockCost.toLocaleString()} Coins
+                    </Button>}
                 </Flex>
-                {!unlocked ? (
+                {unlocked && (
                     <>
-                        <Text size="small">Unlock this slot to assign another companion.</Text>
-                        <Button variant={slotVariant} size="medium"
-                            disabled={(player.currencies?.coins ?? 0) < unlockCost}
-                            onClick={onUnlock}>
-                            Unlock · {unlockCost.toLocaleString()} Coins
-                        </Button>
-                    </>
-                ) : (
-                    <>
-                        {companion ? (
-                            <Flex direction="column" align="center" gap={6} className="companion-slot-selected">
-                                <Icon size={64} variant={companion.element}>{companion.icon}</Icon>
-                                <Heading h="2">{companion.name}</Heading>
-                                <Flex justify="center" wrap gap={6}>
-                                    <Badge variant="transparent">Tier {companion.tier}</Badge>
-                                    <Badge variant="transparent">Level {companionProgress.level}</Badge>
+                        {companion && (
+                            <Paper layer={2} interactive onClick={onChoose} variant={companion.element}>
+                                <Flex>
+                                    <Paper round layer="0" interactive className="w-min" padding={4} variant={companion.element}>
+                                        <Icon size={64} outerRunes={OuterRunesMap[companion.tier - 1]}
+                                            outerShape={7} innerRunes="gap" innerShape={InnerShapeMap[companion.tier - 1]} variant={companion.element}>
+                                            {cloneElement(companion.icon, { size: 48 })}
+                                        </Icon>
+                                    </Paper>
+                                    <Flex direction="column" align="center" className="companion-slot-selected">
+                                        <Flex justify="center">
+                                            <Heading h="2">{companion.name}</Heading>
+                                            <Badge interactive icon={OTHER_ICONS.SPARKLES} variant={companion.element}>{companionProgress.neededXP === null
+                                                ? "MAX LEVEL"
+                                                : companionProgress.xp.toLocaleString() + " / " +
+                                                companionProgress.neededXP.toLocaleString()}</Badge>
+                                            <Badge interactive icon={OTHER_ICONS.STAR} variant={companion.element}>Lv. {companionProgress.level} / 100</Badge>
+                                            <Badge interactive icon={OTHER_ICONS.MERGE} variant={companion.element}>Tier {companion.tier}</Badge>
+                                        </Flex>
+                                        <Flex justify="start" gap={6}>
+                                            <Badge interactive icon={OTHER_ICONS.CHECK_CIRCLE} variant={companion.element}>Permanent Effect here</Badge>
+                                            <Badge interactive icon={OTHER_ICONS.CHECK_CIRCLE} variant={companion.element}>Active only Effect here</Badge>
+                                        </Flex>
+                                        <Progress layer={2} corners="rounded" variant={companion.element}
+                                            percentage={companionProgress.neededXP
+                                                ? companionProgress.xp / companionProgress.neededXP * 100
+                                                : 100} />
+                                    </Flex>
                                 </Flex>
-                                <Flex justify="space-between">
-                                    <Text size="small">Companion XP</Text>
-                                    <Text size="small">
-                                        {companionProgress.neededXP === null
-                                            ? "MAX LEVEL"
-                                            : companionProgress.xp.toLocaleString() + " / " +
-                                                companionProgress.neededXP.toLocaleString()}
-                                    </Text>
-                                </Flex>
-                                <Progress layer={2} size="small" variant={companion.element}
-                                    percentage={companionProgress.neededXP
-                                        ? companionProgress.xp / companionProgress.neededXP * 100
-                                        : 100} />
-                            </Flex>
-                        ) : (
-                            <Flex align="center" justify="center" className="companion-slot-empty">
-                                <Icon size={56} variant={slotVariant}>{emptySlotIcon}</Icon>
-                                <Text size="small">No companion selected</Text>
-                            </Flex>
+                            </Paper>
                         )}
-                        <Button variant={slotVariant} size="medium" onClick={onChoose}>
-                            {companion ? "Choose / Switch Companion" : "Choose Companion"}
-                        </Button>
                     </>
                 )}
             </Flex>
@@ -154,6 +143,7 @@ function CompanionTrainingProgress({ skillId, actionId, isActive, durationMs }) 
             className="companion-training-progress"
             layer={2}
             size="medium"
+            corners="rounded"
             variant="companions"
             percentage={isActive ? progress : 0}
             animated={isActive}
@@ -161,7 +151,7 @@ function CompanionTrainingProgress({ skillId, actionId, isActive, durationMs }) 
     )
 }
 
-function CompanionCollectionCard({ companion, player, assigned }) {
+function CompanionCollectionCard({ companion, player }) {
     const progress = getCompanionLevelProgress(player, companion.id)
     const permanentValue = getEffectValue(companion.permanentEffect.effect, companion.permanentEffect.perLevel, progress.level)
     const activeValue = getEffectValue(companion.activeEffect.effect, companion.activeEffect.perLevel, progress.level)
@@ -172,38 +162,34 @@ function CompanionCollectionCard({ companion, player, assigned }) {
         <Paper layer={1} variant={companion.element} className="companion-collection-card">
             <Flex direction="column" gap={8}>
                 <Flex align="center" gap={10}>
-                    <Icon size={40} variant={companion.element}>
-                        {companion.icon}
-                    </Icon>
-                    <Flex direction="column" gap={2} className="flex-grow">
+                    <Paper round layer="0" className="w-min" padding={4}>
+                        <Icon size={32} interactive={false}
+                            outerShape={7} innerShape={InnerShapeMap[companion.tier - 1]} variant={companion.element}>
+                            {cloneElement(companion.icon, { size: 48 })}
+                        </Icon>
+                    </Paper>
+                    <Flex direction="row" gap={0} className="flex-grow">
                         <Heading h="3">{companion.name}</Heading>
-                        <Text size="small">
-                            {companion.element} · Tier {companion.tier} · Level {progress.level}
-                        </Text>
+                        <Flex direction="row" gap={8} className="flex-grow" justify="end" align="center" wrap>
+                            <Badge size="small" icon={OTHER_ICONS.MERGE} variant={companion.element}>Tier {companion.tier}</Badge>
+                            <Badge size="small" icon={OTHER_ICONS.STAR} variant={companion.element}>Lv. {progress.level}</Badge>
+                        </Flex>
                     </Flex>
-                    {assigned && <Badge variant="companions">Active</Badge>}
-                </Flex>
-                <Flex direction="row" justify="space-between">
-                    <Text size="small">Companion XP</Text>
-                    <Text size="small">
-                        {progress.neededXP === null
-                            ? "MAX LEVEL"
-                            : progress.xp.toLocaleString() + " / " + progress.neededXP.toLocaleString()}
-                    </Text>
                 </Flex>
                 <Progress layer={2} size="small" variant={companion.element}
                     percentage={progress.neededXP ? progress.xp / progress.neededXP * 100 : 100} />
-                <Flex direction="column" gap={3} className="companion-effect">
-                    <Text size="small">Permanent · Global</Text>
-                    <Text size="small">
-                        {EFFECT_NAMES[companion.permanentEffect.effect]} {permanentValue}
-                    </Text>
+                <Flex direction="row" justify="space-between" gap={8}>
+                    <Badge size="small" variant="exploration">Permanent</Badge>
+                    <Badge size="small">{EFFECT_NAMES[companion.permanentEffect.effect]} {permanentValue}</Badge>
                 </Flex>
-                <Flex direction="column" gap={3} className="companion-effect">
-                    <Text size="small">Slot Effect · {targetSkill}</Text>
-                    <Text size="small">
+                <Flex direction="row" justify="space-between" gap={8}>
+                    <Flex direction="row" justify="start" gap={8}>
+                        <Badge size="small" variant="exploration">Active</Badge>
+                        <Badge size="small" variant="use the target skill variant here">{targetSkill}</Badge>
+                    </Flex>
+                    <Badge size="small">
                         {EFFECT_NAMES[companion.activeEffect.effect]} {activeValue}
-                    </Text>
+                    </Badge>
                 </Flex>
             </Flex>
         </Paper>

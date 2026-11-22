@@ -86,7 +86,7 @@ export const OfflineProgressModal = memo(function OfflineProgressModal({ progres
                 </Flex>
             }
             footer={completed
-                ? <Button variant="primary" onClick={onContinue}>Continue</Button>
+                ? <Button variant="primary" className="w-100" onClick={onContinue}>Continue</Button>
                 : <Text size="small">Offline progress is being calculated...</Text>}
         />
     )

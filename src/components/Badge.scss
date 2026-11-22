@@ -34,25 +34,19 @@
         font-weight: 400 !important;
     }
 
-    svg {
-        transform: translateY(2px);
-        width: 24px;
-        height: 24px;
+    @each $variant in $button-colors {
+        @include badge-variant(button, $variant);
     }
 
-    @each $variant in $button-colors {
-    @include badge-variant(button, $variant);
-  }
+    @each $variant in $skill-colors {
+        @include badge-variant(skill, $variant);
+    }
 
-  @each $variant in $skill-colors {
-    @include badge-variant(skill, $variant);
-  }
+    @each $variant in $resource-colors {
+        @include badge-variant(resource, $variant);
+    }
 
-  @each $variant in $resource-colors {
-    @include badge-variant(resource, $variant);
-  }
-
-  &[data-variant="transparent"] {
+    &[data-variant="transparent"] {
         background: transparent;
             outline-color: rgba(255, 255, 255, 0.15);
 
@@ -62,10 +56,34 @@
             cursor: pointer;
         }
     }
+
+    &[data-size="small"] {
+        svg {
+            width: 16px; 
+            height: 16px;
+        }
+        .heading {}
+    }
+
+    &[data-size="medium"] {
+        svg {
+            transform: translateY(2px);
+            width: 24px;
+            height: 24px;
+        }
+        .heading {}
+    }
+
+    &[data-size="large"] {
+        svg {
+            transform: translateY(2px);
+            width: 32px;
+            height: 32px;
+        }
+        .heading {}
+    }
 }
 
 .button .badge .flex {
     transform: translateY(2px);
 }
-
-.badge .flex {}

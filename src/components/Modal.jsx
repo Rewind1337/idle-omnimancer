@@ -21,7 +21,7 @@ export function Modal({
       if (event.target === event.currentTarget) onBackdropClick()
     }} style={{ padding: "32px 64px" }} data-variant={variant}>
       <Flex direction='column' className={cx('modal-wrapper')}>
-        <Paper layer={0} variant={variant} className={cx('modal-content')}>
+        <Paper layer={0} className={cx('modal-content')}>
           <Flex direction='column' padding={padding} gap={32} className={cx('modal-flex')}>
             {header && (
               <Paper layer={1} className={cx('modal-header')}>

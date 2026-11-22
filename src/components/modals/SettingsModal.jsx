@@ -85,10 +85,6 @@ export function SettingsModal({
                     <Paper layer={2} variant="secondary">
                         <Flex direction="column" align="stretch" gap={8}>
                             <Heading h="3">Reset Progress</Heading>
-                            <Text size="small">
-                                Erase all skills, actions, items, currencies, missions, companions and upgrades.
-                                Your navigation layout settings will remain unchanged.
-                            </Text>
                             {confirmingReset ? (
                                 <Flex direction="column" gap={8}>
                                     <Text size="small">
@@ -98,21 +94,24 @@ export function SettingsModal({
                                         <Button variant="secondary" onClick={() => setConfirmingReset(false)}>
                                             Cancel
                                         </Button>
-                                        <Button variant="secondary" onClick={confirmReset}>
+                                        <Button variant="combat" onClick={confirmReset}>
                                             Reset All Progress
                                         </Button>
                                     </Flex>
                                 </Flex>
-                            ) : (
-                                <Button variant="secondary" onClick={() => setConfirmingReset(true)}>
+                            ) : (<>
+                                <Text size="small">
+                                    Erase all progress, permanently.
+                                </Text>
+                                <Button variant="combat" onClick={() => setConfirmingReset(true)}>
                                     Reset Progress
                                 </Button>
-                            )}
+                            </>)}
                         </Flex>
                     </Paper>
                 </Flex>
             }
-            footer={<Button variant="secondary" onClick={close}>Close</Button>}
+            footer={<Button variant="primary" className="w-100" onClick={close}>Close</Button>}
         />
     )
 }

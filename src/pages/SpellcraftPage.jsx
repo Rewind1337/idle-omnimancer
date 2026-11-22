@@ -70,7 +70,7 @@ function SpellcraftAction({ action, player, skillId, isActive, isUnlocked, actio
                         <ActionHeader name={action.name ?? humanize(action.id)} level={actionState.level}
                             currentXP={actionState.xp} neededXP={neededXP}
                             tier={action.tier} isUnlocked={isUnlocked} skillName="Spellcraft"
-                            actionMilestones={actionMilestones} actionXPTable={xpTable} xpConfig={SPELLCRAFT_CONFIG.neededXP} />
+                            actionMilestones={actionMilestones} actionXPTable={xpTable} />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
                                 canStart={canStart} durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
@@ -85,7 +85,7 @@ function SpellcraftAction({ action, player, skillId, isActive, isUnlocked, actio
                 </Flex>
                 {isUnlocked ? (
                     <>
-                        <ActionDetails actionTime={durationMs / 1000}
+                        <ActionDetails player={player} skill={SPELLCRAFT_CONFIG} action={action} actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(SPELLCRAFT_CONFIG, action, player)}
                             manaCost={getActionManaCost(SPELLCRAFT_CONFIG, action, player)}
                             outputMultiplier={outputMultiplier}

@@ -63,7 +63,7 @@ function ResearchAction({ action, player, skillId, isActive, isUnlocked, actionS
                     <Flex direction="column">
                         <ActionHeader name={humanize(action.id)} level={actionState.level}
                             currentXP={actionState.xp} neededXP={neededXP}
-                            tier={action.tier} isUnlocked={isUnlocked} actionMilestones={actionMilestones} actionXPTable={xpTable} xpConfig={RESEARCH_CONFIG.neededXP} />
+                            tier={action.tier} isUnlocked={isUnlocked} actionMilestones={actionMilestones} actionXPTable={xpTable} />
                         {isUnlocked ? (
                             <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
                                 canStart={canStart} durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
@@ -78,7 +78,7 @@ function ResearchAction({ action, player, skillId, isActive, isUnlocked, actionS
                 </Flex>
                 {isUnlocked ? (
                     <>
-                        <ActionDetails actionTime={durationMs / 1000}
+                        <ActionDetails player={player} skill={RESEARCH_CONFIG} action={action} actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(RESEARCH_CONFIG, action, player)}
                             outputMultiplier={outputMultiplier}
                             preservationChance={getActionPreservationChance(player, RESEARCH_CONFIG, action)}

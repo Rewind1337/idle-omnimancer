@@ -25,6 +25,8 @@ import {
     getActionConsumeResources,
     getActionXPReward,
     getActionEffectStacks,
+    getActionMilestoneDetails,
+    getActionEffectSummary,
     getCompanionLevelProgress,
     getCompanionSlotUnlockCost,
     getSkillProgress,
@@ -76,7 +78,6 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, onUnlock
     const companionProgress = companion
         ? getCompanionLevelProgress(player, companion.id)
         : null
-    const container = companion ? ITEM_DATA_BY_ID[companion.containerId] : null
     const emptySlotIcon = slot.element === null
         ? ITEM_DATA_BY_ID["item:neutral_prism_i"]?.icon ?? OTHER_ICONS.ARTIFACT
         : ITEM_DATA_BY_ID[
@@ -106,7 +107,7 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, onUnlock
                     <>
                         {companion ? (
                             <Flex direction="column" align="center" gap={6} className="companion-slot-selected">
-                                <Icon size={64} variant={companion.element}>{container?.icon}</Icon>
+                                <Icon size={64} variant={companion.element}>{companion.icon}</Icon>
                                 <Heading h="2">{companion.name}</Heading>
                                 <Flex justify="center" wrap gap={6}>
                                     <Badge variant="transparent">Tier {companion.tier}</Badge>
@@ -154,7 +155,7 @@ function CompanionCollectionCard({ companion, player, assigned }) {
             <Flex direction="column" gap={8}>
                 <Flex align="center" gap={10}>
                     <Icon size={40} variant={companion.element}>
-                        {ITEM_DATA_BY_ID[companion.containerId]?.icon}
+                        {companion.icon}
                     </Icon>
                     <Flex direction="column" gap={2} className="flex-grow">
                         <Heading h="3">{companion.name}</Heading>
@@ -232,6 +233,7 @@ export function CompanionPage() {
         .find(resource => resource.item === "currency:coins")?.amount ?? 0
     const actionXPReward = getActionXPReward(COMPANION_CONFIG, trainingAction, player)
     const actionEffectStacks = getActionEffectStacks(player, COMPANION_CONFIG, trainingAction)
+    const actionMilestones = getActionMilestoneDetails(player, COMPANION_CONFIG, trainingAction)
 
     return (
         <Flex direction="column" className="page-flex page-flex-companions" padding={32} gap={24}>
@@ -264,7 +266,7 @@ export function CompanionPage() {
                         neededXP={neededXP}
                         tier={trainingAction.tier}
                         actionXPTable={actionXPTable}
-                        xpConfig={COMPANION_CONFIG.neededXP}
+                        actionMilestones={actionMilestones}
                     />
                     <Flex wrap gap={8}>
                         <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS}
@@ -275,7 +277,7 @@ export function CompanionPage() {
                                 <hr />
                                 <EffectStack title="Time effects" icon={OTHER_ICONS.HOURGLASS}
                                     entries={actionEffectStacks.actionTime ?? []}
-                                    formulas={["Time = base duration ÷ action speed multiplier"]} />
+                                    summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "actionTime")} />
                             </Flex>}>
                             {durationMs / 1000}s
                         </Badge>
@@ -284,10 +286,9 @@ export function CompanionPage() {
                                 <Heading h="4" className="w-100 align-center">
                                     Coins consumed each time this action completes.
                                 </Heading>
-                                <Text size="small">
-                                    Cost: 10 Coins × the combined levels of all assigned companions.
-                                    Current cost: {trainingCost.toLocaleString()} Coins.
-                                </Text>
+                                <EffectStack title="Gold cost effects" icon={OTHER_ICONS.COINS}
+                                    entries={actionEffectStacks.baseGoldCost ?? []}
+                                    summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "baseGoldCost")} />
                             </Flex>}>
                             {trainingCost.toLocaleString()} Coins
                         </Badge>
@@ -297,12 +298,12 @@ export function CompanionPage() {
                                     XP gained upon completing this action.
                                 </Heading>
                                 <Text size="small">
-                                    Each trainable active companion also gains the same amount of Companion XP.
+                                    Every assigned companion below the level cap gains the same XP amount.
                                 </Text>
                                 <hr />
                                 <EffectStack title="XP effects" icon={OTHER_ICONS.SPARKLES}
                                     entries={actionEffectStacks.xpGain ?? []}
-                                    formulas={["XP = max(0, base XP × element modifier × max(0, 1 + Σ multiplier bonuses) + Σ flat bonuses)"]} />
+                                    summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "xpGain")} />
                             </Flex>}>
                             +{actionXPReward.toLocaleString()} XP
                         </Badge>
@@ -321,7 +322,6 @@ export function CompanionPage() {
                             size="medium"
                             disabled={!isActive && !canStart}
                             toggled={isActive}
-                            badge={isActive ? progress.toFixed(0) + "%" : null}
                             onClick={() => {
                                 if (isActive) stopAction(skillId, trainingAction.id)
                                 else startAction(skillId, trainingAction.id)

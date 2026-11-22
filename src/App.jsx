@@ -25,6 +25,7 @@ import { ExplorationPage } from "./pages/ExplorationPage";
 import { UnveilingPage } from "./pages/UnveilingPage";
 import { CompanionPage } from "./pages/CompanionPage";
 import { OTHER_ICONS, SKILL_ICONS } from "./data/iconLibrary";
+import { COMPANION_DATA } from "./data/companionData";
 import { useGame } from "./hooks/useGame";
 
 import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
@@ -69,6 +70,8 @@ function ResponsivePage({
       variant="companions"
       size="medium"
       icon={SKILL_ICONS.COMPANIONS}
+      badge={`${player.unlockedCompanions?.length ?? 0} / ${COMPANION_DATA.length}`}
+      badgeIcon={OTHER_ICONS.COMPANION_EGG}
       checked={activePage === COMPANIONS_NAVIGATION?.id}
       onClick={() => setActivePage(COMPANIONS_NAVIGATION.id)}
     >

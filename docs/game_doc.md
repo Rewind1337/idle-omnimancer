@@ -369,7 +369,7 @@ Exploration is an **active skill**. Every area is an independent action with its
 | 3 | The Whispering Fields | Air | I | Whispering Seeds | Whispering Chime |
 | 4 | The Stillwater Pools | Water | I | Stillwater Reeds | Stillwater Idol |
 | 5 | The Ironroot Ravine | Earth | II | Ironroot Ore | Ironroot Golem Core |
-| 6 | The Zephyr Heights | Air | II | Zephyr Plumes | Zephyr Wisp Chime |
+| 6 | The Zephyr Heights | Air | II | Zephyr Plumes | Cloudtail Chime |
 | 7 | The Moonlit Fen | Water | II | Moonlit Pearls | Fenwarden Idol |
 | 8 | The Shattered Crags | Earth | III | Shatterstone Fragments | Cragbound Relic |
 | 9 | The Tempest Reach | Air | III | Stormglass Shards | Tempest Eye |
@@ -451,6 +451,41 @@ Each area has its own artifact.
 - Using **Unveil Artifact or Companion** on an eligible object gives a chance to obtain the artifact associated with the area where it was found.
 - Identification can also reveal other valuable resources with meaningful gold sale values.
 - The exact relationship between object types, identification, artifact chances, other rewards and area artifacts is not yet defined.
+- All 31 area artifact records now have unique display names and dedicated Lucide icons. Their item IDs remain stable for save compatibility. They are registered against their areas but are not awarded yet; Combat's reward-resolution system is still future work.
+
+| Area | Artifact | Icon |
+|---|---|---|
+| The Crossroads | Wayfinder's Compass | `Compass` |
+| Mossbound Foothills | Mossheart Bloom | `Flower` |
+| Whispering Fields | Whisperwind Whistle | `Whistle` |
+| Stillwater Pools | Stillwater Rod | `FishingRod` |
+| Ironroot Ravine | Ironroot Weight | `Dumbbell` |
+| Zephyr Heights | Zephyr Longbow | `BowArrow` |
+| Moonlit Fen | Fenwarden's Club | `Club` |
+| Shattered Crags | Cragbound Spade | `Spade` |
+| Tempest Reach | Tempest Caller | `Megaphone` |
+| Drowned Sanctum | Drowned Hook | `FishingHook` |
+| Basalt Crown | Basalt Trophy | `Trophy` |
+| Skybreak Summit | Skybreak Sigil | `VectorPolygon` |
+| Tidal Abyss | Abyssal Starcrown | `SquareStar` |
+| Deepstone Warrens | Deepstone Pyramid | `Pyramid` |
+| Highwind Expanse | Highwind Resonator | `Headphones` |
+| Mooncurrent Basin | Mooncurrent Medal | `Medal` |
+| Verdant Crucible | Verdant Crook | `HockeyStick` |
+| Stormwing Pinnacles | Stormwing Mantle | `Shirt` |
+| Glacial Mirror | Glacial Loop | `Torus` |
+| Obsidian Throne | Obsidian Prism | `Triangle` |
+| Celestial Rift | Celestial Arrowhead | `TriangleRight` |
+| Leviathan Trench | Abyssal Laurel | `Award` |
+| Primordial Forge | Primordial Frame | `VectorSquare` |
+| Starfall Firmament | Starfall Seal | `Square` |
+| Worldtide Sanctum | Worldtide Reliquary | `ShoppingBasket` |
+| Worldcore Caldera | Worldcore Spire | `UtilityPole` |
+| Boundless Empyrean | Firmament Staff | `HikingStick` |
+| Leviathan's Grave | Leviathan Skiff | `Kayak` |
+| Genesis Bastion | Genesis Key | `Key` |
+| Origin Zenith | Origin Key | `KeyRound` |
+| Eternal Deep | Eternal Key | `KeySquare` |
 - Combat formulas, encounter details, reward tables, XP progression, identification costs and artifact rates remain undecided.
 
 Combat must remain independent of the player's currently selected active action. Its passive nature does not imply that its final progression model must be identical to an active skill's action structure.
@@ -465,7 +500,7 @@ The Companions skill unlocks automatically when the player unveils their first c
 
 ### 10.1 Containers, companions and duplicate rewards
 
-- There are 16 companions: one unique companion for every combination of Earth, Air and Water across companion tiers I–V, plus the neutral Wayfinder Spark.
+- There are 16 companions: one unique companion for every combination of Earth, Air and Water across companion tiers I–V, plus the neutral Wayfinder Wyrm. Each companion has a dedicated icon.
 - Earth Geodes contain Earth companions, Air Eggs contain Air companions, and Water Shells contain Water companions. The Wayfinder Prism from Area 1 contains the neutral companion. Each container maps to exactly one companion.
 - The first successful unveiling of a container unlocks its matching companion. Each companion starts at level 1.
 - Further openings of that same container award the matching elemental Companion Candy item instead of unlocking a duplicate companion.
@@ -473,26 +508,45 @@ The Companions skill unlocks automatically when the player unveils their first c
 - Earth, Air, Water and Neutral Companion Candy remain separate inventory items. The existing elemental Candy IDs are retained for compatibility; the neutral companion has its own Neutral Companion Candy.
 - Container tiers have the following minimum Unveiling requirements: Tier I at Unveiling level 5, Tier II at level 10, Tier III at level 15, Tier IV at level 20 and Tier V at level 25.
 
+| Tier | Element | Companion | Icon |
+|---|---|---|---|
+| I | Earth | Cloverhop | `Rabbit` |
+| I | Air | Stormfinch | `Bird` |
+| I | Water | Brineclaw | `Shrimp` |
+| I | Neutral | Wayfinder Wyrm | `Worm` |
+| II | Earth | Ironback | `Turtle` |
+| II | Air | Cloudtail | `Squirrel` |
+| II | Water | Mooncoil | `Snail` |
+| III | Earth | Fernpanda | `Panda` |
+| III | Air | Thunderstripe | `Rat` |
+| III | Water | Frostscale | `Fish` |
+| IV | Earth | Obsidian Scarab | `Bug` |
+| IV | Air | Starhound | `Dog` |
+| IV | Water | Abyssal Lynx | `Cat` |
+| V | Earth | Worldroot Taurus | `ZodiacTaurus` |
+| V | Air | Empyrean Gemini | `ZodiacGemini` |
+| V | Water | Eternal Aquarius | `ZodiacAquarius` |
+
 ### 10.2 Companion levels, skill progression and training
 
 - Every discovered companion levels independently from 1 to 100.
 - Companion XP is awarded by the single **Tend to Companions** action. Each completion takes 5 seconds and grants the action's calculated XP reward to every assigned companion below level 100. The action itself receives that exact same XP amount, including applicable XP bonuses.
-- The coin cost per completion is 10 times the combined levels of all assigned companions. For example, three active companions at level 15 cost 450 coins per cycle.
+- The base coin cost per completion is 10 times the combined levels of all assigned companions. Every 20 Tend to Companions action levels reduces that calculated cost by 1 coin. The final cost cannot fall below zero. For example, three active companions at level 15 have a base cost of 450 coins per cycle.
 - XP is awarded in full to each eligible companion; it is not divided between slots. Two eligible companions each receive the full action XP reward.
 - **Tend to Companions** has its own action level and action XP progression. Its first level requires 50 XP.
 - Companion skill XP is derived from the sum of all 16 companion levels rather than action levels. Its maximum progression pool is 16 × 100 = 1,600 companion levels. For example, three companions at level 100 contribute 300 / 1,600, or 18.75% of the Companion skill's total progression.
-- Each companion's level-up requirement increases over time. The current initial curve starts at 20 XP, then applies a 1.1 per-level multiplier plus 2 additional XP per level.
+- Each companion's level-up requirement increases with both its level and tier. Tier I starts at 20 XP; each tier increase multiplies that base by 1.50 (Tier II ×1.5, Tier III ×2.25, Tier IV ×3.375, Tier V ×5.0625). The level curve then applies a 1.1 multiplier per level plus 2 additional XP per level.
 - There are four vertically stacked slots. The **Any Element** slot is unlocked by default; Earth, Air and Water slots cost 1,000,000, 2,000,000 and 3,000,000 coins respectively.
 - Element-specific slots accept a companion of that element or a neutral companion. The Any Element slot accepts any companion. A companion can occupy only one slot at a time.
 - Most companion effects start with a 5% benefit at level 1 (or a 5% cost reduction) and then gain their configured per-level progression. Input preservation is an exception: it has no 5% starting bonus.
-- The Companions page shows all four slots, the training action, the companion collection, each companion's level and XP, and both of its effects.
+- The Tend to Companions action gains +2% action speed every 5 action levels, +3.5% action XP every 10 levels and −1 coin from its base gold cost every 20 levels. The Companions page shows all four slots, the training action, the companion collection, each companion's level and XP, and both of its effects.
 
 ### 10.3 Companion effects
 
 - Every companion has exactly two effects:
   - A permanent effect that is always active after discovery and applies globally. Ordinary permanent effects start with a 5% benefit at level 1 and gain another 1 percentage point per level thereafter.
   - An active effect that applies only while the companion occupies its elemental slot and targets the configured skill. Ordinary active effects start with a 5% benefit at level 1 and gain another 2.5 percentage points per level thereafter.
-- Input preservation has no shared 5% starting bonus: Ironroot Warden grants +0.1% per companion level globally, while Rillfin grants +0.25% per level to Transmutation while assigned. At level 100, these effects provide +10% and +25% preservation respectively.
+- Input preservation has no shared 5% starting bonus: Ironback grants +0.1% per companion level globally, while Brineclaw grants +0.25% per level to Transmutation while assigned. At level 100, these effects provide +10% and +25% preservation respectively.
 - For cost-reduction effects, the effective cost multiplier decreases as the reduction grows; the current implementation floors the resulting cost multiplier at x0.10.
 - Companion effects can improve sell value, action XP, action time, item output, input preservation, Mana cost, Mana capacity, Mana regeneration, companion-container chance and unlock costs.
 - One companion has a permanent Companion Chance bonus and an active Artifact Chance bonus. Artifact Chance is reserved for the future Combat reward system; Combat itself is not part of this Companion implementation.

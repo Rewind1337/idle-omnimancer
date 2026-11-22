@@ -21,6 +21,7 @@ export const COMPANION_CONFIG = {
         effectStartingBonus: 0.05,
         neededXP: {
             base: 20,
+            tierMultiplier: 1.5,
             perLevelMult: 1.1,
             perLevelFlat: 2,
         },
@@ -45,5 +46,9 @@ export const COMPANION_CONFIG = {
         finalMultPerLevel: 1,
     },
     milestones: [],
-    actionMilestones: [],
+    actionMilestones: [
+        { levels: 5, type: "mult", effect: "actionTime", value: 1.02 },
+        { levels: 10, type: "mult", effect: "xpGain", value: 1.035 },
+        { levels: 20, type: "flat", effect: "baseGoldCost", value: -1 },
+    ],
 }

@@ -2,6 +2,10 @@
     .companion-training-progress {
         flex: 1 1 auto;
         min-width: 0;
+
+        .progress-bar {
+            transition: none;
+        }
     }
 
     .companion-slot-grid {

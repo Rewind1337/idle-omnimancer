@@ -17,6 +17,7 @@ const EFFECT_LABELS = {
     unlockCostReduction: "Unlock Cost",
     companionChance: "Companion Chance",
     artifactChance: "Artifact Chance",
+    baseGoldCost: "Gold Cost",
 }
 
 const formatNumber = (value) => Number(value.toFixed(2)).toString()
@@ -26,6 +27,13 @@ const formatSigned = (value) =>
     (value < 0 ? "−" : "+") + formatNumber(Math.abs(value))
 
 const formatPercent = (value) => formatSigned(value * 100) + "%"
+
+const formatSummaryValue = (value, summary) => {
+    const precision = summary.precision ?? 2
+    const formatted = Number(value.toFixed(precision)).toLocaleString()
+    if (summary.valueFormat === "multiplier") return "x" + formatted
+    return formatted + (summary.unit ? " " + summary.unit : "")
+}
 
 const formatEffectDescription = (entry) => {
     const { effect, type, value, stacks = 1, mode, perStack = false } = entry
@@ -45,8 +53,13 @@ const formatEffectDescription = (entry) => {
         return "x" + formatNumber(elementValue) + " " + elementLabel
     }
 
+    if (effect === "preservation") return formatPercent(delta) + " " + label
+    if (effect === "baseGoldCost" && type === "flat") {
+        return formatSigned(delta) + " Coins"
+    }
+
     // Multiplier effects are shown as their resulting factor instead of a signed percentage.
-    if (type === "mult" || ["actionTime", "itemOutput", "preservation"].includes(effect)) {
+    if (type === "mult" || ["actionTime", "itemOutput"].includes(effect)) {
         return "x" + formatMultiplier(1 + delta) + " " + label
     }
 
@@ -84,7 +97,7 @@ export function EffectStack({
     showInactive = false,
     emptyLabel = "No active effects.",
     icon = null,
-    formulas = [],
+    summary = null,
 }) {
     const visibleEntries = showInactive
         ? entries
@@ -98,6 +111,11 @@ export function EffectStack({
                     <Heading h="4" className="w-100 flex-grow align-center">{title}</Heading>
                     {icon && <span className="w-0 align-left effect-stack-title-icon">{icon}</span>}
                 </Flex>
+            )}
+            {summary && (
+                <Text size="small" strong>
+                    Base {summary.label}: {formatSummaryValue(summary.baseValue, summary)}
+                </Text>
             )}
             {visibleEntries.length > 0 ? visibleEntries.map(entry => (
                 <Flex
@@ -124,10 +142,19 @@ export function EffectStack({
             )) : (
                 <Text>{emptyLabel}</Text>
             )}
-            {formulas.length > 0 && <hr />}
-            {formulas.length > 0 && formulas.map((formula, index) => (
-                <Text key={formula + "-" + index} size="small">{formula}</Text>
-            ))}
+            {summary && (
+                <>
+                    <hr />
+                    <Text size="small" strong>
+                        Combined: {summary.combinedMode === "bonusPercent"
+                            ? formatSigned(summary.combinedValue) + "%"
+                            : "x" + formatMultiplier(summary.combinedMultiplier)}
+                    </Text>
+                    <Text size="small" strong>
+                        Final {summary.label}: {formatSummaryValue(summary.finalValue, summary)}
+                    </Text>
+                </>
+            )}
         </Flex>
     )
 }

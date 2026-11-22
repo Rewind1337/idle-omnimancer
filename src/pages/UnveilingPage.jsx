@@ -76,7 +76,6 @@ function UnveilingActionCard({
                         isUnlocked={isUnlocked}
                         actionMilestones={actionMilestones}
                         actionXPTable={actionXPTable}
-                        xpConfig={UNVEILING_CONFIG.neededXP}
                     />
                     {isUnlocked ? (
                         <>
@@ -118,7 +117,7 @@ function UnveilingActionCard({
 
                 {isUnlocked ? (
                     <>
-                        <ActionDetails
+                        <ActionDetails player={player} skill={UNVEILING_CONFIG} action={action}
                             actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(UNVEILING_CONFIG, action, player)}
                             outputMultiplier={outputMultiplier}

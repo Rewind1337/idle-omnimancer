@@ -83,7 +83,6 @@ function TransmutationAction({ action, player, skillId, isActive, isUnlocked, ac
                             isUnlocked={isUnlocked}
                             actionMilestones={actionMilestones}
                             actionXPTable={xpTable}
-                            xpConfig={TRANSMUTATION_CONFIG.neededXP}
                         />
                         {isUnlocked ? (
                             <ActionProgress
@@ -112,7 +111,7 @@ function TransmutationAction({ action, player, skillId, isActive, isUnlocked, ac
                 </Flex>
                 {isUnlocked ? (
                     <>
-                        <ActionDetails
+                        <ActionDetails player={player} skill={TRANSMUTATION_CONFIG} action={action}
                             actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(TRANSMUTATION_CONFIG, action, player)}
                             manaCost={manaCost}

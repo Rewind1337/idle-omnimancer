@@ -8,7 +8,7 @@ import {
 import { ITEM_DATA, ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { humanize } from "../utility/helpers"
-import { COMPANION_DATA, COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
+import { COMPANION_DATA, COMPANION_DATA_BY_ID, COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
 import { COMPANION_CONFIG } from "../data/companionConfig"
 
 
@@ -129,7 +129,10 @@ const getActionConsumeTotals = (action, player = null, skill = null) => {
             0
         )
         const costPerLevel = action.companionTraining.coinsPerCombinedLevel ?? 10
-        return { "currency:coins": combinedLevels * costPerLevel }
+        const milestoneReduction = player && skill
+            ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "baseGoldCost").flat
+            : 0
+        return { "currency:coins": Math.max(0, combinedLevels * costPerLevel + milestoneReduction) }
     }
 
     if (action.inputSelection) {
@@ -576,6 +579,7 @@ const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
             "unlockCostReduction",
             "companionChance",
             "artifactChance",
+            "baseGoldCost",
         ]
     for (const companionEffect of companionEffects) {
         for (const companionEntry of getCompanionEffectEntries(player, targetSkillId, companionEffect)) {
@@ -682,14 +686,18 @@ export const getActionMilestoneDetails = (player, skill, action) => {
 const getBonusForEffect = (totals, effect) =>
     totals[effect] ?? { flat: 0, mult: 0 }
 
-export const getActionDurationMs = (skill, action, player = null) => {
+const getActionBaseDurationSeconds = (skill, action, player = null) => {
     const selectedItemId = player?.skills?.[skill.id]?.actions?.[action.id]?.selectedItemId
     const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
     const durationConfig = action.time ?? skill.time
     const durationTier = action.durationBySelectedItemTier
         ? (selectedItem?.tier ?? action.tier)
         : action.tier
-    const baseSeconds = durationConfig.base + (durationConfig.perTier ?? 0) * (durationTier - 1)
+    return durationConfig.base + (durationConfig.perTier ?? 0) * (durationTier - 1)
+}
+
+export const getActionDurationMs = (skill, action, player = null) => {
+    const baseSeconds = getActionBaseDurationSeconds(skill, action, player)
     const elementTimeMultiplier = skill.elementModifiers?.[action.element]?.timeMultiplier ?? 1
     const bonuses = player
         ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "actionTime")
@@ -699,7 +707,7 @@ export const getActionDurationMs = (skill, action, player = null) => {
     return Math.max(1, baseSeconds * elementTimeMultiplier / actionSpeedMultiplier * 1000)
 }
 
-export const getActionXPReward = (skill, action, player = null) => {
+const getActionBaseXPReward = (skill, action, player = null) => {
     const selectedItemId = player?.skills?.[skill.id]?.actions?.[action.id]?.selectedItemId
     const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
     let baseXP = skill.actionXP.base + skill.actionXP.perTier * (action.tier - 1)
@@ -711,6 +719,11 @@ export const getActionXPReward = (skill, action, player = null) => {
         baseXP = action.actionXPReward
     }
 
+    return baseXP
+}
+
+export const getActionXPReward = (skill, action, player = null) => {
+    const baseXP = getActionBaseXPReward(skill, action, player)
     const elementXPMultiplier = skill.elementModifiers?.[action.element]?.xpMultiplier ?? 1
     const bonuses = player
         ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "xpGain")
@@ -722,7 +735,7 @@ export const getActionXPReward = (skill, action, player = null) => {
 
 // Action Mana uses the configured tier curve and element modifier, then applies
 // any skill/action milestone discounts targeting this action's skill.
-export const getActionManaCost = (skill, action, player = null) => {
+const getActionBaseManaCost = (skill, action) => {
     const costConfig = skill.mana?.cost
     let baseCost = action.manaCost ?? 0
 
@@ -737,6 +750,11 @@ export const getActionManaCost = (skill, action, player = null) => {
         }
     }
 
+    return baseCost
+}
+
+export const getActionManaCost = (skill, action, player = null) => {
+    const baseCost = getActionBaseManaCost(skill, action)
     const elementManaCostMultiplier =
         skill.elementModifiers?.[action.element]?.manaCostMultiplier ?? 1
     baseCost *= elementManaCostMultiplier
@@ -794,10 +812,100 @@ export const getActionPreservationChance = (player, skill, action) => {
     return Math.max(0, Math.min(1, bonuses.mult + bonuses.flat))
 }
 
+// Build human-readable summaries from the same values used by the action engine.
+export const getActionEffectSummary = (player, skill, action, effect) => {
+    const ratio = (baseValue, finalValue) => baseValue > 0 ? finalValue / baseValue : 1
+
+    if (effect === "actionTime") {
+        const baseValue = getActionBaseDurationSeconds(skill, action, player)
+        const finalValue = getActionDurationMs(skill, action, player) / 1000
+        return {
+            label: "Time",
+            baseValue,
+            combinedMultiplier: finalValue > 0 ? baseValue / finalValue : 1,
+            finalValue,
+            unit: "s",
+            precision: 2,
+        }
+    }
+
+    if (effect === "xpGain") {
+        const baseValue = getActionBaseXPReward(skill, action, player)
+        const finalValue = getActionXPReward(skill, action, player)
+        return {
+            label: "XP",
+            baseValue,
+            combinedMultiplier: ratio(baseValue, finalValue),
+            finalValue,
+            unit: "XP",
+            precision: 2,
+        }
+    }
+
+    if (effect === "manaCost") {
+        const baseValue = getActionBaseManaCost(skill, action)
+        const finalValue = getActionManaCost(skill, action, player)
+        return {
+            label: "Mana",
+            baseValue,
+            combinedMultiplier: ratio(baseValue, finalValue),
+            finalValue,
+            unit: "Mana",
+            precision: 2,
+        }
+    }
+
+    if (effect === "itemOutput") {
+        const finalValue = getActionOutputMultiplier(player, skill, action)
+        return {
+            label: "Output",
+            baseValue: 1,
+            combinedMultiplier: finalValue,
+            finalValue,
+            valueFormat: "multiplier",
+            unit: "",
+            precision: 4,
+        }
+    }
+
+    if (effect === "preservation") {
+        const finalValue = getActionPreservationChance(player, skill, action) * 100
+        return {
+            label: "Input Preservation",
+            baseValue: 0,
+            combinedMode: "bonusPercent",
+            combinedValue: finalValue,
+            finalValue,
+            unit: "%",
+            precision: 2,
+        }
+    }
+
+    if (effect === "baseGoldCost" && action.companionTraining) {
+        const combinedLevels = getActiveCompanionIds(player).reduce(
+            (total, companionId) => total + (player.companionProgress?.[companionId]?.level ?? 0),
+            0
+        )
+        const baseValue = combinedLevels * (action.companionTraining.coinsPerCombinedLevel ?? 10)
+        const finalValue = getActionConsumeResources(player, skill, action)
+            .find(resource => resource.item === "currency:coins")?.amount ?? 0
+        return {
+            label: "Gold Cost",
+            baseValue,
+            combinedMultiplier: ratio(baseValue, finalValue),
+            finalValue,
+            unit: "Coins",
+            precision: 2,
+        }
+    }
+
+    return null
+}
+
 // Return active contributors from element modifiers, applicable skill milestones
 // and repeated action milestones. These records are used by the action tooltips.
 export const getActionEffectStacks = (player, skill, action) => {
-    const effectNames = ["actionTime", "xpGain", "manaCost", "itemOutput", "preservation", "manaCapacity", "manaRegeneration", "sellValue", "unlockCostReduction", "companionChance", "artifactChance"]
+    const effectNames = ["actionTime", "xpGain", "manaCost", "itemOutput", "preservation", "manaCapacity", "manaRegeneration", "sellValue", "unlockCostReduction", "companionChance", "artifactChance", "baseGoldCost"]
     const elementProperties = {
         actionTime: "timeMultiplier",
         xpGain: "xpMultiplier",
@@ -926,6 +1034,23 @@ export const getManaRegeneration = (player) => {
     return Math.max(0, baseRegeneration * Math.max(0, 1 + bonuses.mult) + bonuses.flat)
 }
 
+export const getManaEffectSummary = (player, effect) => {
+    const skill = SKILL_CONFIG_BY_ID["skill:spellcraft"]
+    if (!skill?.mana || !["manaCapacity", "manaRegeneration"].includes(effect)) return null
+
+    const capacity = effect === "manaCapacity"
+    const baseValue = capacity ? skill.mana.base : skill.mana.regen
+    const finalValue = capacity ? getManaCapacity(player) : getManaRegeneration(player)
+    return {
+        label: capacity ? "Mana Capacity" : "Mana Regeneration",
+        baseValue,
+        combinedMultiplier: baseValue > 0 ? finalValue / baseValue : 1,
+        finalValue,
+        unit: capacity ? "Mana" : "Mana / second",
+        precision: 2,
+    }
+}
+
 // Collect the effects that contribute specifically to Spellcraft's Mana pool.
 // These include its intrinsic per-level growth and milestones from any unlocked skill.
 export const getManaEffectStacks = (player) => {
@@ -1015,11 +1140,15 @@ export const getTrainableActiveCompanionIds = (player) => getActiveCompanionIds(
             level < COMPANION_CONFIG.companionLeveling.maxLevel
     })
 
-export const getCompanionLevelXPRequirement = (level) => {
+export const getCompanionLevelXPRequirement = (level, tier = 1) => {
     const config = COMPANION_CONFIG.companionLeveling.neededXP
+    const tierMultiplier = config.tierMultiplier ?? 1.5
+    const tierBase = config.base * Math.pow(tierMultiplier, Math.max(0, tier - 1))
+    const levelOffset = Math.max(0, level - 1)
+
     return Math.ceil(
-        config.base * Math.pow(config.perLevelMult, Math.max(0, level - 1)) +
-        config.perLevelFlat * Math.max(0, level - 1)
+        tierBase * Math.pow(config.perLevelMult, levelOffset) +
+        config.perLevelFlat * levelOffset
     )
 }
 
@@ -1033,7 +1162,7 @@ export const getCompanionLevelProgress = (player, companionId) => {
         xp: companionState.xp,
         neededXP: level >= COMPANION_CONFIG.companionLeveling.maxLevel
             ? null
-            : getCompanionLevelXPRequirement(level),
+            : getCompanionLevelXPRequirement(level, COMPANION_DATA_BY_ID[companionId]?.tier ?? 1),
     }
 }
 
@@ -1091,7 +1220,7 @@ const awardActionXP = (player, skill, action, actionState) => {
             if (!companionState || companionState.level >= COMPANION_CONFIG.companionLeveling.maxLevel) continue
 
             companionState.xp += actionXP
-            const neededXP = getCompanionLevelXPRequirement(companionState.level)
+            const neededXP = getCompanionLevelXPRequirement(companionState.level, COMPANION_DATA_BY_ID[companionId]?.tier ?? 1)
             if (companionState.xp >= neededXP) {
                 companionState.level += 1
                 companionState.xp = 0

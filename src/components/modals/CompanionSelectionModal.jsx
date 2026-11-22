@@ -6,7 +6,6 @@ import { Modal } from "../Modal"
 import { Paper } from "../Paper"
 import { Text } from "../Text"
 
-import { ITEM_DATA_BY_ID } from "../../data/itemData"
 
 export function CompanionSelectionModal({
     slotId,
@@ -42,7 +41,7 @@ export function CompanionSelectionModal({
                             >
                                 <Flex direction="row" align="center" gap={10}>
                                     <Icon size={36} variant={companion.element}>
-                                        {ITEM_DATA_BY_ID[companion.containerId]?.icon}
+                                        {companion.icon}
                                     </Icon>
                                     <Flex direction="column" align="start" gap={2}>
                                         <Heading h="3">{companion.name}</Heading>

@@ -8,6 +8,7 @@ import {
     getManaCapacity,
     getManaRegeneration,
     getManaEffectStacks,
+    getManaEffectSummary,
 } from "../../game/gameEngine"
 import { useGame } from "../../hooks/useGame"
 import { OTHER_ICONS } from "../../data/iconLibrary"
@@ -42,9 +43,7 @@ export function ManaBar() {
                                 title="Mana capacity effects"
                                 icon={OTHER_ICONS.ZAP}
                                 entries={manaEffects.manaCapacity}
-                                formulas={[
-                                    "Capacity = (base Mana + Spellcraft level bonuses) × max(0, 1 + Σ multiplier bonuses) + Σ flat bonuses",
-                                ]}
+                                summary={getManaEffectSummary(player, "manaCapacity")}
                             />
                         </Flex>
                     }
@@ -63,9 +62,7 @@ export function ManaBar() {
                                 title="Mana regeneration effects"
                                 icon={OTHER_ICONS.ZAP}
                                 entries={manaEffects.manaRegeneration}
-                                formulas={[
-                                    "Regeneration = (base regeneration + Spellcraft level bonuses) × max(0, 1 + Σ multiplier bonuses) + Σ flat bonuses",
-                                ]}
+                                summary={getManaEffectSummary(player, "manaRegeneration")}
                             />
                         </Flex>
                     }

@@ -1,8 +1,11 @@
+import { COMPANION_ICONS } from "./iconLibrary"
+
 // Companion collection data. Every container reveals one specific companion.
 export const COMPANION_DATA = [
     {
-        id: "companion:mossling",
-        name: "Mossling",
+        id: "companion:cloverhop",
+        name: "Cloverhop",
+        icon: COMPANION_ICONS.CLOVERHOP,
         element: "earth",
         tier: 1,
         duplicateCandyAmount: 1,
@@ -12,8 +15,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "xpGain", type: "mult", perLevel: 0.025, targetSkillId: "skill:research" },
     },
     {
-        id: "companion:breezeling",
-        name: "Breezeling",
+        id: "companion:stormfinch",
+        name: "Stormfinch",
+        icon: COMPANION_ICONS.STORMFINCH,
         element: "air",
         tier: 1,
         duplicateCandyAmount: 1,
@@ -23,8 +27,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "manaRegeneration", type: "mult", perLevel: 0.025, targetSkillId: "skill:spellcraft" },
     },
     {
-        id: "companion:rillfin",
-        name: "Rillfin",
+        id: "companion:brineclaw",
+        name: "Brineclaw",
+        icon: COMPANION_ICONS.BRINECLAW,
         element: "water",
         tier: 1,
         duplicateCandyAmount: 1,
@@ -34,8 +39,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "preservation", type: "mult", perLevel: 0.0025, targetSkillId: "skill:transmutation" },
     },
     {
-        id: "companion:ironroot_warden",
-        name: "Ironroot Warden",
+        id: "companion:ironback",
+        name: "Ironback",
+        icon: COMPANION_ICONS.IRONBACK,
         element: "earth",
         tier: 2,
         duplicateCandyAmount: 2,
@@ -45,8 +51,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "itemOutput", type: "mult", perLevel: 0.025, targetSkillId: "skill:exploration" },
     },
     {
-        id: "companion:zephyr_wisp",
-        name: "Zephyr Wisp",
+        id: "companion:cloudtail",
+        name: "Cloudtail",
+        icon: COMPANION_ICONS.CLOUDTAIL,
         element: "air",
         tier: 2,
         duplicateCandyAmount: 2,
@@ -56,8 +63,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "actionTime", type: "mult", perLevel: 0.025, targetSkillId: "skill:research" },
     },
     {
-        id: "companion:mooncurrent_nymph",
-        name: "Mooncurrent Nymph",
+        id: "companion:mooncoil",
+        name: "Mooncoil",
+        icon: COMPANION_ICONS.MOONCOIL,
         element: "water",
         tier: 2,
         duplicateCandyAmount: 2,
@@ -67,8 +75,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "manaCost", type: "mult", perLevel: 0.025, targetSkillId: "skill:spellcraft" },
     },
     {
-        id: "companion:verdant_colossus",
-        name: "Verdant Colossus",
+        id: "companion:fernpanda",
+        name: "Fernpanda",
+        icon: COMPANION_ICONS.FERNPANDA,
         element: "earth",
         tier: 3,
         duplicateCandyAmount: 3,
@@ -78,8 +87,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "itemOutput", type: "mult", perLevel: 0.025, targetSkillId: "skill:transmutation" },
     },
     {
-        id: "companion:stormwing_sylph",
-        name: "Stormwing Sylph",
+        id: "companion:thunderstripe",
+        name: "Thunderstripe",
+        icon: COMPANION_ICONS.THUNDERSTRIPE,
         element: "air",
         tier: 3,
         duplicateCandyAmount: 3,
@@ -89,8 +99,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "manaCapacity", type: "mult", perLevel: 0.025, targetSkillId: "skill:spellcraft" },
     },
     {
-        id: "companion:glacial_leviathan",
-        name: "Glacial Leviathan",
+        id: "companion:frostscale",
+        name: "Frostscale",
+        icon: COMPANION_ICONS.FROSTSCALE,
         element: "water",
         tier: 3,
         duplicateCandyAmount: 3,
@@ -100,8 +111,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "actionTime", type: "mult", perLevel: 0.025, targetSkillId: "skill:exploration" },
     },
     {
-        id: "companion:obsidian_sentinel",
-        name: "Obsidian Sentinel",
+        id: "companion:obsidian_scarab",
+        name: "Obsidian Scarab",
+        icon: COMPANION_ICONS.OBSIDIAN_SCARAB,
         element: "earth",
         tier: 4,
         duplicateCandyAmount: 4,
@@ -111,8 +123,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "itemOutput", type: "mult", perLevel: 0.025, targetSkillId: "skill:research" },
     },
     {
-        id: "companion:celestial_tempest",
-        name: "Celestial Tempest",
+        id: "companion:starhound",
+        name: "Starhound",
+        icon: COMPANION_ICONS.STARHOUND,
         element: "air",
         tier: 4,
         duplicateCandyAmount: 4,
@@ -122,8 +135,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "xpGain", type: "mult", perLevel: 0.025, targetSkillId: "skill:unveiling" },
     },
     {
-        id: "companion:abyssal_sovereign",
-        name: "Abyssal Sovereign",
+        id: "companion:abyssal_lynx",
+        name: "Abyssal Lynx",
+        icon: COMPANION_ICONS.ABYSSAL_LYNX,
         element: "water",
         tier: 4,
         duplicateCandyAmount: 4,
@@ -133,8 +147,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "artifactChance", type: "mult", perLevel: 0.025, targetSkillId: "skill:combat" },
     },
     {
-        id: "companion:worldcore_titan",
-        name: "Worldcore Titan",
+        id: "companion:worldroot_taurus",
+        name: "Worldroot Taurus",
+        icon: COMPANION_ICONS.WORLDROOT_TAURUS,
         element: "earth",
         tier: 5,
         duplicateCandyAmount: 5,
@@ -144,8 +159,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "actionTime", type: "mult", perLevel: 0.025, targetSkillId: "skill:transmutation" },
     },
     {
-        id: "companion:empyrean_archon",
-        name: "Empyrean Archon",
+        id: "companion:empyrean_gemini",
+        name: "Empyrean Gemini",
+        icon: COMPANION_ICONS.EMPYREAN_GEMINI,
         element: "air",
         tier: 5,
         duplicateCandyAmount: 5,
@@ -155,8 +171,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "itemOutput", type: "mult", perLevel: 0.025, targetSkillId: "skill:spellcraft" },
     },
     {
-        id: "companion:eternal_tidecaller",
-        name: "Eternal Tidecaller",
+        id: "companion:eternal_aquarius",
+        name: "Eternal Aquarius",
+        icon: COMPANION_ICONS.ETERNAL_AQUARIUS,
         element: "water",
         tier: 5,
         duplicateCandyAmount: 5,
@@ -166,8 +183,9 @@ export const COMPANION_DATA = [
         activeEffect: { effect: "xpGain", type: "mult", perLevel: 0.025, targetSkillId: "skill:exploration" },
     },
     {
-        id: "companion:wayfinder_spark",
-        name: "Wayfinder Spark",
+        id: "companion:wayfinder_wyrm",
+        name: "Wayfinder Wyrm",
+        icon: COMPANION_ICONS.WAYFINDER_WYRM,
         element: "neutral",
         tier: 1,
         duplicateCandyAmount: 1,
@@ -187,3 +205,26 @@ export const COMPANION_DATA_BY_ID = Object.fromEntries(
 export const COMPANION_DATA_BY_CONTAINER_ID = Object.fromEntries(
     COMPANION_DATA.map(companion => [companion.containerId, companion])
 )
+
+// Preserve discoveries and assignments made before companion identities were renamed.
+export const COMPANION_ID_MIGRATIONS = {
+    "companion:earth": "companion:cloverhop",
+    "companion:air": "companion:stormfinch",
+    "companion:water": "companion:brineclaw",
+    "companion:mossling": "companion:cloverhop",
+    "companion:breezeling": "companion:stormfinch",
+    "companion:rillfin": "companion:brineclaw",
+    "companion:ironroot_warden": "companion:ironback",
+    "companion:zephyr_wisp": "companion:cloudtail",
+    "companion:mooncurrent_nymph": "companion:mooncoil",
+    "companion:verdant_colossus": "companion:fernpanda",
+    "companion:stormwing_sylph": "companion:thunderstripe",
+    "companion:glacial_leviathan": "companion:frostscale",
+    "companion:obsidian_sentinel": "companion:obsidian_scarab",
+    "companion:celestial_tempest": "companion:starhound",
+    "companion:abyssal_sovereign": "companion:abyssal_lynx",
+    "companion:worldcore_titan": "companion:worldroot_taurus",
+    "companion:empyrean_archon": "companion:empyrean_gemini",
+    "companion:eternal_tidecaller": "companion:eternal_aquarius",
+    "companion:wayfinder_spark": "companion:wayfinder_wyrm"
+}

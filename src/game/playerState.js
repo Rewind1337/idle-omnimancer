@@ -6,11 +6,11 @@ import {
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { MISSION_DATA } from "../data/missionData"
-import { COMPANION_IDS, COMPANION_DATA } from "../data/companionData"
+import { COMPANION_IDS, COMPANION_DATA, COMPANION_ID_MIGRATIONS } from "../data/companionData"
 import { COMPANION_CONFIG } from "../data/companionConfig"
 
 export const SAVE_KEY = "omnimancer-idle-save"
-export const SAVE_VERSION = 5
+export const SAVE_VERSION = 6
 export const DEFAULT_INVENTORY_SLOTS = GLOBAL_CONFIG.startingBagSpace
 
 // The save contains only serializable player data. Configurations, functions,
@@ -81,20 +81,17 @@ export const createInitialPlayerState = () => {
 
 // Merge saved values into the current config shape. This means newly added
 // skills/actions receive defaults while existing player progress is retained.
+const migrateCompanionId = companionId => COMPANION_ID_MIGRATIONS[companionId] ?? companionId
+
 export const normalizePlayerState = (savedState) => {
     const initial = createInitialPlayerState()
     if (!savedState || typeof savedState !== "object") return initial
 
     const validSkillIds = new Set(SKILL_NAVIGATION.map(({ skillId }) => skillId))
     const unlockedSkillIds = new Set(initial.unlockedSkills)
-    const legacyCompanionIds = {
-        "companion:earth": COMPANION_DATA[0].id,
-        "companion:air": COMPANION_DATA[1].id,
-        "companion:water": COMPANION_DATA[2].id,
-    }
     const unlockedCompanions = [...new Set(
         (Array.isArray(savedState.unlockedCompanions) ? savedState.unlockedCompanions : [])
-            .map(id => legacyCompanionIds[id] ?? id)
+            .map(migrateCompanionId)
             .filter(id => COMPANION_IDS.includes(id))
     )]
 
@@ -138,7 +135,8 @@ export const normalizePlayerState = (savedState) => {
                 ((selection.groups ?? []).includes(selectedItemData.group) ||
                     (selection.types ?? []).includes(selectedItemData.type))
             )
-            const preserveProgress = savedState.version >= SAVE_VERSION ||
+            // Version 5 is the first save format whose idle partial-action progress is trusted.
+            const preserveProgress = savedState.version >= 5 ||
                 isActiveAction ||
                 isRunningPassiveAction
 
@@ -185,8 +183,24 @@ export const normalizePlayerState = (savedState) => {
         ))]
         : initial.completedMissions
 
+    // Re-key progress for renamed companions. When both a legacy and current
+    // key exist, retain the entry with the higher level (then higher XP).
+    const migratedCompanionProgress = Object.entries(savedState.companionProgress ?? {})
+        .reduce((result, [companionId, progress]) => {
+            const id = migrateCompanionId(companionId)
+            const current = result[id]
+            const level = Number(progress?.level) || 0
+            const currentLevel = Number(current?.level) || 0
+            const xp = Number(progress?.xp) || 0
+            const currentXP = Number(current?.xp) || 0
+            if (!current || level > currentLevel || (level === currentLevel && xp > currentXP)) {
+                result[id] = progress
+            }
+            return result
+        }, {})
+
     const companionProgress = Object.fromEntries(COMPANION_DATA.map(companion => {
-        const savedProgress = savedState.companionProgress?.[companion.id]
+        const savedProgress = migratedCompanionProgress[companion.id]
         const isUnlocked = unlockedCompanions.includes(companion.id)
         const level = clampInteger(
             savedProgress?.level,
@@ -207,20 +221,17 @@ export const normalizePlayerState = (savedState) => {
     const savedUnlockedSlots = Array.isArray(savedState.unlockedCompanionSlots)
         ? savedState.unlockedCompanionSlots
         : []
-    const hasAnyElementSlot = Object.prototype.hasOwnProperty.call(savedActiveSlots, "any") ||
-        savedUnlockedSlots.includes("any")
-    const legacyUnlockedSlots = hasAnyElementSlot
-        ? savedUnlockedSlots
-        : savedUnlockedSlots.filter(slotId => slotId !== "earth")
     const unlockedCompanionSlots = [...new Set([
         "any",
-        ...legacyUnlockedSlots,
+        ...savedUnlockedSlots,
     ].filter(slotId =>
         validSlotIds.includes(slotId) && COMPANION_CONFIG.slots[slotId]
     ))]
-    const savedSlotAssignments = hasAnyElementSlot
-        ? savedActiveSlots
-        : { ...savedActiveSlots, any: savedActiveSlots.earth ?? null, earth: null }
+    const savedSlotAssignments = Object.fromEntries(
+        Object.entries(savedActiveSlots).map(([slotId, companionId]) =>
+            [slotId, migrateCompanionId(companionId)]
+        )
+    )
     const assignedCompanions = new Set()
     const activeCompanionSlots = Object.fromEntries(validSlotIds.map(slotId => {
         const companionId = savedSlotAssignments[slotId] ?? null

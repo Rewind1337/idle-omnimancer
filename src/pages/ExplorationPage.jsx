@@ -112,7 +112,6 @@ function ExplorationActionCard({
                             isUnlocked={isUnlocked}
                             actionMilestones={actionMilestones}
                             actionXPTable={actionXPTable}
-                            xpConfig={EXPLORATION_CONFIG.neededXP}
                         />
                         {!isSkillUnlocked ? (
                             <Text size="small">Unlock Exploration in the Shop to begin exploring.</Text>
@@ -143,7 +142,7 @@ function ExplorationActionCard({
                 </Flex>
                 {isUnlocked ? (
                     <>
-                        <ActionDetails
+                        <ActionDetails player={player} skill={EXPLORATION_CONFIG} action={action}
                             actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(EXPLORATION_CONFIG, action, player)}
                             outputMultiplier={outputMultiplier}

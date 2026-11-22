@@ -3,6 +3,7 @@ import { Badge } from "../Badge"
 import { OTHER_ICONS } from "../../data/iconLibrary"
 import { EffectStack } from "../EffectStack"
 import { Heading } from "../Heading"
+import { getActionEffectSummary } from "../../game/gameEngine"
 
 export function ActionDetails({
     actionTime,
@@ -12,6 +13,9 @@ export function ActionDetails({
     itemValue = null,
     preservationChance = 0,
     effectStacks = {},
+    player,
+    skill,
+    action,
 }) {
     return (
         <Flex className="action-details">
@@ -19,7 +23,7 @@ export function ActionDetails({
                 <Heading h="4" className="w-100 align-center">Time needed to complete this action.</Heading>
                 <hr />
                 <EffectStack title="Time effects" icon={OTHER_ICONS.HOURGLASS} entries={effectStacks.actionTime ?? []}
-                    formulas={["Time = (base duration × element modifier) ÷ max(0.01, 1 + Σ multiplier bonuses + Σ flat bonuses)"]} />
+                    summary={getActionEffectSummary(player, skill, action, "actionTime")} />
             </Flex>}>
                 {actionTime.toFixed(2)}s
             </Badge>
@@ -27,7 +31,7 @@ export function ActionDetails({
                 <Heading h="4" className="w-100 align-center">XP gained upon completing this action.</Heading>
                 <hr />
                 <EffectStack title="XP effects" icon={OTHER_ICONS.SPARKLES} entries={effectStacks.xpGain ?? []}
-                    formulas={["XP = max(0, round(base XP × element modifier × max(0, 1 + Σ multiplier bonuses) + Σ flat bonuses))"]} />
+                    summary={getActionEffectSummary(player, skill, action, "xpGain")} />
             </Flex>}>
                 {actionXP.toFixed(1)} XP
             </Badge>
@@ -36,7 +40,7 @@ export function ActionDetails({
                     <Heading h="4" className="w-100 align-center">Mana consumed each time this action completes.</Heading>
                     <hr />
                     <EffectStack title="Mana cost effects" icon={OTHER_ICONS.ZAP} entries={effectStacks.manaCost ?? []}
-                        formulas={["Mana = max(0, base cost × element modifier × max(0.01, 1 + Σ multiplier bonuses) − Σ flat discounts)"]} />
+                        summary={getActionEffectSummary(player, skill, action, "manaCost")} />
                 </Flex>}>
                     {manaCost.toFixed(1)} Mana
                 </Badge>
@@ -53,7 +57,7 @@ export function ActionDetails({
                 <Heading h="4" className="w-100 align-center">Multiplier applied to the base amount of resources produced by this action.</Heading>
                 <hr />
                 <EffectStack title="Output effects" icon={OTHER_ICONS.FLAME} entries={effectStacks.itemOutput ?? []}
-                    formulas={["Output multiplier = max(0, 1 + Σ multiplier bonuses + Σ flat bonuses)", "Output = base amount × multiplier, with fractional output rolling for +1"]} />
+                    summary={getActionEffectSummary(player, skill, action, "itemOutput")} />
             </Flex>}>
                 x{outputMultiplier.toFixed(2)}
             </Badge>
@@ -62,7 +66,7 @@ export function ActionDetails({
                     <Heading h="4" className="w-100 align-center">Chance to avoid consuming this action's required input resources when it completes.</Heading>
                     <hr />
                     <EffectStack title="Preservation effects" icon={OTHER_ICONS.RECYCLE} entries={effectStacks.preservation ?? []}
-                        formulas={["Preservation = clamp(Σ multiplier bonus deltas + Σ flat bonuses, 0, 1)"]} />
+                        summary={getActionEffectSummary(player, skill, action, "preservation")} />
                 </Flex>}>
                     {(preservationChance * 100).toFixed(0)}%
                 </Badge>

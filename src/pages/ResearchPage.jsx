@@ -33,7 +33,7 @@ import { useGame } from "../hooks/useGame"
 const InnerShapeMap = ["dot", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]
 
-function ResearchAction({ action, player, isActive, isUnlocked, actionState, canUnlock, canStart, onToggle, onUnlock }) {
+function ResearchAction({ action, player, skillId, isActive, isUnlocked, actionState, canUnlock, canStart, onToggle, onUnlock }) {
     const actionIcon = RESEARCH_ACTION_ICONS[action.tier - 1] ?? RESEARCH_ACTION_ICONS[0]
     const durationMs = isUnlocked ? getActionDurationMs(RESEARCH_CONFIG, action, player) : 0
     const xpTable = isUnlocked ? getActionXPTable(action.id) : null
@@ -127,7 +127,7 @@ export function ResearchPage() {
                             player.activeAction?.actionId === action.id
 
                         return (
-                            <ResearchAction key={action.id} action={action} player={player} actionState={actionState}
+                            <ResearchAction key={action.id} action={action} player={player} skillId={skillId} actionState={actionState}
                                 isActive={isActive} isUnlocked={isUnlocked}
                                 canStart={canStartAction(player, skillId, action.id)}
                                 canUnlock={canUnlockAction(player, skillId, action.id)}

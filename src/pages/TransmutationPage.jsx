@@ -36,7 +36,7 @@ import { useGame } from "../hooks/useGame"
 const InnerShapeMap = [3, 4, 5, 6, 7, 8, 9, 10]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide"]
 
-function TransmutationAction({ action, player, isActive, isUnlocked, actionState, canUnlock, canStart, onToggle, onUnlock }) {
+function TransmutationAction({ action, player, skillId, isActive, isUnlocked, actionState, canUnlock, canStart, onToggle, onUnlock }) {
     const elementVariant = action.element ?? "transmutation"
     const durationMs = isUnlocked ? getActionDurationMs(TRANSMUTATION_CONFIG, action, player) : 0
     const xpTable = isUnlocked ? getActionXPTable(action.id) : null
@@ -179,6 +179,7 @@ export function TransmutationPage() {
                                 <TransmutationAction
                                     key={action.id}
                                     action={action}
+                                    skillId={skillId}
                                     player={player}
                                     actionState={actionState}
                                     isActive={isActive}

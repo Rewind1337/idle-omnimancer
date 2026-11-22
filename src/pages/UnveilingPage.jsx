@@ -36,6 +36,7 @@ import "./UnveilingPage.scss"
 
 function UnveilingActionCard({
     action,
+    skillId,
     player,
     actionState,
     isUnlocked,
@@ -170,6 +171,7 @@ export function UnveilingPage() {
             <UnveilingActionCard
                 key={action.id}
                 action={action}
+                skillId={skillId}
                 player={player}
                 actionState={actionState}
                 isUnlocked={isUnlocked}

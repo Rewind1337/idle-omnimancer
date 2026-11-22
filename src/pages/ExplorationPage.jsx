@@ -43,6 +43,7 @@ const OUTER_RUNES = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide
 
 function ExplorationActionCard({
     action,
+    skillId,
     player,
     actionState,
     isSkillUnlocked,
@@ -236,6 +237,7 @@ export function ExplorationPage() {
 
             <ExplorationActionCard
                 action={selectedAction}
+                skillId={skillId}
                 player={player}
                 actionState={actionState}
                 isSkillUnlocked={isSkillUnlocked}

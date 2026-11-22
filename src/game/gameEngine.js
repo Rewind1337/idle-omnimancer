@@ -361,8 +361,9 @@ const canStoreActionOutputs = (player, skill, action) => {
         if (!companion || !player.unlockedCompanions?.includes(companion.id)) return true
 
         const duplicateReward = skill.companionRewards?.experienceItemsByElement?.[selectedItem.variant]
+        const duplicateRewardAmount = (companion.duplicateCandyAmount ?? companion.tier ?? 1) * outputMultiplier
         const inventorySlots = player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
-        const rewardItemsToAdd = duplicateReward && !(inventory[duplicateReward] > 0)
+        const rewardItemsToAdd = duplicateReward && duplicateRewardAmount > 0 && !(inventory[duplicateReward] > 0)
             ? [duplicateReward]
             : []
         const containerSlotFreed = (inventory[selectedItem.id] ?? 0) === 1
@@ -1248,6 +1249,13 @@ const payActionCost = (player, skill, action) => {
     }
 }
 
+const rollActionOutputAmount = (amount, multiplier) => {
+    const scaledAmount = Math.max(0, amount * multiplier)
+    const wholeAmount = Math.floor(scaledAmount)
+    const fractionalAmount = scaledAmount - wholeAmount
+    return wholeAmount + (fractionalAmount > 0 && Math.random() < fractionalAmount ? 1 : 0)
+}
+
 const awardActionXP = (player, skill, action, actionState) => {
     const actionXP = getActionXPReward(skill, action, player)
 
@@ -1288,6 +1296,7 @@ const awardActionXP = (player, skill, action, actionState) => {
 
     if (action.companionTraining) return
 
+    const outputMultiplier = getActionOutputMultiplier(player, skill, action)
     const selectedItemId = action.inputSelection
         ? player.skills?.[skill.id]?.actions?.[action.id]?.selectedItemId
         : null
@@ -1324,20 +1333,16 @@ const awardActionXP = (player, skill, action, actionState) => {
         } else if (companion) {
             const experienceItem = rewards?.experienceItemsByElement?.[selectedItem.variant]
             const rewardAmount = companion.duplicateCandyAmount ?? companion.tier ?? 1
-            if (experienceItem && ITEM_DATA_BY_ID[experienceItem]) {
+            const outputAmount = rollActionOutputAmount(rewardAmount, outputMultiplier)
+            if (experienceItem && ITEM_DATA_BY_ID[experienceItem] && outputAmount > 0) {
                 player.inventory[experienceItem] =
-                    (player.inventory[experienceItem] ?? 0) + rewardAmount
+                    (player.inventory[experienceItem] ?? 0) + outputAmount
             }
         }
     }
 
-    const outputMultiplier = getActionOutputMultiplier(player, skill, action)
     for (const { item, amount } of getActionOutputs(action)) {
-        const scaledAmount = amount * outputMultiplier
-        const wholeAmount = Math.floor(scaledAmount)
-        const fractionalAmount = scaledAmount - wholeAmount
-        const outputAmount = wholeAmount +
-            (fractionalAmount > 0 && Math.random() < fractionalAmount ? 1 : 0)
+        const outputAmount = rollActionOutputAmount(amount, outputMultiplier)
 
         if (outputAmount <= 0) continue
 

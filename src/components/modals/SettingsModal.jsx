@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Button } from "../Button"
 import { Flex } from "../Flex"
 import { Heading } from "../Heading"
@@ -36,10 +37,21 @@ export function SettingsModal({
     setVisible,
     settings,
     onChange,
+    onResetGame,
 }) {
+    const [confirmingReset, setConfirmingReset] = useState(false)
+
     if (!visible) return null
 
-    const close = () => setVisible(false)
+    const close = () => {
+        setConfirmingReset(false)
+        setVisible(false)
+    }
+
+    const confirmReset = () => {
+        onResetGame?.()
+        close()
+    }
 
     return (
         <Modal
@@ -70,7 +82,34 @@ export function SettingsModal({
                         ]}
                         onChange={value => onChange("mode", value)}
                     />
-                    <Text size="small">More options can be added here as the game grows.</Text>
+                    <Paper layer={2} variant="secondary">
+                        <Flex direction="column" align="stretch" gap={8}>
+                            <Heading h="3">Reset Progress</Heading>
+                            <Text size="small">
+                                Erase all skills, actions, items, currencies, missions, companions and upgrades.
+                                Your navigation layout settings will remain unchanged.
+                            </Text>
+                            {confirmingReset ? (
+                                <Flex direction="column" gap={8}>
+                                    <Text size="small">
+                                        This permanently deletes your current game progress. Are you sure?
+                                    </Text>
+                                    <Flex direction="row" wrap gap={8}>
+                                        <Button variant="secondary" onClick={() => setConfirmingReset(false)}>
+                                            Cancel
+                                        </Button>
+                                        <Button variant="secondary" onClick={confirmReset}>
+                                            Reset All Progress
+                                        </Button>
+                                    </Flex>
+                                </Flex>
+                            ) : (
+                                <Button variant="secondary" onClick={() => setConfirmingReset(true)}>
+                                    Reset Progress
+                                </Button>
+                            )}
+                        </Flex>
+                    </Paper>
                 </Flex>
             }
             footer={<Button variant="secondary" onClick={close}>Close</Button>}

@@ -80,7 +80,7 @@ function ExplorationActionCard({
                 amountLabel: (companionChance * 100).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
-                }) + "% chance",
+                }) + "%",
                 className: "item-companion",
             }]
             : []),

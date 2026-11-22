@@ -345,6 +345,16 @@ export const loadPlayerState = () => {
     }
 }
 
+export const clearSavedPlayerState = () => {
+    try {
+        localStorage.removeItem(SAVE_KEY)
+        return true
+    } catch (error) {
+        console.error("Could not clear the saved game.", error)
+        return false
+    }
+}
+
 export const savePlayerState = (player) => {
     try {
         localStorage.setItem(SAVE_KEY, JSON.stringify(player))

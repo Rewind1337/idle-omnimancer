@@ -5,16 +5,8 @@ import { Item } from "../Item"
 import { ITEM_DATA_BY_ID, CURRENCY_DATA_BY_ID } from "../../data/itemData"
 import { humanize } from "../../utility/helpers"
 
-const formatOutputRange = (amount, multiplier) => {
-    const scaledAmount = Math.max(0, amount * multiplier)
-    const minimum = Math.floor(scaledAmount)
-    const maximum = scaledAmount - minimum > 0.000001 ? minimum + 1 : minimum
-    const format = value => value.toLocaleString()
-
-    return minimum === maximum
-        ? format(minimum)
-        : format(minimum) + "–" + format(maximum)
-}
+const formatOutputChance = fraction =>
+    Number((fraction * 100).toFixed(4)).toLocaleString() + "%"
 
 export function ResourceSection({ title, resources = [], amountMultiplier = 1 }) {
     if (resources.length === 0) return null
@@ -29,25 +21,43 @@ export function ResourceSection({ title, resources = [], amountMultiplier = 1 })
                         const amount = typeof resource === "string" ? 1 : (resource.amount ?? 1)
                         const amountLabel = typeof resource === "string" ? null : resource.amountLabel
                         const data = ITEM_DATA_BY_ID[itemId] ?? CURRENCY_DATA_BY_ID[itemId]
-                        const displayAmount = amountLabel ?? (amountMultiplier === 1
-                            ? amount
-                            : formatOutputRange(amount, amountMultiplier))
                         const className = typeof resource === "string" ? "" : (resource.className ?? "")
+                        const name = data?.name ?? humanize(itemId)
+                        const itemIdForTooltip = ITEM_DATA_BY_ID[itemId] ? itemId : null
 
-                        return (
+                        const renderItem = (displayAmount, suffix) => (
                             <Item
-                                key={itemId + "-" + index}
+                                key={itemId + "-" + index + suffix}
                                 layer={3}
                                 className={className}
                                 mode="compact"
                                 interactive={false}
                                 icon={data?.icon}
-                                name={data?.name ?? humanize(itemId)}
-                                itemId={ITEM_DATA_BY_ID[itemId] ? itemId : null}
+                                name={name}
+                                itemId={itemIdForTooltip}
                                 amount={displayAmount}
                                 variant={data?.variant ?? "primary"}
                             />
                         )
+
+                        if (amountLabel != null) {
+                            return renderItem(amountLabel, "-label")
+                        }
+
+                        const scaledAmount = Math.max(0, amount * amountMultiplier)
+                        const stableAmount = Number(scaledAmount.toFixed(8))
+                        const guaranteedAmount = Math.floor(stableAmount)
+                        const fractionalAmount = Number((stableAmount - guaranteedAmount).toFixed(8))
+                        const entries = []
+
+                        if (guaranteedAmount > 0) {
+                            entries.push(renderItem(guaranteedAmount, "-guaranteed"))
+                        }
+                        if (fractionalAmount > 0) {
+                            entries.push(renderItem(formatOutputChance(fractionalAmount), "-chance"))
+                        }
+
+                        return entries
                     })}
                 </Flex>
             </Flex>

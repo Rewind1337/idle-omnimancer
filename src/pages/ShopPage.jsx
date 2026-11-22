@@ -5,7 +5,6 @@ import { Paper } from "../components/Paper"
 import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
 import { Button } from "../components/Button"
-import { Badge } from "../components/Badge"
 import { Text } from "../components/Text"
 import { Tabs } from "../components/Tabs"
 import { ActionResources } from "../components/actions/ActionResources"
@@ -14,7 +13,6 @@ import { OTHER_ICONS, SHOP_ICONS } from "../data/iconLibrary"
 import { SHOP_ITEM_DATA } from "../data/itemData"
 import {
     RESEARCH_BREAKTHROUGH_CONFIG,
-    formatResearchBreakthroughChance,
     getResearchBreakthroughCost,
 } from "../data/researchBreakthroughConfig"
 import { SKILL_NAVIGATION } from "../data/navigationData"
@@ -163,17 +161,6 @@ function ResearchBreakthroughImprovement({ player, buyResearchBreakthrough }) {
                         </Button>
                     </Flex>
                 </Flex>
-                <Flex direction="row" wrap gap={6}>
-                    {RESEARCH_BREAKTHROUGH_CONFIG.items.map(item => (
-                        <Badge
-                            key={item.itemId}
-                            size="small"
-                            variant={currentTier >= item.tier ? "research" : "transparent"}
-                        >
-                            Tier {item.tier} · {item.name} · {formatResearchBreakthroughChance(item.chance)}
-                        </Badge>
-                    ))}
-                </Flex>
             </Flex>
         </Paper>
     )
@@ -209,16 +196,19 @@ function ShopGoodCard({ item, player, buyShopItem }) {
 }
 
 function getAvailableUnlocks(player, unlockSkill, unlockAction) {
-    return SKILL_NAVIGATION.flatMap(skillTab => {
+    const skills = []
+    const actions = []
+
+    for (const skillTab of SKILL_NAVIGATION) {
         const skill = SKILL_CONFIG_BY_ID[skillTab.skillId]
-        if (!skill) return []
+        if (!skill) continue
 
         const isUnlocked = player.unlockedSkills?.includes(skill.id)
 
         if (!isUnlocked) {
-            if (!Array.isArray(skill.unlockCosts) || skill.unlockCosts.length === 0) return []
+            if (!Array.isArray(skill.unlockCosts) || skill.unlockCosts.length === 0) continue
 
-            return [{
+            skills.push({
                 key: "skill-" + skill.id,
                 title: "Unlock " + skillTab.name,
                 subtitle: "Skill",
@@ -228,15 +218,16 @@ function getAvailableUnlocks(player, unlockSkill, unlockAction) {
                 buttonLabel: "Unlock Skill",
                 canUnlock: canUnlockSkill(player, skill.id),
                 onUnlock: () => unlockSkill(skill.id),
-            }]
+            })
+            continue
         }
 
         const nextAction = getVisibleActions(player, skill.id).find(action =>
             !player.skills?.[skill.id]?.actions?.[action.id]?.unlocked
         )
-        if (!nextAction) return []
+        if (!nextAction) continue
 
-        return [{
+        actions.push({
             key: "action-" + skill.id + "-" + nextAction.id,
             title: nextAction.name ?? humanize(nextAction.id.replace(/^action:/, "")),
             subtitle: skillTab.name + " Action · Tier " + nextAction.tier,
@@ -246,14 +237,16 @@ function getAvailableUnlocks(player, unlockSkill, unlockAction) {
             buttonLabel: "Unlock Action",
             canUnlock: canUnlockAction(player, skill.id, nextAction.id),
             onUnlock: () => unlockAction(skill.id, nextAction.id),
-        }]
-    })
+        })
+    }
+
+    return { skills, actions }
 }
 
 export function ShopPage() {
     const { player, unlockSkill, unlockAction, buyBagSlot, buyResearchBreakthrough, buyShopItem } = useGame()
     const [activeTab, setActiveTab] = useState("improvements")
-    const availableUnlocks = getAvailableUnlocks(player, unlockSkill, unlockAction)
+    const { skills: availableSkills, actions: availableActions } = getAvailableUnlocks(player, unlockSkill, unlockAction)
 
     return (
         <Flex
@@ -283,26 +276,43 @@ export function ShopPage() {
                 {activeTab === "improvements" && (
                     <ShopSection title="Improvements">
                         <Flex direction="column" gap={12}>
-                            <BagSlotImprovement player={player} buyBagSlot={buyBagSlot} />
                             <ResearchBreakthroughImprovement
                                 player={player}
                                 buyResearchBreakthrough={buyResearchBreakthrough}
                             />
+                            <BagSlotImprovement player={player} buyBagSlot={buyBagSlot} />
                         </Flex>
                     </ShopSection>
                 )}
 
                 {activeTab === "skills-actions" && (
                     <ShopSection title="Skills & Actions">
-                        {availableUnlocks.length > 0 ? (
+                        <Flex direction="column" gap={20}>
                             <Flex direction="column" gap={12}>
-                                {availableUnlocks.map(unlock => (
-                                    <ShopUnlockCard key={unlock.key} {...unlock} />
-                                ))}
+                                <Heading h="3">Skills</Heading>
+                                {availableSkills.length > 0 ? (
+                                    <Flex direction="column" gap={12}>
+                                        {availableSkills.map(unlock => (
+                                            <ShopUnlockCard key={unlock.key} {...unlock} />
+                                        ))}
+                                    </Flex>
+                                ) : (
+                                    <Text>No skills are currently available to unlock.</Text>
+                                )}
                             </Flex>
-                        ) : (
-                            <Text>No skills or actions are currently available to unlock.</Text>
-                        )}
+                            <Flex direction="column" gap={12}>
+                                <Heading h="3">Actions</Heading>
+                                {availableActions.length > 0 ? (
+                                    <Flex direction="column" gap={12}>
+                                        {availableActions.map(unlock => (
+                                            <ShopUnlockCard key={unlock.key} {...unlock} />
+                                        ))}
+                                    </Flex>
+                                ) : (
+                                    <Text>No actions are currently available to unlock.</Text>
+                                )}
+                            </Flex>
+                        </Flex>
                     </ShopSection>
                 )}
 

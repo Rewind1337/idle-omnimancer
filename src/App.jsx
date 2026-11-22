@@ -25,7 +25,7 @@ import { UnveilingPage } from "./pages/UnveilingPage";
 import { CompanionPage } from "./pages/CompanionPage";
 import { OTHER_ICONS, SKILL_ICONS } from "./data/iconLibrary";
 import { COMPANION_DATA } from "./data/companionData";
-import { useGameUnlockedCompanions, useGameUnlockedSkills } from "./hooks/useGame";
+import { useGame, useGameUnlockedCompanions, useGameUnlockedSkills } from "./hooks/useGame";
 
 import { SKILL_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
 
@@ -43,6 +43,7 @@ function ResponsivePage({
   const [bagModalVisible, setBagModalVisible] = useState(false)
   const [missionsModalVisible, setMissionsModalVisible] = useState(false)
   const [settingsModalVisible, setSettingsModalVisible] = useState(false)
+  const { resetGame } = useGame()
   const unlockedSkills = useGameUnlockedSkills()
   const unlockedCompanions = useGameUnlockedCompanions()
   const companionsUnlocked = unlockedSkills.includes("skill:companions")
@@ -53,6 +54,12 @@ function ResponsivePage({
       Close Bag
     </Button>
   ), [handleCloseBag])
+
+  const handleResetGame = useCallback(() => {
+    resetGame()
+    const startingSkill = SKILL_NAVIGATION.find(skill => skill.skillId === "skill:research")
+    if (startingSkill) setActivePage(startingSkill.id)
+  }, [resetGame, setActivePage])
 
   const shopButton = (
     <ShopButton
@@ -160,6 +167,7 @@ function ResponsivePage({
         setVisible={setSettingsModalVisible}
         settings={{ position: navigationPosition, mode: navigationMode }}
         onChange={onNavigationSettingsChange}
+        onResetGame={handleResetGame}
       />
       {floatingButtons}
       {navigationPosition === "top" && (

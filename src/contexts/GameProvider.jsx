@@ -12,6 +12,8 @@ import { createGameProgressStore } from "./GameProgressStore"
 import { gameReducer } from "../game/gameReducer"
 import { advanceGame, canStartAction, getSkillProgress } from "../game/gameEngine"
 import {
+    clearSavedPlayerState,
+    createInitialPlayerState,
     loadPlayerState,
     savePlayerState,
 } from "../game/playerState"
@@ -705,6 +707,59 @@ export function GameProvider({ children }) {
         }
     }, [isGameReady])
 
+    const resetGame = useCallback(() => {
+        const freshPlayer = createInitialPlayerState()
+        const task = offlineTaskRef.current
+
+        if (task) {
+            task.cancelled = true
+            task.done = true
+            if (task.timeoutId !== null) {
+                window.clearTimeout(task.timeoutId)
+                task.timeoutId = null
+            }
+        }
+
+        // Clear first so a failed write cannot leave the previous save to reload.
+        const storageCleared = clearSavedPlayerState()
+        const storageSaved = savePlayerState(freshPlayer)
+
+        playerRef.current = freshPlayer
+        suppressNotificationsRef.current = true
+        lastTickRef.current = Date.now()
+        progressStore.updatePlayer(freshPlayer)
+        progressStore.updateVisiblePlayer(freshPlayer)
+        updateActionReadiness(progressStore, freshPlayer)
+
+        setOfflineProgress({
+            visible: false,
+            totalMs: 0,
+            processedMs: 0,
+            feed: [],
+            completed: true,
+        })
+        setIsGameReady(true)
+        dispatch({ type: "RESET_GAME", player: freshPlayer })
+
+        if (storageCleared || storageSaved) {
+            showToast({
+                title: "Progress Reset",
+                message: "All game progress has been reset. You can start a fresh run.",
+                type: "success",
+                duration: 5000,
+            })
+        } else {
+            showToast({
+                title: "Progress Reset for This Session",
+                message: "Browser storage could not be updated, so the reset may not survive a reload.",
+                type: "error",
+                duration: 7000,
+            })
+        }
+
+        return storageCleared || storageSaved
+    }, [progressStore, showToast])
+
     const startAction = useCallback((skillId, actionId) => {
         dispatch({ type: "START_ACTION", skillId, actionId })
     }, [])
@@ -758,6 +813,7 @@ export function GameProvider({ children }) {
     }, [])
 
     const commands = useMemo(() => ({
+        resetGame,
         startAction,
         stopAction,
         togglePassiveAction,
@@ -771,7 +827,7 @@ export function GameProvider({ children }) {
         selectActionItem,
         unlockCompanionSlot,
         selectCompanion,
-    }), [startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyResearchBreakthrough, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
+    }), [resetGame, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyResearchBreakthrough, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
 
     const servicesValue = useMemo(() => ({
         progressStore,

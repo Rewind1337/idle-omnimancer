@@ -38,19 +38,15 @@ function MissionCard({ mission, player, canTurnIn, onTurnIn }) {
                         const objectiveItem = ITEM_DATA_BY_ID[requirement.item]
                         const ownedAmount = player.inventory?.[requirement.item] ?? 0
                         return (
-                            <Flex key={requirement.item} direction="column" gap={2}>
+                            <Flex key={requirement.item}>
                                 <Item
                                     layer={2}
-                                    amount={requirement.amount}
+                                    amount={ownedAmount.toLocaleString() + " / " + requirement.amount.toLocaleString()}
                                     interactive={false}
                                     icon={objectiveItem?.icon}
-                                    name={requirement.amount.toLocaleString() + " × " +
-                                        (objectiveItem?.name ?? requirement.item)}
+                                    name={objectiveItem?.name ?? requirement.item}
                                     variant={objectiveItem?.variant ?? "primary"}
                                 />
-                                <Text size="small" className="w-100 align-center">
-                                    {ownedAmount.toLocaleString()} / {requirement.amount.toLocaleString()} available
-                                </Text>
                             </Flex>
                         )
                     })}

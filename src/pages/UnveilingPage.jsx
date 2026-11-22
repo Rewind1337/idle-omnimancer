@@ -13,6 +13,7 @@ import { SelectionModal } from "../components/modals/SelectionModal"
 
 import { UNVEILING_CONFIG } from "../data/unveilingConfig"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
+import { COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
 import { SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
@@ -62,6 +63,20 @@ function UnveilingActionCard({
         ? getActionOutputMultiplier(player, UNVEILING_CONFIG, action)
         : 1
     const selectedItem = ITEM_DATA_BY_ID[actionState.selectedItemId]
+    const selectedCompanion = selectedItem
+        ? COMPANION_DATA_BY_CONTAINER_ID[selectedItem.id]
+        : null
+    const isDuplicateCompanion = selectedCompanion &&
+        (player.unlockedCompanions ?? []).includes(selectedCompanion.id)
+    const experienceItem = isDuplicateCompanion
+        ? UNVEILING_CONFIG.companionRewards?.experienceItemsByElement?.[selectedItem.variant]
+        : null
+    const producedResources = experienceItem
+        ? [{
+            item: experienceItem,
+            amount: selectedCompanion.duplicateCandyAmount ?? selectedCompanion.tier ?? 1,
+        }]
+        : []
 
     return (
         <Paper layer={1} variant="unveiling" className="action action-unveiling">
@@ -128,7 +143,7 @@ function UnveilingActionCard({
                         />
                         <ActionResources
                             consumes={selectedItem ? [selectedItem.id] : []}
-                            produces={[]}
+                            produces={producedResources}
                             outputMultiplier={outputMultiplier}
                         />
                     </>

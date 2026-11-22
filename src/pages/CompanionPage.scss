@@ -6,11 +6,9 @@
 
     .companion-slot-grid {
         display: grid;
-        grid-template-columns: repeat(4, minmax(220px, 1fr));
+        grid-template-columns: minmax(0, 1fr);
         width: 100%;
         max-width: 100%;
-        overflow-x: auto;
-        padding-bottom: 6px;
     }
 
     .companion-collection-grid {

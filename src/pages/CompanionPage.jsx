@@ -8,6 +8,7 @@ import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
 import { Paper } from "../components/Paper"
 import { Progress } from "../components/Progress"
+import { EffectStack } from "../components/EffectStack"
 import { SkillSummary } from "../components/skills/SkillSummary"
 import { Text } from "../components/Text"
 import { CompanionSelectionModal } from "../components/modals/CompanionSelectionModal"
@@ -23,8 +24,7 @@ import {
     getActionProgress,
     getActionConsumeResources,
     getActionXPReward,
-    getActiveCompanionIds,
-    getTrainableActiveCompanionIds,
+    getActionEffectStacks,
     getCompanionLevelProgress,
     getCompanionSlotUnlockCost,
     getSkillProgress,
@@ -57,8 +57,13 @@ const EFFECT_NAMES = {
 }
 
 const getEffectValue = (effect, perLevel, level) => {
-    const growth = (COMPANION_CONFIG.companionLeveling.effectStartingBonus ?? 0) +
-        Math.max(0, level - 1) * perLevel
+    const startingBonus = effect === "preservation"
+        ? 0
+        : COMPANION_CONFIG.companionLeveling.effectStartingBonus ?? 0
+    const growth = effect === "preservation"
+        ? level * perLevel
+        : startingBonus + Math.max(0, level - 1) * perLevel
+    if (effect === "preservation") return "+" + (growth * 100).toFixed(2) + "%"
     const multiplier = effect === "manaCost" || effect === "unlockCostReduction"
         ? Math.max(0.1, 1 - growth)
         : 1 + growth
@@ -196,8 +201,6 @@ export function CompanionPage() {
     }
     const isActive = player.activeAction?.skillId === skillId &&
         player.activeAction?.actionId === trainingAction.id
-    const activeCompanionIds = getActiveCompanionIds(player)
-    const trainableCompanionIds = getTrainableActiveCompanionIds(player)
     const durationMs = getActionDurationMs(COMPANION_CONFIG, trainingAction, player)
     const canStart = canStartAction(player, skillId, trainingAction.id)
     const progress = getActionProgress(actionState, durationMs)
@@ -228,6 +231,7 @@ export function CompanionPage() {
     const trainingCost = getActionConsumeResources(player, COMPANION_CONFIG, trainingAction)
         .find(resource => resource.item === "currency:coins")?.amount ?? 0
     const actionXPReward = getActionXPReward(COMPANION_CONFIG, trainingAction, player)
+    const actionEffectStacks = getActionEffectStacks(player, COMPANION_CONFIG, trainingAction)
 
     return (
         <Flex direction="column" className="page-flex page-flex-companions" padding={32} gap={24}>
@@ -263,11 +267,44 @@ export function CompanionPage() {
                         xpConfig={COMPANION_CONFIG.neededXP}
                     />
                     <Flex wrap gap={8}>
-                        <Badge variant="transparent" icon={OTHER_ICONS.HOURGLASS}>{durationMs / 1000}s</Badge>
-                        <Badge variant="transparent" icon={OTHER_ICONS.COINS}>{trainingCost.toLocaleString()} Coins</Badge>
-                        <Badge variant="transparent">+{actionXPReward.toLocaleString()} Action XP</Badge>
-                        <Badge variant="transparent">
-                            +{trainingAction.companionTraining.xpPerCompanion} Companion XP per active companion
+                        <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS}
+                            tooltip={<Flex direction="column" gap={8}>
+                                <Heading h="4" className="w-100 align-center">
+                                    Time needed to complete this action.
+                                </Heading>
+                                <hr />
+                                <EffectStack title="Time effects" icon={OTHER_ICONS.HOURGLASS}
+                                    entries={actionEffectStacks.actionTime ?? []}
+                                    formulas={["Time = base duration ÷ action speed multiplier"]} />
+                            </Flex>}>
+                            {durationMs / 1000}s
+                        </Badge>
+                        <Badge variant="transparent" interactive icon={OTHER_ICONS.COINS}
+                            tooltip={<Flex direction="column" gap={8}>
+                                <Heading h="4" className="w-100 align-center">
+                                    Coins consumed each time this action completes.
+                                </Heading>
+                                <Text size="small">
+                                    Cost: 10 Coins × the combined levels of all assigned companions.
+                                    Current cost: {trainingCost.toLocaleString()} Coins.
+                                </Text>
+                            </Flex>}>
+                            {trainingCost.toLocaleString()} Coins
+                        </Badge>
+                        <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES}
+                            tooltip={<Flex direction="column" gap={8}>
+                                <Heading h="4" className="w-100 align-center">
+                                    XP gained upon completing this action.
+                                </Heading>
+                                <Text size="small">
+                                    Each trainable active companion also gains the same amount of Companion XP.
+                                </Text>
+                                <hr />
+                                <EffectStack title="XP effects" icon={OTHER_ICONS.SPARKLES}
+                                    entries={actionEffectStacks.xpGain ?? []}
+                                    formulas={["XP = base XP × applicable XP bonuses"]} />
+                            </Flex>}>
+                            +{actionXPReward.toLocaleString()} XP
                         </Badge>
                     </Flex>
                     <Flex align="center" gap={8}>
@@ -293,16 +330,6 @@ export function CompanionPage() {
                             {isActive ? "Stop" : "Start"}
                         </Button>
                     </Flex>
-                    <Text size="small">
-                        Each completed cycle costs 10 Coins per combined level of assigned companions
-                        ({trainingCost.toLocaleString()} Coins currently) and grants 5 XP to every active companion.
-                        {trainableCompanionIds.length > 0
-                            ? " " + trainableCompanionIds.length + " active companion" +
-                                (trainableCompanionIds.length === 1 ? " will" : "s will") + " receive XP."
-                            : activeCompanionIds.length > 0
-                                ? " All active companions are at maximum level."
-                                : " Select at least one companion to begin training."}
-                    </Text>
                 </Flex>
             </Paper>
 

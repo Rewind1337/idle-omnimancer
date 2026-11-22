@@ -31,7 +31,7 @@ export const COMPANION_DATA = [
         containerId: "item:water_shell_i",
         requiredUnveilingLevel: 5,
         permanentEffect: { effect: "itemOutput", type: "mult", perLevel: 0.01 },
-        activeEffect: { effect: "preservation", type: "mult", perLevel: 0.025, targetSkillId: "skill:transmutation" },
+        activeEffect: { effect: "preservation", type: "mult", perLevel: 0.0025, targetSkillId: "skill:transmutation" },
     },
     {
         id: "companion:ironroot_warden",
@@ -41,7 +41,7 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 2,
         containerId: "item:earth_geode_ii",
         requiredUnveilingLevel: 10,
-        permanentEffect: { effect: "preservation", type: "mult", perLevel: 0.01 },
+        permanentEffect: { effect: "preservation", type: "mult", perLevel: 0.001 },
         activeEffect: { effect: "itemOutput", type: "mult", perLevel: 0.025, targetSkillId: "skill:exploration" },
     },
     {

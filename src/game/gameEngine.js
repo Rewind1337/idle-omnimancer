@@ -473,8 +473,12 @@ const milestoneTargetsSkill = (sourceSkill, targetSkillId, milestone) =>
 
 // Permanent companion effects apply globally; active-slot effects target one skill.
 const getCompanionEffectMultiplier = (effect, level, perLevel) => {
-    const startingBonus = COMPANION_CONFIG.companionLeveling.effectStartingBonus ?? 0
-    const growth = startingBonus + Math.max(0, level - 1) * perLevel
+    const startingBonus = effect === "preservation"
+        ? 0
+        : COMPANION_CONFIG.companionLeveling.effectStartingBonus ?? 0
+    const growth = effect === "preservation"
+        ? level * perLevel
+        : startingBonus + Math.max(0, level - 1) * perLevel
     if (effect === "manaCost" || effect === "unlockCostReduction") {
         return Math.max(0.1, 1 - growth)
     }
@@ -1084,7 +1088,7 @@ const awardActionXP = (player, skill, action, actionState) => {
             const companionState = player.companionProgress?.[companionId]
             if (!companionState || companionState.level >= COMPANION_CONFIG.companionLeveling.maxLevel) continue
 
-            companionState.xp += action.companionTraining.xpPerCompanion
+            companionState.xp += getActionXPReward(skill, action, player)
             const neededXP = getCompanionLevelXPRequirement(companionState.level)
             if (companionState.xp >= neededXP) {
                 companionState.level += 1

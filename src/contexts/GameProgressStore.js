@@ -1,10 +1,14 @@
 const EMPTY_ACTION_PROGRESS = Object.freeze({ progressMs: 0 })
+const EMPTY_RECORD = Object.freeze({})
+const EMPTY_ARRAY = Object.freeze([])
 
 const createKey = (skillId, actionId) => skillId + "::" + actionId
 
 const notifyListeners = (listeners, key) => {
     listeners.get(key)?.forEach(listener => listener())
 }
+
+const notifySet = listeners => listeners.forEach(listener => listener())
 
 const addListener = (listeners, key, listener) => {
     let entries = listeners.get(key)
@@ -20,16 +24,39 @@ const addListener = (listeners, key, listener) => {
     }
 }
 
-// Keeps high-frequency values outside the main game context. Subscribers only
-// update when their own action progress, readiness, or Mana value changes.
+const areSameRecord = (first = {}, second = {}) => {
+    const firstKeys = Object.keys(first)
+    const secondKeys = Object.keys(second)
+    return firstKeys.length === secondKeys.length &&
+        firstKeys.every(key => Object.is(first[key], second[key]))
+}
+
+const areSameArray = (first = [], second = []) =>
+    first.length === second.length &&
+    first.every((value, index) => value === second[index])
+
+// Keeps high-frequency values and selected player domains outside the main
+// context. Each subscriber is notified only when its own snapshot changes.
 export const createGameProgressStore = () => {
     const actionProgress = new Map()
     const actionProgressListeners = new Map()
     const actionCanStart = new Map()
     const actionCanStartListeners = new Map()
     const manaListeners = new Set()
+
+    const inventoryListeners = new Set()
+    const currenciesListeners = new Set()
+    const inventorySlotsListeners = new Set()
+    const unlockedSkillsListeners = new Set()
+    const unlockedCompanionsListeners = new Set()
+
     let activeActionKey = null
     let manaCurrent = 0
+    let inventory = EMPTY_RECORD
+    let currencies = EMPTY_RECORD
+    let inventorySlots = null
+    let unlockedSkills = EMPTY_ARRAY
+    let unlockedCompanions = EMPTY_ARRAY
 
     return {
         getActionProgress(skillId, actionId) {
@@ -66,6 +93,53 @@ export const createGameProgressStore = () => {
             return () => manaListeners.delete(listener)
         },
 
+        getInventory() {
+            return inventory
+        },
+
+        subscribeInventory(listener) {
+            inventoryListeners.add(listener)
+            return () => inventoryListeners.delete(listener)
+        },
+
+        getCurrencies() {
+            return currencies
+        },
+
+        subscribeCurrencies(listener) {
+            currenciesListeners.add(listener)
+            return () => currenciesListeners.delete(listener)
+        },
+
+        getInventorySlots() {
+            return inventorySlots
+        },
+
+        subscribeInventorySlots(listener) {
+            inventorySlotsListeners.add(listener)
+            return () => inventorySlotsListeners.delete(listener)
+        },
+
+        getUnlockedSkills() {
+            return unlockedSkills
+        },
+
+        subscribeUnlockedSkills(listener) {
+            unlockedSkillsListeners.add(listener)
+            return () => unlockedSkillsListeners.delete(listener)
+        },
+
+        getUnlockedCompanions() {
+            return unlockedCompanions
+        },
+
+        subscribeUnlockedCompanions(listener) {
+            unlockedCompanionsListeners.add(listener)
+            return () => unlockedCompanionsListeners.delete(listener)
+        },
+
+        // Called for every simulation update. This path intentionally handles
+        // only the high-frequency action-progress and Mana snapshots.
         updatePlayer(player) {
             const activeAction = player.activeAction
             const nextActionKey = activeAction
@@ -92,7 +166,42 @@ export const createGameProgressStore = () => {
             const nextManaCurrent = Number(player.mana?.current) || 0
             if (nextManaCurrent !== manaCurrent) {
                 manaCurrent = nextManaCurrent
-                manaListeners.forEach(listener => listener())
+                notifySet(manaListeners)
+            }
+        },
+
+        // Called only when a discrete, visible player value changes. Keeping
+        // these snapshots separate prevents the Bag and navigation from
+        // subscribing to every unrelated game-context update.
+        updateVisiblePlayer(player) {
+            const nextInventory = player.inventory ?? EMPTY_RECORD
+            if (!areSameRecord(inventory, nextInventory)) {
+                inventory = Object.freeze({ ...nextInventory })
+                notifySet(inventoryListeners)
+            }
+
+            const nextCurrencies = player.currencies ?? EMPTY_RECORD
+            if (!areSameRecord(currencies, nextCurrencies)) {
+                currencies = Object.freeze({ ...nextCurrencies })
+                notifySet(currenciesListeners)
+            }
+
+            const nextInventorySlots = player.inventorySlots ?? null
+            if (nextInventorySlots !== inventorySlots) {
+                inventorySlots = nextInventorySlots
+                notifySet(inventorySlotsListeners)
+            }
+
+            const nextUnlockedSkills = player.unlockedSkills ?? EMPTY_ARRAY
+            if (!areSameArray(unlockedSkills, nextUnlockedSkills)) {
+                unlockedSkills = Object.freeze([...nextUnlockedSkills])
+                notifySet(unlockedSkillsListeners)
+            }
+
+            const nextUnlockedCompanions = player.unlockedCompanions ?? EMPTY_ARRAY
+            if (!areSameArray(unlockedCompanions, nextUnlockedCompanions)) {
+                unlockedCompanions = Object.freeze([...nextUnlockedCompanions])
+                notifySet(unlockedCompanionsListeners)
             }
         },
     }

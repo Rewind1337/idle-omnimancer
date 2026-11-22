@@ -1,5 +1,6 @@
 import { createContext } from "react"
 
-// Kept separate from the provider so Fast Refresh can treat the provider
-// module as a component-only module.
+// Keep the frequently changing player context separate from stable commands
+// and external-store subscriptions so focused hooks do not rerender globally.
 export const GameContext = createContext(null)
+export const GameServicesContext = createContext(null)

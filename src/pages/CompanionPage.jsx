@@ -31,7 +31,7 @@ import {
     getCompanionSlotUnlockCost,
     getSkillProgress,
 } from "../game/gameEngine"
-import { useGame } from "../hooks/useGame"
+import { useGame, useGameActionProgress } from "../hooks/useGame"
 
 import "./CompanionPage.scss"
 
@@ -222,7 +222,6 @@ export function CompanionPage() {
         player.activeAction?.actionId === trainingAction.id
     const durationMs = getActionDurationMs(COMPANION_CONFIG, trainingAction, player)
     const canStart = canStartAction(player, skillId, trainingAction.id)
-    const progress = getActionProgress(actionState, durationMs)
     const unlockedSlots = new Set(player.unlockedCompanionSlots ?? ["any"])
     const activeSlots = player.activeCompanionSlots ?? { any: null, earth: null, air: null, water: null }
     const [selectionSlotId, setSelectionSlotId] = useState(null)

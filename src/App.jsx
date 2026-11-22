@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Button } from "./components/Button";
 import { BagModal } from "./components/modals/BagModal"
@@ -25,7 +25,7 @@ import { UnveilingPage } from "./pages/UnveilingPage";
 import { CompanionPage } from "./pages/CompanionPage";
 import { OTHER_ICONS, SKILL_ICONS } from "./data/iconLibrary";
 import { COMPANION_DATA } from "./data/companionData";
-import { useGame } from "./hooks/useGame";
+import { useGameUnlockedCompanions, useGameUnlockedSkills } from "./hooks/useGame";
 
 import { SKILL_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
 
@@ -43,14 +43,16 @@ function ResponsivePage({
   const [bagModalVisible, setBagModalVisible] = useState(false)
   const [missionsModalVisible, setMissionsModalVisible] = useState(false)
   const [settingsModalVisible, setSettingsModalVisible] = useState(false)
-  const { player } = useGame()
-  const companionsUnlocked = player.unlockedSkills?.includes("skill:companions")
+  const unlockedSkills = useGameUnlockedSkills()
+  const unlockedCompanions = useGameUnlockedCompanions()
+  const companionsUnlocked = unlockedSkills.includes("skill:companions")
 
-  const closeBagButton = (
-    <Button variant="primary" onClick={() => setBagModalVisible(false)}>
+  const handleCloseBag = useCallback(() => setBagModalVisible(false), [])
+  const closeBagButton = useMemo(() => (
+    <Button variant="primary" onClick={handleCloseBag}>
       Close Bag
     </Button>
-  )
+  ), [handleCloseBag])
 
   const shopButton = (
     <ShopButton
@@ -69,7 +71,7 @@ function ResponsivePage({
       variant="companions"
       size="medium"
       icon={SKILL_ICONS.COMPANIONS}
-      badge={`${player.unlockedCompanions?.length ?? 0} / ${COMPANION_DATA.length}`}
+      badge={`${unlockedCompanions.length} / ${COMPANION_DATA.length}`}
       badgeIcon={OTHER_ICONS.COMPANION_EGG}
       checked={activePage === COMPANIONS_NAVIGATION?.id}
       onClick={() => setActivePage(COMPANIONS_NAVIGATION.id)}

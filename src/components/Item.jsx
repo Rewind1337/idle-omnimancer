@@ -1,3 +1,5 @@
+import { memo } from "react"
+
 import { Flex } from "./Flex"
 import { Paper } from "./Paper"
 
@@ -10,7 +12,9 @@ import { Icon } from "./Icon"
 import { Heading } from "./Heading"
 import { ItemTooltip } from "./ItemTooltip"
 
-export function Item({
+const NOOP = () => { }
+
+export const Item = memo(function Item({
     className = '',
     icon,
     name,
@@ -21,7 +25,7 @@ export function Item({
     layer = 2,
     interactive = true,
     selected = false,
-    onClick = () => { }
+    onClick = NOOP
 }) {
     const tooltipContent = itemId
         ? <ItemTooltip itemId={itemId} name={name} />
@@ -29,7 +33,7 @@ export function Item({
 
     if (mode === "compact") {
         return (
-            <Tooltip layer={layer} variant={variant} content={tooltipContent}>
+            <Tooltip layer={layer} variant={variant} lazyContent content={tooltipContent}>
                 <Paper layer={layer} interactive={interactive}
                     className={cx('item item-compact', className)}
                     data-selected={selected ? "true" : "false"}
@@ -44,7 +48,7 @@ export function Item({
         )
     } else if (mode === "wide") {
         return (
-            <Tooltip layer={layer} variant={variant} content={tooltipContent}>
+            <Tooltip layer={layer} variant={variant} lazyContent content={tooltipContent}>
                 <Paper layer={layer} interactive={interactive}
                     className={cx('item item-wide clip-overflow', className)}
                     data-variant={variant}
@@ -62,4 +66,4 @@ export function Item({
             </Tooltip>
         )
     }
-}
+})

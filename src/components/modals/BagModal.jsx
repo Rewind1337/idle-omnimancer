@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { memo, useCallback, useMemo, useState } from "react"
 
 import '../Modal.scss'
 import "./BagModal.scss"
@@ -20,7 +20,12 @@ import { OTHER_ICONS } from '../../data/iconLibrary'
 import { ITEM_DATA_BY_ID } from '../../data/itemData'
 import { getNextBagSlotCost } from '../../game/gameEngine'
 import { humanize } from '../../utility/helpers'
-import { useGame } from '../../hooks/useGame'
+import {
+    useGameActions,
+    useGameCurrencies,
+    useGameInventory,
+    useGameInventorySlots,
+} from '../../hooks/useGame'
 import { GLOBAL_CONFIG } from "../../data/skillConfig"
 
 const AMOUNT_PRESETS = [
@@ -30,27 +35,54 @@ const AMOUNT_PRESETS = [
     { label: "100%", ratio: 1 },
 ]
 
-export function BagModal({
-    visible,
-    setVisible,
-    closeBagButton
+const BagInventoryItem = memo(function BagInventoryItem({
+    itemId,
+    amount,
+    selected,
+    onSelect,
 }) {
-    const { player, buyBagSlot, sellItem } = useGame()
-    const [selectedItemId, setSelectedItemId] = useState(null)
-    const [selectedAmount, setSelectedAmount] = useState(1)
+    const itemData = ITEM_DATA_BY_ID[itemId]
+    const handleClick = useCallback(() => onSelect(itemId), [itemId, onSelect])
 
-    // Keep selection state mounted, but skip inventory aggregation and item rendering while closed.
-    if (!visible) return null
+    return (
+        <Item
+            layer={3}
+            className="bag-inventory-item"
+            icon={itemData?.icon}
+            name={itemData?.name ?? humanize(itemId)}
+            itemId={itemId}
+            amount={amount}
+            variant={itemData?.variant ?? "primary"}
+            selected={selected}
+            onClick={handleClick}
+        />
+    )
+})
 
-    const inventory = Object.entries(player.inventory ?? {})
-        .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0)
-    const occupiedSlots = inventory.length
-    const totalBagValue = inventory.reduce((total, [itemId, amount]) =>
-        total + amount * (ITEM_DATA_BY_ID[itemId]?.baseValue ?? 0), 0)
-    const inventorySlots = player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
+function BagModalContent({
+    closeBagButton,
+    onClose,
+    selectedItemId,
+    selectedAmount,
+    setSelectedItemId,
+    setSelectedAmount,
+    onSelectItem,
+    onDeselect,
+}) {
+    const inventory = useGameInventory()
+    const currencies = useGameCurrencies()
+    const storedInventorySlots = useGameInventorySlots()
+    const { buyBagSlot, sellItem } = useGameActions()
+
+    const inventoryEntries = useMemo(() => Object.entries(inventory)
+        .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0), [inventory])
+    const totalBagValue = useMemo(() => inventoryEntries.reduce((total, [itemId, amount]) =>
+        total + amount * (ITEM_DATA_BY_ID[itemId]?.baseValue ?? 0), 0), [inventoryEntries])
+    const occupiedSlots = inventoryEntries.length
+    const inventorySlots = storedInventorySlots ?? GLOBAL_CONFIG.startingBagSpace
     const emptySlots = Math.max(0, inventorySlots - occupiedSlots)
 
-    const selectedItem = inventory.find(([itemId]) => itemId === selectedItemId)
+    const selectedItem = inventoryEntries.find(([itemId]) => itemId === selectedItemId)
     const selectedData = selectedItem ? ITEM_DATA_BY_ID[selectedItem[0]] : null
     const selectedVariant = selectedData?.variant ?? "primary"
     const selectedMax = selectedItem ? selectedItem[1] : 1
@@ -59,23 +91,18 @@ export function BagModal({
     const totalSellValue = amountToSell * baseValue
 
     const nextSlotCost = getNextBagSlotCost(inventorySlots)
-    const coins = player.currencies?.coins ?? 0
+    const coins = currencies.coins ?? 0
 
-    const handleDeselect = () => {
-        setSelectedItemId(null)
-        setSelectedAmount(1)
-    }
-
-    const handleRangeChange = (event) => {
+    const handleRangeChange = useCallback((event) => {
         const value = Number(event.target.value)
         setSelectedAmount(Math.max(1, Math.min(selectedMax, value)))
-    }
+    }, [selectedMax, setSelectedAmount])
 
-    const handlePreset = (ratio) => {
+    const handlePreset = useCallback((ratio) => {
         setSelectedAmount(Math.max(1, Math.min(selectedMax, Math.ceil(selectedMax * ratio))))
-    }
+    }, [selectedMax, setSelectedAmount])
 
-    const handleSell = () => {
+    const handleSell = useCallback(() => {
         if (!selectedItem || amountToSell > selectedMax) return
 
         sellItem(selectedItem[0], amountToSell)
@@ -86,14 +113,21 @@ export function BagModal({
         } else {
             setSelectedAmount(Math.min(amountToSell, selectedMax - amountToSell))
         }
-    }
+    }, [
+        amountToSell,
+        selectedItem,
+        selectedMax,
+        sellItem,
+        setSelectedAmount,
+        setSelectedItemId,
+    ])
 
     return (
         <Modal
-            visible={visible}
+            visible
             variant={null}
             className="modal-bag"
-            onBackdropClick={() => { setVisible(false) }}
+            onBackdropClick={onClose}
             header={<Heading h="1">Bag</Heading>}
             footer={closeBagButton}
             content={
@@ -108,30 +142,19 @@ export function BagModal({
                         className="bag-inventory"
                         onClick={(event) => {
                             if (event.target.closest?.(".bag-inventory-item")) return
-                            handleDeselect()
+                            onDeselect()
                         }}
                     >
                         <Flex direction="row" wrap>
-                            {inventory.map(([itemId, amount]) => {
-                                const itemData = ITEM_DATA_BY_ID[itemId]
-                                return (
-                                    <Item
-                                        layer={3}
-                                        className="bag-inventory-item"
-                                        key={itemId}
-                                        icon={itemData?.icon}
-                                        name={itemData?.name ?? humanize(itemId)}
-                                        itemId={itemId}
-                                        amount={amount}
-                                        variant={itemData?.variant ?? "primary"}
-                                        selected={selectedItemId === itemId}
-                                        onClick={() => {
-                                            setSelectedItemId(itemId)
-                                            setSelectedAmount(1)
-                                        }}
-                                    />
-                                )
-                            })}
+                            {inventoryEntries.map(([itemId, amount]) => (
+                                <BagInventoryItem
+                                    key={itemId}
+                                    itemId={itemId}
+                                    amount={amount}
+                                    selected={selectedItemId === itemId}
+                                    onSelect={onSelectItem}
+                                />
+                            ))}
                             {emptySlots > 0 && (
                                 <EmptyItem layer={3}>
                                     <Heading h="6" className="align-center">Free Slots</Heading>
@@ -141,7 +164,7 @@ export function BagModal({
                             <EmptyItem layer={3} variant="shop" className="bag-buy-slot" padding={0}>
                                 <Tooltip block
                                     variant="shop"
-                                    content={<Heading h="5">{`Cost: ${nextSlotCost.toLocaleString()} coins`}</Heading>}
+                                    content={<Heading h="5">Cost: {nextSlotCost.toLocaleString()} coins</Heading>}
                                 >
                                     <Button
                                         variant="shop"
@@ -196,7 +219,7 @@ export function BagModal({
                                 </Flex>
 
                                 <Flex direction="row" gap={8} wrap>
-                                    <Button variant="primary" onClick={handleDeselect}>
+                                    <Button variant="primary" onClick={onDeselect}>
                                         Deselect
                                     </Button>
                                     {AMOUNT_PRESETS.map(({ label, ratio }) => {
@@ -240,3 +263,41 @@ export function BagModal({
         />
     )
 }
+
+export const BagModal = memo(function BagModal({
+    visible,
+    setVisible,
+    closeBagButton,
+}) {
+    const [selectedItemId, setSelectedItemId] = useState(null)
+    const [selectedAmount, setSelectedAmount] = useState(1)
+
+    const handleSelectItem = useCallback((itemId) => {
+        setSelectedItemId(itemId)
+        setSelectedAmount(1)
+    }, [])
+
+    const handleDeselect = useCallback(() => {
+        setSelectedItemId(null)
+        setSelectedAmount(1)
+    }, [])
+
+    const handleClose = useCallback(() => setVisible(false), [setVisible])
+
+    // Keep only the selection state mounted while closed. Expensive inventory
+    // subscriptions and item rows are mounted only for an open Bag.
+    if (!visible) return null
+
+    return (
+        <BagModalContent
+            onClose={handleClose}
+            closeBagButton={closeBagButton}
+            selectedItemId={selectedItemId}
+            selectedAmount={selectedAmount}
+            setSelectedItemId={setSelectedItemId}
+            setSelectedAmount={setSelectedAmount}
+            onSelectItem={handleSelectItem}
+            onDeselect={handleDeselect}
+        />
+    )
+})

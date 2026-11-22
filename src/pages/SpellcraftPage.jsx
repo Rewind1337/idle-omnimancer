@@ -34,6 +34,31 @@ import {
 } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 
+const SPELLCRAFT_LEVEL_MILESTONES = [
+    {
+        id: "spellcraft-mana-regeneration-per-level",
+        title: "Each Level",
+        effect: "manaRegeneration",
+        type: "flat",
+        value: SPELLCRAFT_CONFIG.mana.regenPerLevel,
+        stacks: 1,
+        mode: "progression",
+        active: true,
+        variant: "spellcraft",
+    },
+    {
+        id: "spellcraft-mana-capacity-per-level",
+        title: "Each Level",
+        effect: "manaCapacity",
+        type: "flat",
+        value: SPELLCRAFT_CONFIG.mana.capacityPerLevel,
+        stacks: 1,
+        mode: "progression",
+        active: true,
+        variant: "spellcraft",
+    },
+]
+
 const InnerShapeMap = [3, 4, 5, 6, 7, 8, 9, 10]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide"]
 
@@ -117,7 +142,7 @@ export function SpellcraftPage() {
                         skillId={skillId}
                         title={humanize(SPELLCRAFT_CONFIG.id)}
                         skillProgress={skillProgress}
-                        milestones={getSkillMilestoneDetails(player, SPELLCRAFT_CONFIG)}
+                        milestones={[...getSkillMilestoneDetails(player, SPELLCRAFT_CONFIG), ...SPELLCRAFT_LEVEL_MILESTONES]}
                         variant={pageVariant}
                         icon={
                             <Icon

@@ -13,6 +13,24 @@ import { OTHER_ICONS } from "../data/iconLibrary"
 const formatAmount = amount =>
     Number(amount).toLocaleString()
 
+// Item source records depend on this discrete player snapshot and the item,
+// not on inventory quantities. A tooltip opened again can reuse the result.
+const itemActionSourcesCache = new WeakMap()
+
+const getCachedItemActionSources = (itemId, player) => {
+    let playerCache = itemActionSourcesCache.get(player)
+    if (!playerCache) {
+        playerCache = new Map()
+        itemActionSourcesCache.set(player, playerCache)
+    }
+
+    if (!playerCache.has(itemId)) {
+        playerCache.set(itemId, getItemActionSources(itemId, player))
+    }
+
+    return playerCache.get(itemId)
+}
+
 function ItemActionList({ title, actions, emptyLabel }) {
     return (
         <Flex direction="column" align="start" gap={4} className="item-tooltip-section">
@@ -37,7 +55,7 @@ export function ItemTooltip({ itemId, name }) {
     const itemData = ITEM_DATA_BY_ID[itemId]
     const amountHeld = player.inventory?.[itemId] ?? 0
     const sellValue = (itemData?.baseValue ?? 0) * getSellValueMultiplier(player)
-    const { obtainedBy, consumedBy } = getItemActionSources(itemId, player)
+    const { obtainedBy, consumedBy } = getCachedItemActionSources(itemId, player)
 
     return (
         <Flex direction="column" align="start" gap={8} className="item-tooltip">

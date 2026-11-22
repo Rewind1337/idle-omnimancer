@@ -7,7 +7,7 @@ import {
     useState,
 } from "react"
 
-import { GameContext } from "./GameContext"
+import { GameContext, GameServicesContext } from "./GameContext"
 import { createGameProgressStore } from "./GameProgressStore"
 import { gameReducer } from "../game/gameReducer"
 import { advanceGame, canStartAction, getSkillProgress } from "../game/gameEngine"
@@ -17,6 +17,7 @@ import {
 } from "../game/playerState"
 import { ITEM_DATA_BY_ID, CURRENCY_DATA_BY_ID } from "../data/itemData"
 import { SKILL_CONFIGS } from "../data/skillConfig"
+import { COMPANION_DATA } from "../data/companionData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { humanize } from "../utility/helpers"
 import { useToast } from "../hooks/useToast"
@@ -97,14 +98,12 @@ const hasVisiblePlayerChanges = (previous, next) => {
     return false
 }
 
-const updateActionReadiness = (progressStore, player, manaOnly = false) => {
+const updateActionReadiness = (progressStore, player) => {
     for (const skill of SKILL_CONFIGS) {
         if (!player.unlockedSkills?.includes(skill.id)) continue
 
-        const skillHasManaCost = Boolean(skill.mana?.cost)
         for (const action of skill.actions) {
             if (!player.skills?.[skill.id]?.actions?.[action.id]?.unlocked) continue
-            if (manaOnly && !skillHasManaCost && !(Number(action.manaCost) > 0)) continue
 
             progressStore.setActionCanStart(
                 skill.id,
@@ -112,6 +111,264 @@ const updateActionReadiness = (progressStore, player, manaOnly = false) => {
                 canStartAction(player, skill.id, action.id)
             )
         }
+    }
+}
+
+const ACTION_METADATA_BY_KEY = new Map()
+const ACTION_KEYS_BY_SKILL = new Map()
+const ACTION_KEYS_BY_RESOURCE = new Map()
+const FLEXIBLE_INPUT_ACTION_KEYS = new Set()
+const MANA_ACTION_KEYS = new Set()
+const COMPANION_TRAINING_ACTION_KEYS = new Set()
+
+const addActionResourceDependency = (resourceId, actionKey) => {
+    let actionKeys = ACTION_KEYS_BY_RESOURCE.get(resourceId)
+    if (!actionKeys) {
+        actionKeys = new Set()
+        ACTION_KEYS_BY_RESOURCE.set(resourceId, actionKeys)
+    }
+    actionKeys.add(actionKey)
+}
+
+for (const skill of SKILL_CONFIGS) {
+    const skillActionKeys = new Set()
+    ACTION_KEYS_BY_SKILL.set(skill.id, skillActionKeys)
+
+    for (const action of skill.actions) {
+        const key = skill.id + "::" + action.id
+        const metadata = {
+            key,
+            skillId: skill.id,
+            actionId: action.id,
+            hasManaCost: Boolean(skill.mana?.cost) || Number(action.manaCost) > 0,
+            isCompanionTraining: Boolean(action.companionTraining),
+        }
+
+        ACTION_METADATA_BY_KEY.set(key, metadata)
+        skillActionKeys.add(key)
+
+        if (metadata.hasManaCost) MANA_ACTION_KEYS.add(key)
+        if (metadata.isCompanionTraining) COMPANION_TRAINING_ACTION_KEYS.add(key)
+
+        if (action.inputSelection) {
+            FLEXIBLE_INPUT_ACTION_KEYS.add(key)
+        } else if (metadata.isCompanionTraining) {
+            addActionResourceDependency("currency:coins", key)
+        } else {
+            for (const entry of Array.isArray(action.consumes) ? action.consumes : []) {
+                const itemId = typeof entry === "string" ? entry : entry?.item
+                if (typeof itemId === "string" && itemId) {
+                    addActionResourceDependency(itemId, key)
+                }
+            }
+        }
+    }
+}
+
+const getChangedRecordKeys = (previous = {}, next = {}) => {
+    const keys = new Set([...Object.keys(previous), ...Object.keys(next)])
+    return [...keys].filter(key => !Object.is(previous[key], next[key]))
+}
+
+const getChangedCompanionLevels = (previous = {}, next = {}) => {
+    const ids = new Set([...Object.keys(previous), ...Object.keys(next)])
+    return [...ids].filter(id =>
+        !Object.is(previous[id]?.level, next[id]?.level)
+    )
+}
+
+const getActiveCompanionIds = player => new Set(
+    Object.values(player.activeCompanionSlots ?? {})
+        .filter(companionId => companionId && player.unlockedCompanions?.includes(companionId))
+)
+
+const updateManaActionReadiness = (progressStore, player) => {
+    for (const key of MANA_ACTION_KEYS) {
+        const metadata = ACTION_METADATA_BY_KEY.get(key)
+        if (
+            !player.unlockedSkills?.includes(metadata.skillId) ||
+            !player.skills?.[metadata.skillId]?.actions?.[metadata.actionId]?.unlocked
+        ) continue
+
+        progressStore.setActionCanStart(
+            metadata.skillId,
+            metadata.actionId,
+            canStartAction(player, metadata.skillId, metadata.actionId)
+        )
+    }
+}
+
+const updateActionReadinessForChanges = (progressStore, previous, next) => {
+    const affectedActions = new Set()
+    const changedSkillIds = new Set()
+
+    const addSkillActions = (skillId, predicate = () => true) => {
+        for (const key of ACTION_KEYS_BY_SKILL.get(skillId) ?? []) {
+            if (predicate(ACTION_METADATA_BY_KEY.get(key))) affectedActions.add(key)
+        }
+    }
+
+    const addMilestoneTargets = (sourceSkill, milestone) => {
+        const targetSkillId = milestone.reach === "global"
+            ? null
+            : milestone.reach === "local"
+                ? sourceSkill.id
+                : milestone.reach
+        const isRelevant = metadata => milestone.effect === "manaCost"
+            ? metadata.hasManaCost
+            : metadata.isCompanionTraining
+
+        if (targetSkillId === null) {
+            for (const [key, metadata] of ACTION_METADATA_BY_KEY) {
+                if (isRelevant(metadata)) affectedActions.add(key)
+            }
+        } else {
+            addSkillActions(targetSkillId, isRelevant)
+        }
+    }
+
+    // Inventory and currency balances only affect actions that actually consume
+    // those resources. Selection-based actions are flexible, so check those when
+    // an inventory entry changes.
+    const changedInventoryIds = getChangedRecordKeys(previous.inventory, next.inventory)
+    for (const itemId of changedInventoryIds) {
+        for (const key of ACTION_KEYS_BY_RESOURCE.get(itemId) ?? []) affectedActions.add(key)
+    }
+    if (changedInventoryIds.length > 0) {
+        for (const key of FLEXIBLE_INPUT_ACTION_KEYS) affectedActions.add(key)
+    }
+
+    const changedCurrencyIds = getChangedRecordKeys(previous.currencies, next.currencies)
+    for (const currencyId of changedCurrencyIds) {
+        for (const key of ACTION_KEYS_BY_RESOURCE.get("currency:" + currencyId) ?? []) {
+            affectedActions.add(key)
+        }
+    }
+
+    // Action unlocks, selected input items, and action levels can change one
+    // action's readiness or one of its repeated Mana/Gold-cost milestones.
+    for (const skill of SKILL_CONFIGS) {
+        const previousActions = previous.skills?.[skill.id]?.actions ?? {}
+        const nextActions = next.skills?.[skill.id]?.actions ?? {}
+
+        for (const action of skill.actions) {
+            const previousAction = previousActions[action.id]
+            const nextAction = nextActions[action.id]
+            if (!previousAction?.unlocked && !nextAction?.unlocked) continue
+
+            if (
+                !previousAction ||
+                !nextAction ||
+                ["unlocked", "level", "selectedItemId"].some(field =>
+                    !Object.is(previousAction[field], nextAction[field])
+                )
+            ) {
+                affectedActions.add(skill.id + "::" + action.id)
+            }
+
+            if (!Object.is(previousAction?.level, nextAction?.level)) {
+                changedSkillIds.add(skill.id)
+            }
+        }
+    }
+
+    const previousUnlockedSkills = new Set(previous.unlockedSkills ?? [])
+    const nextUnlockedSkills = new Set(next.unlockedSkills ?? [])
+    for (const skill of SKILL_CONFIGS) {
+        if (previousUnlockedSkills.has(skill.id) !== nextUnlockedSkills.has(skill.id)) {
+            changedSkillIds.add(skill.id)
+            addSkillActions(skill.id)
+        }
+    }
+
+    const changedCompanionLevels = getChangedCompanionLevels(
+        previous.companionProgress,
+        next.companionProgress
+    )
+    if (changedCompanionLevels.length > 0) changedSkillIds.add("skill:companions")
+
+    // Skill milestones can change action Mana costs or the companion-training
+    // Gold cost when a source skill crosses a milestone level.
+    for (const skill of SKILL_CONFIGS) {
+        if (!changedSkillIds.has(skill.id)) continue
+
+        const previousLevel = getSkillProgress(previous, skill.id)?.level ?? 1
+        const nextLevel = getSkillProgress(next, skill.id)?.level ?? 1
+        if (previousLevel === nextLevel &&
+            previousUnlockedSkills.has(skill.id) === nextUnlockedSkills.has(skill.id)) continue
+
+        // Selected inputs can become eligible as the player's Unveiling level rises.
+        if (skill.id === "skill:unveiling" && previousLevel !== nextLevel) {
+            for (const key of FLEXIBLE_INPUT_ACTION_KEYS) affectedActions.add(key)
+        }
+
+        for (const milestone of skill.milestones ?? []) {
+            if (!Number.isFinite(milestone.level) ||
+                !["manaCost", "baseGoldCost"].includes(milestone.effect)) continue
+
+            const wasActive = previousUnlockedSkills.has(skill.id) && previousLevel >= milestone.level
+            const isActive = nextUnlockedSkills.has(skill.id) && nextLevel >= milestone.level
+            if (wasActive !== isActive) addMilestoneTargets(skill, milestone)
+        }
+    }
+
+    // Companion levels affect permanent and active effects; active assignments
+    // also change the training action's dynamic coin cost and trainable targets.
+    const previousActiveCompanions = getActiveCompanionIds(previous)
+    const nextActiveCompanions = getActiveCompanionIds(next)
+    const activeCompanionsChanged =
+        previousActiveCompanions.size !== nextActiveCompanions.size ||
+        [...previousActiveCompanions].some(id => !nextActiveCompanions.has(id))
+
+    if (activeCompanionsChanged) {
+        for (const key of COMPANION_TRAINING_ACTION_KEYS) affectedActions.add(key)
+    }
+
+    const previousUnlockedCompanions = new Set(previous.unlockedCompanions ?? [])
+    const nextUnlockedCompanions = new Set(next.unlockedCompanions ?? [])
+    for (const companion of COMPANION_DATA) {
+        const wasUnlocked = previousUnlockedCompanions.has(companion.id)
+        const isUnlocked = nextUnlockedCompanions.has(companion.id)
+        const wasActive = previousActiveCompanions.has(companion.id)
+        const isActive = nextActiveCompanions.has(companion.id)
+        const levelChanged = changedCompanionLevels.includes(companion.id)
+
+        if ((wasUnlocked || isUnlocked) &&
+            (wasUnlocked !== isUnlocked || levelChanged) &&
+            companion.permanentEffect?.effect === "manaCost") {
+            for (const key of MANA_ACTION_KEYS) affectedActions.add(key)
+        }
+
+        if ((wasActive || isActive) &&
+            (wasActive !== isActive || levelChanged) &&
+            companion.activeEffect?.effect === "manaCost") {
+            addSkillActions(companion.activeEffect.targetSkillId, metadata => metadata.hasManaCost)
+        }
+
+        if ((wasActive || isActive) && levelChanged) {
+            for (const key of COMPANION_TRAINING_ACTION_KEYS) affectedActions.add(key)
+        }
+    }
+
+    // Mana regenerates continuously; only Mana-consuming actions need to have
+    // their affordability checked when the current pool changes.
+    if (!Object.is(previous.mana?.current, next.mana?.current)) {
+        for (const key of MANA_ACTION_KEYS) affectedActions.add(key)
+    }
+
+    for (const key of affectedActions) {
+        const metadata = ACTION_METADATA_BY_KEY.get(key)
+        if (!metadata) continue
+
+        const previousAction = previous.skills?.[metadata.skillId]?.actions?.[metadata.actionId]
+        const nextAction = next.skills?.[metadata.skillId]?.actions?.[metadata.actionId]
+        if (!previousAction?.unlocked && !nextAction?.unlocked) continue
+
+        progressStore.setActionCanStart(
+            metadata.skillId,
+            metadata.actionId,
+            canStartAction(next, metadata.skillId, metadata.actionId)
+        )
     }
 }
 
@@ -180,13 +437,13 @@ export function GameProvider({ children }) {
     const suppressNotificationsRef = useRef(false)
     const lastTickRef = useRef(0)
     const offlineTaskRef = useRef(null)
-    const progressStoreRef = useRef(null)
-    if (!progressStoreRef.current) {
-        progressStoreRef.current = createGameProgressStore()
-        progressStoreRef.current.updatePlayer(player)
-        updateActionReadiness(progressStoreRef.current, player)
-    }
-    const progressStore = progressStoreRef.current
+    const [progressStore] = useState(() => {
+        const store = createGameProgressStore()
+        store.updatePlayer(player)
+        store.updateVisiblePlayer(player)
+        updateActionReadiness(store, player)
+        return store
+    })
     const [displayPlayer, setDisplayPlayer] = useState(player)
     const [isGameReady, setIsGameReady] = useState(false)
     const [offlineProgress, setOfflineProgress] = useState({
@@ -206,7 +463,8 @@ export function GameProvider({ children }) {
         progressStore.updatePlayer(player)
 
         if (hasVisiblePlayerChanges(previousPlayer, player)) {
-            updateActionReadiness(progressStore, player)
+            progressStore.updateVisiblePlayer(player)
+            updateActionReadinessForChanges(progressStore, previousPlayer, player)
 
             if (suppressNotificationsRef.current) {
                 // Make the hydrated state the toast baseline before publishing it.
@@ -225,7 +483,7 @@ export function GameProvider({ children }) {
             if (previousPlayer.mana?.current !== player.mana?.current) {
                 // Mana regenerates continuously, but only action buttons whose
                 // affordability changes are notified; the Mana bar has its own subscriber.
-                updateActionReadiness(progressStore, player, true)
+                updateManaActionReadiness(progressStore, player)
             }
         }
     }, [player, progressStore])
@@ -494,9 +752,7 @@ export function GameProvider({ children }) {
         dispatch({ type: "SELECT_COMPANION", slotId, companionId })
     }, [])
 
-    const contextValue = useMemo(() => ({
-        player: displayPlayer,
-        progressStore,
+    const commands = useMemo(() => ({
         startAction,
         stopAction,
         togglePassiveAction,
@@ -509,16 +765,29 @@ export function GameProvider({ children }) {
         selectActionItem,
         unlockCompanionSlot,
         selectCompanion,
-    }), [displayPlayer, progressStore, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
+    }), [startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
+
+    const servicesValue = useMemo(() => ({
+        progressStore,
+        commands,
+    }), [progressStore, commands])
+
+    const contextValue = useMemo(() => ({
+        player: displayPlayer,
+        progressStore,
+        ...commands,
+    }), [displayPlayer, progressStore, commands])
 
     const continueFromOffline = useCallback(() => {
         setOfflineProgress(current => ({ ...current, visible: false }))
     }, [])
 
     return (
-        <GameContext.Provider value={contextValue}>
-            {children}
-            <OfflineProgressModal progress={offlineProgress} onContinue={continueFromOffline} />
-        </GameContext.Provider>
+        <GameServicesContext.Provider value={servicesValue}>
+            <GameContext.Provider value={contextValue}>
+                {children}
+                <OfflineProgressModal progress={offlineProgress} onContinue={continueFromOffline} />
+            </GameContext.Provider>
+        </GameServicesContext.Provider>
     )
 }

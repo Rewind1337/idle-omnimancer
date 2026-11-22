@@ -93,6 +93,18 @@ export const MISSION_DATA = {
             },
             rewards: [{ currency: "currency:fame", amount: 1 }],
         },
+        {
+            id: "mission:crossroads_field_notes",
+            tier: 1,
+            title: "Notes from the Crossroads",
+            description: "Turn in 100 Crossroads Field Notes.",
+            objective: {
+                type: "turnIn",
+                item: "item:crossroads_field_notes",
+                amount: 100,
+            },
+            rewards: [{ currency: "currency:fame", amount: 1 }],
+        },
 
         /* Tier 2 Missions */
         {

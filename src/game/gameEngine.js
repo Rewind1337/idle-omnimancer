@@ -865,6 +865,7 @@ export const getActionEffectSummary = (player, skill, action, effect) => {
             valueFormat: "multiplier",
             unit: "",
             precision: 4,
+            showCombined: false,
         }
     }
 
@@ -878,6 +879,7 @@ export const getActionEffectSummary = (player, skill, action, effect) => {
             finalValue,
             unit: "%",
             precision: 2,
+            showCombined: false,
         }
     }
 
@@ -977,7 +979,7 @@ export const getActionEffectStacks = (player, skill, action) => {
 
             entries.push({
                 id: "action-" + skill.id + "-" + action.id + "-" + milestone.levels + "-" + effect + "-" + milestoneIndex,
-                source: (action.name ?? humanize(action.id)) + " - Level " + actionLevel,
+                source: (action.name ?? humanize(action.id)) + " Level " + actionLevel,
                 effect,
                 type: milestone.type,
                 value: milestone.value,
@@ -990,7 +992,7 @@ export const getActionEffectStacks = (player, skill, action) => {
         for (const companionEntry of getCompanionEffectEntries(player, skill.id, effect)) {
             entries.push({
                 id: companionEntry.id,
-                title: companionEntry.companion.name + " - Level " + companionEntry.level,
+                title: companionEntry.companion.name + " Level " + companionEntry.level,
                 effect,
                 type: companionEntry.type,
                 value: companionEntry.value,
@@ -1111,7 +1113,7 @@ export const getManaEffectStacks = (player) => {
         for (const companionEntry of getCompanionEffectEntries(player, skill.id, effect)) {
             entriesByEffect[effect].push({
                 id: companionEntry.id,
-                title: companionEntry.companion.name + " - Level " + companionEntry.level,
+                title: companionEntry.companion.name + " Level " + companionEntry.level,
                 effect,
                 type: companionEntry.type,
                 value: companionEntry.value,
@@ -1380,10 +1382,21 @@ const advanceRunningActions = (player, deltaMs) => {
                 // An active process stops when it reaches its level cap or can no
                 // longer afford the next cycle. In the latter case, discard any
                 // unfinished progress so restarting never grants a free partial cycle.
-                if (
-                    (action.tracksProgress !== false && actionState.level >= GLOBAL_CONFIG.maxActionLevel) ||
-                    !canPayActionCost(player, skill, action)
-                ) {
+                const reachedLevelCap =
+                    action.tracksProgress !== false &&
+                    actionState.level >= GLOBAL_CONFIG.maxActionLevel
+                const canContinue = canPayActionCost(player, skill, action)
+
+                if (reachedLevelCap || !canContinue) {
+                    // Keep the chosen material while it is still available. Clear it
+                    // only when the completed action consumed the final selected item.
+                    if (!canContinue && action.inputSelection) {
+                        const selectedItemId = actionState.selectedItemId
+                        if (selectedItemId && (player.inventory?.[selectedItemId] ?? 0) <= 0) {
+                            actionState.selectedItemId = null
+                        }
+                    }
+
                     actionState.progressMs = 0
                     player.activeAction = null
                 }

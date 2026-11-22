@@ -1,4 +1,4 @@
-import { OTHER_ICONS, SKILL_ICONS } from "./iconLibrary"
+import { SKILL_ICONS } from "./iconLibrary"
 
 // Skill order is also the unlock order used by the navigation.
 export const SKILL_NAVIGATION = [
@@ -11,17 +11,9 @@ export const SKILL_NAVIGATION = [
     { id: 6, skillId: "skill:companions", name: "Companions", icon: SKILL_ICONS.COMPANIONS, variant: "companions", floatingPanel: true },
 ]
 
-export const DEVELOPMENT_NAVIGATION = {
-    id: 7,
-    name: "Development",
-    icon: OTHER_ICONS.STAR,
-    variant: "",
-    transparent: true,
-}
-
 // Opened through the floating panel; intentionally excluded from the top navigation.
 export const SHOP_NAVIGATION = {
-    id: 8,
+    id: 7,
     name: "Shop",
     variant: "shop",
 }

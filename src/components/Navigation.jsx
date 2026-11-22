@@ -2,7 +2,7 @@ import { Paper } from "./Paper"
 import { Flex } from "./Flex"
 import { Tabs } from "./Tabs"
 
-import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION } from "../data/navigationData"
+import { SKILL_NAVIGATION } from "../data/navigationData"
 import { getSkillProgress } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 
@@ -45,7 +45,6 @@ export function Navigation({
           toggled: player.activeAction?.skillId === skill.skillId,
         }
       }),
-    DEVELOPMENT_NAVIGATION,
   ]
 
   const columns = position === "top" && mode !== "compact"

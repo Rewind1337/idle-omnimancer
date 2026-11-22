@@ -35,6 +35,8 @@ import { useGame } from "../hooks/useGame"
 
 import "./CompanionPage.scss"
 
+const formatActionValue = value => Number(value.toFixed(2)).toLocaleString()
+
 const SLOT_IDS = ["any", "earth", "air", "water"]
 const SKILL_NAMES = {
     "skill:research": "Research",
@@ -279,7 +281,7 @@ export function CompanionPage() {
                                     entries={actionEffectStacks.actionTime ?? []}
                                     summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "actionTime")} />
                             </Flex>}>
-                            {durationMs / 1000}s
+                            {formatActionValue(durationMs / 1000)}s
                         </Badge>
                         <Badge variant="transparent" interactive icon={OTHER_ICONS.COINS}
                             tooltip={<Flex direction="column" gap={8}>
@@ -305,7 +307,7 @@ export function CompanionPage() {
                                     entries={actionEffectStacks.xpGain ?? []}
                                     summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "xpGain")} />
                             </Flex>}>
-                            +{actionXPReward.toLocaleString()} XP
+                            +{formatActionValue(actionXPReward)} XP
                         </Badge>
                     </Flex>
                     <Flex align="center" gap={8}>

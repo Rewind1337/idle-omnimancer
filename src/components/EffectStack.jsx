@@ -145,11 +145,13 @@ export function EffectStack({
             {summary && (
                 <>
                     <hr />
-                    <Text size="small" strong>
-                        Combined: {summary.combinedMode === "bonusPercent"
-                            ? formatSigned(summary.combinedValue) + "%"
-                            : "x" + formatMultiplier(summary.combinedMultiplier)}
-                    </Text>
+                    {summary.showCombined !== false && (
+                        <Text size="small" strong>
+                            Combined: {summary.combinedMode === "bonusPercent"
+                                ? formatSigned(summary.combinedValue) + "%"
+                                : "x" + formatMultiplier(summary.combinedMultiplier)}
+                        </Text>
+                    )}
                     <Text size="small" strong>
                         Final {summary.label}: {formatSummaryValue(summary.finalValue, summary)}
                     </Text>

@@ -12,7 +12,6 @@ import { GameProvider } from "./contexts/GameProvider"
 import { ResearchPage } from "./pages/ResearchPage";
 import { SpellcraftPage } from "./pages/SpellcraftPage";
 import { TransmutationPage } from "./pages/TransmutationPage";
-import { DevelopmentPage } from "./pages/DevelopmentPage";
 import { ShopPage } from "./pages/ShopPage";
 
 import { cx } from './utility/helpers'
@@ -28,7 +27,7 @@ import { OTHER_ICONS, SKILL_ICONS } from "./data/iconLibrary";
 import { COMPANION_DATA } from "./data/companionData";
 import { useGame } from "./hooks/useGame";
 
-import { SKILL_NAVIGATION, DEVELOPMENT_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
+import { SKILL_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
 
 const COMPANIONS_NAVIGATION = SKILL_NAVIGATION.find(skill => skill.skillId === "skill:companions")
 
@@ -218,7 +217,6 @@ function App() {
           {activeSkill?.skillId === "skill:exploration" && <ExplorationPage />}
           {activeSkill?.skillId === "skill:unveiling" && <UnveilingPage />}
           {activeSkill?.skillId === "skill:companions" && <CompanionPage />}
-          {activePage === DEVELOPMENT_NAVIGATION.id && <DevelopmentPage />}
           {activePage === SHOP_NAVIGATION.id && <ShopPage setActivePage={setActivePage} />}
         </ResponsivePage>
       </GameProvider>

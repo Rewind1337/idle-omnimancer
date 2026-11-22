@@ -70,4 +70,4 @@ export const getResearchBreakthroughItems = (unlockedTier = 0, actionTier = 0) =
 }
 
 export const formatResearchBreakthroughChance = chance =>
-    Number((chance * 100).toFixed(4)) + "% chance"
+    Number((chance * 100).toFixed(4)) + "%"

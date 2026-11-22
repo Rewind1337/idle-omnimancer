@@ -5,6 +5,20 @@
         min-width: 0;
     }
 
+    .bag-group-filters {
+        min-width: 0;
+
+        .bag-group-filter {
+            flex: 1 1 auto;
+        }
+    }
+
+    .bag-inventory-empty {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+    }
+
     // Keep the purchase button fitted to the full empty inventory slot.
     .item.item-empty.bag-buy-slot {
         padding: 0 !important;

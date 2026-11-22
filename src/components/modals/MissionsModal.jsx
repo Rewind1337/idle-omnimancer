@@ -4,12 +4,13 @@ import { Button } from "../Button"
 import { Badge } from "../Badge"
 import { Flex } from "../Flex"
 import { Grid } from "../Grid"
-import { Item } from "../Item"
 import { Paper } from "../Paper"
 import { Progress } from "../Progress"
 import { Text } from "../Text"
+import { ActionResources } from "../actions/ActionResources"
 
 import { CURRENCY_DATA_BY_ID, ITEM_DATA_BY_ID } from "../../data/itemData"
+import { OTHER_ICONS } from "../../data/iconLibrary"
 import { MISSION_DATA } from "../../data/missionData"
 import { useGame } from "../../hooks/useGame"
 
@@ -20,56 +21,62 @@ function MissionCard({ mission, player, canTurnIn, onTurnIn }) {
         item: mission.objective.item,
         amount: mission.objective.amount,
     }]
+    const fameReward = mission.rewards
+        .filter(reward => reward.currency === "currency:fame")
+        .reduce((total, reward) => total + reward.amount, 0)
+    const otherRewards = mission.rewards.filter(reward => reward.currency !== "currency:fame")
 
     return (
         <Paper layer={2} variant="secondary" className="mission-card">
             <Flex direction="column">
-                <Flex direction="row" gap={8}>
-                    <Flex direction="row" gap={6}>
-                        <Heading h="3">{mission.title}</Heading>
-                        <Badge variant="secondary">Tier {mission.tier}</Badge>
+                <Flex direction="row" justify="space-between" align="center" wrap gap={8}>
+                    <Heading h="3">{mission.title}</Heading>
+                    <Flex direction="row" wrap gap={6}>
+                        <Badge
+                            variant="secondary"
+                            icon={OTHER_ICONS.MERGE}
+                            tooltip="Mission tier determines the Fame awarded for completing a mission. Tier 1 grants 1 Fame, Tier 2 grants 2 Fame, and so on."
+                        >
+                            Tier {mission.tier}
+                        </Badge>
+                        {fameReward > 0 && (
+                            <Badge variant="secondary" icon={CURRENCY_DATA_BY_ID["currency:fame"]?.icon}>
+                                +{fameReward.toLocaleString()} Fame
+                            </Badge>
+                        )}
                     </Flex>
                 </Flex>
-                <Flex direction="row" gap={8}>
-                    <Text size="small">{mission.description}</Text>
-                </Flex>
-                <Flex direction="column" gap={8}>
-                    {requirements.map(requirement => {
-                        const objectiveItem = ITEM_DATA_BY_ID[requirement.item]
-                        const ownedAmount = player.inventory?.[requirement.item] ?? 0
-                        return (
-                            <Flex key={requirement.item}>
-                                <Item
-                                    layer={2}
-                                    amount={ownedAmount.toLocaleString() + " / " + requirement.amount.toLocaleString()}
-                                    interactive={false}
-                                    icon={objectiveItem?.icon}
-                                    name={objectiveItem?.name ?? requirement.item}
-                                    variant={objectiveItem?.variant ?? "primary"}
-                                />
-                            </Flex>
-                        )
-                    })}
-                </Flex>
-                <Flex direction="row" justify="space-between" wrap gap={8}>
-                    {mission.rewards.map((reward, index) => {
-                        const rewardId = reward.currency ?? reward.item
-                        const rewardData = reward.currency
-                            ? CURRENCY_DATA_BY_ID[reward.currency]
-                            : ITEM_DATA_BY_ID[reward.item]
-                        return (
-                            <Badge key={rewardId + "-" + index} variant="secondary" icon={rewardData?.icon}>
-                                +{reward.amount.toLocaleString()} {rewardData?.name ?? rewardId}
-                            </Badge>
-                        )
-                    })}
-                </Flex>
-                <Flex direction="row" justify="space-between" align="center" gap={8}>
-                    <Button variant="secondary" className="w-100"
-                        disabled={!canTurnIn} onClick={onTurnIn}>
-                        Turn In
-                    </Button>
-                </Flex>
+                <Text size="small">{mission.description}</Text>
+                <ActionResources
+                    requires={requirements.map(requirement => ({
+                        item: requirement.item,
+                        amountLabel: (player.inventory?.[requirement.item] ?? 0).toLocaleString() +
+                            " / " + requirement.amount.toLocaleString(),
+                    }))}
+                />
+                {otherRewards.length > 0 && (
+                    <Flex direction="row" justify="space-between" wrap gap={8}>
+                        {otherRewards.map((reward, index) => {
+                            const rewardId = reward.currency ?? reward.item
+                            const rewardData = reward.currency
+                                ? CURRENCY_DATA_BY_ID[reward.currency]
+                                : ITEM_DATA_BY_ID[reward.item]
+                            return (
+                                <Badge key={rewardId + "-" + index} variant="secondary" icon={rewardData?.icon}>
+                                    +{reward.amount.toLocaleString()} {rewardData?.name ?? rewardId}
+                                </Badge>
+                            )
+                        })}
+                    </Flex>
+                )}
+                <Button
+                    variant="secondary"
+                    className="w-100"
+                    disabled={!canTurnIn}
+                    onClick={onTurnIn}
+                >
+                    Turn In
+                </Button>
             </Flex>
         </Paper>
     )
@@ -95,6 +102,10 @@ export function MissionsModal({ visible, setVisible }) {
     const completedMissionsCount = availableTierMissions.length - availableMissions.length
     const fame = CURRENCY_DATA_BY_ID["currency:fame"]
     const fameBalance = player.currencies?.fame ?? 0
+    const missionProgressTooltip = requiredCount
+        ? "Complete " + requiredCount.toLocaleString() + " missions from Tier " + missionTier +
+            " to unlock Mission Tier " + (missionTier + 1) + "."
+        : "You have reached the highest configured mission tier."
 
     return (
         <Modal
@@ -103,20 +114,23 @@ export function MissionsModal({ visible, setVisible }) {
             className="modal-missions"
             onBackdropClick={close}
             header={
-                <Flex direction="row" justify="space-between" wrap gap={12}>
-                    <Heading h="1">Missions</Heading>
-                    <Badge variant="secondary" icon={fame?.icon}>
-                        {fameBalance.toLocaleString()} Fame
-                    </Badge>
-                </Flex>
-            }
-            content={
-                <Flex direction="column" align="stretch" gap={12} className="missions-modal-content">
+                <Flex direction="column" align="stretch" gap={12}>
+                    <Flex direction="row" justify="space-between" align="center" wrap gap={12}>
+                        <Heading h="1">Missions</Heading>
+                        <Flex direction="row" wrap gap={6}>
+                            <Badge variant="secondary" icon={fame?.icon} tooltip="Fame is earned by completing missions. Each mission grants Fame equal to its tier: Tier 1 grants 1 Fame, Tier 2 grants 2 Fame, and so on.">
+                                {fameBalance.toLocaleString()} Fame
+                            </Badge>
+                            <Badge variant="secondary" icon={OTHER_ICONS.STAR}>
+                                {completedMissionsCount.toLocaleString()} Completed Missions
+                            </Badge>
+                        </Flex>
+                    </Flex>
                     <Paper layer={2} variant="secondary" className="mission-tier-panel">
                         <Flex direction="column" align="stretch" gap={8}>
-                            <Flex direction="row" justify="space-between" wrap gap={8}>
+                            <Flex direction="row" justify="space-between" align="center" wrap gap={8}>
                                 <Heading h="3">Mission Tier {missionTier}</Heading>
-                                <Badge variant="secondary">
+                                <Badge variant="secondary" tooltip={missionProgressTooltip}>
                                     {requiredCount
                                         ? completedCount.toLocaleString() + " / " + requiredCount.toLocaleString()
                                         : "Maximum Tier"}
@@ -127,20 +141,16 @@ export function MissionsModal({ visible, setVisible }) {
                                 label={requiredCount
                                     ? completedCount.toLocaleString() + " / " + requiredCount.toLocaleString() + " Missions Completed"
                                     : "All mission tiers unlocked"}
-                                size="small"
+                                size="medium"
                                 variant="secondary"
                             />
-                            <Text size="small">
-                                {requiredCount
-                                    ? "Complete " + requiredCount.toLocaleString() + " missions from this tier to unlock Mission Tier " + (missionTier + 1) + "."
-                                    : "You have reached the highest configured mission tier."}
-                            </Text>
                         </Flex>
                     </Paper>
-                    <Flex direction="row" justify="space-between" wrap gap={12}>
-                        <Heading h="3">Available Missions: {availableMissions.length}</Heading>
-                        <Heading h="3">Completed Missions: {completedMissionsCount}</Heading>
-                    </Flex>
+                </Flex>
+            }
+            content={
+                <Flex direction="column" align="stretch" gap={12} className="missions-modal-content">
+                    <Heading h="3">Available Missions: {availableMissions.length}</Heading>
                     {availableMissions.length > 0 ? (
                         <Grid
                             columns={{ xsmall: 1, small: 1, medium: 2, large: 2 }}

@@ -15,7 +15,7 @@ import { InputRange } from '../InputRange'
 import { Tooltip } from '../Tooltip'
 import { Icon } from '../Icon'
 
-import { OTHER_ICONS } from '../../data/iconLibrary'
+import { OTHER_ICONS, SHOP_ICONS, SKILL_ICONS } from '../../data/iconLibrary'
 
 import { ITEM_DATA_BY_ID } from '../../data/itemData'
 import { getNextBagSlotCost } from '../../game/gameEngine'
@@ -33,6 +33,17 @@ const AMOUNT_PRESETS = [
     { label: "10%", ratio: 0.10 },
     { label: "50%", ratio: 0.50 },
     { label: "100%", ratio: 1 },
+]
+
+const BAG_GROUP_FILTERS = [
+    { id: "all", label: "All", icon: OTHER_ICONS.SPARKLES, variant: "primary" },
+    { id: "research", label: "Research", icon: SKILL_ICONS.RESEARCH, variant: "research" },
+    { id: "spellcraft", label: "Spellcraft", icon: SKILL_ICONS.SPELLCRAFT, variant: "spellcraft" },
+    { id: "transmutation", label: "Transmutation", icon: SKILL_ICONS.TRANSMUTATION, variant: "transmutation" },
+    { id: "exploration", label: "Exploration", icon: SKILL_ICONS.EXPLORATION, variant: "exploration" },
+    { id: "combat", label: "Combat", icon: SKILL_ICONS.COMBAT, variant: "combat" },
+    { id: "companions", label: "Companions", icon: SKILL_ICONS.COMPANIONS, variant: "companions" },
+    { id: "shop", label: "Shop", icon: SHOP_ICONS.GENERAL_GOODS, variant: "shop" },
 ]
 
 const BagInventoryItem = memo(function BagInventoryItem({
@@ -69,6 +80,7 @@ function BagModalContent({
     onSelectItem,
     onDeselect,
 }) {
+    const [activeGroup, setActiveGroup] = useState("all")
     const inventory = useGameInventory()
     const currencies = useGameCurrencies()
     const storedInventorySlots = useGameInventorySlots()
@@ -76,6 +88,10 @@ function BagModalContent({
 
     const inventoryEntries = useMemo(() => Object.entries(inventory)
         .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0), [inventory])
+    const filteredInventoryEntries = useMemo(() => activeGroup === "all"
+        ? inventoryEntries
+        : inventoryEntries.filter(([itemId]) => ITEM_DATA_BY_ID[itemId]?.group === activeGroup),
+    [activeGroup, inventoryEntries])
     const totalBagValue = useMemo(() => inventoryEntries.reduce((total, [itemId, amount]) =>
         total + amount * (ITEM_DATA_BY_ID[itemId]?.baseValue ?? 0), 0), [inventoryEntries])
     const occupiedSlots = inventoryEntries.length
@@ -92,6 +108,17 @@ function BagModalContent({
 
     const nextSlotCost = getNextBagSlotCost(inventorySlots)
     const coins = currencies.coins ?? 0
+
+    const handleGroupChange = useCallback((groupId) => {
+        setActiveGroup(groupId)
+        if (
+            selectedItemId &&
+            groupId !== "all" &&
+            ITEM_DATA_BY_ID[selectedItemId]?.group !== groupId
+        ) {
+            onDeselect()
+        }
+    }, [onDeselect, selectedItemId])
 
     const handleRangeChange = useCallback((event) => {
         const value = Number(event.target.value)
@@ -137,6 +164,22 @@ function BagModalContent({
                         <span>Total bag value: {totalBagValue.toLocaleString()} {totalBagValue === 1 ? "coin" : "coins"}</span>
                     </Flex>
 
+                    <Flex direction="row" wrap gap={6} className="bag-group-filters">
+                        {BAG_GROUP_FILTERS.map(group => (
+                            <Button
+                                key={group.id}
+                                variant={group.variant}
+                                size="small"
+                                icon={group.icon}
+                                checked={activeGroup === group.id}
+                                className="bag-group-filter"
+                                onClick={() => handleGroupChange(group.id)}
+                            >
+                                {group.label}
+                            </Button>
+                        ))}
+                    </Flex>
+
                     <Paper
                         layer={2}
                         className="bag-inventory"
@@ -146,7 +189,7 @@ function BagModalContent({
                         }}
                     >
                         <Flex direction="row" wrap>
-                            {inventoryEntries.map(([itemId, amount]) => (
+                            {filteredInventoryEntries.map(([itemId, amount]) => (
                                 <BagInventoryItem
                                     key={itemId}
                                     itemId={itemId}
@@ -155,6 +198,13 @@ function BagModalContent({
                                     onSelect={onSelectItem}
                                 />
                             ))}
+                            {filteredInventoryEntries.length === 0 && (
+                                <Text size="small" className="bag-inventory-empty">
+                                    {activeGroup === "all"
+                                        ? "Your bag is empty."
+                                        : "No " + BAG_GROUP_FILTERS.find(group => group.id === activeGroup)?.label.toLowerCase() + " items in your bag."}
+                                </Text>
+                            )}
                             {emptySlots > 0 && (
                                 <EmptyItem layer={3}>
                                     <Heading h="6" className="align-center">Free Slots</Heading>

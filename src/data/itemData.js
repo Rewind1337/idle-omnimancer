@@ -102,11 +102,13 @@ const ITEM_DEFINITIONS = [
     { id: "item:earth_geode_v", tier: 5, variant: "earth", baseValue: 1000, requiredUnveilingLevel: 25, type: "companionContainer" },
     { id: "item:air_egg_v", tier: 5, variant: "air", baseValue: 1000, requiredUnveilingLevel: 25, type: "companionContainer" },
     { id: "item:water_shell_v", tier: 5, variant: "water", baseValue: 1000, requiredUnveilingLevel: 25, type: "companionContainer" },
+    { id: "item:neutral_prism_i", name: "Wayfinder Prism", tier: 1, variant: "neutral", baseValue: 1000, requiredUnveilingLevel: 5, type: "companionContainer" },
 
     // Companion progression materials and the shared low-value duplicate reward.
     { id: "item:earth_companion_xp", name: "Earth Companion Candy", tier: 1, variant: "earth", type: "companionExperience", baseValue: 0 },
     { id: "item:air_companion_xp", name: "Air Companion Candy", tier: 1, variant: "air", type: "companionExperience", baseValue: 0 },
     { id: "item:water_companion_xp", name: "Water Companion Candy", tier: 1, variant: "water", type: "companionExperience", baseValue: 0 },
+    { id: "item:neutral_companion_xp", name: "Neutral Companion Candy", tier: 1, variant: "neutral", type: "companionExperience", baseValue: 0 },
 
     // Unique area artifacts reserved for the Combat and Unveiling systems.
     { id: "item:crossroads_waystone", tier: 1, variant: "exploration", type: "artifact" },

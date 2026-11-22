@@ -16,8 +16,10 @@ import { useGame } from "../../hooks/useGame"
 import "./MissionsModal.scss"
 
 function MissionCard({ mission, player, canTurnIn, onTurnIn }) {
-    const objectiveItem = ITEM_DATA_BY_ID[mission.objective.item]
-    const ownedAmount = player.inventory?.[mission.objective.item] ?? 0
+    const requirements = mission.objective.items ?? [{
+        item: mission.objective.item,
+        amount: mission.objective.amount,
+    }]
 
     return (
         <Paper layer={2} variant="secondary" className="mission-card">
@@ -28,25 +30,31 @@ function MissionCard({ mission, player, canTurnIn, onTurnIn }) {
                         <Badge variant="secondary">Tier {mission.tier}</Badge>
                     </Flex>
                 </Flex>
-
                 <Flex direction="row" gap={8}>
                     <Text size="small">{mission.description}</Text>
                 </Flex>
-
                 <Flex direction="column" gap={8}>
-                    <Item
-                        layer={2}
-                        amount={mission.objective.amount}
-                        interactive={false}
-                        icon={objectiveItem?.icon}
-                        name={mission.objective.amount.toLocaleString() + " × " + (objectiveItem?.name ?? mission.objective.item)}
-                        variant={objectiveItem?.variant ?? "primary"}
-                    />
-                    <Text size="small" className="w-100 align-center">
-                        {ownedAmount.toLocaleString()} / {mission.objective.amount.toLocaleString()} available
-                    </Text>
+                    {requirements.map(requirement => {
+                        const objectiveItem = ITEM_DATA_BY_ID[requirement.item]
+                        const ownedAmount = player.inventory?.[requirement.item] ?? 0
+                        return (
+                            <Flex key={requirement.item} direction="column" gap={2}>
+                                <Item
+                                    layer={2}
+                                    amount={requirement.amount}
+                                    interactive={false}
+                                    icon={objectiveItem?.icon}
+                                    name={requirement.amount.toLocaleString() + " × " +
+                                        (objectiveItem?.name ?? requirement.item)}
+                                    variant={objectiveItem?.variant ?? "primary"}
+                                />
+                                <Text size="small" className="w-100 align-center">
+                                    {ownedAmount.toLocaleString()} / {requirement.amount.toLocaleString()} available
+                                </Text>
+                            </Flex>
+                        )
+                    })}
                 </Flex>
-
                 <Flex direction="row" justify="space-between" wrap gap={8}>
                     {mission.rewards.map((reward, index) => {
                         const rewardId = reward.currency ?? reward.item
@@ -54,24 +62,15 @@ function MissionCard({ mission, player, canTurnIn, onTurnIn }) {
                             ? CURRENCY_DATA_BY_ID[reward.currency]
                             : ITEM_DATA_BY_ID[reward.item]
                         return (
-                            <Badge
-                                key={rewardId + "-" + index}
-                                variant="secondary"
-                                icon={rewardData?.icon}
-                            >
+                            <Badge key={rewardId + "-" + index} variant="secondary" icon={rewardData?.icon}>
                                 +{reward.amount.toLocaleString()} {rewardData?.name ?? rewardId}
                             </Badge>
                         )
                     })}
                 </Flex>
-
                 <Flex direction="row" justify="space-between" align="center" gap={8}>
-                    <Button
-                        variant="secondary"
-                        className="w-100"
-                        disabled={!canTurnIn}
-                        onClick={onTurnIn}
-                    >
+                    <Button variant="secondary" className="w-100"
+                        disabled={!canTurnIn} onClick={onTurnIn}>
                         Turn In
                     </Button>
                 </Flex>
@@ -151,14 +150,21 @@ export function MissionsModal({ visible, setVisible }) {
                         >
                             {availableMissions.map(mission => {
                                 const objective = mission.objective
-                                const ownedAmount = player.inventory?.[objective.item] ?? 0
+                                const requirements = objective.items ?? [{
+                                    item: objective.item,
+                                    amount: objective.amount,
+                                }]
                                 const canTurnIn =
                                     mission.tier <= missionTier &&
                                     objective.type === "turnIn" &&
-                                    Boolean(ITEM_DATA_BY_ID[objective.item]) &&
-                                    Number.isSafeInteger(objective.amount) &&
-                                    objective.amount > 0 &&
-                                    ownedAmount >= objective.amount
+                                    Array.isArray(requirements) &&
+                                    requirements.length > 0 &&
+                                    requirements.every(requirement =>
+                                        Boolean(ITEM_DATA_BY_ID[requirement.item]) &&
+                                        Number.isSafeInteger(requirement.amount) &&
+                                        requirement.amount > 0 &&
+                                        (player.inventory?.[requirement.item] ?? 0) >= requirement.amount
+                                    )
 
                                 return (
                                     <MissionCard

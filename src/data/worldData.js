@@ -34,7 +34,7 @@ export const WORLD_DATA = {
             tier: 1,
             areaNumber: 1,
             position: { q: 0, r: 0 },
-            exploration: { produces: ["item:crossroads_field_notes"] },
+            exploration: { produces: ["item:crossroads_field_notes", "item:neutral_prism_i"] },
             combat: { produces: ["item:crossroads_waystone"] },
         },
         {

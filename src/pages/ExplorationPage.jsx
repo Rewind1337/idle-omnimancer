@@ -192,8 +192,8 @@ export function ExplorationPage() {
     const unlockedCompanions = new Set(player.unlockedCompanions ?? [])
     const areaMarkers = Object.fromEntries(EXPLORATION_CONFIG.actions.flatMap(action => {
         const companion = COMPANION_DATA_BY_CONTAINER_ID[action.companionContainer]
-        return companion && !unlockedCompanions.has(companion.id)
-            ? [[action.areaId, "companion"]]
+        return companion
+            ? [[action.areaId, unlockedCompanions.has(companion.id) ? "discovered" : "companion"]]
             : []
     }))
 

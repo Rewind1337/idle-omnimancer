@@ -10,7 +10,7 @@ import { COMPANION_IDS, COMPANION_DATA } from "../data/companionData"
 import { COMPANION_CONFIG } from "../data/companionConfig"
 
 export const SAVE_KEY = "omnimancer-idle-save"
-export const SAVE_VERSION = 4
+export const SAVE_VERSION = 5
 export const DEFAULT_INVENTORY_SLOTS = GLOBAL_CONFIG.startingBagSpace
 
 // The save contains only serializable player data. Configurations, functions,
@@ -67,7 +67,7 @@ export const createInitialPlayerState = () => {
         unlockedCompanionSlots: Object.entries(COMPANION_CONFIG.slots)
             .filter(([, slot]) => slot.unlockedByDefault)
             .map(([element]) => element),
-        activeCompanionSlots: { earth: null, air: null, water: null },
+        activeCompanionSlots: { any: null, earth: null, air: null, water: null },
         currencies: {
             coins: 0,
             fame: 0,
@@ -202,23 +202,40 @@ export const normalizePlayerState = (savedState) => {
         }]
     }))
 
-    const validElements = Object.keys(COMPANION_CONFIG.slots)
+    const validSlotIds = Object.keys(COMPANION_CONFIG.slots)
+    const savedActiveSlots = savedState.activeCompanionSlots ?? {}
+    const savedUnlockedSlots = Array.isArray(savedState.unlockedCompanionSlots)
+        ? savedState.unlockedCompanionSlots
+        : []
+    const hasAnyElementSlot = Object.prototype.hasOwnProperty.call(savedActiveSlots, "any") ||
+        savedUnlockedSlots.includes("any")
+    const legacyUnlockedSlots = hasAnyElementSlot
+        ? savedUnlockedSlots
+        : savedUnlockedSlots.filter(slotId => slotId !== "earth")
     const unlockedCompanionSlots = [...new Set([
-        "earth",
-        ...(Array.isArray(savedState.unlockedCompanionSlots) ? savedState.unlockedCompanionSlots : []),
-    ].filter(element =>
-        validElements.includes(element) && COMPANION_CONFIG.slots[element]
+        "any",
+        ...legacyUnlockedSlots,
+    ].filter(slotId =>
+        validSlotIds.includes(slotId) && COMPANION_CONFIG.slots[slotId]
     ))]
-    const activeCompanionSlots = Object.fromEntries(validElements.map(element => {
-        const companionId = savedState.activeCompanionSlots?.[element] ?? null
+    const savedSlotAssignments = hasAnyElementSlot
+        ? savedActiveSlots
+        : { ...savedActiveSlots, any: savedActiveSlots.earth ?? null, earth: null }
+    const assignedCompanions = new Set()
+    const activeCompanionSlots = Object.fromEntries(validSlotIds.map(slotId => {
+        const companionId = savedSlotAssignments[slotId] ?? null
         const companion = COMPANION_DATA.find(entry => entry.id === companionId)
-        return [element,
-            unlockedCompanionSlots.includes(element) &&
-            companion?.element === element &&
-            unlockedCompanions.includes(companionId)
-                ? companionId
-                : null
-        ]
+        const slot = COMPANION_CONFIG.slots[slotId]
+        const compatible = slot.element === null ||
+            companion?.element === "neutral" ||
+            companion?.element === slot.element
+        const valid = unlockedCompanionSlots.includes(slotId) &&
+            companion &&
+            compatible &&
+            unlockedCompanions.includes(companionId) &&
+            !assignedCompanions.has(companionId)
+        if (valid) assignedCompanions.add(companionId)
+        return [slotId, valid ? companionId : null]
     }))
 
     let missionTier = clampInteger(

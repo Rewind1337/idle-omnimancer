@@ -39,6 +39,7 @@ export const UNVEILING_CONFIG = {
             earth: "item:earth_companion_xp",
             air: "item:air_companion_xp",
             water: "item:water_companion_xp",
+            neutral: "item:neutral_companion_xp",
         },
     },
 

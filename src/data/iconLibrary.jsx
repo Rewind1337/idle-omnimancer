@@ -245,11 +245,13 @@ export const ITEM_SPRITES = {
     "item:earth_geode_v": OTHER_ICONS.COMPANION_GEODE,
     "item:air_egg_v": OTHER_ICONS.COMPANION_EGG,
     "item:water_shell_v": OTHER_ICONS.COMPANION_SHELL,
+    "item:neutral_prism_i": OTHER_ICONS.ARTIFACT,
 
     // Duplicate companion rewards use the existing elemental Candy items.
     "item:earth_companion_xp": <Candy />,
     "item:air_companion_xp": <Candy />,
     "item:water_companion_xp": <Candy />,
+    "item:neutral_companion_xp": <Candy />,
 
     // Area artifacts are distinct inventory items for the future Combat system.
     "item:crossroads_waystone": OTHER_ICONS.ARTIFACT,

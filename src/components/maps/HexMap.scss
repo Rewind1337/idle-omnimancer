@@ -86,6 +86,10 @@
         .hex-map-area-marker {
             pointer-events: none;
 
+            &.hex-map-area-marker-found {
+                opacity: 0.4;
+            }
+
             circle {
                 fill: rgba(0, 0, 0, 0.82);
                 stroke: rgba(255, 255, 255, 0.85);

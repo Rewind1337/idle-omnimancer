@@ -69,7 +69,7 @@ function ResponsivePage({
       variant="companions"
       size="medium"
       icon={SKILL_ICONS.COMPANIONS}
-      toggled={activePage === COMPANIONS_NAVIGATION?.id}
+      checked={activePage === COMPANIONS_NAVIGATION?.id}
       onClick={() => setActivePage(COMPANIONS_NAVIGATION.id)}
     >
       Companions

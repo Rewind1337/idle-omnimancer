@@ -363,12 +363,12 @@ export function GameProvider({ children }) {
         dispatch({ type: "SELECT_ACTION_ITEM", skillId, actionId, itemId })
     }, [])
 
-    const unlockCompanionSlot = useCallback(element => {
-        dispatch({ type: "UNLOCK_COMPANION_SLOT", element })
+    const unlockCompanionSlot = useCallback(slotId => {
+        dispatch({ type: "UNLOCK_COMPANION_SLOT", slotId })
     }, [])
 
-    const selectCompanion = useCallback((element, companionId) => {
-        dispatch({ type: "SELECT_COMPANION", element, companionId })
+    const selectCompanion = useCallback((slotId, companionId) => {
+        dispatch({ type: "SELECT_COMPANION", slotId, companionId })
     }, [])
 
     const contextValue = useMemo(() => ({

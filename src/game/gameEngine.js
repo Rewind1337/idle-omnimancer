@@ -123,6 +123,15 @@ export const canSelectActionItem = (player, skillId, actionId, itemId) => {
 // Action inputs support the same string and { item, amount } formats as the
 // resource display. Invalid requirements fail safely instead of being ignored.
 const getActionConsumeTotals = (action, player = null, skill = null) => {
+    if (action.companionTraining) {
+        const combinedLevels = getActiveCompanionIds(player ?? {}).reduce(
+            (total, companionId) => total + (player?.companionProgress?.[companionId]?.level ?? 0),
+            0
+        )
+        const costPerLevel = action.companionTraining.coinsPerCombinedLevel ?? 10
+        return { "currency:coins": combinedLevels * costPerLevel }
+    }
+
     if (action.inputSelection) {
         const selectedItemId = player?.skills?.[skill?.id]?.actions?.[action.id]?.selectedItemId
         const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
@@ -149,6 +158,10 @@ const getActionConsumeTotals = (action, player = null, skill = null) => {
 
     return totals
 }
+
+export const getActionConsumeResources = (player, skill, action) =>
+    Object.entries(getActionConsumeTotals(action, player, skill) ?? {})
+        .map(([item, amount]) => ({ item, amount }))
 
 
 // Normalize action outputs so string and quantity-based config entries
@@ -182,7 +195,7 @@ export const getItemActionSources = (itemId, player = null) => {
             ).filter(cost => cost.item === itemId)
                 .reduce((total, cost) => total + (cost.amount ?? 0), 0)
 
-            if (skillCost > 0) {
+            if (skillCost > 0 && (!player || !player.unlockedSkills?.includes(skill.id))) {
                 consumedBy.push({
                     id: "skill-unlock-" + skill.id,
                     name: humanize(skill.id),
@@ -265,7 +278,6 @@ export const getItemActionSources = (itemId, player = null) => {
                     id: "consume-" + skill.id + "-" + action.id,
                     name: actionName,
                     amount: consumedAmount,
-                    amountLabel: selection ? "1 per action" : null,
                     type: "action",
                     badgeVariant: skill.variant
                 })
@@ -278,7 +290,7 @@ export const getItemActionSources = (itemId, player = null) => {
                 .filter(cost => cost.item === itemId)
                 .reduce((total, cost) => total + (cost.amount ?? 0), 0)
 
-            if (unlockAmount > 0) {
+            if (unlockAmount > 0 && (!player || !player.skills?.[skill.id]?.actions?.[action.id]?.unlocked)) {
                 consumedBy.push({
                     id: "action-unlock-" + skill.id + "-" + action.id,
                     name: actionName,
@@ -401,7 +413,7 @@ export const getSkillProgress = (player, skillId) => {
     const table = getSkillXPTable(skillId)
     if (!skill || !table) return null
 
-    // Companion Skill XP is the sum of all 15 companion levels.
+    // Companion Skill XP is the sum of all companion levels.
     const totalXP = skill.progression?.type === "companionLevels"
         ? COMPANION_DATA.reduce((total, companion) =>
             total + (player.companionProgress?.[companion.id]?.level ?? 0), 0)
@@ -461,7 +473,8 @@ const milestoneTargetsSkill = (sourceSkill, targetSkillId, milestone) =>
 
 // Permanent companion effects apply globally; active-slot effects target one skill.
 const getCompanionEffectMultiplier = (effect, level, perLevel) => {
-    const growth = Math.max(0, level - 1) * perLevel
+    const startingBonus = COMPANION_CONFIG.companionLeveling.effectStartingBonus ?? 0
+    const growth = startingBonus + Math.max(0, level - 1) * perLevel
     if (effect === "manaCost" || effect === "unlockCostReduction") {
         return Math.max(0.1, 1 - growth)
     }
@@ -483,6 +496,7 @@ const getCompanionEffectEntries = (player, targetSkillId, effect) => {
             entries.push({
                 id: "companion-permanent-" + companion.id + "-" + effect,
                 companion,
+                level,
                 kind: "Permanent",
                 effect,
                 type: permanent.type ?? "mult",
@@ -499,6 +513,7 @@ const getCompanionEffectEntries = (player, targetSkillId, effect) => {
             entries.push({
                 id: "companion-active-" + companion.id + "-" + effect,
                 companion,
+                level,
                 kind: "Active",
                 effect,
                 type: activeEffect.type ?? "mult",
@@ -863,8 +878,7 @@ export const getActionEffectStacks = (player, skill, action) => {
         for (const companionEntry of getCompanionEffectEntries(player, skill.id, effect)) {
             entries.push({
                 id: companionEntry.id,
-                title: companionEntry.companion.name + " - " + companionEntry.kind,
-                source: companionEntry.companion.name,
+                title: companionEntry.companion.name + " - Level " + companionEntry.level,
                 effect,
                 type: companionEntry.type,
                 value: companionEntry.value,
@@ -968,7 +982,7 @@ export const getManaEffectStacks = (player) => {
         for (const companionEntry of getCompanionEffectEntries(player, skill.id, effect)) {
             entriesByEffect[effect].push({
                 id: companionEntry.id,
-                title: companionEntry.companion.name + " - " + companionEntry.kind,
+                title: companionEntry.companion.name + " - Level " + companionEntry.level,
                 effect,
                 type: companionEntry.type,
                 value: companionEntry.value,
@@ -1077,7 +1091,6 @@ const awardActionXP = (player, skill, action, actionState) => {
                 companionState.xp = 0
             }
         }
-        return
     }
 
     if (action.tracksProgress === false) return
@@ -1100,6 +1113,8 @@ const awardActionXP = (player, skill, action, actionState) => {
         actionState.level = GLOBAL_CONFIG.maxActionLevel
         actionState.xp = 0
     }
+
+    if (action.companionTraining) return
 
     const selectedItemId = action.inputSelection
         ? player.skills?.[skill.id]?.actions?.[action.id]?.selectedItemId

@@ -24,7 +24,7 @@
 | Exploration | Active | Explore named areas on a shared hex map, develop each area and discover resources and companion containers. |
 | Unveiling | Active | Use Material Destruction actions to gain insight; unveil eligible unidentified objects and companion containers once the skill-level requirement is met. |
 | Combat | Passive | Continuously fight in a selected unlocked Exploration area; produce combat rewards, unidentified objects and chances at area artifacts. |
-| Companions | Collection system | Collect and train 15 elemental companions, assign them to Earth/Air/Water slots, and gain permanent global plus stronger slot-based skill effects. The skill unlocks after the first companion is unveiled. |
+| Companions | Collection system | Collect and train 16 companions (15 elemental and one neutral), assign them to four slots, and gain permanent global plus stronger slot-based skill effects. The skill unlocks after the first companion is unveiled. |
 
 Research, Spellcraft and Transmutation establish the initial resource and progression loop. Exploration is planned as the fourth active skill, followed by Unveiling as a fifth active skill. Combat is the first planned passive skill.
 
@@ -89,11 +89,11 @@ Passive skills or other future systems may use a different progression structure
 ### 3.3 Skill progression
 
 - Every skill has its own level, with a maximum of **100**.
-- For normal skills, Skill XP is derived from the combined progression of every action belonging to that skill. The Companions skill is an explicit exception: it derives XP from the sum of all 15 companion levels.
+- For normal skills, Skill XP is derived from the combined progression of every action belonging to that skill. The Companions skill is an explicit exception: it derives XP from the sum of all 16 companion levels.
 - Improving actions contributes to the overall skill, but one heavily developed action must not be enough to max out the skill.
 - Early skill levels should be achievable after relatively little action progression. Higher levels should require increasingly broad development across the skill.
 - Each skill has its own progression scalar. Skills can have different numbers of actions and different curves.
-- A normal action-based skill **cannot reach level 100 until every action belonging to it has reached action level 100**. The Companions skill instead reaches level 100 when all 15 companions reach level 100.
+- A normal action-based skill **cannot reach level 100 until every action belonging to it has reached action level 100**. The Companions skill instead reaches level 100 when all 16 companions reach level 100.
 - The exact formula that converts action progression into skill XP remains undecided.
 
 Skills level independently. Research progress does not automatically increase Spellcraft, Transmutation or Exploration skill levels.
@@ -412,7 +412,7 @@ Exploration is an **active skill**. Every area is an independent action with its
 ### 8.4 Area rewards and companion-container discoveries
 
 - Each completed area action guarantees its configured area resource, subject to normal output multipliers and inventory-capacity rules.
-- Areas 5–7 can additionally discover Tier-I containers; areas 11–13 discover Tier-II; areas 17–19 discover Tier-III; areas 23–25 discover Tier-IV; and areas 29–31 discover Tier-V containers. Each tier has an Earth Geode, Air Egg and Water Shell.
+- Area 1 (The Crossroads) can additionally discover the neutral Wayfinder Prism; areas 5–7 can additionally discover Tier-I containers; areas 11–13 discover Tier-II; areas 17–19 discover Tier-III; areas 23–25 discover Tier-IV; and areas 29–31 discover Tier-V containers. Each tier has an Earth Geode, Air Egg and Water Shell.
 - The current base companion-container discovery chance is 0.1% per completed Exploration action in an area configured with a container. This is a separate chance roll, not a guaranteed action output; item-output bonuses and Companion effects can multiply the discovery chance, which is capped at 100%.
 - Areas without a configured container do not make a container discovery roll.
 - The minimum Unveiling skill levels are 5, 10, 15, 20 and 25 for container tiers I–V respectively. Container item tooltips display the applicable requirement.
@@ -465,25 +465,27 @@ The Companions skill unlocks automatically when the player unveils their first c
 
 ### 10.1 Containers, companions and duplicate rewards
 
-- There are 15 companions: one unique companion for every combination of Earth, Air and Water across companion tiers I–V.
-- Earth Geodes contain Earth companions, Air Eggs contain Air companions, and Water Shells contain Water companions. Each container maps to exactly one companion.
+- There are 16 companions: one unique companion for every combination of Earth, Air and Water across companion tiers I–V, plus the neutral Wayfinder Spark.
+- Earth Geodes contain Earth companions, Air Eggs contain Air companions, and Water Shells contain Water companions. The Wayfinder Prism from Area 1 contains the neutral companion. Each container maps to exactly one companion.
 - The first successful unveiling of a container unlocks its matching companion. Each companion starts at level 1.
 - Further openings of that same container award the matching elemental Companion Candy item instead of unlocking a duplicate companion.
 - Candy quantity scales with container tier: Tier I gives 1 Candy, Tier II gives 2, Tier III gives 3, Tier IV gives 4 and Tier V gives 5.
-- Earth, Air and Water Companion Candy remain separate inventory items. Their existing item IDs are retained for compatibility and their displayed names are Earth Companion Candy, Air Companion Candy and Water Companion Candy.
+- Earth, Air, Water and Neutral Companion Candy remain separate inventory items. The existing elemental Candy IDs are retained for compatibility; the neutral companion has its own Neutral Companion Candy.
 - Container tiers have the following minimum Unveiling requirements: Tier I at Unveiling level 5, Tier II at level 10, Tier III at level 15, Tier IV at level 20 and Tier V at level 25.
 
 ### 10.2 Companion levels, skill progression and training
 
 - Every discovered companion levels independently from 1 to 100.
-- Companion XP is awarded by the single **Tend to Companions** action. Each completion takes 5 seconds, costs 20 coins and grants 5 XP to every companion currently assigned to an unlocked active slot.
+- Companion XP is awarded by the single **Tend to Companions** action. Each completion takes 5 seconds and grants 5 XP to every companion currently assigned to an unlocked active slot.
+- The coin cost per completion is 10 times the combined levels of all assigned companions. For example, three active companions at level 15 cost 450 coins per cycle.
 - XP is awarded in full to each active companion; it is not divided between slots. Two active companions each receive 5 XP per completion, for 10 total Companion XP.
-- The training action has no action level, action XP or XP requirement of its own.
-- Companion skill XP is derived from the sum of all 15 companion levels rather than action levels. Its maximum progression pool is 15 × 100 = 1,500 companion levels. For example, three companions at level 100 contribute 300 / 1,500, or 20% of the Companion skill's total progression.
+- **Tend to Companions** has its own action level and action XP progression. Its first level requires 50 XP.
+- Companion skill XP is derived from the sum of all 16 companion levels rather than action levels. Its maximum progression pool is 16 × 100 = 1,600 companion levels. For example, three companions at level 100 contribute 300 / 1,600, or 18.75% of the Companion skill's total progression.
 - Each companion's level-up requirement increases over time. The current initial curve starts at 20 XP, then applies a 1.1 per-level multiplier plus 2 additional XP per level.
-- There are three elemental slots. The Earth slot is unlocked by default. The Air slot costs 10,000,000 coins and the Water slot costs 100,000,000 coins to unlock. These are initial balancing values and may be adjusted later.
-- A slot can contain one discovered companion matching that slot's element. The player can change or clear the selected companion through the slot's selection modal.
-- The Companions page shows the three slots, the training action, the companion collection, each companion's level and XP, and both of its effects.
+- There are four horizontal slots. The **Any Element** slot is unlocked by default; Earth, Air and Water slots cost 1,000,000, 2,000,000 and 3,000,000 coins respectively.
+- Element-specific slots accept a companion of that element or a neutral companion. The Any Element slot accepts any companion. A companion can occupy only one slot at a time.
+- Companion effects begin at x1.05 at level 1, then gain their configured per-level progression. Reduction effects apply the same starting benefit in the opposite direction.
+- The Companions page shows all four slots, the training action, the companion collection, each companion's level and XP, and both of its effects.
 
 ### 10.3 Companion effects
 
@@ -820,7 +822,7 @@ The player must not silently lose resources when the bag is full.
 - Improvements includes repeatable upgrades such as purchasing additional bag slots.
 - Skills & Actions lists available skill unlocks and the next locked action from each configured, unlocked skill. Each entry displays its unlock requirements.
 - General Goods is reserved for repeatable purchases of items that cannot be obtained through actions or other game systems. No General Goods are currently configured.
-- The global floating panel also provides a Missions shortcut on every main tab. Its modal is currently an empty placeholder with a close button.
+- The global floating panel also provides a Missions shortcut on every main tab. Mission tiers 1 and 2 are configured, with Tier 2 including a combined turn-in of the three first-tier elemental Exploration resources.
 - Repeatable General Goods are defined in `SHOP_ITEM_DEFINITIONS` inside `src/data/itemData.js`; only items in that section appear in the General Goods shop tab.
 
 ---

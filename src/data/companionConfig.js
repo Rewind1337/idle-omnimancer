@@ -11,12 +11,14 @@ export const COMPANION_CONFIG = {
         companionCount: COMPANION_DATA.length,
     },
     slots: {
-        earth: { unlockedByDefault: true, unlockCost: 0 },
-        air: { unlockedByDefault: false, unlockCost: 10000000 },
-        water: { unlockedByDefault: false, unlockCost: 100000000 },
+        any: { name: "Any Element", element: null, unlockedByDefault: true, unlockCost: 0 },
+        earth: { name: "Earth", element: "earth", unlockedByDefault: false, unlockCost: 1000000 },
+        air: { name: "Air", element: "air", unlockedByDefault: false, unlockCost: 2000000 },
+        water: { name: "Water", element: "water", unlockedByDefault: false, unlockCost: 3000000 },
     },
     companionLeveling: {
         maxLevel: 100,
+        effectStartingBonus: 0.05,
         neededXP: {
             base: 20,
             perLevelMult: 1.1,
@@ -29,17 +31,13 @@ export const COMPANION_CONFIG = {
             name: "Tend to Companions",
             tier: 1,
             time: { base: 5, perTier: 0 },
-            consumes: [{ item: "currency:coins", amount: 20 }],
-            companionTraining: { xpPerCompanion: 5 },
-            tracksProgress: false,
+            companionTraining: { xpPerCompanion: 5, coinsPerCombinedLevel: 10 },
             unlockedByDefault: true,
         },
     ],
-    // The action uses no action-level progression, so these tables are never
-    // shown or applied. They exist only to keep shared skill registration uniform.
-    actionXP: { base: 0, perTier: 0 },
+    actionXP: { base: 5, perTier: 0 },
     neededXP: {
-        base: 20,
+        base: 50,
         perTier: 0,
         perLevelMult: 1.1,
         perLevelFlat: 2,

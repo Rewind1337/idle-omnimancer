@@ -4,16 +4,24 @@
         min-width: 0;
     }
 
-    .companion-slot-grid,
+    .companion-slot-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(220px, 1fr));
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        padding-bottom: 6px;
+    }
+
     .companion-collection-grid {
         align-items: stretch;
         flex-wrap: wrap;
     }
 
     .companion-slot-card {
-        flex: 1 1 260px;
-        min-width: min(100%, 250px);
-        max-width: 100%;
+        min-width: 0;
+        width: 100%;
+        max-width: none;
     }
 
     .companion-slot-selected,

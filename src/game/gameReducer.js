@@ -141,14 +141,14 @@ export const gameReducer = (state, action) => {
 
         case "UNLOCK_COMPANION_SLOT": {
             if (!state.unlockedSkills?.includes("skill:companions")) return state
-            const { element } = action
-            const slot = COMPANION_CONFIG.slots[element]
-            const unlockedSlots = state.unlockedCompanionSlots ?? ["earth"]
-            const cost = getCompanionSlotUnlockCost(state, element)
+            const { slotId } = action
+            const slot = COMPANION_CONFIG.slots[slotId]
+            const unlockedSlots = state.unlockedCompanionSlots ?? ["any"]
+            const cost = getCompanionSlotUnlockCost(state, slotId)
 
             if (
                 !slot ||
-                unlockedSlots.includes(element) ||
+                unlockedSlots.includes(slotId) ||
                 !Number.isFinite(cost) ||
                 cost <= 0 ||
                 (state.currencies?.coins ?? 0) < cost
@@ -156,7 +156,7 @@ export const gameReducer = (state, action) => {
 
             return {
                 ...state,
-                unlockedCompanionSlots: [...unlockedSlots, element],
+                unlockedCompanionSlots: [...unlockedSlots, slotId],
                 currencies: {
                     ...state.currencies,
                     coins: (state.currencies?.coins ?? 0) - cost,
@@ -166,19 +166,26 @@ export const gameReducer = (state, action) => {
 
         case "SELECT_COMPANION": {
             if (!state.unlockedSkills?.includes("skill:companions")) return state
-            const { element, companionId } = action
-            const unlockedSlots = state.unlockedCompanionSlots ?? ["earth"]
+            const { slotId, companionId } = action
+            const unlockedSlots = state.unlockedCompanionSlots ?? ["any"]
+            const slot = COMPANION_CONFIG.slots[slotId]
             const companion = COMPANION_DATA_BY_ID[companionId]
-            if (!unlockedSlots.includes(element)) return state
+            const currentSlots = state.activeCompanionSlots ?? {
+                any: null, earth: null, air: null, water: null,
+            }
+            if (!slot || !unlockedSlots.includes(slotId)) return state
             if (companionId !== null && (
                 !companion ||
-                companion.element !== element ||
-                !state.unlockedCompanions?.includes(companionId)
+                (slot.element !== null && companion.element !== "neutral" && companion.element !== slot.element) ||
+                !state.unlockedCompanions?.includes(companionId) ||
+                Object.entries(currentSlots).some(([otherSlotId, assignedId]) =>
+                    otherSlotId !== slotId && assignedId === companionId
+                )
             )) return state
 
             const activeCompanionSlots = {
-                ...(state.activeCompanionSlots ?? { earth: null, air: null, water: null }),
-                [element]: companionId,
+                ...currentSlots,
+                [slotId]: companionId,
             }
             const noActiveCompanions = !Object.values(activeCompanionSlots).some(Boolean)
             const stopTraining = noActiveCompanions &&
@@ -359,20 +366,34 @@ export const gameReducer = (state, action) => {
             )
             const completedMissions = new Set(state.completedMissions ?? [])
             const objective = mission?.objective
-            const objectiveAmount = objective?.amount
-            const ownedAmount = objective?.item
-                ? (state.inventory?.[objective.item] ?? 0)
-                : 0
+            const requirements = objective?.items ?? [{
+                item: objective?.item,
+                amount: objective?.amount,
+            }]
+            const requirementTotals = {}
+            const validRequirements = Array.isArray(requirements) &&
+                requirements.length > 0 &&
+                requirements.every(requirement => {
+                    const valid = Boolean(ITEM_DATA_BY_ID[requirement.item]) &&
+                        Number.isSafeInteger(requirement.amount) &&
+                        requirement.amount > 0
+                    if (valid) {
+                        requirementTotals[requirement.item] =
+                            (requirementTotals[requirement.item] ?? 0) + requirement.amount
+                    }
+                    return valid
+                })
+            const canAffordRequirements = validRequirements &&
+                Object.entries(requirementTotals).every(([itemId, amount]) =>
+                    Number.isSafeInteger(amount) && (state.inventory?.[itemId] ?? 0) >= amount
+                )
 
             if (
                 !mission ||
                 mission.tier > missionTier ||
                 completedMissions.has(mission.id) ||
                 objective?.type !== "turnIn" ||
-                !ITEM_DATA_BY_ID[objective.item] ||
-                !Number.isSafeInteger(objectiveAmount) ||
-                objectiveAmount < 1 ||
-                ownedAmount < objectiveAmount ||
+                !canAffordRequirements ||
                 !Array.isArray(mission.rewards) ||
                 !mission.rewards.every(reward => {
                     const validAmount = Number.isSafeInteger(reward.amount) && reward.amount > 0
@@ -387,9 +408,11 @@ export const gameReducer = (state, action) => {
             ) return state
 
             const inventory = { ...state.inventory }
-            const remainingAmount = ownedAmount - objectiveAmount
-            if (remainingAmount > 0) inventory[objective.item] = remainingAmount
-            else delete inventory[objective.item]
+            for (const [itemId, amount] of Object.entries(requirementTotals)) {
+                const remainingAmount = (inventory[itemId] ?? 0) - amount
+                if (remainingAmount > 0) inventory[itemId] = remainingAmount
+                else delete inventory[itemId]
+            }
 
             const itemRewardIds = [...new Set(
                 mission.rewards.filter(reward => reward.item).map(reward => reward.item)

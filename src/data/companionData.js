@@ -165,6 +165,17 @@ export const COMPANION_DATA = [
         permanentEffect: { effect: "manaCapacity", type: "mult", perLevel: 0.01 },
         activeEffect: { effect: "xpGain", type: "mult", perLevel: 0.025, targetSkillId: "skill:exploration" },
     },
+    {
+        id: "companion:wayfinder_spark",
+        name: "Wayfinder Spark",
+        element: "neutral",
+        tier: 1,
+        duplicateCandyAmount: 1,
+        containerId: "item:neutral_prism_i",
+        requiredUnveilingLevel: 5,
+        permanentEffect: { effect: "actionTime", type: "mult", perLevel: 0.01 },
+        activeEffect: { effect: "xpGain", type: "mult", perLevel: 0.025, targetSkillId: "skill:exploration" },
+    },
 ]
 
 export const COMPANION_IDS = COMPANION_DATA.map(companion => companion.id)

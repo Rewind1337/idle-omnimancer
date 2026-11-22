@@ -1083,12 +1083,14 @@ const payActionCost = (player, skill, action) => {
 }
 
 const awardActionXP = (player, skill, action, actionState) => {
+    const actionXP = getActionXPReward(skill, action, player)
+
     if (action.companionTraining) {
         for (const companionId of getTrainableActiveCompanionIds(player)) {
             const companionState = player.companionProgress?.[companionId]
             if (!companionState || companionState.level >= COMPANION_CONFIG.companionLeveling.maxLevel) continue
 
-            companionState.xp += getActionXPReward(skill, action, player)
+            companionState.xp += actionXP
             const neededXP = getCompanionLevelXPRequirement(companionState.level)
             if (companionState.xp >= neededXP) {
                 companionState.level += 1
@@ -1103,7 +1105,7 @@ const awardActionXP = (player, skill, action, actionState) => {
 
     if (actionState.level < GLOBAL_CONFIG.maxActionLevel) {
         const neededXP = table[actionState.level - 1].neededXP
-        actionState.xp += getActionXPReward(skill, action, player)
+        actionState.xp += actionXP
 
         // A completed action can grant at most one action level. Any XP beyond
         // that level's requirement is discarded instead of carried forward.

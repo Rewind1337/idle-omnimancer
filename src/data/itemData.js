@@ -93,7 +93,6 @@ const ITEM_DEFINITIONS = [
     { id: "item:earth_geode_ii", tier: 2, variant: "earth", baseValue: 1000, type: "companionContainer" },
     { id: "item:air_egg_ii", tier: 2, variant: "air", baseValue: 1000, type: "companionContainer" },
     { id: "item:water_shell_ii", tier: 2, variant: "water", baseValue: 1000, type: "companionContainer" },
-
     { id: "item:earth_geode_iii", tier: 3, variant: "earth", baseValue: 1000, type: "companionContainer" },
     { id: "item:air_egg_iii", tier: 3, variant: "air", baseValue: 1000, type: "companionContainer" },
     { id: "item:water_shell_iii", tier: 3, variant: "water", baseValue: 1000, type: "companionContainer" },
@@ -125,7 +124,6 @@ const ITEM_DEFINITIONS = [
     { id: "item:skybreak_sigil", tier: 4, variant: "air", type: "artifact" },
     { id: "item:abyssal_crown", tier: 4, variant: "water", type: "artifact" },
 
-    // Higher-tier area artifacts reserved for Combat and Unveiling.
     { id: "item:deepstone_guardian_core", tier: 5, variant: "earth", type: "artifact" },
     { id: "item:highwind_wisp_chime", tier: 5, variant: "air", type: "artifact" },
     { id: "item:mooncurrent_tide_idol", tier: 5, variant: "water", type: "artifact" },

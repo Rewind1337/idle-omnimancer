@@ -529,8 +529,6 @@ export const gameReducer = (state, action) => {
         }
 
         case "RESET_GAME":
-            return action.player ?? state
-
         case "HYDRATE_PLAYER":
             return action.player ?? state
 

@@ -4,6 +4,7 @@ import { Heading } from "../Heading"
 import { Item } from "../Item"
 import { ITEM_DATA_BY_ID, CURRENCY_DATA_BY_ID } from "../../data/itemData"
 import { humanize } from "../../utility/helpers"
+import { getActionOutputDistribution } from "../../game/gameEngine"
 
 const formatOutputChance = fraction =>
     Number((fraction * 100).toFixed(4)).toLocaleString() + "%"
@@ -44,14 +45,14 @@ export function ResourceSection({ title, resources = [], amountMultiplier = 1 })
                             return renderItem(amountLabel, "-label")
                         }
 
-                        const scaledAmount = Math.max(0, amount * amountMultiplier)
-                        const stableAmount = Number(scaledAmount.toFixed(8))
-                        const guaranteedAmount = Math.floor(stableAmount)
-                        const fractionalAmount = Number((stableAmount - guaranteedAmount).toFixed(8))
+                        const { wholeAmount, fractionalAmount } = getActionOutputDistribution(
+                            amount,
+                            amountMultiplier
+                        )
                         const entries = []
 
-                        if (guaranteedAmount > 0) {
-                            entries.push(renderItem(guaranteedAmount, "-guaranteed"))
+                        if (wholeAmount > 0) {
+                            entries.push(renderItem(wholeAmount, "-guaranteed"))
                         }
                         if (fractionalAmount > 0) {
                             entries.push(renderItem(formatOutputChance(fractionalAmount), "-chance"))

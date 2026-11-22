@@ -1249,10 +1249,17 @@ const payActionCost = (player, skill, action) => {
     }
 }
 
-const rollActionOutputAmount = (amount, multiplier) => {
+export const getActionOutputDistribution = (amount, multiplier) => {
     const scaledAmount = Math.max(0, amount * multiplier)
     const wholeAmount = Math.floor(scaledAmount)
-    const fractionalAmount = scaledAmount - wholeAmount
+    return {
+        wholeAmount,
+        fractionalAmount: scaledAmount - wholeAmount,
+    }
+}
+
+const rollActionOutputAmount = (amount, multiplier) => {
+    const { wholeAmount, fractionalAmount } = getActionOutputDistribution(amount, multiplier)
     return wholeAmount + (fractionalAmount > 0 && Math.random() < fractionalAmount ? 1 : 0)
 }
 

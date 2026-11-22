@@ -754,7 +754,7 @@ const getActionBaseManaCost = (skill, action) => {
 }
 
 export const getActionManaCost = (skill, action, player = null) => {
-    const baseCost = getActionBaseManaCost(skill, action)
+    let baseCost = getActionBaseManaCost(skill, action)
     const elementManaCostMultiplier =
         skill.elementModifiers?.[action.element]?.manaCostMultiplier ?? 1
     baseCost *= elementManaCostMultiplier

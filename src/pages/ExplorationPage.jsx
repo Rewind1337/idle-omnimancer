@@ -117,7 +117,8 @@ function ExplorationActionCard({
                             <Text size="small">Unlock Exploration in the Shop to begin exploring.</Text>
                         ) : isUnlocked ? (
                             <ActionProgress
-                                actionState={actionState}
+                                skillId={skillId}
+                                actionId={action.id}
                                 isActive={isActive}
                                 onToggle={onToggle}
                                 canStart={canStart}

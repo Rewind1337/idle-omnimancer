@@ -86,7 +86,8 @@ function TransmutationAction({ action, player, skillId, isActive, isUnlocked, ac
                         />
                         {isUnlocked ? (
                             <ActionProgress
-                                actionState={actionState}
+                                skillId={skillId}
+                                actionId={action.id}
                                 isActive={isActive}
                                 onToggle={onToggle}
                                 canStart={canStart}

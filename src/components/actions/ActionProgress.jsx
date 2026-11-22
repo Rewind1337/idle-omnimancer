@@ -2,9 +2,11 @@ import { Flex } from "../Flex"
 import { Button } from "../Button"
 import { Progress } from "../Progress"
 import { getActionProgress } from "../../game/gameEngine"
+import { useGameActionCanStart, useGameActionProgress } from "../../hooks/useGame"
 
 export function ActionProgress({
-    actionState,
+    skillId,
+    actionId,
     isActive,
     onToggle,
     currentXP,
@@ -15,7 +17,9 @@ export function ActionProgress({
     canStart = true,
     leadingControl = null,
 }) {
-    const actionCompletionPercentage = getActionProgress(actionState, durationMs)
+    const actionProgress = useGameActionProgress(skillId, actionId)
+    const canStartAction = useGameActionCanStart(skillId, actionId, canStart)
+    const actionCompletionPercentage = getActionProgress(actionProgress, durationMs)
     const actionLevelPercentage = neededXP > 0 ? (currentXP / neededXP) * 100 : 100
 
     return (
@@ -26,7 +30,7 @@ export function ActionProgress({
                 percentage={actionLevelPercentage} animated={isActive} />
             <Flex direction="column" className={leadingControl ? "w-30 action-progress-toggle" : "w-30"}>
                 <Button variant={variant} className="w-100" size="medium"
-                    disabled={!isActive && !canStart}
+                    disabled={!isActive && !canStartAction}
                     toggled={isActive} onClick={onToggle}
                     badge={isActive ? actionCompletionPercentage.toFixed(0) + "%" : null}>
                     {isActive ? "Stop" : actionLabel}

@@ -1,3 +1,5 @@
+import { memo } from "react"
+
 import { Button } from "../Button"
 import { Flex } from "../Flex"
 import { Heading } from "../Heading"
@@ -24,7 +26,7 @@ const formatDuration = (milliseconds) => {
     return parts.join(" ")
 }
 
-export function OfflineProgressModal({ progress, onContinue }) {
+export const OfflineProgressModal = memo(function OfflineProgressModal({ progress, onContinue }) {
     if (!progress?.visible) return null
 
     const totalMs = Math.max(0, progress.totalMs ?? 0)
@@ -88,4 +90,4 @@ export function OfflineProgressModal({ progress, onContinue }) {
                 : <Text size="small">Offline progress is being calculated...</Text>}
         />
     )
-}
+})

@@ -80,7 +80,8 @@ function UnveilingActionCard({
                     {isUnlocked ? (
                         <>
                             <ActionProgress
-                                actionState={actionState}
+                                skillId={skillId}
+                                actionId={action.id}
                                 isActive={isActive}
                                 onToggle={onToggle}
                                 canStart={canStart}

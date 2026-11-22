@@ -65,7 +65,7 @@ function ResearchAction({ action, player, skillId, isActive, isUnlocked, actionS
                             currentXP={actionState.xp} neededXP={neededXP}
                             tier={action.tier} isUnlocked={isUnlocked} actionMilestones={actionMilestones} actionXPTable={xpTable} />
                         {isUnlocked ? (
-                            <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
+                            <ActionProgress skillId={skillId} actionId={action.id} isActive={isActive} onToggle={onToggle}
                                 canStart={canStart} durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
                                 variant="research" actionLabel="Research" />
                         ) : (

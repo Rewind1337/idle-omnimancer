@@ -10,15 +10,16 @@ import {
     getManaEffectStacks,
     getManaEffectSummary,
 } from "../../game/gameEngine"
-import { useGame } from "../../hooks/useGame"
+import { useGame, useGameManaCurrent } from "../../hooks/useGame"
 import { OTHER_ICONS } from "../../data/iconLibrary"
 
 export function ManaBar() {
     const { player } = useGame()
     const maxMana = getManaCapacity(player)
+    const manaCurrent = useGameManaCurrent()
     const currentMana = Math.min(
         maxMana,
-        Math.max(0, Number(player.mana?.current) || 0)
+        Math.max(0, Number(manaCurrent) || 0)
     )
     const percentage = maxMana > 0 ? (currentMana / maxMana) * 100 : 0
     const regeneration = getManaRegeneration(player)

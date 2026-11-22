@@ -8,8 +8,9 @@ import {
 } from "react"
 
 import { GameContext } from "./GameContext"
+import { createGameProgressStore } from "./GameProgressStore"
 import { gameReducer } from "../game/gameReducer"
-import { advanceGame, getSkillProgress } from "../game/gameEngine"
+import { advanceGame, canStartAction, getSkillProgress } from "../game/gameEngine"
 import {
     loadPlayerState,
     savePlayerState,
@@ -29,6 +30,91 @@ const MAX_OFFLINE_CHUNK_MS = 6 * 60 * 60 * 1000
 const MAX_OFFLINE_CHUNKS = 300
 
 const formatGainAmount = amount => Number(amount).toLocaleString()
+const areSameArray = (first = [], second = []) =>
+    first.length === second.length && first.every((value, index) => value === second[index])
+
+const areSameRecord = (first = {}, second = {}) => {
+    const firstKeys = Object.keys(first)
+    const secondKeys = Object.keys(second)
+    return firstKeys.length === secondKeys.length &&
+        firstKeys.every(key => Object.is(first[key], second[key]))
+}
+
+const areSameCompanionProgress = (first = {}, second = {}) => {
+    const firstIds = Object.keys(first)
+    const secondIds = Object.keys(second)
+    return firstIds.length === secondIds.length &&
+        firstIds.every(id =>
+            first[id]?.level === second[id]?.level &&
+            first[id]?.xp === second[id]?.xp
+        )
+}
+
+// Ignore fields that change continuously (Mana.current and action progressMs).
+// Everything else here affects a rendered page, navigation badge, modal, or action.
+const hasVisiblePlayerChanges = (previous, next) => {
+    if (
+        !areSameArray(previous.unlockedSkills, next.unlockedSkills) ||
+        !areSameArray(previous.unlockedCompanions, next.unlockedCompanions) ||
+        !areSameArray(previous.unlockedCompanionSlots, next.unlockedCompanionSlots) ||
+        !areSameArray(previous.completedMissions, next.completedMissions) ||
+        !areSameRecord(previous.inventory, next.inventory) ||
+        !areSameRecord(previous.currencies, next.currencies) ||
+        !areSameRecord(previous.activeCompanionSlots, next.activeCompanionSlots) ||
+        !areSameCompanionProgress(previous.companionProgress, next.companionProgress) ||
+        previous.inventorySlots !== next.inventorySlots ||
+        previous.missionTier !== next.missionTier ||
+        previous.mana?.max !== next.mana?.max ||
+        previous.activeAction?.skillId !== next.activeAction?.skillId ||
+        previous.activeAction?.actionId !== next.activeAction?.actionId
+    ) return true
+
+    const skillIds = new Set([
+        ...Object.keys(previous.skills ?? {}),
+        ...Object.keys(next.skills ?? {}),
+    ])
+    const actionFields = ["unlocked", "level", "xp", "selectedItemId", "running"]
+
+    for (const skillId of skillIds) {
+        const previousActions = previous.skills?.[skillId]?.actions ?? {}
+        const nextActions = next.skills?.[skillId]?.actions ?? {}
+        const actionIds = new Set([
+            ...Object.keys(previousActions),
+            ...Object.keys(nextActions),
+        ])
+
+        for (const actionId of actionIds) {
+            const previousAction = previousActions[actionId]
+            const nextAction = nextActions[actionId]
+            if (!previousAction || !nextAction) return true
+
+            if (actionFields.some(field =>
+                !Object.is(previousAction[field], nextAction[field])
+            )) return true
+        }
+    }
+
+    return false
+}
+
+const updateActionReadiness = (progressStore, player, manaOnly = false) => {
+    for (const skill of SKILL_CONFIGS) {
+        if (!player.unlockedSkills?.includes(skill.id)) continue
+
+        const skillHasManaCost = Boolean(skill.mana?.cost)
+        for (const action of skill.actions) {
+            if (!player.skills?.[skill.id]?.actions?.[action.id]?.unlocked) continue
+            if (manaOnly && !skillHasManaCost && !(Number(action.manaCost) > 0)) continue
+
+            progressStore.setActionCanStart(
+                skill.id,
+                action.id,
+                canStartAction(player, skill.id, action.id)
+            )
+        }
+    }
+}
+
 const formatMilestoneNumber = value => Number(value.toFixed(2)).toString()
 
 const getSkillName = skillId =>
@@ -89,10 +175,19 @@ export function GameProvider({ children }) {
     const [player, dispatch] = useReducer(gameReducer, undefined, loadPlayerState)
     const { showToast } = useToast()
     const playerRef = useRef(player)
+    const latestPlayerRef = useRef(player)
     const notificationPlayerRef = useRef(player)
     const suppressNotificationsRef = useRef(false)
     const lastTickRef = useRef(0)
     const offlineTaskRef = useRef(null)
+    const progressStoreRef = useRef(null)
+    if (!progressStoreRef.current) {
+        progressStoreRef.current = createGameProgressStore()
+        progressStoreRef.current.updatePlayer(player)
+        updateActionReadiness(progressStoreRef.current, player)
+    }
+    const progressStore = progressStoreRef.current
+    const [displayPlayer, setDisplayPlayer] = useState(player)
     const [isGameReady, setIsGameReady] = useState(false)
     const [offlineProgress, setOfflineProgress] = useState({
         visible: false,
@@ -102,18 +197,46 @@ export function GameProvider({ children }) {
         completed: false,
     })
 
-    // Keep a current reference for the independent save interval and page exit.
+    // Keep the simulation state current without publishing every 100 ms tick
+    // through the main UI context. Only discrete, visible changes are published.
     useEffect(() => {
+        const previousPlayer = latestPlayerRef.current
+        latestPlayerRef.current = player
         playerRef.current = player
-    }, [player])
+        progressStore.updatePlayer(player)
+
+        if (hasVisiblePlayerChanges(previousPlayer, player)) {
+            updateActionReadiness(progressStore, player)
+
+            if (suppressNotificationsRef.current) {
+                // Make the hydrated state the toast baseline before publishing it.
+                notificationPlayerRef.current = player
+                suppressNotificationsRef.current = false
+            }
+
+            setDisplayPlayer(player)
+        } else {
+            // Offline catch-up can change only Mana or partial action progress.
+            // Neither needs a UI-context update or a later notification suppression.
+            if (suppressNotificationsRef.current) {
+                suppressNotificationsRef.current = false
+            }
+
+            if (previousPlayer.mana?.current !== player.mana?.current) {
+                // Mana regenerates continuously, but only action buttons whose
+                // affordability changes are notified; the Mana bar has its own subscriber.
+                updateActionReadiness(progressStore, player, true)
+            }
+        }
+    }, [player, progressStore])
 
     // Notify about live progression changes. Offline catch-up is handled as a
     // summary, so its many level-ups do not create a flood of individual toasts.
     useEffect(() => {
         const previousPlayer = notificationPlayerRef.current
-        notificationPlayerRef.current = player
+        notificationPlayerRef.current = displayPlayer
 
-        if (previousPlayer === player) return
+        if (previousPlayer === displayPlayer) return
         if (suppressNotificationsRef.current) {
             suppressNotificationsRef.current = false
             return
@@ -122,7 +245,7 @@ export function GameProvider({ children }) {
         for (const skill of SKILL_CONFIGS) {
             for (const action of skill.actions) {
                 const previousLevel = previousPlayer.skills?.[skill.id]?.actions?.[action.id]?.level ?? 1
-                const currentLevel = player.skills?.[skill.id]?.actions?.[action.id]?.level ?? 1
+                const currentLevel = displayPlayer.skills?.[skill.id]?.actions?.[action.id]?.level ?? 1
 
                 if (currentLevel > previousLevel) {
                     const actionName = action.name ?? humanize(action.id.replace(/^action:/, ""))
@@ -136,7 +259,7 @@ export function GameProvider({ children }) {
             }
 
             const previousSkillLevel = getSkillProgress(previousPlayer, skill.id)?.level ?? 1
-            const currentSkillLevel = getSkillProgress(player, skill.id)?.level ?? 1
+            const currentSkillLevel = getSkillProgress(displayPlayer, skill.id)?.level ?? 1
 
             if (currentSkillLevel > previousSkillLevel) {
                 const skillName = getSkillName(skill.id)
@@ -147,7 +270,7 @@ export function GameProvider({ children }) {
                     duration: 4500,
                 })
 
-                if (player.unlockedSkills?.includes(skill.id)) {
+                if (displayPlayer.unlockedSkills?.includes(skill.id)) {
                     for (const milestone of skill.milestones ?? []) {
                         if (
                             Number.isFinite(milestone.level) &&
@@ -168,7 +291,7 @@ export function GameProvider({ children }) {
         }
 
         const previousSlots = previousPlayer.inventorySlots ?? 0
-        const currentSlots = player.inventorySlots ?? previousSlots
+        const currentSlots = displayPlayer.inventorySlots ?? previousSlots
         if (currentSlots > previousSlots) {
             showToast({
                 title: "Bag Slot Purchased",
@@ -177,7 +300,7 @@ export function GameProvider({ children }) {
                 duration: 3800,
             })
         }
-    }, [player, showToast])
+    }, [displayPlayer, showToast])
 
     // Show the modal first, then simulate the offline interval in manageable chunks.
     // The task lives in a ref so React StrictMode's effect replay can resume it safely.
@@ -372,7 +495,8 @@ export function GameProvider({ children }) {
     }, [])
 
     const contextValue = useMemo(() => ({
-        player,
+        player: displayPlayer,
+        progressStore,
         startAction,
         stopAction,
         togglePassiveAction,
@@ -385,11 +509,11 @@ export function GameProvider({ children }) {
         selectActionItem,
         unlockCompanionSlot,
         selectCompanion,
-    }), [player, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
+    }), [displayPlayer, progressStore, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
 
-    const continueFromOffline = () => {
+    const continueFromOffline = useCallback(() => {
         setOfflineProgress(current => ({ ...current, visible: false }))
-    }
+    }, [])
 
     return (
         <GameContext.Provider value={contextValue}>

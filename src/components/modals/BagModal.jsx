@@ -39,6 +39,9 @@ export function BagModal({
     const [selectedItemId, setSelectedItemId] = useState(null)
     const [selectedAmount, setSelectedAmount] = useState(1)
 
+    // Keep selection state mounted, but skip inventory aggregation and item rendering while closed.
+    if (!visible) return null
+
     const inventory = Object.entries(player.inventory ?? {})
         .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0)
     const occupiedSlots = inventory.length

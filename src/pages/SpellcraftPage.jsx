@@ -72,7 +72,7 @@ function SpellcraftAction({ action, player, skillId, isActive, isUnlocked, actio
                             tier={action.tier} isUnlocked={isUnlocked} skillName="Spellcraft"
                             actionMilestones={actionMilestones} actionXPTable={xpTable} />
                         {isUnlocked ? (
-                            <ActionProgress actionState={actionState} isActive={isActive} onToggle={onToggle}
+                            <ActionProgress skillId={skillId} actionId={action.id} isActive={isActive} onToggle={onToggle}
                                 canStart={canStart} durationMs={durationMs} neededXP={neededXP} currentXP={actionState.xp}
                                 variant={elementVariant} actionLabel="Cast" />
                         ) : (

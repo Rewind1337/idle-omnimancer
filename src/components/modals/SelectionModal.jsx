@@ -14,6 +14,8 @@ export function SelectionModal({
     onSelect,
     variant = "unveiling",
 }) {
+    if (!visible) return null
+
     return (
         <Modal
             visible={visible}

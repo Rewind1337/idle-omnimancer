@@ -37,6 +37,8 @@ export function SettingsModal({
     settings,
     onChange,
 }) {
+    if (!visible) return null
+
     const close = () => setVisible(false)
 
     return (

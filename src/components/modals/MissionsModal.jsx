@@ -83,6 +83,9 @@ export function MissionsModal({ visible, setVisible }) {
     const { player, turnInMission } = useGame()
     const close = () => setVisible(false)
 
+    // The mission list and its affordability checks are only needed while open.
+    if (!visible) return null
+
     const missionTier = Math.max(1, Math.floor(player.missionTier ?? MISSION_DATA.startingTier))
     const completedMissionIds = new Set(player.completedMissions ?? [])
     const currentTierMissions = MISSION_DATA.missions.filter(mission => mission.tier === missionTier)

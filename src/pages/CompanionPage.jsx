@@ -145,6 +145,22 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, onUnlock
     )
 }
 
+function CompanionTrainingProgress({ skillId, actionId, isActive, durationMs }) {
+    const actionProgress = useGameActionProgress(skillId, actionId)
+    const progress = getActionProgress(actionProgress, durationMs)
+
+    return (
+        <Progress
+            className="companion-training-progress"
+            layer={2}
+            size="medium"
+            variant="companions"
+            percentage={isActive ? progress : 0}
+            animated={isActive}
+        />
+    )
+}
+
 function CompanionCollectionCard({ companion, player, assigned }) {
     const progress = getCompanionLevelProgress(player, companion.id)
     const permanentValue = getEffectValue(companion.permanentEffect.effect, companion.permanentEffect.perLevel, progress.level)
@@ -311,13 +327,11 @@ export function CompanionPage() {
                         </Badge>
                     </Flex>
                     <Flex align="center" gap={8}>
-                        <Progress
-                            className="companion-training-progress"
-                            layer={2}
-                            size="medium"
-                            variant="companions"
-                            percentage={isActive ? progress : 0}
-                            animated={isActive}
+                        <CompanionTrainingProgress
+                            skillId={skillId}
+                            actionId={trainingAction.id}
+                            isActive={isActive}
+                            durationMs={durationMs}
                         />
                         <Button
                             variant="companions"

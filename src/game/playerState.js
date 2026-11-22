@@ -7,7 +7,12 @@ import { SKILL_NAVIGATION } from "../data/navigationData"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { MISSION_DATA } from "../data/missionData"
 import { COMPANION_IDS, COMPANION_DATA } from "../data/companionData"
-import { COMPANION_CONFIG } from "../data/companionConfig"
+import {
+    COMPANION_CONFIG,
+    COMPANION_SLOT_IDS,
+    COMPANION_DEFAULT_UNLOCKED_SLOT_IDS,
+    createEmptyActiveCompanionSlots,
+} from "../data/companionConfig"
 import { RESEARCH_BREAKTHROUGH_CONFIG } from "../data/researchBreakthroughConfig"
 
 export const SAVE_KEY = "omnimancer-idle-save"
@@ -64,10 +69,8 @@ export const createInitialPlayerState = () => {
             companion.id,
             { level: 0, xp: 0 },
         ])),
-        unlockedCompanionSlots: Object.entries(COMPANION_CONFIG.slots)
-            .filter(([, slot]) => slot.unlockedByDefault)
-            .map(([element]) => element),
-        activeCompanionSlots: { any: null, earth: null, air: null, water: null },
+        unlockedCompanionSlots: [...COMPANION_DEFAULT_UNLOCKED_SLOT_IDS],
+        activeCompanionSlots: createEmptyActiveCompanionSlots(),
         currencies: {
             coins: 0,
             fame: 0,
@@ -195,24 +198,21 @@ export const normalizePlayerState = (savedState) => {
         }]
     }))
 
-    const validSlotIds = Object.keys(COMPANION_CONFIG.slots)
+    const validSlotIds = COMPANION_SLOT_IDS
     const savedActiveSlots = isRecord(savedState.activeCompanionSlots)
         ? savedState.activeCompanionSlots
         : {}
     const savedUnlockedSlots = Array.isArray(savedState.unlockedCompanionSlots)
         ? savedState.unlockedCompanionSlots.filter(slotId => typeof slotId === "string")
         : []
-    const unlockedCompanionSlots = [...new Set([
-        "any",
-        ...savedUnlockedSlots,
-    ].filter(slotId =>
-        validSlotIds.includes(slotId) && COMPANION_CONFIG.slots[slotId]
-    ))]
+    const unlockedCompanionSlots = validSlotIds.filter(slotId =>
+        COMPANION_DEFAULT_UNLOCKED_SLOT_IDS.includes(slotId) || savedUnlockedSlots.includes(slotId)
+    )
     const assignedCompanions = new Set()
     const activeCompanionSlots = Object.fromEntries(validSlotIds.map(slotId => {
         const companionId = getOwn(savedActiveSlots, slotId) ?? null
         const companion = COMPANION_DATA.find(entry => entry.id === companionId)
-        const slot = COMPANION_CONFIG.slots[slotId]
+        const slot = COMPANION_CONFIG.slotDefinitions[slotId]
         const compatible = slot.element === null ||
             companion?.element === "neutral" ||
             companion?.element === slot.element

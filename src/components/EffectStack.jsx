@@ -35,7 +35,7 @@ const formatSummaryValue = (value, summary) => {
     return formatted + (summary.unit ? " " + summary.unit : "")
 }
 
-const formatEffectDescription = (entry) => {
+export const formatEffectDescription = (entry) => {
     const { effect, type, value, stacks = 1, mode, perStack = false } = entry
     const multiplier = type === "mult" ? value - 1 : value
     const stackCount = perStack ? 1 : Math.max(1, stacks)

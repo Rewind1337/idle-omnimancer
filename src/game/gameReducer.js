@@ -1,7 +1,11 @@
 import { GLOBAL_CONFIG, SKILL_CONFIG_BY_ID } from "../data/skillConfig"
 import { CURRENCY_DATA_BY_ID, ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
 import { MISSION_DATA } from "../data/missionData"
-import { COMPANION_CONFIG } from "../data/companionConfig"
+import {
+    COMPANION_CONFIG,
+    COMPANION_DEFAULT_UNLOCKED_SLOT_IDS,
+    createEmptyActiveCompanionSlots,
+} from "../data/companionConfig"
 import { COMPANION_DATA_BY_ID } from "../data/companionData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { RESEARCH_BREAKTHROUGH_CONFIG, getResearchBreakthroughCost } from "../data/researchBreakthroughConfig"
@@ -143,8 +147,8 @@ export const gameReducer = (state, action) => {
         case "UNLOCK_COMPANION_SLOT": {
             if (!state.unlockedSkills?.includes("skill:companions")) return state
             const { slotId } = action
-            const slot = COMPANION_CONFIG.slots[slotId]
-            const unlockedSlots = state.unlockedCompanionSlots ?? ["any"]
+            const slot = COMPANION_CONFIG.slotDefinitions[slotId]
+            const unlockedSlots = state.unlockedCompanionSlots ?? COMPANION_DEFAULT_UNLOCKED_SLOT_IDS
             const cost = getCompanionSlotUnlockCost(state, slotId)
 
             if (
@@ -169,11 +173,9 @@ export const gameReducer = (state, action) => {
             if (!state.unlockedSkills?.includes("skill:companions")) return state
             const { slotId, companionId } = action
             const unlockedSlots = state.unlockedCompanionSlots ?? ["any"]
-            const slot = COMPANION_CONFIG.slots[slotId]
+            const slot = COMPANION_CONFIG.slotDefinitions[slotId]
             const companion = COMPANION_DATA_BY_ID[companionId]
-            const currentSlots = state.activeCompanionSlots ?? {
-                any: null, earth: null, air: null, water: null,
-            }
+            const currentSlots = state.activeCompanionSlots ?? createEmptyActiveCompanionSlots()
             if (!slot || !unlockedSlots.includes(slotId)) return state
             if (companionId !== null && (
                 !companion ||

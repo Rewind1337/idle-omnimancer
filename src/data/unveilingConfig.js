@@ -16,10 +16,10 @@ export const UNVEILING_CONFIG = {
 
     skillXP: { firstLevelXP: 3 },
 
-    // Destruction time scales with the selected item's tier.
+    // Study time scales with the selected item's tier.
     time: { base: 6, perTier: 1 },
 
-    // Material Destruction actions calculate XP from the selected item's value.
+    // Study actions calculate XP from the selected item's value.
     actionXP: { base: 1, perTier: 0 },
 
     neededXP: {
@@ -46,7 +46,7 @@ export const UNVEILING_CONFIG = {
     actions: [
         {
             id: "action:destroy_research_books",
-            name: "Destroy Research Books",
+            name: "Study Research Materials",
             tier: 1,
             inputSelection: { groups: ["research"] },
             durationBySelectedItemTier: true,
@@ -55,7 +55,7 @@ export const UNVEILING_CONFIG = {
         },
         {
             id: "action:destroy_spellcraft_materials",
-            name: "Destroy Spellcraft Materials",
+            name: "Study Spellcraft Materials",
             tier: 1,
             unlockCosts: [{ item: "currency:coins", amount: 50000 }],
             inputSelection: { groups: ["spellcraft"] },
@@ -64,7 +64,7 @@ export const UNVEILING_CONFIG = {
         },
         {
             id: "action:destroy_transmutation_materials",
-            name: "Destroy Transmutation Materials",
+            name: "Study Transmutation Materials",
             tier: 1,
             unlockCosts: [{ item: "currency:coins", amount: 100000 }],
             inputSelection: { groups: ["transmutation"] },
@@ -73,7 +73,7 @@ export const UNVEILING_CONFIG = {
         },
         {
             id: "action:destroy_exploration_materials",
-            name: "Destroy Exploration Materials",
+            name: "Study Exploration Materials",
             tier: 1,
             unlockCosts: [{ item: "currency:coins", amount: 200000 }],
             inputSelection: { groups: ["exploration"] },
@@ -82,7 +82,7 @@ export const UNVEILING_CONFIG = {
         },
         {
             id: "action:destroy_combat_materials",
-            name: "Destroy Combat Materials",
+            name: "Study Combat Materials",
             tier: 1,
             unlockCosts: [{ item: "currency:coins", amount: 400000 }],
             inputSelection: { groups: ["combat"] },

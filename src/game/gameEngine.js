@@ -524,6 +524,52 @@ const getCompanionEffectMultiplier = (effect, level, perLevel) => {
     return 1 + growth
 }
 
+export const getCompanionEffectEntry = (player, companion, effectKey) => {
+    const effectConfig = companion?.[effectKey]
+    if (!effectConfig) return null
+
+    const level = player.companionProgress?.[companion.id]?.level ?? 1
+    const effect = effectConfig.effect
+
+    return {
+        id: "companion-" + companion.id + "-" + effectKey,
+        title: companion.name + " Level " + level,
+        effect,
+        type: effectConfig.type ?? "mult",
+        value: getCompanionEffectMultiplier(
+            effect,
+            level,
+            effectConfig.perLevel ?? (effectKey === "permanentEffect" ? 0.01 : 0.025)
+        ),
+        stacks: 1,
+        mode: "companion",
+        variant: "companions",
+    }
+}
+
+export const getCompanionEffectEntry = (player, companion, effectKey) => {
+    const effectConfig = companion?.[effectKey]
+    if (!effectConfig) return null
+
+    const level = player.companionProgress?.[companion.id]?.level ?? 1
+    const effect = effectConfig.effect
+
+    return {
+        id: "companion-" + companion.id + "-" + effectKey,
+        title: companion.name + " Level " + level,
+        effect,
+        type: effectConfig.type ?? "mult",
+        value: getCompanionEffectMultiplier(
+            effect,
+            level,
+            effectConfig.perLevel ?? (effectKey === "permanentEffect" ? 0.01 : 0.025)
+        ),
+        stacks: 1,
+        mode: "companion",
+        variant: "companions",
+    }
+}
+
 const getCompanionEffectEntries = (player, targetSkillId, effect) => {
     const unlocked = new Set(player.unlockedCompanions ?? [])
     const active = new Set(Object.values(player.activeCompanionSlots ?? {}).filter(Boolean))
@@ -641,7 +687,7 @@ export const getActionUnlockCosts = (player, skillId, actionId) => {
 }
 
 export const getCompanionSlotUnlockCost = (player, element) => {
-    const baseCost = COMPANION_CONFIG.slots[element]?.unlockCost
+    const baseCost = COMPANION_CONFIG.slotDefinitions[element]?.unlockCost
     if (!Number.isFinite(baseCost) || baseCost <= 0) return 0
     const reduction = getBonusForEffect(getSkillMilestoneBonuses(player, "skill:companions"), "unlockCostReduction")
     return Math.ceil(baseCost * Math.max(0.01, 1 + reduction.mult + reduction.flat))

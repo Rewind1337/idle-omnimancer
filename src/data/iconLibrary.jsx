@@ -93,6 +93,21 @@ export const OTHER_ICONS = {
     COMPANION_SHELL: <Shell />,
 }
 
+export const EFFECT_ICONS = {
+    actionTime: OTHER_ICONS.HOURGLASS,
+    xpGain: OTHER_ICONS.SPARKLES,
+    manaCost: OTHER_ICONS.ZAP,
+    manaCapacity: OTHER_ICONS.CIRCLE_DOT,
+    manaRegeneration: OTHER_ICONS.ZAP,
+    itemOutput: OTHER_ICONS.FLAME,
+    preservation: OTHER_ICONS.RECYCLE,
+    sellValue: OTHER_ICONS.COINS,
+    unlockCostReduction: OTHER_ICONS.COINS,
+    companionChance: OTHER_ICONS.COMPANION_EGG,
+    artifactChance: OTHER_ICONS.ARTIFACT,
+    baseGoldCost: OTHER_ICONS.COINS,
+}
+
 export const BAG_ICONS = {}
 
 export const SHOP_ICONS = {

@@ -10,7 +10,7 @@ export const COMPANION_CONFIG = {
         type: "companionLevels",
         companionCount: COMPANION_DATA.length,
     },
-    slots: {
+    slotDefinitions: {
         any: { name: "Any Element", element: null, unlockedByDefault: true, unlockCost: 0 },
         earth: { name: "Earth", element: "earth", unlockedByDefault: false, unlockCost: 1000000 },
         air: { name: "Air", element: "air", unlockedByDefault: false, unlockCost: 2000000 },
@@ -52,3 +52,15 @@ export const COMPANION_CONFIG = {
         { levels: 20, type: "flat", effect: "baseGoldCost", value: -1 },
     ],
 }
+
+
+// Slot order and empty assignments derive from the definitions above.
+// Adding a slot here automatically makes it available to state and the UI.
+export const COMPANION_SLOT_IDS = Object.keys(COMPANION_CONFIG.slotDefinitions)
+
+export const COMPANION_DEFAULT_UNLOCKED_SLOT_IDS = COMPANION_SLOT_IDS.filter(slotId =>
+    COMPANION_CONFIG.slotDefinitions[slotId].unlockedByDefault
+)
+
+export const createEmptyActiveCompanionSlots = () =>
+    Object.fromEntries(COMPANION_SLOT_IDS.map(slotId => [slotId, null]))

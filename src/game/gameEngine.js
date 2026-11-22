@@ -10,6 +10,11 @@ import { SKILL_NAVIGATION } from "../data/navigationData"
 import { humanize } from "../utility/helpers"
 import { COMPANION_DATA, COMPANION_DATA_BY_ID, COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
 import { COMPANION_CONFIG } from "../data/companionConfig"
+import {
+    RESEARCH_BREAKTHROUGH_CONFIG,
+    formatResearchBreakthroughChance,
+    getResearchBreakthroughItems,
+} from "../data/researchBreakthroughConfig"
 
 
 
@@ -305,10 +310,32 @@ export const getItemActionSources = (itemId, player = null) => {
         }
     }
 
+    const breakthroughItem = RESEARCH_BREAKTHROUGH_CONFIG.items.find(entry =>
+        entry.itemId === itemId
+    )
+    const breakthroughTier = Math.max(0, Number(player?.researchBreakthroughTier) || 0)
+    const researchSkill = SKILL_CONFIG_BY_ID[RESEARCH_BREAKTHROUGH_CONFIG.skillId]
+
+    if (breakthroughItem && breakthroughTier >= breakthroughItem.tier) {
+        for (const action of researchSkill?.actions ?? []) {
+            if (action.tier < breakthroughItem.tier) continue
+
+            obtainedBy.push({
+                id: "research-breakthrough-" + action.id + "-" + breakthroughItem.tier,
+                name: action.name ?? humanize(action.id),
+                amount: 1,
+                amountLabel: formatResearchBreakthroughChance(breakthroughItem.chance),
+                type: "action",
+                badgeVariant: researchSkill.variant,
+            })
+        }
+    }
+
     return { obtainedBy, consumedBy }
 }
 
-// Each distinct item type occupies one slot; additional copies stack.
+// Each distinct item type occupies one slot; additional copies stack. Reserve
+// every eligible random reward as a possible new type before the action finishes.
 const canStoreActionOutputs = (player, skill, action) => {
     const inventory = player.inventory ?? {}
     const occupiedSlots = Object.entries(inventory)
@@ -318,6 +345,14 @@ const canStoreActionOutputs = (player, skill, action) => {
     const possibleItemIds = outputMultiplier > 0
         ? getActionOutputs(action).map(output => output.item)
         : []
+
+    if (skill.id === RESEARCH_BREAKTHROUGH_CONFIG.skillId) {
+        possibleItemIds.push(...getResearchBreakthroughItems(
+            player.researchBreakthroughTier,
+            action.tier
+        ).map(item => item.itemId))
+    }
+
     const selectedItemId = player.skills?.[skill.id]?.actions?.[action.id]?.selectedItemId
     const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
 
@@ -1311,6 +1346,19 @@ const awardActionXP = (player, skill, action, actionState) => {
             player.currencies[currencyId] = (player.currencies[currencyId] ?? 0) + outputAmount
         } else if (ITEM_DATA_BY_ID[item]) {
             player.inventory[item] = (player.inventory[item] ?? 0) + outputAmount
+        }
+    }
+
+    // Research Breakthrough rewards use fixed base chances. They are rolled
+    // independently of Action Output bonuses, once per eligible discovery item.
+    if (skill.id === RESEARCH_BREAKTHROUGH_CONFIG.skillId) {
+        for (const item of getResearchBreakthroughItems(
+            player.researchBreakthroughTier,
+            action.tier
+        )) {
+            if (Math.random() < item.chance) {
+                player.inventory[item.itemId] = (player.inventory[item.itemId] ?? 0) + 1
+            }
         }
     }
 

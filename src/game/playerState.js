@@ -8,6 +8,7 @@ import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { MISSION_DATA } from "../data/missionData"
 import { COMPANION_IDS, COMPANION_DATA } from "../data/companionData"
 import { COMPANION_CONFIG } from "../data/companionConfig"
+import { RESEARCH_BREAKTHROUGH_CONFIG } from "../data/researchBreakthroughConfig"
 
 export const SAVE_KEY = "omnimancer-idle-save"
 export const DEFAULT_INVENTORY_SLOTS = GLOBAL_CONFIG.startingBagSpace
@@ -55,6 +56,7 @@ export const createInitialPlayerState = () => {
         skills,
         inventory: {},
         inventorySlots: DEFAULT_INVENTORY_SLOTS,
+        researchBreakthroughTier: 0,
         missionTier: MISSION_DATA.startingTier,
         completedMissions: [],
         unlockedCompanions: [],
@@ -250,6 +252,12 @@ export const normalizePlayerState = (savedState) => {
         skills,
         inventory,
         inventorySlots,
+        researchBreakthroughTier: clampInteger(
+            savedState.researchBreakthroughTier,
+            0,
+            RESEARCH_BREAKTHROUGH_CONFIG.maxTier,
+            0
+        ),
         missionTier,
         completedMissions,
         unlockedCompanions,

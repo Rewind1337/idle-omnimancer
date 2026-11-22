@@ -64,6 +64,7 @@ const hasVisiblePlayerChanges = (previous, next) => {
         !areSameRecord(previous.activeCompanionSlots, next.activeCompanionSlots) ||
         !areSameCompanionProgress(previous.companionProgress, next.companionProgress) ||
         previous.inventorySlots !== next.inventorySlots ||
+        previous.researchBreakthroughTier !== next.researchBreakthroughTier ||
         previous.missionTier !== next.missionTier ||
         previous.mana?.max !== next.mana?.max ||
         previous.activeAction?.skillId !== next.activeAction?.skillId ||
@@ -728,6 +729,10 @@ export function GameProvider({ children }) {
         dispatch({ type: "BUY_BAG_SLOT" })
     }, [])
 
+    const buyResearchBreakthrough = useCallback(() => {
+        dispatch({ type: "BUY_RESEARCH_BREAKTHROUGH" })
+    }, [])
+
     const buyShopItem = useCallback((itemId) => {
         dispatch({ type: "BUY_SHOP_ITEM", itemId })
     }, [])
@@ -759,13 +764,14 @@ export function GameProvider({ children }) {
         unlockAction,
         unlockSkill,
         buyBagSlot,
+        buyResearchBreakthrough,
         buyShopItem,
         sellItem,
         turnInMission,
         selectActionItem,
         unlockCompanionSlot,
         selectCompanion,
-    }), [startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
+    }), [startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyResearchBreakthrough, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
 
     const servicesValue = useMemo(() => ({
         progressStore,

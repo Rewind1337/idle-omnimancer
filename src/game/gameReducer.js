@@ -4,6 +4,7 @@ import { MISSION_DATA } from "../data/missionData"
 import { COMPANION_CONFIG } from "../data/companionConfig"
 import { COMPANION_DATA_BY_ID } from "../data/companionData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
+import { RESEARCH_BREAKTHROUGH_CONFIG, getResearchBreakthroughCost } from "../data/researchBreakthroughConfig"
 import {
     advanceGame,
     canStartAction,
@@ -302,6 +303,28 @@ export const gameReducer = (state, action) => {
             return {
                 ...state,
                 inventorySlots: inventorySlots + 1,
+                currencies: {
+                    ...state.currencies,
+                    coins: coins - cost,
+                },
+            }
+        }
+
+        case "BUY_RESEARCH_BREAKTHROUGH": {
+            const currentTier = Math.max(
+                0,
+                Math.min(
+                    RESEARCH_BREAKTHROUGH_CONFIG.maxTier,
+                    Math.floor(Number(state.researchBreakthroughTier) || 0)
+                )
+            )
+            const cost = getResearchBreakthroughCost(currentTier)
+            const coins = state.currencies?.coins ?? 0
+            if (currentTier >= RESEARCH_BREAKTHROUGH_CONFIG.maxTier || coins < cost) return state
+
+            return {
+                ...state,
+                researchBreakthroughTier: currentTier + 1,
                 currencies: {
                     ...state.currencies,
                     coins: coins - cost,

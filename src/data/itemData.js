@@ -1,5 +1,6 @@
 import { ITEM_SPRITES, OTHER_ICONS } from "./iconLibrary"
 import { humanize } from "../utility/helpers"
+import { RESEARCH_BREAKTHROUGH_CONFIG } from "./researchBreakthroughConfig"
 
 // Tier 1 and 2 establish the value curve; every later tier doubles the previous
 // value minus one: 1, 2, 3, 5, 9, 17, 33, 65, ...
@@ -24,6 +25,16 @@ const ITEM_DEFINITIONS = [
     { id: "item:forbidden_codex", tier: 8, variant: "research" },
     { id: "item:primordial_chronicle", tier: 9, variant: "research" },
     { id: "item:genesis_testament", tier: 10, variant: "research" },
+
+    // Rare discoveries unlocked through the Research Breakthrough shop upgrade.
+    ...RESEARCH_BREAKTHROUGH_CONFIG.items.map(({ tier, itemId, name, baseValue }) => ({
+        id: itemId,
+        name,
+        tier,
+        baseValue,
+        variant: "research",
+        icon: OTHER_ICONS.FLAME,
+    })),
 
     // Spellcraft
     { id: "item:dust", tier: 1, variant: "earth" },

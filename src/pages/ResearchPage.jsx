@@ -12,6 +12,10 @@ import { ActionResources } from "../components/actions/ActionResources"
 
 import { cx, humanize } from "../utility/helpers"
 import { RESEARCH_CONFIG } from "../data/researchConfig"
+import {
+    formatResearchBreakthroughChance,
+    getResearchBreakthroughItems,
+} from "../data/researchBreakthroughConfig"
 import { RESEARCH_ACTION_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
@@ -83,8 +87,20 @@ function ResearchAction({ action, player, skillId, isActive, isUnlocked, actionS
                             outputMultiplier={outputMultiplier}
                             preservationChance={getActionPreservationChance(player, RESEARCH_CONFIG, action)}
                             effectStacks={effectStacks} />
-                        <ActionResources consumes={action.consumes ?? []} produces={action.produces ?? []}
-                            outputMultiplier={outputMultiplier} />
+                        <ActionResources
+                            consumes={action.consumes ?? []}
+                            produces={[
+                                ...(action.produces ?? []),
+                                ...getResearchBreakthroughItems(
+                                    player.researchBreakthroughTier,
+                                    action.tier
+                                ).map(item => ({
+                                    item: item.itemId,
+                                    amountLabel: formatResearchBreakthroughChance(item.chance),
+                                })),
+                            ]}
+                            outputMultiplier={outputMultiplier}
+                        />
                     </>
                 ) : (
                     <ActionResources requires={getActionUnlockCosts(player, skillId, action.id)} />

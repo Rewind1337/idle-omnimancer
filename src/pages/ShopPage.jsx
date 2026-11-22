@@ -5,12 +5,18 @@ import { Paper } from "../components/Paper"
 import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
 import { Button } from "../components/Button"
+import { Badge } from "../components/Badge"
 import { Text } from "../components/Text"
 import { Tabs } from "../components/Tabs"
 import { ActionResources } from "../components/actions/ActionResources"
 
 import { OTHER_ICONS, SHOP_ICONS } from "../data/iconLibrary"
 import { SHOP_ITEM_DATA } from "../data/itemData"
+import {
+    RESEARCH_BREAKTHROUGH_CONFIG,
+    formatResearchBreakthroughChance,
+    getResearchBreakthroughCost,
+} from "../data/researchBreakthroughConfig"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { GLOBAL_CONFIG, SKILL_CONFIG_BY_ID } from "../data/skillConfig"
 import {
@@ -114,6 +120,65 @@ function BagSlotImprovement({ player, buyBagSlot }) {
     )
 }
 
+function ResearchBreakthroughImprovement({ player, buyResearchBreakthrough }) {
+    const currentTier = Math.max(
+        0,
+        Math.min(
+            RESEARCH_BREAKTHROUGH_CONFIG.maxTier,
+            Math.floor(Number(player.researchBreakthroughTier) || 0)
+        )
+    )
+    const nextCost = getResearchBreakthroughCost(currentTier)
+    const coins = player.currencies?.coins ?? 0
+    const isMaxTier = currentTier >= RESEARCH_BREAKTHROUGH_CONFIG.maxTier
+    const canPurchase = !isMaxTier && coins >= nextCost
+
+    return (
+        <Paper layer={2} variant="shop" className="action action-shop">
+            <Flex direction="column" gap={12}>
+                <Flex direction="row" align="center" gap={16}>
+                    <Icon size={44} variant="shop">
+                        {cloneElement(OTHER_ICONS.FLAME, { size: 40 })}
+                    </Icon>
+                    <Flex direction="column" gap={8}>
+                        <Heading h="3">Research Breakthrough</Heading>
+                        <Text size="small">
+                            Unlock rare Flame discoveries as additional rewards from Research.
+                            Each discovery can only be found by Research actions of its tier or higher.
+                        </Text>
+                        <Text size="small">
+                            Current Tier: {currentTier} / {RESEARCH_BREAKTHROUGH_CONFIG.maxTier}
+                        </Text>
+                        <Button
+                            variant="shop"
+                            size="medium"
+                            className="w-100"
+                            disabled={!canPurchase}
+                            onClick={buyResearchBreakthrough}
+                        >
+                            {isMaxTier
+                                ? "All Tiers Unlocked"
+                                : "Upgrade to Tier " + (currentTier + 1) + " · " +
+                                    formatCoins(nextCost) + " Coins"}
+                        </Button>
+                    </Flex>
+                </Flex>
+                <Flex direction="row" wrap gap={6}>
+                    {RESEARCH_BREAKTHROUGH_CONFIG.items.map(item => (
+                        <Badge
+                            key={item.itemId}
+                            size="small"
+                            variant={currentTier >= item.tier ? "research" : "transparent"}
+                        >
+                            Tier {item.tier} · {item.name} · {formatResearchBreakthroughChance(item.chance)}
+                        </Badge>
+                    ))}
+                </Flex>
+            </Flex>
+        </Paper>
+    )
+}
+
 function ShopGoodCard({ item, player, buyShopItem }) {
     const amountHeld = player.inventory?.[item.id] ?? 0
     const canPurchase = canBuyShopItem(player, item.id)
@@ -186,7 +251,7 @@ function getAvailableUnlocks(player, unlockSkill, unlockAction) {
 }
 
 export function ShopPage() {
-    const { player, unlockSkill, unlockAction, buyBagSlot, buyShopItem } = useGame()
+    const { player, unlockSkill, unlockAction, buyBagSlot, buyResearchBreakthrough, buyShopItem } = useGame()
     const [activeTab, setActiveTab] = useState("improvements")
     const availableUnlocks = getAvailableUnlocks(player, unlockSkill, unlockAction)
 
@@ -217,7 +282,13 @@ export function ShopPage() {
             <Paper layer={0}>
                 {activeTab === "improvements" && (
                     <ShopSection title="Improvements">
-                        <BagSlotImprovement player={player} buyBagSlot={buyBagSlot} />
+                        <Flex direction="column" gap={12}>
+                            <BagSlotImprovement player={player} buyBagSlot={buyBagSlot} />
+                            <ResearchBreakthroughImprovement
+                                player={player}
+                                buyResearchBreakthrough={buyResearchBreakthrough}
+                            />
+                        </Flex>
                     </ShopSection>
                 )}
 

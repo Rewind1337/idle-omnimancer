@@ -34,6 +34,7 @@ function MissionCard({ mission, player, canTurnIn, onTurnIn }) {
                     <Flex direction="row" wrap gap={6}>
                         <Badge
                             variant="secondary"
+                            interactive
                             icon={OTHER_ICONS.MERGE}
                             tooltip="Mission tier determines the Fame awarded for completing a mission. Tier 1 grants 1 Fame, Tier 2 grants 2 Fame, and so on."
                         >
@@ -118,7 +119,7 @@ export function MissionsModal({ visible, setVisible }) {
                     <Flex direction="row" justify="space-between" align="center" wrap gap={12}>
                         <Heading h="1">Missions</Heading>
                         <Flex direction="row" wrap gap={6}>
-                            <Badge variant="secondary" icon={fame?.icon} tooltip="Fame is earned by completing missions. Each mission grants Fame equal to its tier: Tier 1 grants 1 Fame, Tier 2 grants 2 Fame, and so on.">
+                            <Badge variant="secondary" interactive icon={fame?.icon} tooltip="Fame is earned by completing missions. Each mission grants Fame equal to its tier: Tier 1 grants 1 Fame, Tier 2 grants 2 Fame, and so on.">
                                 {fameBalance.toLocaleString()} Fame
                             </Badge>
                             <Badge variant="secondary" icon={OTHER_ICONS.STAR}>
@@ -130,7 +131,7 @@ export function MissionsModal({ visible, setVisible }) {
                         <Flex direction="column" align="stretch" gap={8}>
                             <Flex direction="row" justify="space-between" align="center" wrap gap={8}>
                                 <Heading h="3">Mission Tier {missionTier}</Heading>
-                                <Badge variant="secondary" tooltip={missionProgressTooltip}>
+                                <Badge variant="secondary" interactive tooltip={missionProgressTooltip}>
                                     {requiredCount
                                         ? completedCount.toLocaleString() + " / " + requiredCount.toLocaleString()
                                         : "Maximum Tier"}

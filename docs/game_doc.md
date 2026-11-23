@@ -24,7 +24,7 @@
 | Exploration | Active | Explore named areas on a shared hex map, develop each area and discover resources and companion containers. |
 | Unveiling | Active | Use Material Destruction actions to gain insight; unveil eligible unidentified objects and companion containers once the skill-level requirement is met. |
 | Combat | Passive | Continuously fight in a selected unlocked Exploration area; produce combat rewards, unidentified objects and chances at area artifacts. |
-| Companions | Collection system | Collect and train 16 companions (15 elemental and one neutral), assign them to four slots, and gain permanent global plus stronger slot-based skill effects. The skill unlocks after the first companion is unveiled. |
+| Companions | Collection system | Collect and train 19 companions (15 elemental and four neutral), assign them to four slots, and gain permanent global plus stronger slot-based skill effects. The skill unlocks after the first companion is unveiled. |
 
 Research, Spellcraft and Transmutation establish the initial resource and progression loop. Exploration is planned as the fourth active skill, followed by Unveiling as a fifth active skill. Combat is the first planned passive skill.
 
@@ -421,74 +421,7 @@ Exploration is an **active skill**. Every area is an independent action with its
 ---
 ## 9. Passive Skill — Combat
 
-**Purpose:** Fight continuously in a selected Exploration area and produce combat rewards.
-
-Combat is the first planned **passive skill**. It runs independently of the active action selected in Research, Spellcraft, Transmutation or Exploration.
-
-### 9.1 Starting and selecting a location
-
-- Combat is unlocked and started once.
-- After it has been started, it remains active without requiring the player to repeatedly start it.
-- The player selects an already-unlocked Exploration area as the Combat location.
-- Combat runs continuously in that area while the player works on an unrelated active action.
-- Changing the Combat location does not interrupt or replace the current active-skill action.
-- Combat uses the shared Exploration map.
-
-### 9.2 Area progression and Combat rewards
-
-The individual Exploration level of the selected area improves Combat performance there:
-
-- Higher Combat output.
-- More Combat XP.
-- Higher chance to obtain that area's artifact.
-
-Each area has its own artifact.
-
-### 9.3 Unidentified objects and artifacts
-
-- Combat can produce unidentified objects.
-- Every unidentified object carries a minimum required **Unveiling skill level** before it can be identified. Its requirement is based on the area where it was obtained and that area's place in map progression; early-area objects require less Unveiling progression than objects from later areas.
-- Using **Unveil Artifact or Companion** on an eligible object gives a chance to obtain the artifact associated with the area where it was found.
-- Identification can also reveal other valuable resources with meaningful gold sale values.
-- The exact relationship between object types, identification, artifact chances, other rewards and area artifacts is not yet defined.
-- All 31 area artifact records now have unique display names and dedicated Lucide icons. Their item IDs remain stable for save compatibility. They are registered against their areas but are not awarded yet; Combat's reward-resolution system is still future work.
-
-| Area | Artifact | Icon |
-|---|---|---|
-| The Crossroads | Wayfinder's Compass | `Compass` |
-| Mossbound Foothills | Mossheart Bloom | `Flower` |
-| Whispering Fields | Whisperwind Whistle | `Whistle` |
-| Stillwater Pools | Stillwater Rod | `FishingRod` |
-| Ironroot Ravine | Ironroot Weight | `Dumbbell` |
-| Zephyr Heights | Zephyr Longbow | `BowArrow` |
-| Moonlit Fen | Fenwarden's Club | `Club` |
-| Shattered Crags | Cragbound Spade | `Spade` |
-| Tempest Reach | Tempest Caller | `Megaphone` |
-| Drowned Sanctum | Drowned Hook | `FishingHook` |
-| Basalt Crown | Basalt Trophy | `Trophy` |
-| Skybreak Summit | Skybreak Sigil | `VectorPolygon` |
-| Tidal Abyss | Abyssal Starcrown | `SquareStar` |
-| Deepstone Warrens | Deepstone Pyramid | `Pyramid` |
-| Highwind Expanse | Highwind Resonator | `Headphones` |
-| Mooncurrent Basin | Mooncurrent Medal | `Medal` |
-| Verdant Crucible | Verdant Crook | `HockeyStick` |
-| Stormwing Pinnacles | Stormwing Mantle | `Shirt` |
-| Glacial Mirror | Glacial Loop | `Torus` |
-| Obsidian Throne | Obsidian Prism | `Triangle` |
-| Celestial Rift | Celestial Arrowhead | `TriangleRight` |
-| Leviathan Trench | Abyssal Laurel | `Award` |
-| Primordial Forge | Primordial Frame | `VectorSquare` |
-| Starfall Firmament | Starfall Seal | `Square` |
-| Worldtide Sanctum | Worldtide Reliquary | `ShoppingBasket` |
-| Worldcore Caldera | Worldcore Spire | `UtilityPole` |
-| Boundless Empyrean | Firmament Staff | `HikingStick` |
-| Leviathan's Grave | Leviathan Skiff | `Kayak` |
-| Genesis Bastion | Genesis Key | `Key` |
-| Origin Zenith | Origin Key | `KeyRound` |
-| Eternal Deep | Eternal Key | `KeySquare` |
-- Combat formulas, encounter details, reward tables, XP progression, identification costs and artifact rates remain undecided.
-
-Combat must remain independent of the player's currently selected active action. Its passive nature does not imply that its final progression model must be identical to an active skill's action structure.
+Combat is planned as a passive skill that uses the shared Exploration world map. Its full design, dependencies, proposed spell rotation, companion effects, rewards and unresolved decisions are maintained in [Combat Design](combat-doc.md).
 
 ---
 
@@ -500,7 +433,7 @@ The Companions skill unlocks automatically when the player unveils their first c
 
 ### 10.1 Containers, companions and duplicate rewards
 
-- There are 16 companions: one unique companion for every combination of Earth, Air and Water across companion tiers I–V, plus the neutral Wayfinder Wyrm. Each companion has a dedicated icon.
+- There are 19 companions: 15 elemental companions (one Earth, Air and Water companion at each of tiers I–V) plus four neutral companions: the Tier I Wayfinder Wyrm and the Tier II–IV Earth, Air and Water Prisms. Each companion has a dedicated icon.
 - Earth Geodes contain Earth companions, Air Eggs contain Air companions, and Water Shells contain Water companions. The Wayfinder Prism from Area 1 contains the neutral companion. Each container maps to exactly one companion.
 - The first successful unveiling of a container unlocks its matching companion. Each companion starts at level 1.
 - Further openings of that same container award the matching elemental Companion Candy item instead of unlocking a duplicate companion.
@@ -517,12 +450,15 @@ The Companions skill unlocks automatically when the player unveils their first c
 | II | Earth | Ironback | `Turtle` |
 | II | Air | Cloudtail | `Squirrel` |
 | II | Water | Mooncoil | `Snail` |
+| II | Neutral | Earth Prism | `Gem` |
 | III | Earth | Fernpanda | `Panda` |
 | III | Air | Thunderstripe | `Rat` |
 | III | Water | Frostscale | `Fish` |
+| III | Neutral | Air Prism | `Gem` |
 | IV | Earth | Obsidian Scarab | `Bug` |
 | IV | Air | Starhound | `Dog` |
 | IV | Water | Abyssal Lynx | `Cat` |
+| IV | Neutral | Water Prism | `Gem` |
 | V | Earth | Worldroot Taurus | `ZodiacTaurus` |
 | V | Air | Empyrean Gemini | `ZodiacGemini` |
 | V | Water | Eternal Aquarius | `ZodiacAquarius` |
@@ -531,10 +467,10 @@ The Companions skill unlocks automatically when the player unveils their first c
 
 - Every discovered companion levels independently from 1 to 100.
 - Companion XP is awarded by the single **Tend to Companions** action. Each completion takes 5 seconds and grants the action's calculated XP reward to every assigned companion below level 100. The action itself receives that exact same XP amount, including applicable XP bonuses.
-- The base coin cost per completion is 10 times the combined levels of all assigned companions. Every 20 Tend to Companions action levels reduces that calculated cost by 1 coin. The final cost cannot fall below zero. For example, three active companions at level 15 have a base cost of 450 coins per cycle.
+- The base coin cost per completion is 10 coins per combined companion level. Every 20 Tend to Companions action levels reduces this per-level base by 1 coin, so the first cost milestone changes 10 × combined levels to 9 × combined levels. The per-level cost cannot fall below zero. For example, one active companion at level 7 costs 63 coins per cycle after the first reduction milestone.
 - XP is awarded in full to each eligible companion; it is not divided between slots. Two eligible companions each receive the full action XP reward.
 - **Tend to Companions** has its own action level and action XP progression. Its first level requires 50 XP.
-- Companion skill XP is derived from the sum of all 16 companion levels rather than action levels. Its maximum progression pool is 16 × 100 = 1,600 companion levels. For example, three companions at level 100 contribute 300 / 1,600, or 18.75% of the Companion skill's total progression.
+- Companion skill XP is derived from the sum of all 16 companion levels rather than action levels. Its maximum progression pool is 19 × 100 = 1,900 companion levels. For example, three companions at level 100 contribute 300 / 1,600, or 18.75% of the Companion skill's total progression.
 - Each companion's level-up requirement increases with both its level and tier. Tier I starts at 20 XP; each tier increase multiplies that base by 1.50 (Tier II ×1.5, Tier III ×2.25, Tier IV ×3.375, Tier V ×5.0625). The level curve then applies a 1.1 multiplier per level plus 2 additional XP per level.
 - There are four vertically stacked slots. The **Any Element** slot is unlocked by default; Earth, Air and Water slots cost 1,000,000, 2,000,000 and 3,000,000 coins respectively.
 - Element-specific slots accept a companion of that element or a neutral companion. The Any Element slot accepts any companion. A companion can occupy only one slot at a time.
@@ -548,8 +484,8 @@ The Companions skill unlocks automatically when the player unveils their first c
   - An active effect that applies only while the companion occupies its elemental slot and targets the configured skill. Ordinary active effects start with a 5% benefit at level 1 and gain another 2.5 percentage points per level thereafter.
 - Input preservation has no shared 5% starting bonus: Ironback grants +0.1% per companion level globally, while Brineclaw grants +0.25% per level to Transmutation while assigned. At level 100, these effects provide +10% and +25% preservation respectively.
 - For cost-reduction effects, the effective cost multiplier decreases as the reduction grows; the current implementation floors the resulting cost multiplier at x0.10.
-- Companion effects can improve sell value, action XP, action time, item output, input preservation, Mana cost, Mana capacity, Mana regeneration, companion-container chance and unlock costs.
-- One companion has a permanent Companion Chance bonus and an active Artifact Chance bonus. Artifact Chance is reserved for the future Combat reward system; Combat itself is not part of this Companion implementation.
+- Companion effects can improve sell value, action XP, action time, item output, input preservation, Mana cost, Mana capacity, Mana regeneration, companion-container chance and unlock costs. The neutral Prisms also define Combat-focused active effects for interval, damage and shield; Combat Health is registered as an additional supported effect.
+- The Abyssal Lynx has a permanent Companion Chance bonus and an active Artifact Chance bonus. Artifact Chance and the Prism effects target the planned Combat system; see [Combat Design](combat-doc.md).
 - Item-output bonuses continue to improve companion-container discovery chances, and the Companion Chance bonus applies as an additional multiplier. Drop chances remain capped at 100%.
 
 ## 11. Skill Five — Unveiling
@@ -1023,10 +959,7 @@ The following details remain open for design, balancing or implementation:
 - The reward tables, artifact chances and other valuable resources revealed by identification.
 - Unveiling's gold/resource unlock requirements and exact unlock timing.
 - Companion-to-artifact reward rules for unidentified Combat objects remain to be finalized alongside Combat.
-- Combat unlock requirements and timing.
-- Combat's XP/progression model, formulas, encounters, output, reward tables and identification system.
-- Unidentified object types, identification costs and artifact chances.
-- The artifact associated with each area and its exact effects or use.
+- Combat unlock, progression, encounter, damage, reward and identification decisions are tracked in [Combat Design](combat-doc.md).
 
 ### Economy, inventory and systems
 - Exact unlock costs and gold curves.

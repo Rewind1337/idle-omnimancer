@@ -771,6 +771,14 @@ export const getCompanionSlotUnlockCost = (player, element) => {
     return Math.ceil(baseCost * Math.max(0.01, 1 + reduction.mult + reduction.flat))
 }
 
+// One-level milestones measure levels gained after the initial Action level.
+ // Milestones of two or more levels continue to trigger at their exact
+ // multiples (for example, levels 20, 40, 60).
+const getActionMilestoneStacks = (actionLevel, milestone) => {
+    const startingOffset = milestone.levels === 1 ? 1 : 0
+    return Math.floor(Math.max(0, actionLevel - startingOffset) / milestone.levels)
+}
+
 const getActionMilestoneBonuses = (player, skill, action) => {
     const totals = getSkillMilestoneBonuses(player, skill.id)
     const actionState = player.skills?.[skill.id]?.actions?.[action.id]
@@ -781,8 +789,7 @@ const getActionMilestoneBonuses = (player, skill, action) => {
     for (const milestone of skill.actionMilestones ?? []) {
         if (milestone.displayOnly || !Number.isFinite(milestone.levels) || milestone.levels <= 0) continue
 
-        // Levels are counted from zero: levels: 2 awards its first stack at action level 2.
-        const completedMilestones = Math.floor(actionLevel / milestone.levels)
+        const completedMilestones = getActionMilestoneStacks(actionLevel, milestone)
         addMilestoneBonus(totals, milestone, completedMilestones)
     }
 
@@ -829,9 +836,7 @@ export const getActionMilestoneDetails = (player, skill, action) => {
     return (skill.actionMilestones ?? [])
         .filter(milestone => Number.isFinite(milestone.levels) && milestone.levels > 0)
         .map((milestone, index) => {
-            const stacks = milestone.displayOnly
-                ? Math.floor(Math.max(0, actionLevel - 1) / milestone.levels)
-                : Math.floor(actionLevel / milestone.levels)
+            const stacks = getActionMilestoneStacks(actionLevel, milestone)
             const active = stacks > 0
             const targetSkillId = milestone.reach === "local" ? skill.id : milestone.reach
 
@@ -1154,7 +1159,7 @@ export const getActionEffectStacks = (player, skill, action) => {
                 milestone.levels <= 0
             ) continue
 
-            const stacks = Math.floor(actionLevel / milestone.levels)
+            const stacks = getActionMilestoneStacks(actionLevel, milestone)
             if (stacks <= 0) continue
 
             entries.push({

@@ -293,7 +293,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                     <Flex direction="row" justify="start" gap={8} wrap>
                         <Badge
                             size="small"
-                            variant={assigned ? "exploration" : "transparent"}
+                            variant={assigned ? targetSkillConfig?.variant ?? "transparent" : "transparent"}
                             interactive
                             tooltip={assigned
                                 ? "This companion is assigned to an active slot, so its active effect is enabled for " + targetSkill + "."

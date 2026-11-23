@@ -10,6 +10,10 @@ import { SKILL_NAVIGATION } from "../data/navigationData"
 import { humanize } from "../utility/helpers"
 import { COMPANION_DATA, COMPANION_DATA_BY_ID, COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
 import { COMPANION_CONFIG } from "../data/companionConfig"
+import { COMBAT_CONFIG, COMBAT_ACTION_BY_AREA_ID } from "../data/combatConfig"
+import { EXPLORATION_CONFIG } from "../data/explorationConfig"
+import { SPELLCRAFT_CONFIG } from "../data/spellcraftConfig"
+import { WORLD_AREA_BY_ID } from "../data/worldData"
 import {
     RESEARCH_BREAKTHROUGH_CONFIG,
     formatResearchBreakthroughChance,
@@ -227,6 +231,31 @@ export const getItemActionSources = (itemId, player = null) => {
             const outputAmount = getActionOutputs(action)
                 .filter(output => output.item === itemId)
                 .reduce((total, output) => total + output.amount, 0)
+
+            if (skill.id === COMBAT_CONFIG.id) {
+                const combatReward = (action.rewards ?? []).find(reward =>
+                    (typeof reward === "string" ? reward : reward?.item) === itemId
+                )
+                if (combatReward) {
+                    const rewardItem = typeof combatReward === "string" ? combatReward : combatReward.item
+                    const rewardAmount = typeof combatReward === "string" ? 1 : combatReward.amount ?? 1
+                    const artifactChance = ITEM_DATA_BY_ID[rewardItem]?.type === "artifact"
+                        ? (player ? getCombatArtifactChance(player, action) : EXPLORATION_CONFIG.artifactChance?.base ?? 0)
+                        : 1
+                    if (artifactChance > 0) {
+                        obtainedBy.push({
+                            id: "combat-reward-" + action.id + "-" + rewardItem,
+                            name: actionName + " Combat",
+                            amount: rewardAmount,
+                            amountLabel: ITEM_DATA_BY_ID[rewardItem]?.type === "artifact"
+                                ? (artifactChance * 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "% chance per victory"
+                                : String(rewardAmount) + " per victory",
+                            type: "action",
+                            badgeVariant: "combat",
+                        })
+                    }
+                }
+            }
 
             if (outputAmount > 0) {
                 obtainedBy.push({
@@ -1305,6 +1334,393 @@ const rollActionOutputAmount = (amount, multiplier) => {
     return wholeAmount + (fractionalAmount > 0 && Math.random() < fractionalAmount ? 1 : 0)
 }
 
+// Combat uses the same passive-action scheduler as other ongoing skills, but
+// resolves individual attack events so each enemy retains its own timer.
+const getCombatExplorationLevel = (player, action) => {
+    const area = WORLD_AREA_BY_ID[action?.areaId]
+    const explorationAction = area
+        ? player.skills?.[EXPLORATION_CONFIG.id]?.actions?.[area.actionId]
+        : null
+    return Math.max(1, Math.floor(explorationAction?.level ?? 1))
+}
+
+export const getCombatOutputMultiplier = (player, action) =>
+    1 + Math.max(0, getCombatExplorationLevel(player, action) - 1) *
+        COMBAT_CONFIG.explorationLevelBonusPerLevel
+
+const getCombatBonuses = (player, action) =>
+    getActionMilestoneBonuses(player, COMBAT_CONFIG, action)
+
+const getCombatEffectMultiplier = (bonuses, effect) => {
+    const values = getBonusForEffect(bonuses, effect)
+    return Math.max(0.1, 1 + values.mult + values.flat)
+}
+
+export const getCombatArtifactChance = (player, action) => {
+    const baseChance = EXPLORATION_CONFIG.artifactChance?.base ?? 0
+    if (!Number.isFinite(baseChance) || baseChance <= 0) return 0
+
+    const bonuses = player ? getCombatBonuses(player, action) : {}
+    const artifactMultiplier = player
+        ? getCombatEffectMultiplier(bonuses, "artifactChance")
+        : 1
+    const chance = baseChance * getCombatOutputMultiplier(player ?? {}, action) * artifactMultiplier
+    return Math.max(0, Math.min(1, chance))
+}
+
+export const getCombatXPReward = (player, action) =>
+    getActionXPReward(COMBAT_CONFIG, action, player) * getCombatOutputMultiplier(player, action)
+
+export const getCombatPlayerStats = (player, action) => {
+    const bonuses = getCombatBonuses(player, action)
+    const maxHealth = COMBAT_CONFIG.player.baseHealth *
+        getCombatEffectMultiplier(bonuses, "combatHealth")
+    const barrier = Math.min(
+        maxHealth * 0.49,
+        COMBAT_CONFIG.player.baseBarrier * getCombatEffectMultiplier(bonuses, "combatShield")
+    )
+
+    return {
+        maxHealth,
+        barrier,
+        attackIntervalMs: Math.max(
+            100,
+            COMBAT_CONFIG.timing.playerAttackIntervalMs *
+                getCombatEffectMultiplier(bonuses, "combatInterval")
+        ),
+        damageMultiplier: getCombatEffectMultiplier(bonuses, "combatDamage"),
+    }
+}
+
+export const getCombatElementMultiplier = (attackElement, targetElement) => {
+    if (!attackElement || attackElement === "neutral" ||
+        !targetElement || targetElement === "neutral") {
+        return COMBAT_CONFIG.elementalMatchups.neutralMultiplier
+    }
+
+    const { counters, advantageMultiplier, disadvantageMultiplier } =
+        COMBAT_CONFIG.elementalMatchups
+    if (counters[attackElement] === targetElement) return advantageMultiplier
+    if (counters[targetElement] === attackElement) return disadvantageMultiplier
+    return COMBAT_CONFIG.elementalMatchups.neutralMultiplier
+}
+
+const getCombatAttackDetails = (player, attackId) => {
+    if (attackId === "omnibolt") {
+        const spellcraftLevel = getSkillProgress(player, "skill:spellcraft")?.level ?? 1
+        const tier = COMBAT_CONFIG.player.omniboltTier
+        return {
+            id: "omnibolt",
+            name: "Omnibolt",
+            element: "neutral",
+            tier,
+            level: spellcraftLevel,
+            baseDamage: tier * 10 * (1 + 0.01 * spellcraftLevel),
+        }
+    }
+
+    const action = SPELLCRAFT_CONFIG.actions.find(entry => entry.id === attackId)
+    const actionState = player.skills?.[SPELLCRAFT_CONFIG.id]?.actions?.[attackId]
+    if (!action || !actionState?.unlocked || !player.unlockedSkills?.includes(SPELLCRAFT_CONFIG.id)) {
+        return getCombatAttackDetails(player, "omnibolt")
+    }
+
+    return {
+        id: action.id,
+        name: action.name ?? humanize(action.id.replace(/^action:/, "")),
+        element: action.element ?? "neutral",
+        tier: action.tier,
+        level: actionState.level ?? 1,
+        baseDamage: action.tier * 10 * (1 + 0.01 * (actionState.level ?? 1)),
+    }
+}
+
+const createCombatEncounter = (player, action) => {
+    const area = WORLD_AREA_BY_ID[action.areaId]
+    const scaling = COMBAT_CONFIG.enemyScaling
+    const areaOffset = Math.max(0, action.areaNumber - 1)
+    const intervalBaseline = Math.max(
+        scaling.minimumAttackIntervalMs,
+        scaling.baseAttackIntervalMs - areaOffset * scaling.intervalReductionPerAreaMs
+    )
+    const enemies = (action.enemyLineup?.length ? action.enemyLineup : [{ archetype: "average" }])
+        .map((lineupEntry, index) => {
+            const archetypeId = COMBAT_CONFIG.enemyArchetypes[lineupEntry.archetype]
+                ? lineupEntry.archetype
+                : "average"
+            const archetype = COMBAT_CONFIG.enemyArchetypes[archetypeId]
+            const healthVariance = 1 + (Math.random() * 2 - 1) * scaling.variance
+            const damageVariance = 1 + (Math.random() * 2 - 1) * scaling.variance
+            const maxHealth = Math.max(
+                1,
+                scaling.baseHealth *
+                    Math.pow(scaling.healthPerArea, areaOffset) *
+                    archetype.healthMultiplier *
+                    healthVariance
+            )
+            const attackIntervalMs = Math.max(
+                scaling.minimumAttackIntervalMs,
+                intervalBaseline * archetype.intervalMultiplier
+            )
+
+            return {
+                id: action.id + "-enemy-" + index,
+                archetype: archetypeId,
+                name: (lineupEntry.name ?? archetype.label) + " " + (area?.name ?? action.name),
+                element: area?.element ?? "neutral",
+                maxHealth,
+                health: maxHealth,
+                damage: Math.max(
+                    0,
+                    scaling.baseDamage *
+                        Math.pow(scaling.damagePerArea, areaOffset) *
+                        archetype.damageMultiplier *
+                        damageVariance
+                ),
+                attackIntervalMs,
+                attackTimerMs: attackIntervalMs,
+            }
+        })
+    const playerStats = getCombatPlayerStats(player, action)
+
+    return {
+        enemies,
+        player: {
+            health: playerStats.maxHealth,
+            maxHealth: playerStats.maxHealth,
+            barrier: playerStats.barrier,
+            attackIntervalMs: playerStats.attackIntervalMs,
+            attackTimerMs: playerStats.attackIntervalMs,
+        },
+        rotationIndex: 0,
+    }
+}
+
+const getCombatInventorySlotCount = player => Object.entries(player.inventory ?? {})
+    .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0)
+    .length
+
+const canStoreCombatItem = (player, itemId) => {
+    if (!ITEM_DATA_BY_ID[itemId]) return false
+    if ((player.inventory?.[itemId] ?? 0) > 0) return true
+    const slots = player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
+    return getCombatInventorySlotCount(player) < slots
+}
+
+const grantCombatItem = (player, itemId, amount) => {
+    if (!canStoreCombatItem(player, itemId)) return false
+    player.inventory[itemId] = (player.inventory[itemId] ?? 0) + amount
+    return true
+}
+
+const awardCombatActionXP = (player, action) => {
+    const actionState = player.skills?.[COMBAT_CONFIG.id]?.actions?.[action.id]
+    if (!actionState || actionState.level >= GLOBAL_CONFIG.maxActionLevel) return
+
+    const xpReward = getCombatXPReward(player, action)
+    actionState.xp += xpReward
+    const xpTable = getActionXPTable(action.id)
+    const neededXP = xpTable?.[actionState.level - 1]?.neededXP
+
+    if (neededXP !== null && neededXP !== undefined && actionState.xp >= neededXP) {
+        actionState.level += 1
+        actionState.xp = 0
+    }
+
+    if (actionState.level >= GLOBAL_CONFIG.maxActionLevel) {
+        actionState.level = GLOBAL_CONFIG.maxActionLevel
+        actionState.xp = 0
+    }
+}
+
+const finishCombatEncounter = (player, action) => {
+    const combat = player.combat
+    awardCombatActionXP(player, action)
+    combat.encountersCompleted = (combat.encountersCompleted ?? 0) + 1
+
+    const outputMultiplier = getCombatOutputMultiplier(player, action)
+    const rewards = []
+    const pending = []
+
+    for (const reward of action.rewards ?? []) {
+        const itemId = typeof reward === "string" ? reward : reward?.item
+        const baseAmount = typeof reward === "string" ? 1 : reward?.amount ?? 1
+        const itemData = ITEM_DATA_BY_ID[itemId]
+        if (!itemData || !Number.isFinite(baseAmount) || baseAmount <= 0) continue
+
+        let amount
+        if (itemData.type === "artifact") {
+            if (Math.random() >= getCombatArtifactChance(player, action)) continue
+            amount = Math.max(1, Math.floor(baseAmount))
+        } else {
+            amount = rollActionOutputAmount(baseAmount, outputMultiplier)
+        }
+        if (amount <= 0) continue
+
+        if (grantCombatItem(player, itemId, amount)) {
+            rewards.push({ item: itemId, amount })
+        } else {
+            pending.push({ item: itemId, amount })
+        }
+    }
+
+    combat.lastRewards = rewards
+    combat.pendingRewards = pending
+    if (pending.length > 0) {
+        combat.phase = "inventoryFull"
+        combat.cycleRemainingMs = 0
+    } else {
+        combat.phase = "rest"
+        combat.cycleRemainingMs = COMBAT_CONFIG.timing.encounterDelayMs
+    }
+}
+
+const resolvePendingCombatRewards = (player) => {
+    const combat = player.combat
+    const remaining = []
+
+    for (const reward of combat.pendingRewards ?? []) {
+        if (grantCombatItem(player, reward.item, reward.amount)) {
+            combat.lastRewards = [...(combat.lastRewards ?? []), reward]
+        } else {
+            remaining.push(reward)
+        }
+    }
+
+    combat.pendingRewards = remaining
+    if (remaining.length === 0) {
+        combat.phase = "rest"
+        combat.cycleRemainingMs = COMBAT_CONFIG.timing.encounterDelayMs
+    }
+}
+
+const getNextCombatAttack = (player, encounter) => {
+    const rotation = player.combat?.rotation?.length
+        ? player.combat.rotation
+        : ["omnibolt"]
+    const index = ((encounter.rotationIndex ?? 0) % rotation.length + rotation.length) % rotation.length
+    return getCombatAttackDetails(player, rotation[index])
+}
+
+const advanceCombat = (player, deltaMs) => {
+    const combat = player.combat
+    if (!combat || !player.unlockedSkills?.includes(COMBAT_CONFIG.id)) return
+
+    const action = COMBAT_ACTION_BY_AREA_ID[combat.selectedAreaId]
+    const actionState = action
+        ? player.skills?.[COMBAT_CONFIG.id]?.actions?.[action.id]
+        : null
+    if (!action || !actionState?.running || !actionState.unlocked) return
+
+    let remainingMs = deltaMs
+    let safetyCounter = 0
+
+    while (remainingMs > 0.0001 && safetyCounter < 10000) {
+        safetyCounter += 1
+
+        if (combat.phase === "inventoryFull") {
+            resolvePendingCombatRewards(player)
+            if (combat.phase === "inventoryFull") break
+            continue
+        }
+
+        if (combat.phase === "rest") {
+            const delayRemaining = Math.max(0, combat.cycleRemainingMs ?? 0)
+            const consumedMs = Math.min(remainingMs, delayRemaining)
+            combat.cycleRemainingMs = delayRemaining - consumedMs
+            remainingMs -= consumedMs
+            if (combat.cycleRemainingMs <= 0.0001) {
+                combat.cycleRemainingMs = 0
+                combat.encounter = createCombatEncounter(player, action)
+                combat.phase = "fighting"
+            } else {
+                break
+            }
+            continue
+        }
+
+        if (combat.phase !== "fighting" || !combat.encounter) {
+            combat.encounter = createCombatEncounter(player, action)
+            combat.phase = "fighting"
+        }
+
+        const encounter = combat.encounter
+        const playerStats = getCombatPlayerStats(player, action)
+        const combatant = encounter.player
+        combatant.maxHealth = playerStats.maxHealth
+        combatant.barrier = playerStats.barrier
+        combatant.health = Math.min(
+            combatant.maxHealth,
+            Math.max(combatant.barrier, combatant.health)
+        )
+        combatant.attackIntervalMs = playerStats.attackIntervalMs
+        combatant.attackTimerMs = Math.min(
+            combatant.attackTimerMs,
+            playerStats.attackIntervalMs
+        )
+
+        const livingEnemies = encounter.enemies.filter(enemy => enemy.health > 0)
+        const nextEnemyTimer = livingEnemies.length > 0
+            ? Math.min(...livingEnemies.map(enemy => Math.max(0, enemy.attackTimerMs)))
+            : Infinity
+        const nextEventMs = Math.min(
+            Math.max(0, combatant.attackTimerMs),
+            nextEnemyTimer
+        )
+
+        if (!Number.isFinite(nextEventMs)) {
+            finishCombatEncounter(player, action)
+            continue
+        }
+
+        const consumedMs = Math.min(remainingMs, nextEventMs)
+        if (consumedMs > 0) {
+            combatant.attackTimerMs = Math.max(0, combatant.attackTimerMs - consumedMs)
+            for (const enemy of livingEnemies) {
+                enemy.attackTimerMs = Math.max(0, enemy.attackTimerMs - consumedMs)
+            }
+            remainingMs -= consumedMs
+        }
+
+        // Each living enemy resolves its own attack as soon as its timer expires.
+        for (const enemy of livingEnemies) {
+            if (enemy.attackTimerMs <= 0.0001) {
+                combatant.health = Math.max(
+                    combatant.barrier,
+                    combatant.health - enemy.damage
+                )
+                enemy.attackTimerMs = enemy.attackIntervalMs
+            }
+        }
+
+        if (combatant.attackTimerMs <= 0.0001) {
+            const target = encounter.enemies.find(enemy => enemy.health > 0)
+            if (target) {
+                const attack = getNextCombatAttack(player, encounter)
+                const healthMultiplier = Math.min(
+                    1,
+                    combatant.health / (0.5 * combatant.maxHealth)
+                )
+                const damage = attack.baseDamage *
+                    playerStats.damageMultiplier *
+                    healthMultiplier *
+                    getCombatElementMultiplier(attack.element, target.element)
+                target.health = Math.max(0, target.health - damage)
+            }
+
+            const rotation = combat.rotation?.length ? combat.rotation : ["omnibolt"]
+            encounter.rotationIndex = ((encounter.rotationIndex ?? 0) + 1) % rotation.length
+            combatant.attackTimerMs = playerStats.attackIntervalMs
+
+            if (!encounter.enemies.some(enemy => enemy.health > 0)) {
+                finishCombatEncounter(player, action)
+            }
+        }
+
+        if (consumedMs <= 0 && nextEventMs > 0) break
+    }
+}
+
 const awardActionXP = (player, skill, action, actionState) => {
     const actionXP = getActionXPReward(skill, action, player)
 
@@ -1510,7 +1926,7 @@ const advanceRunningActions = (player, deltaMs) => {
     for (const skill of Object.values(SKILL_CONFIG_BY_ID)) {
         for (const action of skill.actions) {
             const activity = action.activity ?? skill.activity ?? "active"
-            if (activity !== "passive") continue
+            if (activity !== "passive" || skill.id === COMBAT_CONFIG.id) continue
 
             const actionState = player.skills[skill.id]?.actions[action.id]
             if (!actionState?.unlocked || !actionState.running) continue
@@ -1518,6 +1934,8 @@ const advanceRunningActions = (player, deltaMs) => {
             advanceOneAction(player, skill, action, actionState, deltaMs, false)
         }
     }
+
+    advanceCombat(player, deltaMs)
 }
 
 // Advance all eligible systems by the actual elapsed time. The 100ms online
@@ -1558,8 +1976,23 @@ export const canStartAction = (player, skillId, actionId) => {
     const action = skill?.actions.find(entry => entry.id === actionId)
     const state = player.skills[skillId]?.actions[actionId]
 
-    if (!player.unlockedSkills?.includes(skillId) || !skill || !action || !state?.unlocked || (action.tracksProgress !== false && state.level >= GLOBAL_CONFIG.maxActionLevel)) {
+    if (!player.unlockedSkills?.includes(skillId) || !skill || !action || !state?.unlocked) {
         return false
+    }
+
+    const activity = action.activity ?? skill.activity ?? "active"
+    if (activity === "active" && action.tracksProgress !== false && state.level >= GLOBAL_CONFIG.maxActionLevel) {
+        return false
+    }
+
+    if (skillId === COMBAT_CONFIG.id) {
+        const combatAction = COMBAT_ACTION_BY_AREA_ID[action.areaId]
+        const explorationActionId = WORLD_AREA_BY_ID[action.areaId]?.actionId
+        if (
+            !combatAction ||
+            !explorationActionId ||
+            !player.skills?.[EXPLORATION_CONFIG.id]?.actions?.[explorationActionId]?.unlocked
+        ) return false
     }
 
     // Training requires at least one companion in an active slot.

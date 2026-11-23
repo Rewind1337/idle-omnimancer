@@ -108,126 +108,128 @@ function CombatPanel({ player, action, rotationOptions }) {
                     : "Not Started"
 
     return (
-        <Paper layer={0} className="combat-panel">
-            <Flex direction="column" align="stretch" gap={12}>
-                <Flex direction="row" justify="space-between" align="center" wrap>
-                    <Flex direction="column" align="start" gap={2}>
-                        <Heading h="2">Combat Panel</Heading>
-                        <Text size="small">
-                            {snapshot.activeAreaId ? "Fighting in " + (activeAction?.name ?? "the selected area") : "No active Combat area"}
-                        </Text>
-                    </Flex>
-                    <Badge variant="combat">{phaseLabel}</Badge>
-                </Flex>
-
-                <Flex direction="row" wrap gap={8} className="combat-panel-summary">
-                    <Badge variant="transparent">Encounters Won: {snapshot.encountersCompleted}</Badge>
-                    <Badge variant="transparent">Attack Interval: {formatSeconds(attackIntervalMs)}</Badge>
-                    <Badge variant="transparent">Barrier: {formatNumber(barrier)}</Badge>
-                </Flex>
-
-                <Paper layer={1} className="combatant-panel">
-                    <Flex direction="column" align="stretch" gap={6}>
-                        <Flex direction="row" justify="space-between" align="center">
-                            <Heading h="3">You</Heading>
-                            <Text size="small">{formatNumber(health)} / {formatNumber(maxHealth)} HP</Text>
+        <Paper layer={0} >
+            <Paper layer={1} className="combat-panel" variant="combat">
+                <Flex direction="column" align="stretch" gap={12}>
+                    <Flex direction="row" justify="space-between" align="center" wrap>
+                        <Flex direction="column" align="start" gap={2}>
+                            <Heading h="2">Combat Panel</Heading>
+                            <Text size="small">
+                                {snapshot.activeAreaId ? "Fighting in " + (activeAction?.name ?? "the selected area") : "No active Combat area"}
+                            </Text>
                         </Flex>
-                        <Progress
-                            variant="combat"
-                            size="small"
-                            percentage={maxHealth > 0 ? Math.min(100, health / maxHealth * 100) : 0}
-                            label={formatNumber(health) + " / " + formatNumber(maxHealth) + " HP"}
-                        />
-                        <Flex direction="row" wrap gap={8}>
-                            <Badge variant="combat">Barrier {formatNumber(barrier)}</Badge>
-                            <Badge variant="transparent">
-                                Next Attack: {formatSeconds(playerState?.attackTimerMs ?? attackIntervalMs)}
-                            </Badge>
-                            <Badge variant="transparent">
-                                {nextAttack?.label ?? "Omnibolt"} · {rotationIndex + 1}/{rotation.length}
-                            </Badge>
-                        </Flex>
+                        <Badge variant="combat">{phaseLabel}</Badge>
                     </Flex>
-                </Paper>
 
-                <Flex direction="column" align="stretch" gap={8}>
-                    <Heading h="3">Enemy Lineup</Heading>
-                    {enemies.length > 0 ? enemies.map((enemy, index) => {
-                        const isDefeated = enemy.health <= 0
-                        return (
-                            <Paper key={enemy.id ?? index} layer={1} variant={enemy.element ?? "neutral"}
-                                className="combatant-panel">
-                                <Flex direction="column" align="stretch" gap={6}>
-                                    <Flex direction="row" justify="space-between" align="center" wrap>
-                                        <Heading h="4">{enemy.name}</Heading>
-                                        <Badge variant={isDefeated ? "transparent" : enemy.element ?? "neutral"}>
-                                            {isDefeated
-                                                ? "Defeated"
-                                                : COMBAT_CONFIG.enemyArchetypes[enemy.archetype]?.label ?? humanize(enemy.archetype)}
-                                            {!isDefeated && enemy.element
-                                                ? " · " + humanize(enemy.element)
-                                                : ""}
-                                        </Badge>
+                    <Flex direction="row" wrap gap={8} className="combat-panel-summary">
+                        <Badge variant="transparent">Encounters Won: {snapshot.encountersCompleted}</Badge>
+                        <Badge variant="transparent">Attack Interval: {formatSeconds(attackIntervalMs)}</Badge>
+                        <Badge variant="transparent">Barrier: {formatNumber(barrier)}</Badge>
+                    </Flex>
+
+                    <Paper layer={2} className="combatant-panel">
+                        <Flex direction="column" align="stretch" gap={6}>
+                            <Flex direction="row" justify="space-between" align="center">
+                                <Heading h="3">You</Heading>
+                                <Text size="small">{formatNumber(health)} / {formatNumber(maxHealth)} HP</Text>
+                            </Flex>
+                            <Progress
+                                variant="combat"
+                                size="small"
+                                percentage={maxHealth > 0 ? Math.min(100, health / maxHealth * 100) : 0}
+                                label={formatNumber(health) + " / " + formatNumber(maxHealth) + " HP"}
+                            />
+                            <Flex direction="row" wrap gap={8}>
+                                <Badge variant="combat">Barrier {formatNumber(barrier)}</Badge>
+                                <Badge variant="transparent">
+                                    Next Attack: {formatSeconds(playerState?.attackTimerMs ?? attackIntervalMs)}
+                                </Badge>
+                                <Badge variant="transparent">
+                                    {nextAttack?.label ?? "Omnibolt"} · {rotationIndex + 1}/{rotation.length}
+                                </Badge>
+                            </Flex>
+                        </Flex>
+                    </Paper>
+
+                    <Flex direction="column" align="stretch" gap={8}>
+                        <Heading h="3">Enemy Lineup</Heading>
+                        {enemies.length > 0 ? enemies.map((enemy, index) => {
+                            const isDefeated = enemy.health <= 0
+                            return (
+                                <Paper key={enemy.id ?? index} layer={2} variant={enemy.element ?? "neutral"}
+                                    className="combatant-panel">
+                                    <Flex direction="column" align="stretch" gap={6}>
+                                        <Flex direction="row" justify="space-between" align="center" wrap>
+                                            <Heading h="4">{enemy.name}</Heading>
+                                            <Badge variant={isDefeated ? "transparent" : enemy.element ?? "neutral"}>
+                                                {isDefeated
+                                                    ? "Defeated"
+                                                    : COMBAT_CONFIG.enemyArchetypes[enemy.archetype]?.label ?? humanize(enemy.archetype)}
+                                                {!isDefeated && enemy.element
+                                                    ? " · " + humanize(enemy.element)
+                                                    : ""}
+                                            </Badge>
+                                        </Flex>
+                                        <Progress
+                                            variant={enemy.element ?? "combat"}
+                                            size="small"
+                                            percentage={enemy.maxHealth > 0
+                                                ? Math.min(100, enemy.health / enemy.maxHealth * 100)
+                                                : 0}
+                                            label={formatNumber(enemy.health) + " / " + formatNumber(enemy.maxHealth) + " HP"}
+                                        />
+                                        <Flex direction="row" wrap gap={8}>
+                                            <Badge variant="transparent">Damage: {formatNumber(enemy.damage)}</Badge>
+                                            <Badge variant="transparent">Attack Interval: {formatSeconds(enemy.attackIntervalMs)}</Badge>
+                                            {!isDefeated && (
+                                                <Badge variant="transparent">Next Attack: {formatSeconds(enemy.attackTimerMs)}</Badge>
+                                            )}
+                                            {currentEnemy?.id === enemy.id && <Badge variant="combat">Current Target</Badge>}
+                                        </Flex>
                                     </Flex>
-                                    <Progress
-                                        variant={enemy.element ?? "combat"}
-                                        size="small"
-                                        percentage={enemy.maxHealth > 0
-                                            ? Math.min(100, enemy.health / enemy.maxHealth * 100)
-                                            : 0}
-                                        label={formatNumber(enemy.health) + " / " + formatNumber(enemy.maxHealth) + " HP"}
-                                    />
-                                    <Flex direction="row" wrap gap={8}>
-                                        <Badge variant="transparent">Damage: {formatNumber(enemy.damage)}</Badge>
-                                        <Badge variant="transparent">Attack Interval: {formatSeconds(enemy.attackIntervalMs)}</Badge>
-                                        {!isDefeated && (
-                                            <Badge variant="transparent">Next Attack: {formatSeconds(enemy.attackTimerMs)}</Badge>
-                                        )}
-                                        {currentEnemy?.id === enemy.id && <Badge variant="combat">Current Target</Badge>}
-                                    </Flex>
-                                </Flex>
-                            </Paper>
-                        )
-                    }) : (
+                                </Paper>
+                            )
+                        }) : (
+                            <Text size="small">
+                                {snapshot.running
+                                    ? "The next encounter is being prepared."
+                                    : "Start Combat to begin the first encounter."}
+                            </Text>
+                        )}
+                    </Flex>
+
+                    {snapshot.phase === "rest" && (
+                        <Paper layer={2}>
+                            <Flex direction="column" align="stretch" gap={6}>
+                                <Heading h="4">Next Encounter in {formatSeconds(snapshot.cycleRemainingMs)}</Heading>
+                                {snapshot.lastRewards.length > 0 ? (
+                                    <ActionResources produces={snapshot.lastRewards} />
+                                ) : (
+                                    <Text size="small">No items dropped in the last encounter.</Text>
+                                )}
+                            </Flex>
+                        </Paper>
+                    )}
+
+                    {snapshot.phase === "inventoryFull" && (
+                        <Paper layer={2} variant="combat">
+                            <Flex direction="column" align="stretch" gap={6}>
+                                <Heading h="4">Make room in your Bag</Heading>
+                                <Text size="small">
+                                    Combat has paused its next encounter until the pending reward can be added to your inventory.
+                                </Text>
+                                <ActionResources produces={snapshot.pendingRewards} />
+                            </Flex>
+                        </Paper>
+                    )}
+
+                    {snapshot.phase === "fighting" && (
                         <Text size="small">
-                            {snapshot.running
-                                ? "The next encounter is being prepared."
-                                : "Start Combat to begin the first encounter."}
+                            Each living enemy attacks on its own timer. You attack the first living enemy in the lineup.
                         </Text>
                     )}
                 </Flex>
-
-                {snapshot.phase === "rest" && (
-                    <Paper layer={1}>
-                        <Flex direction="column" align="stretch" gap={6}>
-                            <Heading h="4">Next Encounter in {formatSeconds(snapshot.cycleRemainingMs)}</Heading>
-                            {snapshot.lastRewards.length > 0 ? (
-                                <ActionResources produces={snapshot.lastRewards} />
-                            ) : (
-                                <Text size="small">No items dropped in the last encounter.</Text>
-                            )}
-                        </Flex>
-                    </Paper>
-                )}
-
-                {snapshot.phase === "inventoryFull" && (
-                    <Paper layer={1} variant="combat">
-                        <Flex direction="column" align="stretch" gap={6}>
-                            <Heading h="4">Make room in your Bag</Heading>
-                            <Text size="small">
-                                Combat has paused its next encounter until the pending reward can be added to your inventory.
-                            </Text>
-                            <ActionResources produces={snapshot.pendingRewards} />
-                        </Flex>
-                    </Paper>
-                )}
-
-                {snapshot.phase === "fighting" && (
-                    <Text size="small">
-                        Each living enemy attacks on its own timer. You attack the first living enemy in the lineup.
-                    </Text>
-                )}
-            </Flex>
+            </Paper>
         </Paper>
     )
 }
@@ -248,36 +250,38 @@ function CombatRotation({ player, rotation, rotationSlots, isSkillUnlocked, onCh
     ]
 
     return (
-        <Paper layer={1} className="combat-rotation">
-            <Flex direction="column" align="stretch" gap={8}>
-                <Flex direction="row" justify="space-between" align="center" wrap>
-                    <Heading h="3">Attack Rotation</Heading>
-                    <Badge variant="transparent">
-                        {rotationSlots} / {COMBAT_CONFIG.player.maxRotationSlots} Slots
-                    </Badge>
+        <Paper layer={0}>
+            <Paper layer={1} className="combat-rotation" variant="combat">
+                <Flex direction="column" align="stretch" gap={8}>
+                    <Flex direction="row" justify="space-between" align="center" wrap>
+                        <Heading h="3">Attack Rotation</Heading>
+                        <Badge variant="transparent">
+                            {rotationSlots} / {COMBAT_CONFIG.player.maxRotationSlots} Slots
+                        </Badge>
+                    </Flex>
+                    {Array.from({ length: rotationSlots }, (_, index) => (
+                        <InputSelect
+                            key={index}
+                            label={"Rotation Slot " + (index + 1)}
+                            variant="combat"
+                            values={options}
+                            value={rotation[index] ?? ""}
+                            disabled={!isSkillUnlocked}
+                            onChange={value => {
+                                if (!value || rotation.some((selected, selectedIndex) =>
+                                    selected === value && selectedIndex !== index
+                                )) return
+                                const next = [...rotation]
+                                next[index] = value
+                                onChange(next)
+                            }}
+                        />
+                    ))}
+                    <Text size="small">
+                        Omnibolt is always available. Learned Spellcraft actions can be added to the rotation once unlocked.
+                    </Text>
                 </Flex>
-                {Array.from({ length: rotationSlots }, (_, index) => (
-                    <InputSelect
-                        key={index}
-                        label={"Rotation Slot " + (index + 1)}
-                        variant="combat"
-                        values={options}
-                        value={rotation[index] ?? ""}
-                        disabled={!isSkillUnlocked}
-                        onChange={value => {
-                            if (!value || rotation.some((selected, selectedIndex) =>
-                                selected === value && selectedIndex !== index
-                            )) return
-                            const next = [...rotation]
-                            next[index] = value
-                            onChange(next)
-                        }}
-                    />
-                ))}
-                <Text size="small">
-                    Omnibolt is always available. Learned Spellcraft actions can be added to the rotation once unlocked.
-                </Text>
-            </Flex>
+            </Paper>
         </Paper>
     )
 }
@@ -290,100 +294,102 @@ function CombatActionCard({ player, action, actionState, isSkillUnlocked, isArea
     const actionEffects = getActionEffectStacks(player, COMBAT_CONFIG, action)
 
     return (
-        <Paper layer={1} variant="combat" className="action action-combat combat-action-card">
-            <Flex direction="column" align="stretch" gap={12}>
-                <Flex direction="row" align="center" gap={16}>
-                    <Paper round layer="0" interactive className="w-min" padding={4}>
-                        <Icon size={48} variant="combat" outerRunes="wide" outerShape={7}
-                            innerRunes="gap" innerShape={8}>
-                            {cloneElement(SKILL_ICONS.COMBAT, { size: 48 })}
-                        </Icon>
-                    </Paper>
-                    <Flex direction="column" align="stretch">
-                        <ActionHeader
-                            name={action.name}
-                            level={actionState.level}
-                            currentXP={actionState.xp}
-                            neededXP={neededXP}
-                            tier={action.tier}
-                            isUnlocked={isSkillUnlocked}
-                            actionXPTable={xpTable}
-                            actionMilestones={isSkillUnlocked
-                                ? getActionMilestoneDetails(player, COMBAT_CONFIG, action)
-                                : []}
-                        />
-                        {isSkillUnlocked && isAreaUnlocked ? (
-                            <Button
-                                variant="combat"
-                                size="medium"
-                                className="w-100"
-                                disabled={!isRunning && !canStart}
-                                onClick={onToggle}
-                            >
-                                {isRunning ? "Pause Combat" : "Start Combat"}
-                            </Button>
-                        ) : (
-                            <Text size="small">
-                                {!isSkillUnlocked
-                                    ? "Unlock Combat in the Shop to begin fighting."
-                                    : "Explore this area before starting its Combat action."}
-                            </Text>
-                        )}
-                    </Flex>
-                </Flex>
-
-                {isSkillUnlocked && (
-                    <>
-                        <Flex direction="row" wrap gap={8}>
-                            <Badge
-                                variant="transparent"
-                                interactive
-                                icon={OTHER_ICONS.SPARKLES}
-                                tooltip={<Flex direction="column" gap={8}>
-                                    <Heading h="4" className="w-100 align-center">
-                                        Combat XP awarded for each completed encounter.
-                                    </Heading>
-                                    <Text size="small">
-                                        The displayed reward includes the selected area's Exploration-level output bonus.
-                                    </Text>
-                                    <hr />
-                                    <EffectStack
-                                        title="Action XP effects"
-                                        icon={OTHER_ICONS.SPARKLES}
-                                        entries={actionEffects.xpGain ?? []}
-                                        summary={getActionEffectSummary(player, COMBAT_CONFIG, action, "xpGain")}
-                                    />
-                                </Flex>}
-                            >
-                                Victory XP: {formatNumber(getCombatXPReward(player, action))}
-                            </Badge>
-                            <Badge
-                                variant="transparent"
-                                interactive
-                                icon={OTHER_ICONS.FLAME}
-                                tooltip={<Flex direction="column" gap={8}>
-                                    <Heading h="4" className="w-100 align-center">
-                                        Exploration progression improves this area's Combat rewards.
-                                    </Heading>
-                                    <Text size="small">
-                                        Each level above Exploration Action Level 1 adds 1% to ordinary Combat item output, Combat XP and the chance of the area's unidentified artifact dropping.
-                                    </Text>
-                                    <Text size="small">
-                                        Current Exploration Action Level: {player.skills?.[EXPLORATION_CONFIG.id]?.actions?.[WORLD_AREA_BY_ID[action.areaId]?.actionId]?.level ?? 1}
-                                    </Text>
-                                </Flex>}
-                            >
-                                Area Output: x{getCombatOutputMultiplier(player, action).toFixed(2)}
-                            </Badge>
+        <Paper layer={0} >
+            <Paper layer={1} variant="combat" className="action action-combat combat-action-card">
+                <Flex direction="column" align="stretch" gap={12}>
+                    <Flex direction="row" align="center" gap={16}>
+                        <Paper round layer="0" interactive className="w-min" padding={4}>
+                            <Icon size={48} variant="combat" outerRunes="wide" outerShape={7}
+                                innerRunes="gap" innerShape={8}>
+                                {cloneElement(SKILL_ICONS.COMBAT, { size: 48 })}
+                            </Icon>
+                        </Paper>
+                        <Flex direction="column" align="stretch">
+                            <ActionHeader
+                                name={action.name}
+                                level={actionState.level}
+                                currentXP={actionState.xp}
+                                neededXP={neededXP}
+                                tier={action.tier}
+                                isUnlocked={isSkillUnlocked}
+                                actionXPTable={xpTable}
+                                actionMilestones={isSkillUnlocked
+                                    ? getActionMilestoneDetails(player, COMBAT_CONFIG, action)
+                                    : []}
+                            />
+                            {isSkillUnlocked && isAreaUnlocked ? (
+                                <Button
+                                    variant="combat"
+                                    size="medium"
+                                    className="w-100"
+                                    disabled={!isRunning && !canStart}
+                                    onClick={onToggle}
+                                >
+                                    {isRunning ? "Pause Combat" : "Start Combat"}
+                                </Button>
+                            ) : (
+                                <Text size="small">
+                                    {!isSkillUnlocked
+                                        ? "Unlock Combat in the Shop to begin fighting."
+                                        : "Explore this area before starting its Combat action."}
+                                </Text>
+                            )}
                         </Flex>
-                        <ActionResources produces={getRewardResources(player, action)}
-                            outputMultiplier={getCombatOutputMultiplier(player, action)} />
-                    </>
-                )}
-                {!isSkillUnlocked && (
-                    <ActionResources requires={getSkillUnlockCosts(player, COMBAT_CONFIG.id)} />
-                )}
-            </Flex>
+                    </Flex>
+
+                    {isSkillUnlocked && (
+                        <>
+                            <Flex direction="row" wrap gap={8}>
+                                <Badge
+                                    variant="transparent"
+                                    interactive
+                                    icon={OTHER_ICONS.SPARKLES}
+                                    tooltip={<Flex direction="column" gap={8}>
+                                        <Heading h="4" className="w-100 align-center">
+                                            Combat XP awarded for each completed encounter.
+                                        </Heading>
+                                        <Text size="small">
+                                            The displayed reward includes the selected area's Exploration-level output bonus.
+                                        </Text>
+                                        <hr />
+                                        <EffectStack
+                                            title="Action XP effects"
+                                            icon={OTHER_ICONS.SPARKLES}
+                                            entries={actionEffects.xpGain ?? []}
+                                            summary={getActionEffectSummary(player, COMBAT_CONFIG, action, "xpGain")}
+                                        />
+                                    </Flex>}
+                                >
+                                    Victory XP: {formatNumber(getCombatXPReward(player, action))}
+                                </Badge>
+                                <Badge
+                                    variant="transparent"
+                                    interactive
+                                    icon={OTHER_ICONS.FLAME}
+                                    tooltip={<Flex direction="column" gap={8}>
+                                        <Heading h="4" className="w-100 align-center">
+                                            Exploration progression improves this area's Combat rewards.
+                                        </Heading>
+                                        <Text size="small">
+                                            Each level above Exploration Action Level 1 adds 1% to ordinary Combat item output, Combat XP and the chance of the area's unidentified artifact dropping.
+                                        </Text>
+                                        <Text size="small">
+                                            Current Exploration Action Level: {player.skills?.[EXPLORATION_CONFIG.id]?.actions?.[WORLD_AREA_BY_ID[action.areaId]?.actionId]?.level ?? 1}
+                                        </Text>
+                                    </Flex>}
+                                >
+                                    Area Output: x{getCombatOutputMultiplier(player, action).toFixed(2)}
+                                </Badge>
+                            </Flex>
+                            <ActionResources produces={getRewardResources(player, action)}
+                                outputMultiplier={getCombatOutputMultiplier(player, action)} />
+                        </>
+                    )}
+                    {!isSkillUnlocked && (
+                        <ActionResources requires={getSkillUnlockCosts(player, COMBAT_CONFIG.id)} />
+                    )}
+                </Flex>
+            </Paper>
         </Paper>
     )
 }

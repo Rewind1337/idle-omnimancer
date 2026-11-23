@@ -1,6 +1,11 @@
 /* Navigation button sizing is shared across skill and utility sections. */
 .navigation {
   &.navigation-top {
+
+    &.navigation-compact {
+      width: auto;
+    }
+
     .button {
       padding: 4px 4px;
     }
@@ -8,8 +13,16 @@
 
   &.navigation-side {
     flex-shrink: 0;
-    height: calc(100dvh - 16px);
-    max-width: 440px;
+    height: calc(100dvh);
+    max-width: 340px;
+    border-radius: 0;
+    border-left: 0;
+    border-top: 0;
+    border-bottom: 0;
+
+    &.navigation-compact {
+      width: 180px;
+    }
 
     .button {
       width: 100%;
@@ -90,7 +103,6 @@
 }
 
 .navigation-compact {
-  width: 220px;
   .button {
     flex-grow: 1;
 

@@ -388,96 +388,98 @@ export function CompanionPage() {
             </Paper>
 
             <Paper layer={0} className="companion-training-panel">
-                <Flex direction="column" gap={10}>
-                    <Flex direction="row" align="center" gap={12}>
-                        <Paper round layer="0" interactive className="w-min" padding={4}>
-                            <Icon
-                                size={48}
-                                variant="companions"
-                                outerRunes="wide"
-                                outerShape={7}
-                                innerRunes="gap"
-                                innerShape={8}
-                            >
-                                {cloneElement(SKILL_ICONS.COMPANIONS, { size: 48 })}
-                            </Icon>
-                        </Paper>
-                        <ActionHeader
-                            name={trainingAction.name}
-                            level={actionState.level}
-                            isUnlocked={Boolean(actionState.unlocked)}
-                            currentXP={actionState.xp}
-                            neededXP={neededXP}
-                            tier={trainingAction.tier}
-                            actionXPTable={actionXPTable}
-                            actionMilestones={actionMilestones}
-                        />
-                    </Flex>
-                    <Flex wrap gap={8}>
-                        <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS}
-                            tooltip={<Flex direction="column" gap={8}>
-                                <Heading h="4" className="w-100 align-center">
-                                    Time needed to complete this action.
-                                </Heading>
-                                <hr />
-                                <EffectStack title="Time effects" icon={OTHER_ICONS.HOURGLASS}
-                                    entries={actionEffectStacks.actionTime ?? []}
-                                    summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "actionTime")} />
-                            </Flex>}>
-                            {formatActionValue(durationMs / 1000)}s
-                        </Badge>
-                        <Badge variant="transparent" interactive icon={OTHER_ICONS.COINS}
-                            tooltip={<Flex direction="column" gap={8}>
-                                <Heading h="4" className="w-100 align-center">
-                                    Coins consumed each time this action completes.
-                                </Heading>
-                                <EffectStack title="Gold cost effects" icon={OTHER_ICONS.COINS}
-                                    entries={actionEffectStacks.baseGoldCost ?? []}
-                                    summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "baseGoldCost")} />
-                            </Flex>}>
-                            {trainingCost.toLocaleString()} Coins
-                        </Badge>
-                        <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES}
-                            tooltip={<Flex direction="column" gap={8}>
-                                <Heading h="4" className="w-100 align-center">
-                                    XP gained upon completing this action.
-                                </Heading>
-                                <Text size="small">
-                                    Every assigned companion below the level cap gains the same XP amount.
-                                </Text>
-                                <hr />
-                                <EffectStack title="XP effects" icon={OTHER_ICONS.SPARKLES}
-                                    entries={actionEffectStacks.xpGain ?? []}
-                                    summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "xpGain")} />
-                            </Flex>}>
-                            +{formatActionValue(actionXPReward)} XP
-                        </Badge>
-                    </Flex>
-                    <Flex align="center" gap={8}>
-                        <CompanionTrainingProgress
-                            skillId={skillId}
-                            actionId={trainingAction.id}
-                            isActive={isActive}
-                            durationMs={durationMs}
-                        />
-                        <Flex direction="column" className="w-30 action-progress-toggle">
-                            <Button
-                                variant="companions"
-                                size="medium"
-                                className="w-100"
-                                icon={SKILL_ICONS.COMPANIONS}
-                                disabled={!isActive && !canStart}
-                                toggled={isActive}
-                                onClick={() => {
-                                    if (isActive) stopAction(skillId, trainingAction.id)
-                                    else startAction(skillId, trainingAction.id)
-                                }}
-                            >
-                                {isActive ? "Stop" : "Start"}
-                            </Button>
+                <Paper layer={1} variant="companions">
+                    <Flex direction="column" gap={10}>
+                        <Flex direction="row" align="center" gap={12}>
+                            <Paper round layer="0" interactive className="w-min" padding={4}>
+                                <Icon
+                                    size={48}
+                                    variant="companions"
+                                    outerRunes="wide"
+                                    outerShape={7}
+                                    innerRunes="gap"
+                                    innerShape={8}
+                                >
+                                    {cloneElement(SKILL_ICONS.COMPANIONS, { size: 48 })}
+                                </Icon>
+                            </Paper>
+                            <ActionHeader
+                                name={trainingAction.name}
+                                level={actionState.level}
+                                isUnlocked={Boolean(actionState.unlocked)}
+                                currentXP={actionState.xp}
+                                neededXP={neededXP}
+                                tier={trainingAction.tier}
+                                actionXPTable={actionXPTable}
+                                actionMilestones={actionMilestones}
+                            />
+                        </Flex>
+                        <Flex wrap gap={8}>
+                            <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS}
+                                tooltip={<Flex direction="column" gap={8}>
+                                    <Heading h="4" className="w-100 align-center">
+                                        Time needed to complete this action.
+                                    </Heading>
+                                    <hr />
+                                    <EffectStack title="Time effects" icon={OTHER_ICONS.HOURGLASS}
+                                        entries={actionEffectStacks.actionTime ?? []}
+                                        summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "actionTime")} />
+                                </Flex>}>
+                                {formatActionValue(durationMs / 1000)}s
+                            </Badge>
+                            <Badge variant="transparent" interactive icon={OTHER_ICONS.COINS}
+                                tooltip={<Flex direction="column" gap={8}>
+                                    <Heading h="4" className="w-100 align-center">
+                                        Coins consumed each time this action completes.
+                                    </Heading>
+                                    <EffectStack title="Gold cost effects" icon={OTHER_ICONS.COINS}
+                                        entries={actionEffectStacks.baseGoldCost ?? []}
+                                        summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "baseGoldCost")} />
+                                </Flex>}>
+                                {trainingCost.toLocaleString()} Coins
+                            </Badge>
+                            <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES}
+                                tooltip={<Flex direction="column" gap={8}>
+                                    <Heading h="4" className="w-100 align-center">
+                                        XP gained upon completing this action.
+                                    </Heading>
+                                    <Text size="small">
+                                        Every assigned companion below the level cap gains the same XP amount.
+                                    </Text>
+                                    <hr />
+                                    <EffectStack title="XP effects" icon={OTHER_ICONS.SPARKLES}
+                                        entries={actionEffectStacks.xpGain ?? []}
+                                        summary={getActionEffectSummary(player, COMPANION_CONFIG, trainingAction, "xpGain")} />
+                                </Flex>}>
+                                +{formatActionValue(actionXPReward)} XP
+                            </Badge>
+                        </Flex>
+                        <Flex align="center" gap={8}>
+                            <CompanionTrainingProgress
+                                skillId={skillId}
+                                actionId={trainingAction.id}
+                                isActive={isActive}
+                                durationMs={durationMs}
+                            />
+                            <Flex direction="column" className="w-30 action-progress-toggle">
+                                <Button
+                                    variant="companions"
+                                    size="medium"
+                                    className="w-100"
+                                    icon={SKILL_ICONS.COMPANIONS}
+                                    disabled={!isActive && !canStart}
+                                    toggled={isActive}
+                                    onClick={() => {
+                                        if (isActive) stopAction(skillId, trainingAction.id)
+                                        else startAction(skillId, trainingAction.id)
+                                    }}
+                                >
+                                    {isActive ? "Stop" : "Start"}
+                                </Button>
+                            </Flex>
                         </Flex>
                     </Flex>
-                </Flex>
+                </Paper>
             </Paper>
 
             <Paper layer={0}>

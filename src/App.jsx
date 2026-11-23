@@ -119,7 +119,7 @@ function ResponsivePage({
         sideActionsLeft={sideActionsLeft}
         sideActionsRight={sideActionsRight}
       />
-      <ScrollArea maxHeight={window.innerHeight - 8} padding={"0 8px 0 0"}>
+      <ScrollArea maxHeight={window.innerHeight} padding={0}>
         {children}
       </ScrollArea>
     </Flex>

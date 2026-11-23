@@ -52,13 +52,13 @@ export function EffectStack({
                         <Badge variant={entry.variant} size="small">
                             <Heading h="5" weight={400}>{entry.title ?? entry.source}</Heading>
                         </Badge>
-                        <Heading h="5" className="w-60 flex-grow">
+                        <Heading h="5" className="flex-grow align-right">
                             {formatEffectDescription(entry)}
                         </Heading>
-                        <Heading h="5" className="w-40 align-right">
+                        {(entry.showStacks || entry.source) && <Heading h="5" className="align-right">
                             {entry.showStacks ? "x" + entry.stacks : ""}
                             {entry.source && entry.title && entry.source}
-                        </Heading>
+                        </Heading>}
                     </Flex>
                 </Flex>
             )) : (

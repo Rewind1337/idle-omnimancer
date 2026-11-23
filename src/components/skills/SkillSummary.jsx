@@ -7,6 +7,7 @@ import { Heading } from "../Heading"
 import { Text } from "../Text"
 import { EffectStack } from "../EffectStack"
 import { getSkillXPTable } from "../../data/skillConfig"
+import { formatCompactNumber } from "../../utility/helpers"
 
 const formatXP = formatCompactNumber
 

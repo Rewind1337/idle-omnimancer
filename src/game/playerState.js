@@ -293,11 +293,13 @@ export const normalizePlayerState = (savedState) => {
         : []
     const phase = !combatSkillUnlocked
         ? "idle"
-        : savedPhase === "fighting" && !validCombatEncounter
-            ? "idle"
-            : savedPhase === "inventoryFull" && pendingRewards.length === 0
-                ? "rest"
-                : savedPhase
+        : pendingRewards.length > 0
+            ? "inventoryFull"
+            : savedPhase === "fighting" && !validCombatEncounter
+                ? "idle"
+                : savedPhase === "inventoryFull"
+                    ? "rest"
+                    : savedPhase
     const combatRunning = combatSkillUnlocked &&
         Boolean(skills[COMBAT_CONFIG.id]?.actions?.[selectedCombatAction?.id]?.running) &&
         getExplorationAreaUnlocked(selectedAreaId)

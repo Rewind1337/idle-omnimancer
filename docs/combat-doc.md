@@ -29,8 +29,10 @@ Combat is one continuous, automatic cycle of encounters in the selected area.
   - **Quick:** faster attacks with lower damage.
   - **Tank:** higher health with lower damage.
   - Future boss archetypes may combine high health with high damage, or high speed with high damage.
-- Enemy health, damage and attack interval scale with the area's progression/number. Small variance can make encounters of the same area feel slightly different without changing their archetype.
-- The baseline attack interval is **5 seconds**. This is the reference point for balancing both player and enemy attack timing.
+- Enemies inherit their element from the area. For now, every enemy in an area has the same element as that area; the neutral starting area has Neutral enemies. Mixed-element enemy lineups are not currently planned.
+- Enemy health and damage scale with the area's progression/number. Enemy attack interval also scales by a small flat amount: `5 - (areaNumber - 1) * 0.05` seconds before applying the archetype interval multiplier. For example, area 7 has a 4.7-second baseline enemy interval.
+- Small stat variance can make encounters of the same area feel slightly different without changing their archetype.
+- The baseline attack interval is **5 seconds**. This is the reference point for balancing player timing and area 1 enemy timing.
 - There is no base enemy health regeneration and no damage retention between encounters.
 - When all enemies are defeated, the player wins the encounter and receives the area's configured Combat rewards and Combat action XP.
 - A new encounter begins after a **5-second inter-cycle delay**. It is a fresh fight: the player returns to full health, all player and enemy cooldowns/timers are reset, and enemies start at full health. No damage carries between cycles.
@@ -64,6 +66,7 @@ The player configures an ordered rotation containing **Omnibolt** and/or learned
 `(spellcraftActionTier * 10) * (1 + 0.01 * spellcraftActionLevel)`
 
 - The rotation executes one attack at a time, advancing to the next selected entry after each player attack, then looping back to the first entry.
+- The initial rotation has **one slot**. Progression/upgrades may expand it, but the planned maximum is **three slots**.
 - Duplicate choices are not allowed. The selection UI should allow each eligible Spellcraft action only once.
 - Attack interval is based on the 5-second baseline and is modified by applicable Combat stats/effects. Damage modifiers and interval modifiers remain separate.
 - If an attack is not currently usable for a future reason, the eventual implementation must define whether it is skipped or waits; this behavior is not yet decided.
@@ -125,7 +128,7 @@ The corresponding effect types, labels and icons are registered, but they do not
 
 The implementation should keep balance data separate from the combat simulation:
 
-- **Combat configuration:** baseline timings, player starting stats, Omnibolt tier, rotation limits/eligibility, elemental matchup multipliers, health/barrier behavior and enemy archetype definitions.
+- **Combat configuration:** baseline timings, player starting stats, Omnibolt tier, initial and maximum rotation slots, elemental matchup multipliers, health/barrier behavior, area-based enemy interval scaling and enemy archetype definitions.
 - **World area data:** each area's Combat action identity, enemy lineup/type selection and its configured Combat rewards. The existing `combat.produces` field remains the default reward list.
 - **Spellcraft data:** source of each spell's element and tier; the action's current level supplies its damage scaling.
 - **Companion effects:** source of player Combat stat modifiers, applied through the existing effect system.
@@ -135,9 +138,8 @@ Enemy archetypes should define relative stat tendencies, while area progression 
 
 ## Remaining design decisions
 
-- Exact enemy health, damage and attack-interval scaling per area, plus the size of the small random variance.
-- Exact archetype multipliers and how area data selects or overrides an archetype.
-- Whether player attacks always occur at the same interval regardless of which rotation entry is next, and the final interaction between attack interval effects and the 5-second baseline.
+- Exact enemy health and damage scaling per area, the size of stat variance, and exact archetype multipliers.
+- The final interaction between player attack interval effects and the 5-second baseline.
 - How to handle an unavailable rotation entry, if that can occur.
 - Combat unlock requirements and how the passive process is started, resumed and saved.
 - Combat XP amounts/scalars, the exact way Exploration action level affects Combat, and the reward/artifact chance formulas.

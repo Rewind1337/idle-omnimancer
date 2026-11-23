@@ -559,21 +559,6 @@ export function CombatPage() {
                 </Flex>
             </Paper>
 
-            <CombatPanel
-                player={player}
-                action={selectedAction}
-                rotationOptions={rotationOptions}
-            />
-
-            <CombatRotation
-                player={player}
-                rotation={rotation}
-                rotationSlots={rotationSlots}
-                isSkillUnlocked={isSkillUnlocked}
-                action={selectedAction}
-                onChange={setCombatRotation}
-            />
-
             <CombatActionCard
                 player={player}
                 action={selectedAction}
@@ -587,6 +572,22 @@ export function CombatPage() {
                     else startAction(skillId, selectedAction.id)
                 }}
             />
+
+            <CombatRotation
+                player={player}
+                rotation={rotation}
+                rotationSlots={rotationSlots}
+                isSkillUnlocked={isSkillUnlocked}
+                action={selectedAction}
+                onChange={setCombatRotation}
+            />
+
+            <CombatPanel
+                player={player}
+                action={selectedAction}
+                rotationOptions={rotationOptions}
+            />
+
         </Flex>
     )
 }

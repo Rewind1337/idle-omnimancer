@@ -4,6 +4,7 @@ import { ActionHeader } from "../components/actions/ActionHeader"
 import { Badge } from "../components/Badge"
 import { Button } from "../components/Button"
 import { Flex } from "../components/Flex"
+import { Grid } from "../components/Grid"
 import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
 import { Paper } from "../components/Paper"
@@ -93,47 +94,51 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, onUnlock
                                     </Icon>
                                 </Paper>
                                 <Flex direction="column" align="center" gap={8} className="companion-slot-selected">
-                                    <Flex direction="row" justify="center" wrap gap={6}>
+                                    <Flex direction="row" justify="center" gap={6}>
                                         <Heading h="2">{companion.name}</Heading>
-                                        <Badge
-                                            size="small"
-                                            interactive
-                                            icon={OTHER_ICONS.SPARKLES}
-                                            variant={companion.element}
-                                            tooltip="Companion XP earned toward the next companion level."
-                                        >
-                                            {companionProgress.neededXP === null
-                                                ? "MAX LEVEL"
-                                                : companionProgress.xp.toLocaleString() + " / " +
+                                        <Flex wrap justify="end">
+                                            <Badge
+                                                size="medium"
+                                                interactive
+                                                icon={OTHER_ICONS.SPARKLES}
+                                                variant={companion.element}
+                                                tooltip="Companion XP earned toward the next companion level."
+                                            >
+                                                {companionProgress.neededXP === null
+                                                    ? "MAX LEVEL"
+                                                    : companionProgress.xp.toLocaleString() + " / " +
                                                     companionProgress.neededXP.toLocaleString() + " XP"}
-                                        </Badge>
-                                        <Badge
-                                            size="small"
-                                            interactive
-                                            icon={OTHER_ICONS.STAR}
-                                            variant={companion.element}
-                                            tooltip="Companion level increases the strength of both of this companion's effects."
-                                        >
-                                            Lv. {companionProgress.level} / {COMPANION_CONFIG.companionLeveling.maxLevel}
-                                        </Badge>
-                                        <Badge
-                                            size="small"
-                                            interactive
-                                            icon={OTHER_ICONS.MERGE}
-                                            variant={companion.element}
-                                            tooltip="Companion tier determines the base XP required for each level."
-                                        >
-                                            Tier {companion.tier}
-                                        </Badge>
+                                            </Badge>
+                                            <Badge
+                                                size="medium"
+                                                interactive
+                                                icon={OTHER_ICONS.STAR}
+                                                variant={companion.element}
+                                                tooltip="Companion level increases the strength of both of this companion's effects."
+                                            >
+                                                Lv. {companionProgress.level} / {COMPANION_CONFIG.companionLeveling.maxLevel}
+                                            </Badge>
+                                            <Badge
+                                                size="medium"
+                                                interactive
+                                                icon={OTHER_ICONS.MERGE}
+                                                variant={companion.element}
+                                                tooltip="Companion tier determines the base XP required for each level."
+                                            >
+                                                Tier {companion.tier}
+                                            </Badge>
+                                        </Flex>
                                     </Flex>
-                                    <Flex direction="row" justify="center" wrap gap={6}>
+                                    <Flex direction="row" justify="start" wrap gap={6}>
                                         <CompanionEffectBadge
+                                            size="medium"
                                             companion={companion}
                                             player={player}
                                             effectKey="permanentEffect"
                                             variant={companion.element}
                                         />
                                         <CompanionEffectBadge
+                                            size="medium"
                                             companion={companion}
                                             player={player}
                                             effectKey="activeEffect"
@@ -232,6 +237,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                     variant={companion.element}
                     percentage={progress.neededXP ? progress.xp / progress.neededXP * 100 : 100}
                 />
+                <hr />
                 <Flex direction="row" justify="space-between" align="center" gap={8}>
                     <Badge
                         size="small"
@@ -249,6 +255,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                         showScopeLabel={false}
                     />
                 </Flex>
+                <hr />
                 <Flex direction="row" justify="space-between" align="center" gap={8}>
                     <Flex direction="row" justify="start" gap={8} wrap>
                         <Badge
@@ -455,7 +462,7 @@ export function CompanionPage() {
                         </Badge>
                     </Flex>
                     {ownedCompanions.length > 0 ? (
-                        <Flex className="companion-collection-grid" wrap gap={12}>
+                        <Grid columns={1} className="companion-collection-grid" gap={12}>
                             {ownedCompanions.map(companion => (
                                 <CompanionCollectionCard
                                     key={companion.id}
@@ -464,7 +471,7 @@ export function CompanionPage() {
                                     assigned={assignedIds.has(companion.id)}
                                 />
                             ))}
-                        </Flex>
+                        </Grid>
                     ) : (
                         <Text size="small">Unveil companion containers to discover companions.</Text>
                     )}

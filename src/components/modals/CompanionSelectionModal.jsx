@@ -67,23 +67,27 @@ export function CompanionSelectionModal({
                                                 {cloneElement(companion.icon, { size: 48 })}
                                             </Icon>
                                         </Paper>
-                                        <Flex direction="column" align="start" gap={8}>
+                                        <Flex direction="row" justify="center" align="center" gap={8}>
                                             <Heading h="2" className="align-center">{companion.name}</Heading>
                                             <Flex direction="row" align="center" justify="start" wrap gap={6}>
                                                 <CompanionEffectBadge
+                                                    showScopeLabel={false}
+                                                    size="medium"
                                                     companion={companion}
                                                     player={player}
                                                     effectKey="permanentEffect"
                                                     variant={companion.element}
                                                 />
                                                 <CompanionEffectBadge
+                                                    showScopeLabel={false}
+                                                    size="medium"
                                                     companion={companion}
                                                     player={player}
                                                     effectKey="activeEffect"
                                                     variant={companion.element}
                                                 />
                                             </Flex>
-                                            <Flex direction="row" align="center" justify="start" wrap gap={6}>
+                                            <Flex direction="row" align="center" justify="end" wrap gap={6}>
                                                 <Badge
                                                     icon={OTHER_ICONS.STAR}
                                                     interactive

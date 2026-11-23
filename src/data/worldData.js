@@ -7,11 +7,14 @@ const AREA_UNLOCK_COSTS = {
     3: [{ item: "currency:coins", amount: 75000 }],
     4: [{ item: "currency:coins", amount: 150000 }],
     5: [{ item: "currency:coins", amount: 300000 }],
-    6: [{ item: "currency:coins", amount: 600000 }],
-    7: [{ item: "currency:coins", amount: 1200000 }],
-    8: [{ item: "currency:coins", amount: 2400000 }],
-    9: [{ item: "currency:coins", amount: 4800000 }],
-    10: [{ item: "currency:coins", amount: 9600000 }],
+    6: [{ item: "currency:coins", amount: 500000 }],
+    7: [{ item: "currency:coins", amount: 1000000 }],
+    8: [{ item: "currency:coins", amount: 2000000 }],
+    9: [{ item: "currency:coins", amount: 3000000 }],
+    10: [{ item: "currency:coins", amount: 4000000 }],
+    11: [{ item: "currency:coins", amount: 5000000 }],
+    12: [{ item: "currency:coins", amount: 6000000 }],
+    13: [{ item: "currency:coins", amount: 7000000 }],
 }
 
 export const WORLD_DATA = {
@@ -338,7 +341,7 @@ export const WORLD_DATA = {
             element: "earth",
             tier: 8,
             areaNumber: 23,
-            position: { q: -3, r: 3 },
+            position: { q: -4, r: 3 },
             exploration: {
                 produces: ["item:primordial_ore", "item:earth_geode_iv"],
                 unlockCosts: AREA_UNLOCK_COSTS[8],
@@ -352,7 +355,7 @@ export const WORLD_DATA = {
             element: "air",
             tier: 8,
             areaNumber: 24,
-            position: { q: 0, r: -3 },
+            position: { q: 1, r: -4 },
             exploration: {
                 produces: ["item:starfall_aether", "item:air_egg_iv"],
                 unlockCosts: AREA_UNLOCK_COSTS[8],
@@ -366,7 +369,7 @@ export const WORLD_DATA = {
             element: "water",
             tier: 8,
             areaNumber: 25,
-            position: { q: 3, r: 0 },
+            position: { q: 3, r: 1 },
             exploration: {
                 produces: ["item:worldtide_pearls", "item:water_shell_iv"],
                 unlockCosts: AREA_UNLOCK_COSTS[8],
@@ -380,7 +383,7 @@ export const WORLD_DATA = {
             element: "earth",
             tier: 9,
             areaNumber: 26,
-            position: { q: -4, r: 2 },
+            position: { q: -4, r: 0 },
             exploration: {
                 produces: ["item:worldcore_shards"],
                 unlockCosts: AREA_UNLOCK_COSTS[9],
@@ -394,7 +397,7 @@ export const WORLD_DATA = {
             element: "air",
             tier: 9,
             areaNumber: 27,
-            position: { q: 2, r: -4 },
+            position: { q: 4, r: -4 },
             exploration: {
                 produces: ["item:firmament_plumes"],
                 unlockCosts: AREA_UNLOCK_COSTS[9],
@@ -408,7 +411,7 @@ export const WORLD_DATA = {
             element: "water",
             tier: 9,
             areaNumber: 28,
-            position: { q: 2, r: 2 },
+            position: { q: 0, r: 4 },
             exploration: {
                 produces: ["item:leviathan_essence"],
                 unlockCosts: AREA_UNLOCK_COSTS[9],
@@ -422,7 +425,7 @@ export const WORLD_DATA = {
             element: "earth",
             tier: 10,
             areaNumber: 29,
-            position: { q: -4, r: 1 },
+            position: { q: -1, r: -3 },
             exploration: {
                 produces: ["item:genesis_ore", "item:earth_geode_v"],
                 unlockCosts: AREA_UNLOCK_COSTS[10],
@@ -436,7 +439,7 @@ export const WORLD_DATA = {
             element: "air",
             tier: 10,
             areaNumber: 30,
-            position: { q: 3, r: -4 },
+            position: { q: 4, r: -1 },
             exploration: {
                 produces: ["item:origin_aether", "item:air_egg_v"],
                 unlockCosts: AREA_UNLOCK_COSTS[10],
@@ -450,7 +453,7 @@ export const WORLD_DATA = {
             element: "water",
             tier: 10,
             areaNumber: 31,
-            position: { q: 1, r: 3 },
+            position: { q: -3, r: 4 },
             exploration: {
                 produces: ["item:eternal_tideheart", "item:water_shell_v"],
                 unlockCosts: AREA_UNLOCK_COSTS[10],

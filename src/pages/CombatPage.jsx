@@ -135,34 +135,43 @@ function CombatPanel({ player, action, snapshot, rotationOptions }) {
 
                 <Flex direction="column" align="stretch" gap={8}>
                     <Heading h="3">Enemy Lineup</Heading>
-                    {enemies.length > 0 ? enemies.map((enemy, index) => (
-                        <Paper key={enemy.id ?? index} layer={1} variant={enemy.element ?? "neutral"}
-                            className="combatant-panel">
-                            <Flex direction="column" align="stretch" gap={6}>
-                                <Flex direction="row" justify="space-between" align="center" wrap>
-                                    <Heading h="4">{enemy.name}</Heading>
-                                    <Badge variant={enemy.element ?? "neutral"}>
-                                        {enemy.archetype === "heavyHitter" ? "Heavy Hitter" : humanize(enemy.archetype)}
-                                        {enemy.element ? " · " + humanize(enemy.element) : ""}
-                                    </Badge>
+                    {enemies.length > 0 ? enemies.map((enemy, index) => {
+                        const isDefeated = enemy.health <= 0
+                        return (
+                            <Paper key={enemy.id ?? index} layer={1} variant={enemy.element ?? "neutral"}
+                                className="combatant-panel">
+                                <Flex direction="column" align="stretch" gap={6}>
+                                    <Flex direction="row" justify="space-between" align="center" wrap>
+                                        <Heading h="4">{enemy.name}</Heading>
+                                        <Badge variant={isDefeated ? "transparent" : enemy.element ?? "neutral"}>
+                                            {isDefeated
+                                                ? "Defeated"
+                                                : COMBAT_CONFIG.enemyArchetypes[enemy.archetype]?.label ?? humanize(enemy.archetype)}
+                                            {!isDefeated && enemy.element
+                                                ? " · " + humanize(enemy.element)
+                                                : ""}
+                                        </Badge>
+                                    </Flex>
+                                    <Progress
+                                        variant={enemy.element ?? "combat"}
+                                        size="small"
+                                        percentage={enemy.maxHealth > 0
+                                            ? Math.min(100, enemy.health / enemy.maxHealth * 100)
+                                            : 0}
+                                        label={formatNumber(enemy.health) + " / " + formatNumber(enemy.maxHealth) + " HP"}
+                                    />
+                                    <Flex direction="row" wrap gap={8}>
+                                        <Badge variant="transparent">Damage: {formatNumber(enemy.damage)}</Badge>
+                                        <Badge variant="transparent">Attack Interval: {formatSeconds(enemy.attackIntervalMs)}</Badge>
+                                        {!isDefeated && (
+                                            <Badge variant="transparent">Next Attack: {formatSeconds(enemy.attackTimerMs)}</Badge>
+                                        )}
+                                        {currentEnemy?.id === enemy.id && <Badge variant="combat">Current Target</Badge>}
+                                    </Flex>
                                 </Flex>
-                                <Progress
-                                    variant={enemy.element ?? "combat"}
-                                    size="small"
-                                    percentage={enemy.maxHealth > 0
-                                        ? Math.min(100, enemy.health / enemy.maxHealth * 100)
-                                        : 0}
-                                    label={formatNumber(enemy.health) + " / " + formatNumber(enemy.maxHealth) + " HP"}
-                                />
-                                <Flex direction="row" wrap gap={8}>
-                                    <Badge variant="transparent">Damage: {formatNumber(enemy.damage)}</Badge>
-                                    <Badge variant="transparent">Attack Interval: {formatSeconds(enemy.attackIntervalMs)}</Badge>
-                                    <Badge variant="transparent">Next Attack: {formatSeconds(enemy.attackTimerMs)}</Badge>
-                                    {currentEnemy?.id === enemy.id && <Badge variant="combat">Current Target</Badge>}
-                                </Flex>
-                            </Flex>
-                        </Paper>
-                    )) : (
+                            </Paper>
+                        )
+                    }) : (
                         <Text size="small">
                             {snapshot.running
                                 ? "The next encounter is being prepared."

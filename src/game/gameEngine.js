@@ -1610,7 +1610,15 @@ const advanceCombat = (player, deltaMs) => {
     const actionState = action
         ? player.skills?.[COMBAT_CONFIG.id]?.actions?.[action.id]
         : null
-    if (!action || !actionState?.running || !actionState.unlocked) return
+    if (!action || !actionState?.unlocked) return
+
+    // A completed reward belongs to the previous encounter. Resolve it as soon
+    // as Bag space becomes available, even if the player has paused Combat.
+    if (combat.phase === "inventoryFull") {
+        resolvePendingCombatRewards(player)
+        if (combat.phase === "inventoryFull" || !actionState.running) return
+    }
+    if (!actionState.running) return
 
     let remainingMs = deltaMs
     let safetyCounter = 0

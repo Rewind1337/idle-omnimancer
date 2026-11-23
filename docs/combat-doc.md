@@ -113,7 +113,7 @@ Their existing per-level effect definitions are consumed by the Combat stat calc
 - The base artifact chance uses the Exploration artifact chance of **0.1% per victory**. It is multiplied by the selected area's Exploration-level output multiplier and any Combat-targeted Artifact Chance effects, then clamped to 100%.
 - Artifact output is not multiplied into multiple copies by the ordinary output multiplier. A successful artifact roll awards the configured base quantity.
 - Ordinary configured item rewards use the Exploration-level output multiplier and fractional output rolls. (Current area Combat reward lists contain the area artifact.)
-- If an item reward cannot fit into the Bag, its already-rolled item and quantity are kept as a pending reward. Combat waits for space rather than rerolling or losing the item; when space becomes available, the pending reward is granted and the 5-second rest begins.
+- If an item reward cannot fit into the Bag, its already-rolled item and quantity are kept as a pending reward. Combat waits for space rather than rerolling or losing the item; when space becomes available, the pending reward is granted even while Combat is paused, and the 5-second rest begins. The rest countdown itself only advances while Combat is running.
 - Reward item sources are surfaced in the normal item tooltip's Obtaining section.
 
 Unidentified Combat objects and artifact unveiling are not implemented. They remain a future reward system, rather than being added as implicit drops.

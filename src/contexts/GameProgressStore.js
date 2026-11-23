@@ -186,12 +186,9 @@ export const createGameProgressStore = () => {
             activeActionKey = nextActionKey
 
             const combat = player.combat ?? {}
-            const selectedActionRunning = Object.entries(
+            const selectedActionRunning = Object.values(
                 player.skills?.["skill:combat"]?.actions ?? {}
-            ).some(([actionId, actionState]) =>
-                actionState?.running && actionId ===
-                    "action:combat_" + String(combat.selectedAreaId ?? "").replace(/^area:/, "")
-            )
+            ).some(actionState => actionState?.running)
             const encounter = combat.encounter
             const nextCombatSnapshot = {
                 selectedAreaId: combat.selectedAreaId ?? null,

@@ -693,14 +693,11 @@ export function GameProvider({ children }) {
     useEffect(() => {
         if (!isGameReady) return undefined
 
-        const saveCurrentPlayer = () => {
-            if (savePlayerState(playerRef.current)) {
-                progressStore.setLastSavedAt(Date.now())
-            }
-        }
-        const intervalId = window.setInterval(saveCurrentPlayer, SAVE_INTERVAL_MS)
+        const intervalId = window.setInterval(() => {
+            savePlayerState(playerRef.current)
+        }, SAVE_INTERVAL_MS)
 
-        const saveOnExit = saveCurrentPlayer
+        const saveOnExit = () => savePlayerState(playerRef.current)
         window.addEventListener("pagehide", saveOnExit)
 
         return () => {
@@ -708,7 +705,7 @@ export function GameProvider({ children }) {
             window.removeEventListener("pagehide", saveOnExit)
             savePlayerState(playerRef.current)
         }
-    }, [isGameReady, progressStore]
+    }, [isGameReady])
 
     const resetGame = useCallback(() => {
         const freshPlayer = createInitialPlayerState()
@@ -726,7 +723,6 @@ export function GameProvider({ children }) {
         // Clear first so a failed write cannot leave the previous save to reload.
         const storageCleared = clearSavedPlayerState()
         const storageSaved = savePlayerState(freshPlayer)
-        if (storageSaved) progressStore.setLastSavedAt(Date.now())
 
         playerRef.current = freshPlayer
         suppressNotificationsRef.current = true

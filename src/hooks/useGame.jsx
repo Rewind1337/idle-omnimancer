@@ -96,6 +96,3 @@ export const useGameUnlockedSkills = () =>
 
 export const useGameUnlockedCompanions = () =>
     useGameStoreSnapshot("subscribeUnlockedCompanions", "getUnlockedCompanions")
-
-export const useGameLastSavedAt = () =>
-    useGameStoreSnapshot("subscribeLastSavedAt", "getLastSavedAt")

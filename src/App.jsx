@@ -25,21 +25,11 @@ import { UnveilingPage } from "./pages/UnveilingPage";
 import { CompanionPage } from "./pages/CompanionPage";
 import { OTHER_ICONS, SKILL_ICONS } from "./data/iconLibrary";
 import { COMPANION_DATA } from "./data/companionData";
-import { useGame, useGameLastSavedAt, useGameUnlockedCompanions, useGameUnlockedSkills } from "./hooks/useGame";
+import { useGame, useGameUnlockedCompanions, useGameUnlockedSkills } from "./hooks/useGame";
 
 import { SKILL_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
 
 const COMPANIONS_NAVIGATION = SKILL_NAVIGATION.find(skill => skill.skillId === "skill:companions")
-
-const formatSaveAge = (lastSavedAt, now) => {
-  const elapsedSeconds = Math.max(0, Math.floor((now - lastSavedAt) / 1000))
-  if (elapsedSeconds < 60) return `${elapsedSeconds}s`
-
-  const elapsedMinutes = Math.floor(elapsedSeconds / 60)
-  if (elapsedMinutes < 60) return `${elapsedMinutes}m`
-
-  return `${Math.floor(elapsedMinutes / 60)}h`
-}
 
 function ResponsivePage({
   children,
@@ -54,15 +44,7 @@ function ResponsivePage({
   const [missionsModalVisible, setMissionsModalVisible] = useState(false)
   const [settingsModalVisible, setSettingsModalVisible] = useState(false)
   const { resetGame } = useGame()
-  const lastSavedAt = useGameLastSavedAt()
-  const [saveClock, setSaveClock] = useState(() => Date.now())
-  const saveAge = formatSaveAge(lastSavedAt, saveClock)
   const unlockedSkills = useGameUnlockedSkills()
-
-  useEffect(() => {
-    const intervalId = window.setInterval(() => setSaveClock(Date.now()), 1000)
-    return () => window.clearInterval(intervalId)
-  }, [])
   const unlockedCompanions = useGameUnlockedCompanions()
   const companionsUnlocked = unlockedSkills.includes("skill:companions")
 
@@ -117,8 +99,7 @@ function ResponsivePage({
       className="w-min"
       icon={OTHER_ICONS.SETTINGS}
       aria-label="Settings"
-      title={`Last saved ${saveAge} ago. Autosaves every second.`}
-      badge={saveAge}
+      title="Settings"
       onClick={() => setSettingsModalVisible(true)}
     >Settings</Button>
   )

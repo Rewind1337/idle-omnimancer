@@ -48,10 +48,11 @@ export const SPELLCRAFT_CONFIG = {
     },
 
     milestones: [
-        { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 1.1 },
-        { level: 20, reach: "skill:transmutation", type: "mult", effect: "itemOutput", value: 1.2 },
-        { level: 30, reach: "global", type: "mult", effect: "actionTime", value: 1.1 },
-        // 40, 50, 60, 70, 80, 90, 100
+        { level: 10, reach: "local", type: "mult", effect: "manaRegeneration", value: 1.1 },
+        { level: 20, reach: "skill:transmutation", type: "mult", effect: "itemOutput", value: 1.1 },
+        { level: 30, reach: "global", type: "mult", effect: "actionTime", value: 1.2 },
+        { level: 40, reach: "local", type: "mult", effect: "manaCapacity", value: 1.25 },
+        { level: 50, reach: "skill:transmutation", type: "mult", effect: "actionTime", value: 1.25 },
     ],
 
     actionMilestones: [

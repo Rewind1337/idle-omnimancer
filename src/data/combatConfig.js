@@ -36,6 +36,20 @@ export const COMBAT_CONFIG = {
         finalMultPerLevel: 0.999,
     },
 
+    milestones: [
+        { level: 10, reach: "local", type: "mult", effect: "combatDamage", value: 1.1 },
+        { level: 20, reach: "skill:exploration", type: "mult", effect: "actionTime", value: 1.1 },
+        { level: 30, reach: "global", type: "mult", effect: "itemOutput", value: 1.2 },
+        { level: 40, reach: "local", type: "mult", effect: "combatHealth", value: 1.25 },
+        { level: 50, reach: "skill:exploration", type: "mult", effect: "itemOutput", value: 1.25 },
+    ],
+
+    actionMilestones: [
+        { levels: 5, type: "mult", effect: "combatDamage", value: 1.01 },
+        { levels: 10, type: "mult", effect: "combatInterval", value: 0.99 },
+        { levels: 20, type: "mult", effect: "artifactChance", value: 1.02 },
+    ],
+
     // The player and enemies use independent five-second attack baselines.
     timing: {
         playerAttackIntervalMs: 5000,

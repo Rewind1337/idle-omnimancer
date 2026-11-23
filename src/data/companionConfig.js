@@ -45,7 +45,13 @@ export const COMPANION_CONFIG = {
         perTierMult: 1,
         finalMultPerLevel: 1,
     },
-    milestones: [],
+    milestones: [
+        { level: 10, reach: "local", type: "mult", effect: "sellValue", value: 1.1 },
+        { level: 20, reach: "skill:unveiling", type: "mult", effect: "actionTime", value: 1.1 },
+        { level: 30, reach: "global", type: "mult", effect: "xpGain", value: 1.2 },
+        { level: 40, reach: "local", type: "mult", effect: "actionTime", value: 1.25 },
+        { level: 50, reach: "skill:unveiling", type: "mult", effect: "xpGain", value: 1.25 },
+    ],
     actionMilestones: [
         { levels: 5, type: "mult", effect: "actionTime", value: 1.02 },
         { levels: 10, type: "mult", effect: "xpGain", value: 1.035 },

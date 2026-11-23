@@ -23,7 +23,7 @@
 | Transmutation | Active | Combine research materials and elemental essences into refined resources. |
 | Exploration | Active | Explore named areas on a shared hex map, develop each area and discover resources and companion containers. |
 | Unveiling | Active | Use Material Destruction actions to gain insight; unveil eligible unidentified objects and companion containers once the skill-level requirement is met. |
-| Combat | Passive | Continuously fight in a selected unlocked Exploration area; produce combat rewards, unidentified objects and chances at area artifacts. |
+| Combat | Passive | Continuously fight in a selected unlocked Exploration area; produce ordinary Exploration resources and rare unidentified area artifacts. |
 | Companions | Collection system | Collect and train 19 companions (15 elemental and four neutral), assign them to four slots, and gain permanent global plus stronger slot-based skill effects. The skill unlocks after the first companion is unveiled. |
 
 Research, Spellcraft and Transmutation establish the initial resource and progression loop. Exploration is planned as the fourth active skill, followed by Unveiling as a fifth active skill. Combat is the first planned passive skill.
@@ -740,13 +740,13 @@ Gold is a shared currency used for action unlocks, skill unlocks, inventory expa
 | Spellcraft | 100 Loose Notes and 1,000 coins. |
 | Transmutation | Gold + Research materials + elemental essences produced by Spellcraft. |
 | Exploration | 5 Earth Catalyst I, 5 Air Catalyst I, 5 Water Catalyst I and 10,000 coins. Unlocking the skill also unlocks The Crossroads. |
-| Unveiling | Active skill; unlocking it also unlocks its first Material Destruction action, Destroy Research Books, and **Unveil Artifact or Companion**. Gold/resource requirements are undecided. |
+| Unveiling | Active skill; unlocking it also unlocks Destroy Research Books and **Unveil Artifact or Companion**. Current cost: 5 each of Mossbound Ore, Whispering Seeds and Stillwater Reeds, plus 10,000 Coins. |
 | Combat | Passive skill; currently costs 25 each of Earth/Air/Water Catalyst II, 250 each of Mossbound Ore, Whispering Seeds and Stillwater Reeds, plus 25,000 Coins. |
 
 - Unlocking a skill should normally include its first action.
 - Resource requirements should connect skills without demanding that every earlier action reach level 100.
 - Other skill and action resource quantities and gold costs still need balancing; the current Transmutation config uses editable starter values.
-- The Companion collection's separate unlock conditions, if any, are also undecided.
+- The Companions skill unlocks automatically when the first unique companion container is successfully unveiled.
 
 ### 13.2 Research actions and further action unlocks
 
@@ -870,7 +870,7 @@ A possible initial progression:
 14. Collect the revealed Companions, area artifacts and other valuable resources; retain or sell them as appropriate.
 15. Continue developing whichever actions, areas and systems best serve the player's current goals.
 
-This is an example of how systems can connect, not a mandatory sequence. Exact Combat, Unveiling and Companion unlock timing remains undecided.
+This is an example of how systems can connect, not a mandatory sequence. The current unlock gates and costs are defined in their skill configurations and can be rebalanced independently.
 
 ### 16.2 Open-ended progression
 
@@ -886,7 +886,7 @@ This is an example of how systems can connect, not a mandatory sequence. Exact C
 - Spellcraft essences support Transmutation and potentially later systems.
 - Transmutation creates refined materials for future progression.
 - Exploration provides area resources and elemental companion containers.
-- Exploration area levels improve Combat output, Combat XP and artifact chance in their respective areas.
+- Exploration area levels improve Combat output, Combat XP and the chance for the corresponding unidentified artifact to drop.
 - Combat produces ordinary Exploration resources plus rare, area-specific unidentified artifacts. Unveiling identifies each unidentified artifact with a 10% chance per attempt.
 - Unveiling consumes eligible materials to gain XP; its overall skill level gates access to higher-level containers and unidentified objects.
 - **Unveil Artifact or Companion** opens elemental containers and identifies objects, potentially revealing Companions, area artifacts and other valuable resources.

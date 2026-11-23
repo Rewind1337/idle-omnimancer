@@ -81,7 +81,7 @@ export function Navigation({
             className="navigation-tabs"
           />
           {sideActionsLeft && (
-            <div className="navigation-side-section navigation-side-section-left" role="group" aria-label="Companions, shop, missions and bag">
+            <div className="navigation-side-section navigation-side-section-left" role="group" aria-label="Shop, missions and bag">
               {sideActionsLeft}
             </div>
           )}

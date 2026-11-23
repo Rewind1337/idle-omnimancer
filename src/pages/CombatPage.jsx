@@ -422,7 +422,7 @@ export function CombatPage() {
                         selectedAreaId={selectedArea.id}
                         actionLevels={actionLevels}
                         unlockedAreaIds={unlockedAreaIds}
-                        selectableAreaIds={unlockedAreaIds}
+                        selectableAreaIds={isSkillUnlocked ? unlockedAreaIds : []}
                         areaMarkers={areaMarkers}
                         onSelectArea={selectCombatArea}
                     />

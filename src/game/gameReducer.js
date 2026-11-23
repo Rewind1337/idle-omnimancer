@@ -175,6 +175,7 @@ export const gameReducer = (state, action) => {
 
         case "TOGGLE_PASSIVE_ACTION": {
             const { skillId, actionId, running } = action
+            if (skillId === COMBAT_CONFIG.id) return state
             if (getActionActivity(skillId, actionId) !== "passive") return state
             if (!running || !canStartAction(state, skillId, actionId)) return state
 

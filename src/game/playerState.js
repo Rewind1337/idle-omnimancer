@@ -250,16 +250,24 @@ export const normalizePlayerState = (savedState) => {
         Number.isFinite(savedEncounter.player.attackIntervalMs) && savedEncounter.player.attackIntervalMs > 0 &&
         Number.isFinite(savedEncounter.player.attackTimerMs) && savedEncounter.player.attackTimerMs >= 0
         ? {
-            enemies: savedEncounter.enemies.map((enemy, index) => ({
-                ...enemy,
-                id: selectedCombatAction.id + "-enemy-" + index,
-                health: Math.min(enemy.maxHealth, enemy.health),
-                attackTimerMs: Math.min(enemy.attackIntervalMs, enemy.attackTimerMs),
-            })),
+            enemies: savedEncounter.enemies.map((enemy, index) => {
+                const archetype = COMBAT_CONFIG.enemyArchetypes[enemy.archetype]
+                return {
+                    ...enemy,
+                    id: selectedCombatAction.id + "-enemy-" + index,
+                    name: (archetype?.label ?? "Enemy") + " " + selectedCombatAction.name,
+                    element: selectedCombatAction.element ?? "neutral",
+                    health: Math.min(enemy.maxHealth, enemy.health),
+                    attackTimerMs: Math.min(enemy.attackIntervalMs, enemy.attackTimerMs),
+                }
+            }),
             player: {
                 ...savedEncounter.player,
-                health: Math.min(savedEncounter.player.maxHealth, savedEncounter.player.health),
                 barrier: Math.min(savedEncounter.player.maxHealth * 0.49, savedEncounter.player.barrier),
+                health: Math.max(
+                    Math.min(savedEncounter.player.maxHealth * 0.49, savedEncounter.player.barrier),
+                    Math.min(savedEncounter.player.maxHealth, savedEncounter.player.health)
+                ),
                 attackTimerMs: Math.min(savedEncounter.player.attackIntervalMs, savedEncounter.player.attackTimerMs),
             },
             rotationIndex: clampInteger(savedEncounter.rotationIndex, 0, rotation.length - 1, 0),

@@ -15,10 +15,13 @@ export const COMBAT_CONFIG = {
     activity: "passive",
 
     unlockCosts: [
-        { item: "item:earth_catalyst_i", amount: 10 },
-        { item: "item:air_catalyst_i", amount: 10 },
-        { item: "item:water_catalyst_i", amount: 10 },
-        { item: "currency:coins", amount: 50000 },
+        { item: "item:earth_catalyst_ii", amount: 25 },
+        { item: "item:air_catalyst_ii", amount: 25 },
+        { item: "item:water_catalyst_ii", amount: 25 },
+        { item: "item:mossbound_ore", amount: 250 },
+        { item: "item:whispering_seeds", amount: 250 },
+        { item: "item:stillwater_reeds", amount: 250 },
+        { item: "currency:coins", amount: 25000 },
     ],
 
     skillXP: { firstLevelXP: 3 },

@@ -8,13 +8,13 @@ const AREA_UNLOCK_COSTS = {
     4: [{ item: "currency:coins", amount: 150000 }],
     5: [{ item: "currency:coins", amount: 300000 }],
     6: [{ item: "currency:coins", amount: 500000 }],
-    7: [{ item: "currency:coins", amount: 1000000 }],
-    8: [{ item: "currency:coins", amount: 2000000 }],
-    9: [{ item: "currency:coins", amount: 3000000 }],
-    10: [{ item: "currency:coins", amount: 4000000 }],
-    11: [{ item: "currency:coins", amount: 5000000 }],
-    12: [{ item: "currency:coins", amount: 6000000 }],
-    13: [{ item: "currency:coins", amount: 7000000 }],
+    7: [{ item: "currency:coins", amount: 750000 }],
+    8: [{ item: "currency:coins", amount: 1000000 }],
+    9: [{ item: "currency:coins", amount: 1500000 }],
+    10: [{ item: "currency:coins", amount: 2000000 }],
+    11: [{ item: "currency:coins", amount: 3000000 }],
+    12: [{ item: "currency:coins", amount: 4000000 }],
+    13: [{ item: "currency:coins", amount: 5000000 }],
 }
 
 export const WORLD_DATA = {

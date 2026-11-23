@@ -60,18 +60,15 @@
         transition: opacity 160ms ease, filter 160ms ease;
 
         &[data-visible="false"] {
-            opacity: 0.2;
+            opacity: 0.1;
             filter: grayscale(0.85);
             pointer-events: none;
             cursor: default;
         }
 
         &[data-visible="true"][data-unlocked="false"] {
-            opacity: 0.84;
-
-            polygon {
-                stroke-dasharray: 7 4;
-            }
+            opacity: 0.3;
+            filter: grayscale(0.25);
         }
 
         &[data-visible="true"][data-unlocked="true"] {

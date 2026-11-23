@@ -49,6 +49,7 @@ export const createGameProgressStore = () => {
     const inventorySlotsListeners = new Set()
     const unlockedSkillsListeners = new Set()
     const unlockedCompanionsListeners = new Set()
+    const lastSavedAtListeners = new Set()
 
     let activeActionKey = null
     let manaCurrent = 0
@@ -57,6 +58,7 @@ export const createGameProgressStore = () => {
     let inventorySlots = null
     let unlockedSkills = EMPTY_ARRAY
     let unlockedCompanions = EMPTY_ARRAY
+    let lastSavedAt = Date.now()
 
     return {
         getActionProgress(skillId, actionId) {
@@ -136,6 +138,21 @@ export const createGameProgressStore = () => {
         subscribeUnlockedCompanions(listener) {
             unlockedCompanionsListeners.add(listener)
             return () => unlockedCompanionsListeners.delete(listener)
+        },
+
+        getLastSavedAt() {
+            return lastSavedAt
+        },
+
+        subscribeLastSavedAt(listener) {
+            lastSavedAtListeners.add(listener)
+            return () => lastSavedAtListeners.delete(listener)
+        },
+
+        setLastSavedAt(timestamp) {
+            if (!Number.isFinite(timestamp) || timestamp <= lastSavedAt) return
+            lastSavedAt = timestamp
+            notifySet(lastSavedAtListeners)
         },
 
         // Called for every simulation update. This path intentionally handles

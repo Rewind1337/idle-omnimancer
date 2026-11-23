@@ -8,7 +8,7 @@ import { Text } from "../Text"
 import { EffectStack } from "../EffectStack"
 import { getSkillXPTable } from "../../data/skillConfig"
 
-const formatXP = value => Number(value).toLocaleString()
+const formatXP = formatCompactNumber
 
 export function SkillSummary({
     title,
@@ -18,8 +18,8 @@ export function SkillSummary({
     icon,
     milestones = [],
     progressEnabled = true,
-    skillXPTooltip = "Skill XP is earned from completed Action level-ups. Each Action level gained contributes 1 Skill XP.",
-    totalProgressTooltip = "Total progress in this skill, derived from the levels of all its Actions.",
+    skillXPTooltip = "Skill XP",
+    totalProgressTooltip = "Skill progression",
 }) {
     const totalPercentage = progressEnabled && skillProgress?.maxXP > 0
         ? (skillProgress.totalXP / skillProgress.maxXP) * 100
@@ -56,17 +56,17 @@ export function SkillSummary({
                                         <Heading h="4" className="w-100 align-center">{totalProgressTooltip}</Heading>
                                         {nextSkillLevels.length > 0 && (
                                             <Flex direction="column" gap={4}>
-                                                <Heading h="5">Next Skill Levels</Heading>
+                                                <Heading h="5">Next Skill Lvls.</Heading>
                                                 {nextSkillLevels.map(entry => (
                                                     <Text key={entry.level} size="small">
-                                                        Level {entry.level + 1}: {formatXP(entry.neededXP)} Skill XP
+                                                        Lv. {entry.level + 1}: {formatXP(entry.neededXP)} Skill XP
                                                     </Text>
                                                 ))}
                                             </Flex>
                                         )}
                                     </>
                                 ) : (
-                                    <Heading h="4" className="w-100 align-center">Skill progression is not connected yet. This page is currently a development preview.</Heading>
+                                    <Heading h="4" className="w-100 align-center">Skill progression unavailable.</Heading>
                                 )}
                                 {milestones.length > 0 && (
                                     <>

@@ -3,7 +3,6 @@ import { EffectStack } from "./EffectStack"
 import { formatEffectDescription } from "../utility/effectFormatting"
 import { Flex } from "./Flex"
 import { Heading } from "./Heading"
-import { Text } from "./Text"
 
 import { EFFECT_ICONS, OTHER_ICONS } from "../data/iconLibrary"
 import { getCompanionEffectEntry } from "../game/gameEngine"
@@ -26,10 +25,6 @@ export function CompanionEffectBadge({
     const targetSkillName = SKILL_NAVIGATION.find(entry =>
         entry.skillId === companion.activeEffect?.targetSkillId
     )?.name ?? humanize((companion.activeEffect?.targetSkillId ?? "").replace(/^skill:/, ""))
-    const effectScope = isPermanent
-        ? "This effect applies globally while this companion is unlocked."
-        : "This effect applies to " + targetSkillName +
-            " while this companion is assigned to an active slot."
 
     return (
         <Badge
@@ -40,9 +35,8 @@ export function CompanionEffectBadge({
             tooltip={
                 <Flex direction="column" gap={8}>
                     <Heading h="4" className="w-100 align-center">
-                        {isPermanent ? "Permanent Effect" : "Active-only Effect"}
+                        {isPermanent ? "Permanent effect" : "Active effect · " + targetSkillName}
                     </Heading>
-                    <Text size="small">{effectScope}</Text>
                     <hr />
                     <EffectStack
                         title={isPermanent ? "Permanent Effect" : "Active Effect"}

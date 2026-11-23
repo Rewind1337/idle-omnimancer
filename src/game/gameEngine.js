@@ -250,8 +250,8 @@ export const getItemActionSources = (itemId, player = null) => {
                             name: actionName + " Combat",
                             amount: rewardAmount,
                             amountLabel: ITEM_DATA_BY_ID[rewardItem]?.type === "unidentifiedArtifact"
-                                ? (artifactChance * 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "% chance per victory"
-                                : String(rewardAmount) + " per victory",
+                                ? (artifactChance * 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%"
+                                : undefined,
                             type: "action",
                             badgeVariant: "combat",
                         })
@@ -269,7 +269,6 @@ export const getItemActionSources = (itemId, player = null) => {
                         id: "combat-exploration-reward-" + action.id + "-" + itemId,
                         name: actionName + " Combat",
                         amount: rewardAmount,
-                        amountLabel: String(rewardAmount) + " per victory",
                         type: "action",
                         badgeVariant: "combat",
                     })
@@ -289,7 +288,7 @@ export const getItemActionSources = (itemId, player = null) => {
                         amountLabel: ((action.identificationChance ?? 0.1) * 100).toLocaleString(undefined, {
                             minimumFractionDigits: 0,
                             maximumFractionDigits: 2,
-                        }) + "% chance per unveil",
+                        }) + "%",
                         type: "action",
                         badgeVariant: skill.variant,
                     })
@@ -343,7 +342,7 @@ export const getItemActionSources = (itemId, player = null) => {
                         amountLabel: (companionChance * 100).toLocaleString(undefined, {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
-                        }) + "% chance",
+                        }) + "%",
                         type: "action",
                         badgeVariant: skill.variant
                     })
@@ -852,7 +851,7 @@ export const getSkillMilestoneDetails = (player, skill) => {
                 title: getSkillName(skill.id) + " Lv. " + milestone.level,
                 source: getMilestoneTargetLabel(skill, milestone.reach),
                 sourceVariant: milestone.reach === "global"
-                    ? "transparent"
+                    ? "rainbow"
                     : SKILL_CONFIG_BY_ID[targetSkillId]?.variant ?? "transparent",
                 effect: milestone.effect,
                 type: milestone.type,
@@ -886,7 +885,7 @@ export const getActionMilestoneDetails = (player, skill, action) => {
                     : "Every " + milestone.levels + " Lvls."),
                 source: milestone.reach ? getMilestoneTargetLabel(skill, milestone.reach) : undefined,
                 sourceVariant: milestone.reach === "global"
-                    ? "transparent"
+                    ? "rainbow"
                     : SKILL_CONFIG_BY_ID[targetSkillId]?.variant ?? "transparent",
                 effect: milestone.effect,
                 type: milestone.type,
@@ -1084,6 +1083,7 @@ export const getActionEffectSummary = (player, skill, action, effect) => {
             unit: "",
             precision: 4,
             showCombined: false,
+            showBase: false,
         }
     }
 
@@ -1098,6 +1098,7 @@ export const getActionEffectSummary = (player, skill, action, effect) => {
             unit: "%",
             precision: 2,
             showCombined: false,
+            showBase: false,
         }
     }
 
@@ -1175,6 +1176,10 @@ export const getActionEffectStacks = (player, skill, action) => {
                 entries.push({
                     id: "skill-" + sourceSkill.id + "-" + milestone.level + "-" + effect + "-" + milestoneIndex,
                     title: getSkillName(sourceSkill.id) + " Lv. " + milestone.level,
+                    source: getMilestoneTargetLabel(sourceSkill, milestone.reach),
+                    sourceVariant: milestone.reach === "global"
+                        ? "rainbow"
+                        : SKILL_CONFIG_BY_ID[milestone.reach === "local" ? sourceSkill.id : milestone.reach]?.variant ?? "transparent",
                     effect,
                     type: milestone.type,
                     value: milestone.value,

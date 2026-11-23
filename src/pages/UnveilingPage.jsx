@@ -151,7 +151,7 @@ function UnveilingActionCard({
                                         icon={OTHER_ICONS.ARROW_UP_RIGHT}
                                         onClick={onChooseItems}
                                     >
-                                        {selectedItem ? "Change" : "Choose Item"}
+                                        {selectedItem ? "Change Item" : "Choose Item"}
                                     </Button>
                                 ) : null}
                             />

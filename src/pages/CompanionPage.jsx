@@ -101,7 +101,7 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, isTraini
                                                 interactive
                                                 icon={OTHER_ICONS.SPARKLES}
                                                 variant={"transparent"}
-                                                tooltip="Companion XP earned toward the next companion level."
+                                                tooltip="XP toward the next companion level."
                                             >
                                                 {companionProgress.neededXP === null
                                                     ? "MAX LEVEL"
@@ -113,7 +113,7 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, isTraini
                                                 interactive
                                                 icon={OTHER_ICONS.STAR}
                                                 variant={"transparent"}
-                                                tooltip="Companion level increases the strength of both of this companion's effects."
+                                                tooltip="Companion effect strength."
                                             >
                                                 Lv. {companionProgress.level} / {COMPANION_CONFIG.companionLeveling.maxLevel}
                                             </Badge>
@@ -122,7 +122,7 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, isTraini
                                                 interactive
                                                 icon={OTHER_ICONS.MERGE}
                                                 variant={"transparent"}
-                                                tooltip="Companion tier determines the base XP required for each level."
+                                                tooltip="Companion tier."
                                             >
                                                 Tier {companion.tier}
                                             </Badge>
@@ -237,7 +237,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                                 icon={OTHER_ICONS.SPARKLES}
                                 variant={"transparent"}
                                 interactive
-                                tooltip="Companion XP earned toward the next companion level."
+                                tooltip="XP toward the next companion level."
                             >
                                 {progress.neededXP === null
                                     ? "MAX LEVEL"
@@ -248,7 +248,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                                 icon={OTHER_ICONS.STAR}
                                 variant={"transparent"}
                                 interactive
-                                tooltip="Companion level increases the strength of both of this companion's effects."
+                                tooltip="Companion effect strength."
                             >
                                 Lv. {progress.level}
                             </Badge>
@@ -257,7 +257,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                                 icon={OTHER_ICONS.MERGE}
                                 variant={"transparent"}
                                 interactive
-                                tooltip="Companion tier determines the base XP required for each level."
+                                tooltip="Companion tier."
                             >
                                 Tier {companion.tier}
                             </Badge>
@@ -277,7 +277,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                         size="small"
                         variant="exploration"
                         interactive
-                        tooltip="This effect is always active while the companion is unlocked."
+                        tooltip="Always active while owned."
                     >
                         Permanent
                     </Badge>
@@ -297,8 +297,8 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                             variant={assigned ? targetSkillConfig?.variant ?? "transparent" : "transparent"}
                             interactive
                             tooltip={assigned
-                                ? "This companion is assigned to an active slot, so its active effect is enabled for " + targetSkill + "."
-                                : "This companion is not assigned to a slot, so its active effect for " + targetSkill + " is currently disabled."}
+                                ? "Active while assigned to a slot."
+                                : "Assign to a slot to activate."}
                         >
                             {targetSkill}
                         </Badge>
@@ -368,8 +368,6 @@ export function CompanionPage() {
                     milestones={getSkillMilestoneDetails(player, COMPANION_CONFIG)}
                     variant="companions"
                     progressEnabled
-                    skillXPTooltip={`Companion skill XP is derived from the combined levels of all ${COMPANION_DATA.length} companions. The XP required for each Skill level increases gradually.`}
-                    totalProgressTooltip={`Total progress is the sum of all companion levels, for a maximum of ${COMPANION_DATA.length * COMPANION_CONFIG.companionLeveling.maxLevel} levels.`}
                     icon={
                         <Icon size={64} variant="companions" outerRunes="solid" outerShape={7}
                             innerRunes="gap" innerShape={5}>
@@ -434,7 +432,7 @@ export function CompanionPage() {
                             <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS}
                                 tooltip={<Flex direction="column" gap={8}>
                                     <Heading h="4" className="w-100 align-center">
-                                        Time needed to complete this action.
+                                        Action time
                                     </Heading>
                                     <hr />
                                     <EffectStack title="Time effects" icon={OTHER_ICONS.HOURGLASS}
@@ -446,7 +444,7 @@ export function CompanionPage() {
                             <Badge variant="transparent" interactive icon={OTHER_ICONS.COINS}
                                 tooltip={<Flex direction="column" gap={8}>
                                     <Heading h="4" className="w-100 align-center">
-                                        Coins consumed each time this action completes.
+                                        Gold cost
                                     </Heading>
                                     <EffectStack title="Gold cost effects" icon={OTHER_ICONS.COINS}
                                         entries={actionEffectStacks.baseGoldCost ?? []}
@@ -457,7 +455,7 @@ export function CompanionPage() {
                             <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES}
                                 tooltip={<Flex direction="column" gap={8}>
                                     <Heading h="4" className="w-100 align-center">
-                                        XP gained upon completing this action.
+                                        Action XP
                                     </Heading>
                                     <Text size="small">
                                         Every assigned companion below the level cap gains the same XP amount.

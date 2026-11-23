@@ -415,7 +415,7 @@ function CombatActionCard({ player, action, actionState, isSkillUnlocked, isArea
                                     icon={OTHER_ICONS.SPARKLES}
                                     tooltip={<Flex direction="column" gap={8}>
                                         <Heading h="4" className="w-100 align-center">
-                                            Combat XP awarded for each completed encounter.
+                                            Combat XP per encounter.
                                         </Heading>
                                         <Text size="small">
                                             The displayed reward includes the selected area's Exploration-level output bonus.
@@ -437,7 +437,7 @@ function CombatActionCard({ player, action, actionState, isSkillUnlocked, isArea
                                     icon={OTHER_ICONS.FLAME}
                                     tooltip={<Flex direction="column" gap={8}>
                                         <Heading h="4" className="w-100 align-center">
-                                            Exploration progression improves this area's Combat rewards.
+                                            Combat rewards from Exploration progression.
                                         </Heading>
                                         <Text size="small">
                                             Each level above Exploration Action Level 1 adds 1% to ordinary Combat item output, Combat XP and the chance of the area's unidentified artifact dropping.

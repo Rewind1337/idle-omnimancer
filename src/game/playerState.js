@@ -157,6 +157,8 @@ export const normalizePlayerState = (savedState) => {
             const hasValidSelectedItem = selection
                 ? Boolean(
                     selectedItemData &&
+                    !((selection.excludeTypes ?? []).includes(selectedItemData.type)) &&
+                    !((selection.excludeGroups ?? []).includes(selectedItemData.group)) &&
                     ((selection.groups ?? []).includes(selectedItemData.group) ||
                         (selection.types ?? []).includes(selectedItemData.type))
                 )
@@ -247,8 +249,9 @@ export const normalizePlayerState = (savedState) => {
         savedEncounter.enemies.length === expectedLineup.length &&
         savedEncounter.enemies.every((enemy, index) => {
             const expectedArchetype = expectedLineup[index]?.archetype ?? "average"
+            const savedArchetype = enemy?.archetype === "heavyHitter" ? "strong" : enemy?.archetype
             return isRecord(enemy) &&
-                enemy.archetype === expectedArchetype &&
+                savedArchetype === expectedArchetype &&
                 Number.isFinite(enemy.maxHealth) && enemy.maxHealth > 0 &&
                 Number.isFinite(enemy.health) && enemy.health >= 0 &&
                 Number.isFinite(enemy.damage) && enemy.damage >= 0 &&
@@ -267,6 +270,7 @@ export const normalizePlayerState = (savedState) => {
                 const archetype = COMBAT_CONFIG.enemyArchetypes[enemy.archetype]
                 return {
                     ...enemy,
+                    archetype: enemy.archetype === "heavyHitter" ? "strong" : enemy.archetype,
                     id: selectedCombatAction.id + "-enemy-" + index,
                     name: (archetype?.label ?? "Enemy") + " " + selectedCombatAction.name,
                     element: selectedCombatAction.element ?? "neutral",
@@ -308,8 +312,10 @@ export const normalizePlayerState = (savedState) => {
         ? "idle"
         : pendingRewards.length > 0
             ? "inventoryFull"
-            : savedPhase === "fighting" && !validCombatEncounter
+            : !activeAreaId
                 ? "idle"
+                : savedPhase === "fighting" && !validCombatEncounter
+                    ? "idle"
                 : savedPhase === "inventoryFull"
                     ? "rest"
                     : savedPhase

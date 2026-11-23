@@ -136,7 +136,7 @@ There is one unique unidentified artifact item per area. Each item:
 - Requires overall Unveiling level **5 per tier** (Tier I = 5; Tier X = 50), matching the same progression pattern as companion containers.
 - Points to its corresponding identified artifact through `revealsItemId`.
 
-Unidentified artifacts are Combat resources, not identified artifacts. The identified items retain semantic type `artifact` and use the separate `artifacts` inventory group.
+Unidentified artifacts are Combat resources, not identified artifacts. They are explicitly excluded from **Study Combat Materials** and can only be consumed by **Unveil Artifact or Companion**. The identified items retain semantic type `artifact` and use the separate `artifacts` inventory group.
 
 ## Artifact identification through Unveiling
 

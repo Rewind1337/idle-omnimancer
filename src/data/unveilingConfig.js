@@ -85,7 +85,7 @@ export const UNVEILING_CONFIG = {
             name: "Study Combat Materials",
             tier: 1,
             unlockCosts: [{ item: "currency:coins", amount: 400000 }],
-            inputSelection: { groups: ["combat"] },
+            inputSelection: { groups: ["combat"], excludeTypes: ["unidentifiedArtifact"] },
             durationBySelectedItemTier: true,
             xpFormula: { type: "itemBaseValuePower", exponent: 0.7 },
         },

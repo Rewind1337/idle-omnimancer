@@ -103,6 +103,8 @@ const isEligibleSelectedItem = (action, item, player = null) => {
     if (!selection || !item) return false
     if (Number.isFinite(selection.minTier) && item.tier < selection.minTier) return false
     if (Number.isFinite(selection.maxTier) && item.tier > selection.maxTier) return false
+    if ((selection.excludeTypes ?? []).includes(item.type)) return false
+    if ((selection.excludeGroups ?? []).includes(item.group)) return false
 
     const matchesSelection = (selection.groups ?? []).includes(item.group) ||
         (selection.types ?? []).includes(item.type)

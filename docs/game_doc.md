@@ -362,7 +362,7 @@ Exploration is an **active skill**. Every area is an independent action with its
 
 ### 8.2 Current areas
 
-| Area | Name | Element | Tier | Exploration resource | Combat artifact |
+| Area | Name | Element | Tier | Exploration resource | Identified artifact |
 |---:|---|---|---:|---|---|
 | 1 | The Crossroads | Neutral | I | Crossroads Field Notes | Crossroads Waystone |
 | 2 | The Mossbound Foothills | Earth | I | Mossbound Ore | Mossbound Heartstone |
@@ -396,7 +396,7 @@ Exploration is an **active skill**. Every area is an independent action with its
 | 30 | The Origin Zenith | Air | X | Origin Aether | Origin Wisp Sigil |
 | 31 | The Eternal Deep | Water | X | Eternal Tideheart | Eternal Tide Crown |
 
-- Every area currently has one unique guaranteed Exploration resource and one area-specific artifact reserved for Combat/Unveiling.
+- Every area currently has one unique guaranteed Exploration resource and one linked identified artifact. Combat can rarely drop that area's separate unidentified artifact item, which Unveiling can identify.
 - The area identity, element, tier, action ID, map position and reward IDs are defined centrally in `src/data/worldData.js`; item metadata and icons are defined in `src/data/itemData.js` and `src/data/iconLibrary.jsx`.
 
 ### 8.3 Unlock costs and action progression
@@ -514,7 +514,7 @@ Every action follows the standard independent level 1–100 progression and cont
 | Spellcraft | Destroy Spellcraft Materials | Eligible elemental essences and other Spellcraft materials. |
 | Transmutation | Destroy Transmutation Materials | Eligible Catalysts and other Transmutation materials. |
 | Exploration | Destroy Exploration Materials | Eligible resources obtained through Exploration. |
-| Combat | Destroy Combat Materials | Eligible identified Combat rewards and materials. |
+| Combat | Destroy Combat Materials | Ordinary Combat materials only; unidentified artifacts are excluded and can only be processed by Unveil Artifact or Companion. |
 
 - The list establishes the intended one-action-per-other-tab structure; exact action names and eligible item groups can be refined.
 - Companion containers and unidentified objects are reserved for **Unveil Artifact or Companion**, not the Material Destruction actions.
@@ -745,7 +745,7 @@ Gold is a shared currency used for action unlocks, skill unlocks, inventory expa
 
 - Unlocking a skill should normally include its first action.
 - Resource requirements should connect skills without demanding that every earlier action reach level 100.
-- The exact resource quantities and gold costs are undecided; the current Transmutation config uses editable starter values.
+- Other skill and action resource quantities and gold costs still need balancing; the current Transmutation config uses editable starter values.
 - The Companion collection's separate unlock conditions, if any, are also undecided.
 
 ### 13.2 Research actions and further action unlocks
@@ -796,7 +796,7 @@ The bag should support:
 
 - Item quantities.
 - Sorting and filtering by source group, semantic item type, element and tier. Item definitions carry `group` and `type` metadata, and inventory helpers can return the owned items for a given group or type.
-- The current classification supports future filters and Unveiling eligibility: Research materials, Spellcraft essences, Transmutation Catalysts, Exploration resources, Combat artifacts, Companion containers and Shop goods.
+- The current classification supports filters and Unveiling eligibility: Research materials, Spellcraft essences, Transmutation Catalysts, Exploration resources, unidentified Combat artifacts, identified artifacts in their own group, Companion containers and Shop goods.
 - Selling one item, selected quantities or multiple items.
 - Displaying each item's current sale value and the total value of a selected quantity.
 
@@ -955,11 +955,9 @@ The following details remain open for design, balancing or implementation:
 - The exact list and names of Unveiling's Material Destruction actions, including eligible items from each source tab.
 - Destruction quantities, action durations, XP values and progression curves.
 - The **Unveil Artifact or Companion** action's processing time, XP rewards and scaling.
-- Minimum Unveiling skill-level requirements for unidentified Combat objects and their mapping from source-area progression.
-- The reward tables, artifact chances and other valuable resources revealed by identification.
-- Unveiling's gold/resource unlock requirements and exact unlock timing.
-- Companion-to-artifact reward rules for unidentified Combat objects remain to be finalized alongside Combat.
-- Combat unlock, progression, encounter, damage, reward and identification decisions are tracked in [Combat Design](combat-doc.md).
+- Further Combat balancing, including multi-enemy encounters and future upgrades for Omnibolt and attack-rotation slots.
+- Further balance of the current artifact drop and identification chances, based on playtesting.
+- Combat unlock, progression, encounter, damage, reward and identification rules are tracked in [Combat Design](combat-doc.md).
 
 ### Economy, inventory and systems
 - Exact unlock costs and gold curves.

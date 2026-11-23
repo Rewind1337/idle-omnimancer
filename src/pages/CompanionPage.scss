@@ -26,6 +26,15 @@
         max-width: none;
     }
 
+    .companion-slot-progress-row {
+        width: 100%;
+    }
+
+    .companion-slot-progress {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
     .companion-slot-selected,
     .companion-slot-empty {
         width: 100%;

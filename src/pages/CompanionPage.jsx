@@ -74,8 +74,6 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, onUnlock
                 {unlocked && (
                     <Paper
                         layer={2}
-                        interactive
-                        onClick={onChoose}
                         variant={companion?.element ?? slotVariant}
                         className="companion-slot-selectable"
                     >
@@ -145,20 +143,43 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, onUnlock
                                             variant={companion.element}
                                         />
                                     </Flex>
-                                    <Progress
-                                        layer={2}
-                                        corners="rounded"
-                                        variant={companion.element}
-                                        percentage={companionProgress.neededXP
-                                            ? companionProgress.xp / companionProgress.neededXP * 100
-                                            : 100}
-                                    />
+                                    <Flex direction="row" align="center" gap={8} className="companion-slot-progress-row">
+                                        <Progress
+                                            layer={2}
+                                            corners="rounded"
+                                            variant={companion.element}
+                                            className="companion-slot-progress"
+                                            percentage={companionProgress.neededXP
+                                                ? companionProgress.xp / companionProgress.neededXP * 100
+                                                : 100}
+                                        />
+                                        <Button
+                                            variant={companion.element}
+                                            size="medium"
+                                            icon={OTHER_ICONS.ARROW_UP_RIGHT}
+                                            title="Change companion"
+                                            aria-label={`Change ${slot.name} companion`}
+                                            onClick={onChoose}
+                                        >
+                                            Change
+                                        </Button>
+                                    </Flex>
                                 </Flex>
                             </Flex>
                         ) : (
-                            <Flex direction="row" align="center" justify="center" gap={12} className="companion-slot-empty">
-                                <Icon size={40} variant={slotVariant}>{slotIcon}</Icon>
-                                <Text>Choose a companion</Text>
+                            <Flex direction="row" align="center" justify="space-between" gap={12} className="companion-slot-empty">
+                                <Flex direction="row" align="center" gap={12}>
+                                    <Icon size={40} variant={slotVariant}>{slotIcon}</Icon>
+                                    <Text>Choose a companion</Text>
+                                </Flex>
+                                <Button
+                                    variant={slotVariant}
+                                    size="medium"
+                                    icon={OTHER_ICONS.ARROW_UP_RIGHT}
+                                    onClick={onChoose}
+                                >
+                                    Choose
+                                </Button>
                             </Flex>
                         )}
                     </Paper>
@@ -241,7 +262,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                 <Flex direction="row" justify="space-between" align="center" gap={8}>
                     <Badge
                         size="small"
-                        variant="transparent"
+                        variant="exploration"
                         interactive
                         tooltip="This effect is always active while the companion is unlocked."
                     >
@@ -412,18 +433,22 @@ export function CompanionPage() {
                             isActive={isActive}
                             durationMs={durationMs}
                         />
-                        <Button
-                            variant="companions"
-                            size="medium"
-                            disabled={!isActive && !canStart}
+                        <Flex direction="column" className="w-30 action-progress-toggle">
+                            <Button
+                                variant="companions"
+                                size="medium"
+                                className="w-100"
+                                icon={SKILL_ICONS.COMPANIONS}
+                                disabled={!isActive && !canStart}
                             toggled={isActive}
                             onClick={() => {
                                 if (isActive) stopAction(skillId, trainingAction.id)
                                 else startAction(skillId, trainingAction.id)
                             }}
-                        >
-                            {isActive ? "Stop" : "Start"}
-                        </Button>
+                            >
+                                {isActive ? "Stop" : "Start"}
+                            </Button>
+                        </Flex>
                     </Flex>
                 </Flex>
             </Paper>

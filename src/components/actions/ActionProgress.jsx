@@ -3,6 +3,7 @@ import { Button } from "../Button"
 import { Progress } from "../Progress"
 import { getActionProgress } from "../../game/gameEngine"
 import { useGameActionCanStart, useGameActionProgress } from "../../hooks/useGame"
+import { SKILL_ICONS } from "../../data/iconLibrary"
 
 export function ActionProgress({
     skillId,
@@ -17,6 +18,7 @@ export function ActionProgress({
     canStart = true,
     leadingControl = null,
 }) {
+    const actionIcon = SKILL_ICONS[skillId.replace(/^skill:/, "").toUpperCase()] ?? null
     const actionProgress = useGameActionProgress(skillId, actionId)
     const canStartAction = useGameActionCanStart(skillId, actionId, canStart)
     const actionCompletionPercentage = getActionProgress(actionProgress, durationMs)
@@ -29,7 +31,7 @@ export function ActionProgress({
                 corners="rounded" size="medium" layer={2} variant={variant}
                 percentage={actionLevelPercentage} animated={isActive} />
             <Flex direction="column" className={leadingControl ? "w-30 action-progress-toggle" : "w-30"}>
-                <Button variant={variant} className="w-100" size="medium"
+                <Button variant={variant} className="w-100" size="medium" icon={actionIcon}
                     disabled={!isActive && !canStartAction}
                     toggled={isActive} onClick={onToggle}
                     badge={isActive ? actionCompletionPercentage.toFixed(0) + "%" : null}>

@@ -14,7 +14,7 @@ import { SelectionModal } from "../components/modals/SelectionModal"
 import { UNVEILING_CONFIG } from "../data/unveilingConfig"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
 import { COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
-import { SKILL_ICONS } from "../data/iconLibrary"
+import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
     canUnlockAction,
@@ -111,9 +111,10 @@ function UnveilingActionCard({
                                         size="medium"
                                         className="action-progress-leading"
                                         disabled={isActive}
+                                        icon={!selectedItem ? OTHER_ICONS.ARROW_UP_RIGHT : null}
                                         onClick={onChooseItems}
                                     >
-                                        {selectedItem ? "Change" : "Choose"}
+                                        {selectedItem ? "Change" : "Choose Item"}
                                     </Button>
                                 ) : null}
                             />
@@ -137,7 +138,7 @@ function UnveilingActionCard({
                             actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(UNVEILING_CONFIG, action, player)}
                             outputMultiplier={outputMultiplier}
-                            itemValue={selectedItem?.baseValue ?? null}
+                            itemValue={action.processesCompanionContainers ? null : selectedItem?.baseValue ?? null}
                             preservationChance={getActionPreservationChance(player, UNVEILING_CONFIG, action)}
                             effectStacks={effectStacks}
                         />

@@ -1,12 +1,12 @@
 import { Flex } from "../Flex"
-import { cx } from "../../utility/helpers"
+import { cx, formatCompactNumber } from "../../utility/helpers"
 import { Badge } from "../Badge"
 import { OTHER_ICONS } from "../../data/iconLibrary"
 import { EffectStack } from "../EffectStack"
 import { Heading } from "../Heading"
 import { Text } from "../Text"
 
-const formatXP = value => Number(value).toLocaleString()
+const formatXP = formatCompactNumber
 
 export function ActionHeader({
     className = "",
@@ -27,21 +27,21 @@ export function ActionHeader({
             <h2>{name}</h2>
             {isUnlocked && (
                 <Badge variant="transparent" interactive icon={OTHER_ICONS.SPARKLES} tooltip={<Flex direction="column">
-                    <Heading h="4" className="w-100 align-center">Current Action XP earned toward the next Action level.</Heading>
+                    <Heading h="4" className="w-100 align-center">Action XP</Heading>
                 </Flex>}>
-                    {neededXP === null ? "MAX LEVEL" : `${currentXP.toFixed(1)} / ${neededXP} XP`}
+                    {neededXP === null ? "MAX LEVEL" : `${formatXP(currentXP)} / ${formatXP(neededXP)} XP`}
                 </Badge>
             )}
             {isUnlocked && (
                 <Badge variant="transparent" interactive icon={OTHER_ICONS.STAR} tooltip={
                     <Flex direction="column" gap={8}>
-                        <Heading h="4" className="w-100 align-center">Total progress in this Action</Heading>
+                        <Heading h="4" className="w-100 align-center">Action progression</Heading>
                         {nextLevels.length > 0 && (
                             <Flex direction="column" gap={4}>
-                                <Heading h="5">Next Action Levels</Heading>
+                                <Heading h="5">Next Action Lvls.</Heading>
                                 {nextLevels.map(entry => (
                                     <Text key={entry.level} size="small">
-                                        Level {entry.level + 1}: {formatXP(entry.neededXP)} XP
+                                        Lv. {entry.level + 1}: {formatXP(entry.neededXP)} XP
                                     </Text>
                                 ))}
                             </Flex>
@@ -63,7 +63,7 @@ export function ActionHeader({
                 </Badge>
             )}
             <Badge variant="transparent" interactive icon={OTHER_ICONS.MERGE} tooltip={<Flex direction="column">
-                <Heading h="4" className="w-100 align-center">Action tier determines its base duration, XP reward and Mana cost.</Heading>
+                <Heading h="4" className="w-100 align-center">Action tier</Heading>
             </Flex>}>
                 Tier {tier}
             </Badge>

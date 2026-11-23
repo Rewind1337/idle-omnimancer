@@ -9,6 +9,7 @@ import { Badge } from "./Badge"
 
 import "./ItemTooltip.scss"
 import { OTHER_ICONS } from "../data/iconLibrary"
+import { formatCompactNumber } from "../utility/helpers"
 
 const formatAmount = amount =>
     Number(amount).toLocaleString()
@@ -77,7 +78,7 @@ export function ItemTooltip({ itemId, name }) {
                     </Flex>
                 </Flex>
                 <Flex direction="row" align="center" justify="space-between">
-                    <Heading h="5" className="w-70">Sell value stack ({amountHeld}):</Heading>
+                    <Heading h="5" className="w-70">Sell value stack ({formatCompactNumber(amountHeld)}):</Heading>
                     <Flex direction="row" align="end" justify="end">
                         <Heading h="5">{formatAmount(sellValue * amountHeld)}</Heading>
                         {OTHER_ICONS.COINS}
@@ -97,7 +98,7 @@ export function ItemTooltip({ itemId, name }) {
             <ItemActionList
                 title="Obtaining"
                 actions={obtainedBy}
-                emptyLabel="No configured actions produce this item."
+                emptyLabel="No configured sources."
             />
 
             <hr />
@@ -105,7 +106,7 @@ export function ItemTooltip({ itemId, name }) {
             <ItemActionList
                 title="Consuming"
                 actions={consumedBy}
-                emptyLabel="No configured actions or unlocks consume this item."
+                emptyLabel="Not consumed by any action or unlock."
             />
         </Flex>
     )

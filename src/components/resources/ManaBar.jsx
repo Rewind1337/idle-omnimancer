@@ -12,6 +12,7 @@ import {
 } from "../../game/gameEngine"
 import { useGame, useGameManaCurrent } from "../../hooks/useGame"
 import { OTHER_ICONS } from "../../data/iconLibrary"
+import { formatNumber } from "../../utility/helpers"
 
 export function ManaBar() {
     const { player } = useGame()
@@ -38,7 +39,7 @@ export function ManaBar() {
                     icon={OTHER_ICONS.ZAP}
                     tooltip={
                         <Flex direction="column" gap={8}>
-                            <Heading h="4" className="w-100 align-center">Maximum Mana capacity.</Heading>
+                            <Heading h="4" className="w-100 align-center">Maximum Mana</Heading>
                             <hr />
                             <EffectStack
                                 title="Mana capacity effects"
@@ -49,7 +50,7 @@ export function ManaBar() {
                         </Flex>
                     }
                 >
-                    {maxMana} Mana Capacity
+                    {formatNumber(maxMana)} Mana Capacity
                 </Badge>
                 <Badge
                     variant="mana"
@@ -57,7 +58,7 @@ export function ManaBar() {
                     icon={OTHER_ICONS.ZAP}
                     tooltip={
                         <Flex direction="column" gap={8}>
-                            <Heading h="4" className="w-100 align-center">Mana regenerated each second.</Heading>
+                            <Heading h="4" className="w-100 align-center">Mana regeneration</Heading>
                             <hr />
                             <EffectStack
                                 title="Mana regeneration effects"

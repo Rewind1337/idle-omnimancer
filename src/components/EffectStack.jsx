@@ -34,7 +34,7 @@ export function EffectStack({
                     {icon && <span className="w-0 align-left effect-stack-title-icon">{icon}</span>}
                 </Flex>
             )}
-            {summary && (
+            {summary && summary.showBase !== false && (
                 <Text size="small" strong>
                     Base {summary.label}: {formatSummaryValue(summary.baseValue, summary)}
                 </Text>

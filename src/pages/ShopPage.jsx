@@ -142,7 +142,6 @@ function ResearchBreakthroughImprovement({ player, buyResearchBreakthrough }) {
                         <Heading h="3">Research Breakthrough</Heading>
                         <Text size="small">
                             Unlock rare Flame discoveries as additional rewards from Research.
-                            Each discovery can only be found by Research actions of its tier or higher.
                         </Text>
                         <Text size="small">
                             Current Tier: {currentTier} / {RESEARCH_BREAKTHROUGH_CONFIG.maxTier}
@@ -157,7 +156,7 @@ function ResearchBreakthroughImprovement({ player, buyResearchBreakthrough }) {
                             {isMaxTier
                                 ? "All Tiers Unlocked"
                                 : "Upgrade to Tier " + (currentTier + 1) + " · " +
-                                    formatCoins(nextCost) + " Coins"}
+                                formatCoins(nextCost) + " Coins"}
                         </Button>
                     </Flex>
                 </Flex>

@@ -27,7 +27,7 @@
 
       .button-icon {
         display: grid;
-        place-items: center;
+        place-items: flex-start;
         width: 32px;
         height: 32px;
         flex: 0 0 32px;
@@ -90,11 +90,13 @@
 }
 
 .navigation-compact {
+  width: 220px;
   .button {
     flex-grow: 1;
 
     .button-icon {
       width: 100%;
+      place-items: flex-start;
     }
 
     .button-content {

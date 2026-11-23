@@ -4,21 +4,20 @@
 /* Badge Component Styles */
 // Apply shared badge colors and interactive states to any token family.
 @mixin badge-variant($family, $variant) {
+    &[data-variant="#{$variant}"] {
+        background: var(--#{$family}-#{$variant});
+        outline-color: var(--#{$family}-#{$variant}-active);
 
-        &[data-variant="#{$variant}"] {
-            background: var(--#{$family}-#{$variant});
-            outline-color: var(--#{$family}-#{$variant}-active);
-
-            &.badge-interactive:hover {
-                background: var(--#{$family}-#{$variant}-hover);
-                cursor: pointer;
-            }
-
-            &.button-toggled {
-                background: var(--#{$family}-#{$variant}-toggled);
-                outline-color: var(--#{$family}-#{$variant}-border);
-            }
+        &.badge-interactive:hover {
+            background: var(--#{$family}-#{$variant}-hover);
+            cursor: pointer;
         }
+
+        &.button-toggled {
+            background: var(--#{$family}-#{$variant}-toggled);
+            outline-color: var(--#{$family}-#{$variant}-border);
+        }
+    }
 }
 
 .badge {

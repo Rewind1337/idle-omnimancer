@@ -99,7 +99,7 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, isTraini
                                                 size="medium"
                                                 interactive
                                                 icon={OTHER_ICONS.SPARKLES}
-                                                variant={companion.element}
+                                                variant={"transparent"}
                                                 tooltip="Companion XP earned toward the next companion level."
                                             >
                                                 {companionProgress.neededXP === null
@@ -111,7 +111,7 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, isTraini
                                                 size="medium"
                                                 interactive
                                                 icon={OTHER_ICONS.STAR}
-                                                variant={companion.element}
+                                                variant={"transparent"}
                                                 tooltip="Companion level increases the strength of both of this companion's effects."
                                             >
                                                 Lv. {companionProgress.level} / {COMPANION_CONFIG.companionLeveling.maxLevel}
@@ -120,7 +120,7 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, isTraini
                                                 size="medium"
                                                 interactive
                                                 icon={OTHER_ICONS.MERGE}
-                                                variant={companion.element}
+                                                variant={"transparent"}
                                                 tooltip="Companion tier determines the base XP required for each level."
                                             >
                                                 Tier {companion.tier}
@@ -234,7 +234,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                             <Badge
                                 size="small"
                                 icon={OTHER_ICONS.SPARKLES}
-                                variant={companion.element}
+                                variant={"transparent"}
                                 interactive
                                 tooltip="Companion XP earned toward the next companion level."
                             >
@@ -245,7 +245,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                             <Badge
                                 size="small"
                                 icon={OTHER_ICONS.STAR}
-                                variant={companion.element}
+                                variant={"transparent"}
                                 interactive
                                 tooltip="Companion level increases the strength of both of this companion's effects."
                             >
@@ -254,7 +254,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                             <Badge
                                 size="small"
                                 icon={OTHER_ICONS.MERGE}
-                                variant={companion.element}
+                                variant={"transparent"}
                                 interactive
                                 tooltip="Companion tier determines the base XP required for each level."
                             >
@@ -284,7 +284,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                         companion={companion}
                         player={player}
                         effectKey="permanentEffect"
-                        variant="exploration"
+                        variant={companion.element}
                         showScopeLabel={false}
                     />
                 </Flex>
@@ -405,6 +405,30 @@ export function CompanionPage() {
                                 actionMilestones={actionMilestones}
                             />
                         </Flex>
+                        <Flex align="center" gap={8}>
+                            <CompanionTrainingProgress
+                                skillId={skillId}
+                                actionId={trainingAction.id}
+                                isActive={isActive}
+                                durationMs={durationMs}
+                            />
+                            <Flex direction="column" className="w-30 action-progress-toggle">
+                                <Button
+                                    variant="companions"
+                                    size="medium"
+                                    className="w-100"
+                                    icon={SKILL_ICONS.COMPANIONS}
+                                    disabled={!isActive && !canStart}
+                                    toggled={isActive}
+                                    onClick={() => {
+                                        if (isActive) stopAction(skillId, trainingAction.id)
+                                        else startAction(skillId, trainingAction.id)
+                                    }}
+                                >
+                                    {isActive ? "Stop" : "Start"}
+                                </Button>
+                            </Flex>
+                        </Flex>
                         <Flex wrap gap={8}>
                             <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS}
                                 tooltip={<Flex direction="column" gap={8}>
@@ -444,30 +468,6 @@ export function CompanionPage() {
                                 </Flex>}>
                                 +{formatActionValue(actionXPReward)} XP
                             </Badge>
-                        </Flex>
-                        <Flex align="center" gap={8}>
-                            <CompanionTrainingProgress
-                                skillId={skillId}
-                                actionId={trainingAction.id}
-                                isActive={isActive}
-                                durationMs={durationMs}
-                            />
-                            <Flex direction="column" className="w-30 action-progress-toggle">
-                                <Button
-                                    variant="companions"
-                                    size="medium"
-                                    className="w-100"
-                                    icon={SKILL_ICONS.COMPANIONS}
-                                    disabled={!isActive && !canStart}
-                                    toggled={isActive}
-                                    onClick={() => {
-                                        if (isActive) stopAction(skillId, trainingAction.id)
-                                        else startAction(skillId, trainingAction.id)
-                                    }}
-                                >
-                                    {isActive ? "Stop" : "Start"}
-                                </Button>
-                            </Flex>
                         </Flex>
                     </Flex>
                 </Paper>

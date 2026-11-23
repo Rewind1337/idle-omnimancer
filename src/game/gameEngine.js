@@ -547,28 +547,7 @@ export const getCompanionEffectEntry = (player, companion, effectKey) => {
     }
 }
 
-export const getCompanionEffectEntry = (player, companion, effectKey) => {
-    const effectConfig = companion?.[effectKey]
-    if (!effectConfig) return null
 
-    const level = player.companionProgress?.[companion.id]?.level ?? 1
-    const effect = effectConfig.effect
-
-    return {
-        id: "companion-" + companion.id + "-" + effectKey,
-        title: companion.name + " Level " + level,
-        effect,
-        type: effectConfig.type ?? "mult",
-        value: getCompanionEffectMultiplier(
-            effect,
-            level,
-            effectConfig.perLevel ?? (effectKey === "permanentEffect" ? 0.01 : 0.025)
-        ),
-        stacks: 1,
-        mode: "companion",
-        variant: "companions",
-    }
-}
 
 const getCompanionEffectEntries = (player, targetSkillId, effect) => {
     const unlocked = new Set(player.unlockedCompanions ?? [])

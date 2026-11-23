@@ -1,5 +1,6 @@
 import { Badge } from "./Badge"
-import { EffectStack, formatEffectDescription } from "./EffectStack"
+import { EffectStack } from "./EffectStack"
+import { formatEffectDescription } from "../utility/effectFormatting"
 import { Flex } from "./Flex"
 import { Heading } from "./Heading"
 import { Text } from "./Text"

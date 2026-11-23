@@ -114,6 +114,9 @@ const ITEM_DEFINITIONS = [
     { id: "item:air_egg_v", tier: 5, variant: "air", baseValue: 1000, requiredUnveilingLevel: 25, type: "companionContainer" },
     { id: "item:water_shell_v", tier: 5, variant: "water", baseValue: 1000, requiredUnveilingLevel: 25, type: "companionContainer" },
     { id: "item:neutral_prism_i", name: "Wayfinder Prism", tier: 1, variant: "neutral", baseValue: 1000, requiredUnveilingLevel: 5, type: "companionContainer" },
+    { id: "item:neutral_prism_ii", name: "Earth Prism", tier: 2, variant: "neutral", baseValue: 1000, requiredUnveilingLevel: 10, type: "companionContainer" },
+    { id: "item:neutral_prism_iii", name: "Air Prism", tier: 3, variant: "neutral", baseValue: 1000, requiredUnveilingLevel: 15, type: "companionContainer" },
+    { id: "item:neutral_prism_iv", name: "Water Prism", tier: 4, variant: "neutral", baseValue: 1000, requiredUnveilingLevel: 20, type: "companionContainer" },
 
     // Companion progression materials and the shared low-value duplicate reward.
     { id: "item:earth_companion_xp", name: "Earth Companion Candy", tier: 1, variant: "earth", type: "companionExperience", baseValue: 100 },

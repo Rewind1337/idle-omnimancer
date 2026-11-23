@@ -13,6 +13,10 @@ const EFFECT_LABELS = {
     companionChance: "Companion Chance",
     artifactChance: "Artifact Chance",
     baseGoldCost: "Gold Cost",
+    combatInterval: "Combat Interval",
+    combatDamage: "Combat Damage",
+    combatHealth: "Combat Health",
+    combatShield: "Combat Shield",
 }
 
 const formatNumber = (value) => Number(value.toFixed(2)).toString()

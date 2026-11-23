@@ -111,7 +111,7 @@ function UnveilingActionCard({
                                         size="medium"
                                         className="action-progress-leading"
                                         disabled={isActive}
-                                        icon={!selectedItem ? OTHER_ICONS.ARROW_UP_RIGHT : null}
+                                        icon={OTHER_ICONS.ARROW_UP_RIGHT}
                                         onClick={onChooseItems}
                                     >
                                         {selectedItem ? "Change" : "Choose Item"}

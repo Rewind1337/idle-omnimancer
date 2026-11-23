@@ -7,7 +7,7 @@ import {
     Circle, CircleChevronDown, CircleChevronUp, CircleChevronsDown, CircleChevronsUp, CircleDivide, CircleEllipsis, CircleEqual, CircleExclamationPoint, CircleLetterA, CircleLetterB,
     CircleLetterC, CircleLetterD, CircleLetterE, CircleLetterF, CircleLetterG, CircleLetterH, CircleLetterI, CircleLetterJ, Tally4, Sprout, BookUser, Astroid, HeartPulse,
     Milk, Lens, Gem, Volleyball, TreePine, Asterisk, Bone, Candy, Package, Squirrel, Award, Bird, BowArrow, Bug, Cat, Club, Dog, Dumbbell, Fish, FishingHook, FishingRod, Flower, Headphones,
-    HikingStick, HockeyStick, Kayak, Key, KeyRound, KeySquare, Medal, Megaphone, Panda, Pyramid, Rabbit, Rat, Shrimp, Shirt, ShoppingBasket, Snail, Spade, Square, SquareStar, Torus,
+    HikingStick, HockeyStick, Kayak, Key, KeyRound, KeySquare, Medal, Megaphone, Panda, Pyramid, Rabbit, Rat, Shield, Shrimp, Shirt, ShoppingBasket, Snail, Spade, Square, SquareStar, Torus,
     Triangle, TriangleRight, Trophy, Turtle, UtilityPole, VectorPolygon, VectorSquare, Whistle, Worm, ZodiacAquarius, ZodiacGemini, ZodiacTaurus, Scan
 } from "lucide-react";
 
@@ -28,6 +28,9 @@ export const COMPANION_ICONS = {
     EMPYREAN_GEMINI: <ZodiacGemini />,
     ETERNAL_AQUARIUS: <ZodiacAquarius />,
     WAYFINDER_WYRM: <Worm />,
+    EARTH_PRISM: <Gem />,
+    AIR_PRISM: <Gem />,
+    WATER_PRISM: <Gem />,
 }
 
 export const ARTIFACT_ICONS = {
@@ -107,6 +110,10 @@ export const EFFECT_ICONS = {
     companionChance: OTHER_ICONS.COMPANION_EGG,
     artifactChance: OTHER_ICONS.ARTIFACT,
     baseGoldCost: OTHER_ICONS.COINS,
+    combatInterval: OTHER_ICONS.HOURGLASS,
+    combatDamage: <Swords />,
+    combatHealth: <HeartPulse />,
+    combatShield: <Shield />,
 }
 
 export const BAG_ICONS = {}
@@ -326,6 +333,9 @@ export const ITEM_SPRITES = {
     "item:air_egg_v": OTHER_ICONS.COMPANION_EGG,
     "item:water_shell_v": OTHER_ICONS.COMPANION_SHELL,
     "item:neutral_prism_i": OTHER_ICONS.ARTIFACT,
+    "item:neutral_prism_ii": <Gem />,
+    "item:neutral_prism_iii": <Gem />,
+    "item:neutral_prism_iv": <Gem />,
 
     // Duplicate companion rewards use the existing elemental Candy items.
     "item:earth_companion_xp": <Candy />,

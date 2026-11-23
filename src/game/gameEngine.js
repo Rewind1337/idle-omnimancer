@@ -145,7 +145,7 @@ const getActionConsumeTotals = (action, player = null, skill = null) => {
         const milestoneReduction = player && skill
             ? getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "baseGoldCost").flat
             : 0
-        return { "currency:coins": Math.max(0, combinedLevels * costPerLevel + milestoneReduction) }
+        return { "currency:coins": Math.max(0, combinedLevels * Math.max(0, costPerLevel + milestoneReduction)) }
     }
 
     if (action.inputSelection) {
@@ -526,7 +526,7 @@ const getCompanionEffectMultiplier = (effect, level, perLevel) => {
     const growth = effect === "preservation"
         ? level * perLevel
         : startingBonus + Math.max(0, level - 1) * perLevel
-    if (effect === "manaCost" || effect === "unlockCostReduction") {
+    if (effect === "manaCost" || effect === "unlockCostReduction" || effect === "combatInterval") {
         return Math.max(0.1, 1 - growth)
     }
     return 1 + growth
@@ -649,6 +649,10 @@ const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
             "companionChance",
             "artifactChance",
             "baseGoldCost",
+            "combatInterval",
+            "combatDamage",
+            "combatHealth",
+            "combatShield",
         ]
     for (const companionEffect of companionEffects) {
         for (const companionEntry of getCompanionEffectEntries(player, targetSkillId, companionEffect)) {
@@ -957,7 +961,12 @@ export const getActionEffectSummary = (player, skill, action, effect) => {
             (total, companionId) => total + (player.companionProgress?.[companionId]?.level ?? 0),
             0
         )
-        const baseValue = combinedLevels * (action.companionTraining.coinsPerCombinedLevel ?? 10)
+        const baseCostPerLevel = Math.max(
+            0,
+            (action.companionTraining.coinsPerCombinedLevel ?? 10) +
+                getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "baseGoldCost").flat
+        )
+        const baseValue = combinedLevels * baseCostPerLevel
         const finalValue = getActionConsumeResources(player, skill, action)
             .find(resource => resource.item === "currency:coins")?.amount ?? 0
         return {
@@ -976,7 +985,7 @@ export const getActionEffectSummary = (player, skill, action, effect) => {
 // Return active contributors from element modifiers, applicable skill milestones
 // and repeated action milestones. These records are used by the action tooltips.
 export const getActionEffectStacks = (player, skill, action) => {
-    const effectNames = ["actionTime", "xpGain", "manaCost", "itemOutput", "preservation", "manaCapacity", "manaRegeneration", "sellValue", "unlockCostReduction", "companionChance", "artifactChance", "baseGoldCost"]
+    const effectNames = ["actionTime", "xpGain", "manaCost", "itemOutput", "preservation", "manaCapacity", "manaRegeneration", "sellValue", "unlockCostReduction", "companionChance", "artifactChance", "baseGoldCost", "combatInterval", "combatDamage", "combatHealth", "combatShield"]
     const elementProperties = {
         actionTime: "timeMultiplier",
         xpGain: "xpMultiplier",

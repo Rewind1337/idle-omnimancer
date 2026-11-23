@@ -272,7 +272,7 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                         companion={companion}
                         player={player}
                         effectKey="permanentEffect"
-                        variant={companion.element}
+                        variant="exploration"
                         showScopeLabel={false}
                     />
                 </Flex>

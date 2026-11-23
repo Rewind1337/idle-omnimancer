@@ -33,6 +33,7 @@ const SHOP_TABS = [
     { id: "improvements", name: "Improvements", icon: SHOP_ICONS.IMPROVEMENTS },
     { id: "skills-actions", name: "Skills & Actions", icon: SHOP_ICONS.SKILLS_ACTIONS },
     { id: "general-goods", name: "General Goods", icon: SHOP_ICONS.GENERAL_GOODS },
+    { id: "fame-shop", name: "Fame Shop", icon: OTHER_ICONS.STAR, variant: "secondary" },
 ]
 
 const formatCoins = value =>
@@ -238,10 +239,17 @@ function getAvailableUnlocks(player, unlockSkill, unlockAction) {
     return { skills, actions }
 }
 
-export function ShopPage() {
+export function ShopPage({ onOpenFameShop }) {
     const { player, unlockSkill, unlockAction, buyBagSlot, buyResearchBreakthrough, buyShopItem } = useGame()
     const [activeTab, setActiveTab] = useState("improvements")
     const { skills: availableSkills, actions: availableActions } = getAvailableUnlocks(player, unlockSkill, unlockAction)
+    const handleTabChange = tabId => {
+        if (tabId === "fame-shop") {
+            onOpenFameShop?.()
+            return
+        }
+        setActiveTab(tabId)
+    }
 
     return (
         <Flex
@@ -257,7 +265,7 @@ export function ShopPage() {
                         <Tabs
                             tabs={SHOP_TABS}
                             value={activeTab}
-                            onChange={setActiveTab}
+                            onChange={handleTabChange}
                             variant="shop"
                             size="medium"
                             wrap

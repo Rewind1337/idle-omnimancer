@@ -33,7 +33,7 @@ export function CompanionEffectBadge({
     return (
         <Badge
             size={size}
-            variant={isPermanent ? "exploration" : variant}
+            variant={variant}
             interactive
             icon={effectIcon}
             tooltip={

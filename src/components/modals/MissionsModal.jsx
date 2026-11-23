@@ -8,6 +8,7 @@ import { Paper } from "../Paper"
 import { Progress } from "../Progress"
 import { Text } from "../Text"
 import { ActionResources } from "../actions/ActionResources"
+import { Tabs } from "../Tabs"
 
 import { CURRENCY_DATA_BY_ID, ITEM_DATA_BY_ID } from "../../data/itemData"
 import { OTHER_ICONS } from "../../data/iconLibrary"
@@ -83,7 +84,7 @@ function MissionCard({ mission, player, canTurnIn, onTurnIn }) {
     )
 }
 
-export function MissionsModal({ visible, setVisible }) {
+export function MissionsModal({ visible, setVisible, activeTab = "overview", onTabChange }) {
     const { player, turnInMission } = useGame()
     const close = () => setVisible(false)
 
@@ -141,7 +142,23 @@ export function MissionsModal({ visible, setVisible }) {
             }
             content={
                 <Flex direction="column" align="stretch" gap={12} className="missions-modal-content">
-                    <Heading h="3">Available Missions: {availableMissions.length}</Heading>
+                    <Tabs
+                        tabs={[
+                            { id: "overview", name: "Mission Overview", icon: OTHER_ICONS.MISSIONS, variant: "secondary" },
+                            { id: "fame-shop", name: "Fame Shop", icon: OTHER_ICONS.STAR, variant: "secondary" },
+                        ]}
+                        value={activeTab}
+                        onChange={onTabChange}
+                        variant="secondary"
+                        wrap
+                    />
+                    {activeTab === "fame-shop" ? (
+                        <Paper layer={2} variant="secondary">
+                            <Text>No Fame Shop purchases are available yet.</Text>
+                        </Paper>
+                    ) : (
+                        <>
+                            <Heading h="3">Available Missions: {availableMissions.length}</Heading>
                     {availableMissions.length > 0 ? (
                         <Grid
                             columns={{ xsmall: 1, small: 1, medium: 2, large: 2 }}
@@ -185,6 +202,8 @@ export function MissionsModal({ visible, setVisible }) {
                                     : "No missions have been configured for this tier yet."}
                             </Text>
                         </Paper>
+                    )}
+                        </>
                     )}
                 </Flex>
             }

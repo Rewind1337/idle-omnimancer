@@ -42,6 +42,7 @@ function ResponsivePage({
 }) {
   const [bagModalVisible, setBagModalVisible] = useState(false)
   const [missionsModalVisible, setMissionsModalVisible] = useState(false)
+  const [missionsModalTab, setMissionsModalTab] = useState("overview")
   const [settingsModalVisible, setSettingsModalVisible] = useState(false)
   const { resetGame } = useGame()
   const unlockedSkills = useGameUnlockedSkills()
@@ -70,7 +71,7 @@ function ResponsivePage({
   const missionsButton = (
     <MissionsButton
       active={missionsModalVisible}
-      onClick={() => setMissionsModalVisible(true)}
+      onClick={() => { setMissionsModalTab("overview"); setMissionsModalVisible(true) }}
     />
   )
   const companionsButton = companionsUnlocked ? (
@@ -161,6 +162,8 @@ function ResponsivePage({
       <MissionsModal
         visible={missionsModalVisible}
         setVisible={setMissionsModalVisible}
+        activeTab={missionsModalTab}
+        onTabChange={setMissionsModalTab}
       />
       <SettingsModal
         visible={settingsModalVisible}
@@ -227,7 +230,7 @@ function App() {
           {activeSkill?.skillId === "skill:exploration" && <ExplorationPage />}
           {activeSkill?.skillId === "skill:unveiling" && <UnveilingPage />}
           {activeSkill?.skillId === "skill:companions" && <CompanionPage />}
-          {activePage === SHOP_NAVIGATION.id && <ShopPage setActivePage={setActivePage} />}
+          {activePage === SHOP_NAVIGATION.id && <ShopPage setActivePage={setActivePage} onOpenFameShop={() => { setMissionsModalTab("fame-shop"); setMissionsModalVisible(true) }} />}
         </ResponsivePage>
       </GameProvider>
     </ToastProvider>

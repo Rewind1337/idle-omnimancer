@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components -- This file is an icon registry, not a component module. */
 import {
     Settings, PackageQuestionMark, Egg, ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus,
     BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet,

@@ -267,10 +267,11 @@ export const normalizePlayerState = (savedState) => {
         Number.isFinite(savedEncounter.player.attackTimerMs) && savedEncounter.player.attackTimerMs >= 0
         ? {
             enemies: savedEncounter.enemies.map((enemy, index) => {
-                const archetype = COMBAT_CONFIG.enemyArchetypes[enemy.archetype]
+                const normalizedArchetype = enemy.archetype === "heavyHitter" ? "strong" : enemy.archetype
+                const archetype = COMBAT_CONFIG.enemyArchetypes[normalizedArchetype]
                 return {
                     ...enemy,
-                    archetype: enemy.archetype === "heavyHitter" ? "strong" : enemy.archetype,
+                    archetype: normalizedArchetype,
                     id: selectedCombatAction.id + "-enemy-" + index,
                     name: (archetype?.label ?? "Enemy") + " " + selectedCombatAction.name,
                     element: selectedCombatAction.element ?? "neutral",

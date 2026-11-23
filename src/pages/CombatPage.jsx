@@ -1,4 +1,4 @@
-import { cloneElement } from "react"
+import { cloneElement, useMemo } from "react"
 
 import { Badge } from "../components/Badge"
 import { Button } from "../components/Button"
@@ -69,7 +69,8 @@ const getRewardResources = (player, action) =>
         }]
     })
 
-function CombatPanel({ player, action, snapshot, rotationOptions }) {
+function CombatPanel({ player, action, rotationOptions }) {
+    const snapshot = useGameCombatSnapshot()
     const encounter = snapshot.encounter
     const playerState = encounter?.player
     const displayPlayer = playerState ?? getCombatPlayerStats(player, action)
@@ -342,7 +343,6 @@ export function CombatPage() {
         selectCombatArea,
         setCombatRotation,
     } = useGame()
-    const snapshot = useGameCombatSnapshot()
     const skillId = COMBAT_CONFIG.id
     const skillProgress = getSkillProgress(player, skillId)
     const selectedArea = WORLD_AREA_BY_ID[player.combat?.selectedAreaId] ?? WORLD_AREAS[0]
@@ -359,25 +359,21 @@ export function CombatPage() {
         explorationAction &&
         player.skills?.[EXPLORATION_CONFIG.id]?.actions?.[explorationAction]?.unlocked
     )
-    const unlockedAreaIds = WORLD_AREAS
+    const unlockedAreaIds = useMemo(() => WORLD_AREAS
         .filter(area => Boolean(
             player.skills?.[EXPLORATION_CONFIG.id]?.actions?.[area.actionId]?.unlocked
         ))
-        .map(area => area.id)
-    const areaMarkers = Object.fromEntries(COMBAT_CONFIG.actions.flatMap(action => {
-        const artifactId = action.rewards.find(reward =>
-            ITEM_DATA_BY_ID[getRewardItemId(reward)]?.type === "artifact"
-        )
-        return artifactId && (player.inventory?.[getRewardItemId(artifactId)] ?? 0) > 0
-            ? [[action.areaId, "discovered"]]
-            : []
-    }))
+        .map(area => area.id), [player.skills])
+    const actionLevels = useMemo(() => Object.fromEntries(COMBAT_CONFIG.actions.map(action => [
+        action.areaId,
+        player.skills?.[skillId]?.actions?.[action.id]?.level ?? 1,
+    ])), [player.skills, skillId])
     const rotationSlots = Math.max(
         COMBAT_CONFIG.player.initialRotationSlots,
         Math.min(COMBAT_CONFIG.player.maxRotationSlots, player.combat?.rotationSlots ?? 1)
     )
     const rotation = player.combat?.rotation?.length ? player.combat.rotation : ["omnibolt"]
-    const rotationOptions = [
+    const rotationOptions = useMemo(() => [
         { value: "omnibolt", label: "Omnibolt" },
         ...SPELLCRAFT_CONFIG.actions
             .filter(spell => player.unlockedSkills?.includes(SPELLCRAFT_CONFIG.id) &&
@@ -386,7 +382,15 @@ export function CombatPage() {
                 value: spell.id,
                 label: spell.name ?? humanize(spell.id.replace(/^action:/, "")),
             })),
-    ]
+    ], [player.skills, player.unlockedSkills])
+    const areaMarkers = useMemo(() => Object.fromEntries(COMBAT_CONFIG.actions.flatMap(action => {
+        const artifactReward = action.rewards.find(reward =>
+            ITEM_DATA_BY_ID[getRewardItemId(reward)]?.type === "artifact"
+        )
+        return artifactReward && (player.inventory?.[getRewardItemId(artifactReward)] ?? 0) > 0
+            ? [[action.areaId, "discovered"]]
+            : []
+    })), [player.inventory])
     const actionIsRunning = Boolean(actionState.running)
 
     return (
@@ -416,10 +420,7 @@ export function CombatPage() {
                         mapVariant="combat"
                         startingAreaId={WORLD_DATA.map.startingAreaId}
                         selectedAreaId={selectedArea.id}
-                        actionLevels={Object.fromEntries(COMBAT_CONFIG.actions.map(action => [
-                            action.areaId,
-                            player.skills?.[skillId]?.actions?.[action.id]?.level ?? 1,
-                        ]))}
+                        actionLevels={actionLevels}
                         unlockedAreaIds={unlockedAreaIds}
                         selectableAreaIds={unlockedAreaIds}
                         areaMarkers={areaMarkers}
@@ -434,7 +435,6 @@ export function CombatPage() {
             <CombatPanel
                 player={player}
                 action={selectedAction}
-                snapshot={snapshot}
                 rotationOptions={rotationOptions}
             />
 

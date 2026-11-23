@@ -64,7 +64,7 @@ Incoming damage:
 
 ## Player attack rotation
 
-The player configures an ordered rotation containing **Omnibolt** and/or unlocked Spellcraft actions.
+The player configures an ordered rotation containing **Omnibolt** and/or unlocked Spellcraft actions. The Combat page uses selectable slot cards; **Change** opens a spell-selection modal showing unlocked spells and the unlock requirements for locked actions.
 
 - Each selected Spellcraft action contributes its element, tier and current action level.
 - Damage per spell tier is **5**. Spellcraft damage is:
@@ -132,7 +132,7 @@ There is one unique unidentified artifact item per area. Each item:
 
 - Has semantic type `unidentifiedArtifact` and inventory group `combat`.
 - Uses the tier of its source area.
-- Has a base value of **1,000 Coins per tier** (Tier I = 1,000; Tier X = 10,000).
+- Has a fixed base value of **1,000 Coins**, regardless of source-area tier. Tier only controls its Unveiling requirement.
 - Requires overall Unveiling level **5 per tier** (Tier I = 5; Tier X = 50), matching the same progression pattern as companion containers.
 - Points to its corresponding identified artifact through `revealsItemId`.
 

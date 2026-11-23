@@ -829,7 +829,7 @@ The player must not silently lose resources when the bag is full.
 - Higher-tier and more advanced resources should generally be worth more than introductory materials.
 - Current Research and Spellcraft outputs use the shared tier-derived value curve; future item types may define their own base values when source, purpose or rarity warrants a deviation.
 - Later skills should introduce resources worth substantially more than early-game materials.
-- Physical item sale values are derived from their tier in `ITEM_DATA`: tier 1 is worth 1 coin, tier 2 is worth 2, and each later tier is worth twice the previous value minus one (1, 2, 3, 5, 9, 17, 33, 65, ...).
+- Physical item sale values are generally derived from their tier in `ITEM_DATA`: tier 1 is worth 1 coin, tier 2 is worth 2, and each later tier is worth twice the previous value minus one (1, 2, 3, 5, 9, 17, 33, 65, ...). Unidentified Combat artifacts are an explicit exception: all have a fixed base value of 1,000 Coins regardless of area tier; their tier only changes the Unveiling requirement.
 
 ### 15.2 Selling as a choice
 

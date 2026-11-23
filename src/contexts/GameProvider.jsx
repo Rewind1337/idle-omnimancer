@@ -708,7 +708,7 @@ export function GameProvider({ children }) {
             window.removeEventListener("pagehide", saveOnExit)
             savePlayerState(playerRef.current)
         }
-    }, [isGameReady])
+    }, [isGameReady, progressStore]
 
     const resetGame = useCallback(() => {
         const freshPlayer = createInitialPlayerState()

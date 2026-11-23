@@ -440,11 +440,11 @@ export function CompanionPage() {
                                 className="w-100"
                                 icon={SKILL_ICONS.COMPANIONS}
                                 disabled={!isActive && !canStart}
-                            toggled={isActive}
-                            onClick={() => {
-                                if (isActive) stopAction(skillId, trainingAction.id)
-                                else startAction(skillId, trainingAction.id)
-                            }}
+                                toggled={isActive}
+                                onClick={() => {
+                                    if (isActive) stopAction(skillId, trainingAction.id)
+                                    else startAction(skillId, trainingAction.id)
+                                }}
                             >
                                 {isActive ? "Stop" : "Start"}
                             </Button>

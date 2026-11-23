@@ -20,7 +20,8 @@ import { ShopButton } from "./components/buttons/ShopButton";
 import { MissionsButton } from "./components/buttons/MissionsButton";
 import { FloatingPanel } from "./components/FloatingPanel";
 import { SettingsModal } from "./components/modals/SettingsModal";
-import { ExplorationPage } from "./pages/ExplorationPage";
+import { ExplorationPage } from "./pages/ExplorationPage"
+import { CombatPage } from "./pages/CombatPage";
 import { UnveilingPage } from "./pages/UnveilingPage";
 import { CompanionPage } from "./pages/CompanionPage";
 import { OTHER_ICONS, SKILL_ICONS } from "./data/iconLibrary";
@@ -228,6 +229,7 @@ function App() {
           {activeSkill?.skillId === "skill:spellcraft" && <SpellcraftPage />}
           {activeSkill?.skillId === "skill:transmutation" && <TransmutationPage />}
           {activeSkill?.skillId === "skill:exploration" && <ExplorationPage />}
+          {activeSkill?.skillId === "skill:combat" && <CombatPage />}
           {activeSkill?.skillId === "skill:unveiling" && <UnveilingPage />}
           {activeSkill?.skillId === "skill:companions" && <CompanionPage />}
           {activePage === SHOP_NAVIGATION.id && <ShopPage setActivePage={setActivePage} onOpenFameShop={() => { setMissionsModalTab("fame-shop"); setMissionsModalVisible(true) }} />}

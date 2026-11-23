@@ -1,0 +1,19 @@
+.page-flex-combat {
+    .combat-map-panel,
+    .combat-panel,
+    .combat-action-card {
+        min-width: 0;
+    }
+
+    .combat-panel-summary {
+        justify-content: center;
+    }
+
+    .combatant-panel {
+        min-width: 0;
+    }
+
+    .combat-rotation {
+        min-width: 0;
+    }
+}

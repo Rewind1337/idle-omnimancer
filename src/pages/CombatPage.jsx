@@ -421,6 +421,7 @@ export function CombatPage() {
                             player.skills?.[skillId]?.actions?.[action.id]?.level ?? 1,
                         ]))}
                         unlockedAreaIds={unlockedAreaIds}
+                        selectableAreaIds={unlockedAreaIds}
                         areaMarkers={areaMarkers}
                         onSelectArea={selectCombatArea}
                     />

@@ -43,7 +43,8 @@ export function Navigation({
           badge: skillProgress ? "Lv. " + skillProgress.level : null,
           badgeIcon: null,
           toggled: player.activeAction?.skillId === skill.skillId ||
-            Object.values(player.skills?.[skill.skillId]?.actions ?? {}).some(action => action.running),
+            (skill.skillId === "skill:combat" &&
+              Object.values(player.skills?.[skill.skillId]?.actions ?? {}).some(action => action.running)),
         }
       }),
   ]

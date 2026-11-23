@@ -44,6 +44,7 @@ export function HexMap({
     actionLevels = {},
     unlockedAreaIds = [],
     areaMarkers = {},
+    selectableAreaIds = null,
     hexSize = DEFAULT_HEX_SIZE,
     mapVariant = "primary",
     className = "",
@@ -60,6 +61,10 @@ export function HexMap({
     )
     const hexPoints = useMemo(() => getHexPoints(hexSize), [hexSize])
     const unlockedAreaSet = useMemo(() => new Set(unlockedAreaIds), [unlockedAreaIds])
+    const selectableAreaSet = useMemo(
+        () => Array.isArray(selectableAreaIds) ? new Set(selectableAreaIds) : null,
+        [selectableAreaIds]
+    )
     const visibleAreaSet = useMemo(() => {
         const visible = new Set([startingAreaId, ...unlockedAreaIds].filter(Boolean))
 
@@ -123,12 +128,14 @@ export function HexMap({
         if (event.button !== 0) return
 
         const area = event.target.closest?.('[data-area-id][data-visible="true"]')
+        const areaId = area?.getAttribute("data-area-id") ?? null
+        const canSelectArea = areaId && (!selectableAreaSet || selectableAreaSet.has(areaId))
         dragRef.current = {
             startX: event.clientX,
             startY: event.clientY,
             viewX: view.x,
             viewY: view.y,
-            areaId: area?.getAttribute("data-area-id") ?? null,
+            areaId: canSelectArea ? areaId : null,
             moved: false,
         }
         event.currentTarget.setPointerCapture?.(event.pointerId)
@@ -190,6 +197,7 @@ export function HexMap({
                         const isSelected = selectedAreaId === area.id
                         const isUnlocked = unlockedAreaSet.has(area.id)
                         const isVisible = visibleAreaSet.has(area.id)
+                        const canSelectArea = isVisible && (!selectableAreaSet || selectableAreaSet.has(area.id))
                         const variant = area.element ?? "neutral"
                         const actionLevel = actionLevels[area.id] ?? actionLevels[area.actionId] ?? 1
                         const areaMarker = areaMarkers[area.id]
@@ -205,15 +213,15 @@ export function HexMap({
                                 data-visible={isVisible}
                                 data-unlocked={isUnlocked}
                                 data-checked={isSelected}
-                                role={isVisible ? "button" : undefined}
-                                tabIndex={isVisible ? 0 : -1}
-                                aria-disabled={!isVisible}
+                                role={canSelectArea ? "button" : undefined}
+                                tabIndex={canSelectArea ? 0 : -1}
+                                aria-disabled={!canSelectArea}
                                 aria-label={isUnlocked
                                     ? `Select ${area.name}, Action Level ${actionLevel}`
                                     : `Select ${area.name}, locked area`}
                                 aria-pressed={isSelected}
                                 onKeyDown={event => {
-                                    if (isVisible && (event.key === "Enter" || event.key === " ")) {
+                                    if (canSelectArea && (event.key === "Enter" || event.key === " ")) {
                                         event.preventDefault()
                                         onSelectArea(area.id)
                                     }

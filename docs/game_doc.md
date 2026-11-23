@@ -89,11 +89,11 @@ Passive skills or other future systems may use a different progression structure
 ### 3.3 Skill progression
 
 - Every skill has its own level, with a maximum of **100**.
-- For normal skills, Skill XP is derived from the combined progression of every action belonging to that skill. The Companions skill is an explicit exception: it derives XP from the sum of all 16 companion levels.
+- For normal skills, Skill XP is derived from the combined progression of every action belonging to that skill. The Companions skill is an explicit exception: it derives XP from the sum of all 19 companion levels.
 - Improving actions contributes to the overall skill, but one heavily developed action must not be enough to max out the skill.
 - Early skill levels should be achievable after relatively little action progression. Higher levels should require increasingly broad development across the skill.
 - Each skill has its own progression scalar. Skills can have different numbers of actions and different curves.
-- A normal action-based skill **cannot reach level 100 until every action belonging to it has reached action level 100**. The Companions skill instead reaches level 100 when all 16 companions reach level 100.
+- A normal action-based skill **cannot reach level 100 until every action belonging to it has reached action level 100**. The Companions skill instead reaches level 100 when all 19 companions reach level 100.
 - The exact formula that converts action progression into skill XP remains undecided.
 
 Skills level independently. Research progress does not automatically increase Spellcraft, Transmutation or Exploration skill levels.
@@ -421,7 +421,7 @@ Exploration is an **active skill**. Every area is an independent action with its
 ---
 ## 9. Passive Skill — Combat
 
-Combat is planned as a passive skill that uses the shared Exploration world map. Its full design, dependencies, proposed spell rotation, companion effects, rewards and unresolved decisions are maintained in [Combat Design](combat-doc.md).
+See [Combat Design](combat-doc.md) for the complete Combat design and open decisions.
 
 ---
 
@@ -470,7 +470,7 @@ The Companions skill unlocks automatically when the player unveils their first c
 - The base coin cost per completion is 10 coins per combined companion level. Every 20 Tend to Companions action levels reduces this per-level base by 1 coin, so the first cost milestone changes 10 × combined levels to 9 × combined levels. The per-level cost cannot fall below zero. For example, one active companion at level 7 costs 63 coins per cycle after the first reduction milestone.
 - XP is awarded in full to each eligible companion; it is not divided between slots. Two eligible companions each receive the full action XP reward.
 - **Tend to Companions** has its own action level and action XP progression. Its first level requires 50 XP.
-- Companion skill XP is derived from the sum of all 16 companion levels rather than action levels. Its maximum progression pool is 19 × 100 = 1,900 companion levels. For example, three companions at level 100 contribute 300 / 1,600, or 18.75% of the Companion skill's total progression.
+- Companion skill XP is derived from the sum of all 19 companion levels rather than action levels. Its maximum progression pool is 19 × 100 = 1,900 companion levels. For example, three companions at level 100 contribute 300 / 1,900, or 15.79% of the Companion skill's total progression.
 - Each companion's level-up requirement increases with both its level and tier. Tier I starts at 20 XP; each tier increase multiplies that base by 1.50 (Tier II ×1.5, Tier III ×2.25, Tier IV ×3.375, Tier V ×5.0625). The level curve then applies a 1.1 multiplier per level plus 2 additional XP per level.
 - There are four vertically stacked slots. The **Any Element** slot is unlocked by default; Earth, Air and Water slots cost 1,000,000, 2,000,000 and 3,000,000 coins respectively.
 - Element-specific slots accept a companion of that element or a neutral companion. The Any Element slot accepts any companion. A companion can occupy only one slot at a time.

@@ -4,6 +4,7 @@ import { TRANSMUTATION_CONFIG } from "./transmutationConfig"
 import { EXPLORATION_CONFIG } from "./explorationConfig"
 import { UNVEILING_CONFIG } from "./unveilingConfig"
 import { COMPANION_CONFIG } from "./companionConfig"
+import { COMBAT_CONFIG } from "./combatConfig"
 
 // Shared progression limits. Keep these in one place so the save state,
 // progression tables and game engine all use the same maximum levels.
@@ -119,6 +120,7 @@ export const SKILL_CONFIGS = [
     TRANSMUTATION_CONFIG,
     EXPLORATION_CONFIG,
     UNVEILING_CONFIG,
+    COMBAT_CONFIG,
     COMPANION_CONFIG,
 ]
 

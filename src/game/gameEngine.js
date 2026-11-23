@@ -472,7 +472,14 @@ const canStoreActionOutputs = (player, skill, action) => {
         ? Math.max(0, player.inventorySlots)
         : GLOBAL_CONFIG.startingBagSpace
 
-    return occupiedSlots + newItemIds.length <= inventorySlots
+    // A selected input that is consumed by this action can free its slot for
+    // the output. This matters for artifact identification when the Bag is full.
+    const selectedInputSlotFreed = Boolean(
+        action.inputSelection &&
+        selectedItemId &&
+        (inventory[selectedItemId] ?? 0) === 1
+    )
+    return occupiedSlots - (selectedInputSlotFreed ? 1 : 0) + newItemIds.length <= inventorySlots
 }
 
 export const canUnlockSkill = (player, skillId) => {

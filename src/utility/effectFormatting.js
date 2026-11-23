@@ -46,6 +46,10 @@ export const formatEffectDescription = (entry) => {
     }
 
     if (effect === "preservation") return formatPercent(delta) + " " + label
+    if (effect === "unlockCostReduction") {
+        const reduction = type === "mult" ? -delta : delta
+        return formatPercent(reduction) + " Unlock Cost Reduction"
+    }
     if (effect === "baseGoldCost" && type === "flat") {
         return formatSigned(delta) + " Coins"
     }

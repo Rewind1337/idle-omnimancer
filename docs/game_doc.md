@@ -415,8 +415,8 @@ Exploration is an **active skill**. Every area is an independent action with its
 - Area 1 (The Crossroads) can additionally discover the neutral Wayfinder Prism; areas 5–7 can additionally discover Tier-I containers; areas 11–13 discover Tier-II; areas 17–19 discover Tier-III; areas 23–25 discover Tier-IV; and areas 29–31 discover Tier-V containers. Each tier has an Earth Geode, Air Egg and Water Shell.
 - The current base companion-container discovery chance is 0.1% per completed Exploration action in an area configured with a container. This is a separate chance roll, not a guaranteed action output; item-output bonuses and Companion effects can multiply the discovery chance, which is capped at 100%.
 - Areas without a configured container do not make a container discovery roll.
-- The minimum Unveiling skill levels are 5, 10, 15, 20 and 25 for container tiers I–V respectively. Container item tooltips display the applicable requirement.
-- Exploration does not drop Combat artifacts. Each area's artifact is defined now as its future area-specific Combat reward and may be revealed through Unveiling.
+- The minimum Unveiling skill levels are 5, 10, 15, 20 and 25 for container tiers I–V respectively. Container item tooltips display the applicable requirement. Unidentified area artifacts use the same rule: Unveiling level 5 per source-area tier (up to level 50 for Tier X).
+- Exploration does not drop Combat artifacts. Each area now has a rare unidentified artifact drop in Combat; the linked identified artifact is revealed through Unveiling.
 
 ---
 ## 9. Passive Skill — Combat
@@ -429,7 +429,7 @@ See [Combat Design](combat-doc.md) for the complete Combat design and open decis
 
 **Purpose:** Collect, assign and develop elemental companions discovered through Exploration and unveiled through Unveiling.
 
-The Companions skill unlocks automatically when the player unveils their first companion container. After unlocking, its page is accessed through the left floating action panel; it is intentionally excluded from the top navigation.
+The Companions skill unlocks automatically when the player unveils their first companion container. After unlocking, its page appears in the regular navigation tabs between Unveiling and Combat.
 
 ### 10.1 Containers, companions and duplicate rewards
 
@@ -474,7 +474,7 @@ The Companions skill unlocks automatically when the player unveils their first c
 - Each companion's level-up requirement increases with both its level and tier. Tier I starts at 20 XP; each tier increase multiplies that base by 1.50 (Tier II ×1.5, Tier III ×2.25, Tier IV ×3.375, Tier V ×5.0625). The level curve then applies a 1.1 multiplier per level plus 2 additional XP per level.
 - There are four vertically stacked slots. The **Any Element** slot is unlocked by default; Earth, Air and Water slots cost 1,000,000, 2,000,000 and 3,000,000 coins respectively.
 - Element-specific slots accept a companion of that element or a neutral companion. The Any Element slot accepts any companion. A companion can occupy only one slot at a time.
-- Most companion effects start with a 5% benefit at level 1 (or a 5% cost reduction) and then gain their configured per-level progression. Input preservation is an exception: it has no 5% starting bonus.
+- Most companion effects start with a 5% benefit at level 1 (or a 5% cost reduction) and then gain their configured per-level progression. Input preservation and Unlock Cost Reduction are exceptions: both have no starting bonus and use a slower per-level curve.
 - The Tend to Companions action gains +2% action speed every 5 action levels, +3.5% action XP every 10 levels and −1 coin from its base gold cost every 20 levels. The Companions page shows all four slots, the training action, the companion collection, each companion's level and XP, and both of its effects.
 
 ### 10.3 Companion effects
@@ -485,7 +485,7 @@ The Companions skill unlocks automatically when the player unveils their first c
 - Input preservation has no shared 5% starting bonus: Ironback grants +0.1% per companion level globally, while Brineclaw grants +0.25% per level to Transmutation while assigned. At level 100, these effects provide +10% and +25% preservation respectively.
 - For cost-reduction effects, the effective cost multiplier decreases as the reduction grows; the current implementation floors the resulting cost multiplier at x0.10.
 - Companion effects can improve sell value, action XP, action time, item output, input preservation, Mana cost, Mana capacity, Mana regeneration, companion-container chance and unlock costs. The neutral Prisms also define Combat-focused active effects for interval, damage and shield; Combat Health is registered as an additional supported effect.
-- The Abyssal Lynx has a permanent Companion Chance bonus and an active Artifact Chance bonus. Artifact Chance and the Prism effects target the planned Combat system; see [Combat Design](combat-doc.md).
+- The Abyssal Lynx has a permanent Companion Chance bonus and an active Artifact Chance bonus for Combat. Stormfinch's permanent effect is Unlock Cost Reduction; his active-only effect is Mana Regeneration for Spellcraft. Artifact Chance and the Prism effects are consumed by Combat; see [Combat Design](combat-doc.md).
 - Item-output bonuses continue to improve companion-container discovery chances, and the Companion Chance bonus applies as an additional multiplier. Drop chances remain capped at 100%.
 
 ## 11. Skill Five — Unveiling
@@ -502,9 +502,9 @@ Every action follows the standard independent level 1–100 progression and cont
 
 - Each Material Destruction action consumes eligible physical items from one other skill tab in exchange for XP.
 - Every source tab has its own Material Destruction action. These actions level independently and contribute to the overall Unveiling skill level.
-- Item definitions expose a source `group` and a semantic `type`. The current groups are `research`, `spellcraft`, `transmutation`, `exploration`, `combat`, and `companions`; regular Material Destruction actions select owned items from their corresponding source group.
-- The current semantic types are `researchMaterial`, `essence`, `catalyst`, `resource`, `artifact`, `companionContainer`, and `shopItem`. These classifications are metadata for inventory filtering and system eligibility, not additional item IDs.
-- Companion containers are in the `companions` group and are excluded from ordinary Exploration Material Destruction; they are processed only by **Unveil Artifact or Companion**.
+- Item definitions expose a source `group` and a semantic `type`. The current groups are `research`, `spellcraft`, `transmutation`, `exploration`, `combat`, `artifacts`, and `companions`; regular Material Destruction actions select owned items from their corresponding source group.
+- The current semantic types include `researchMaterial`, `essence`, `catalyst`, `resource`, `unidentifiedArtifact`, `artifact`, `companionContainer`, and `shopItem`. Unidentified artifacts belong to the `combat` group; identified artifacts use the separate `artifacts` group. These classifications are metadata for inventory filtering and system eligibility, not additional item IDs.
+- Companion containers are in the `companions` group and are excluded from ordinary Exploration Material Destruction; they are processed only by **Unveil Artifact or Companion**. Unidentified artifacts are also reserved for that action; identified artifacts are not Combat materials.
 - The first action is **Destroy Research Books**.
 - The initial action structure is:
 
@@ -526,9 +526,9 @@ Every action follows the standard independent level 1–100 progression and cont
 ### 11.2 Unveil Artifact or Companion
 
 - Unlocking Unveiling also unlocks **Unveil Artifact or Companion** immediately, alongside the first Material Destruction action, **Destroy Research Books**.
-- **Unveil Artifact or Companion** currently processes eligible companion containers. Unidentified Combat objects and artifact identification will be added with the Combat reward system once their reward rules are finalized.
+- **Unveil Artifact or Companion** processes eligible companion containers and unidentified area artifacts. Each unidentified artifact has an area-tier-based Unveiling requirement and a 10% chance per attempt to reveal its linked identified artifact. The unidentified input is consumed on every attempt.
 - Each companion container has a minimum required overall Unveiling skill level: Tier I at level 5, Tier II at level 10, Tier III at level 15, Tier IV at level 20 and Tier V at level 25. The container tooltip displays its requirement.
-- Successfully processing a companion container takes 15 seconds and awards 50 XP to **Unveil Artifact or Companion**.
+- Successfully processing a companion container takes 15 seconds and awards 50 XP to **Unveil Artifact or Companion**. Processing an unidentified area artifact uses the same action, consumes one input and has a 10% chance to award the linked identified artifact.
 - The first opening of each unique container unlocks its matching companion. Further openings award the matching elemental Companion Candy item in a tier-scaled quantity: 1 for Tier I, 2 for Tier II, up to 5 for Tier V.
 - **Unveil Artifact or Companion** levels independently from 1 to 100. Its action-level progress contributes to the overall Unveiling skill level like every other Unveiling action.
 - The requirement is checked against the overall Unveiling skill level, not the special action's individual level.
@@ -741,7 +741,7 @@ Gold is a shared currency used for action unlocks, skill unlocks, inventory expa
 | Transmutation | Gold + Research materials + elemental essences produced by Spellcraft. |
 | Exploration | 5 Earth Catalyst I, 5 Air Catalyst I, 5 Water Catalyst I and 10,000 coins. Unlocking the skill also unlocks The Crossroads. |
 | Unveiling | Active skill; unlocking it also unlocks its first Material Destruction action, Destroy Research Books, and **Unveil Artifact or Companion**. Gold/resource requirements are undecided. |
-| Combat | Passive skill; unlock and start requirements are not yet defined. |
+| Combat | Passive skill; currently costs 25 each of Earth/Air/Water Catalyst II, 250 each of Mossbound Ore, Whispering Seeds and Stillwater Reeds, plus 25,000 Coins. |
 
 - Unlocking a skill should normally include its first action.
 - Resource requirements should connect skills without demanding that every earlier action reach level 100.
@@ -887,7 +887,7 @@ This is an example of how systems can connect, not a mandatory sequence. Exact C
 - Transmutation creates refined materials for future progression.
 - Exploration provides area resources and elemental companion containers.
 - Exploration area levels improve Combat output, Combat XP and artifact chance in their respective areas.
-- Combat produces unidentified objects and chances at area-specific artifacts.
+- Combat produces ordinary Exploration resources plus rare, area-specific unidentified artifacts. Unveiling identifies each unidentified artifact with a 10% chance per attempt.
 - Unveiling consumes eligible materials to gain XP; its overall skill level gates access to higher-level containers and unidentified objects.
 - **Unveil Artifact or Companion** opens elemental containers and identifies objects, potentially revealing Companions, area artifacts and other valuable resources.
 - Skill milestones can improve other skills or global systems.

@@ -23,8 +23,8 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 1,
         containerId: "item:air_egg_i",
         requiredUnveilingLevel: 5,
-        permanentEffect: { effect: "actionTime", type: "mult", perLevel: 0.01 },
-        activeEffect: { effect: "unlockCostReduction", type: "mult", perLevel: 0.025, targetSkillId: "skill:spellcraft" },
+        permanentEffect: { effect: "unlockCostReduction", type: "mult", perLevel: 0.001 },
+        activeEffect: { effect: "manaRegeneration", type: "mult", perLevel: 0.025, targetSkillId: "skill:spellcraft" },
     },
     {
         id: "companion:brineclaw",
@@ -119,7 +119,7 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 4,
         containerId: "item:earth_geode_iv",
         requiredUnveilingLevel: 20,
-        permanentEffect: { effect: "unlockCostReduction", type: "mult", perLevel: 0.01 },
+        permanentEffect: { effect: "unlockCostReduction", type: "mult", perLevel: 0.001 },
         activeEffect: { effect: "itemOutput", type: "mult", perLevel: 0.025, targetSkillId: "skill:research" },
     },
     {

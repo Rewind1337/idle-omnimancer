@@ -25,6 +25,7 @@ export const DEFAULT_INVENTORY_SLOTS = GLOBAL_CONFIG.startingBagSpace
 // generated XP tables and derived skill levels are deliberately not stored.
 const createInitialCombatState = () => ({
     selectedAreaId: WORLD_DATA.map.startingAreaId,
+    activeAreaId: null,
     rotation: ["omnibolt"],
     rotationSlots: COMBAT_CONFIG.player.initialRotationSlots,
     phase: "idle",
@@ -81,6 +82,7 @@ export const createInitialPlayerState = () => {
         missionTier: MISSION_DATA.startingTier,
         completedMissions: [],
         unlockedCompanions: [],
+        identifiedArtifacts: [],
         companionProgress: Object.fromEntries(COMPANION_DATA.map(companion => [
             companion.id,
             { level: 0, xp: 0 },
@@ -199,13 +201,24 @@ export const normalizePlayerState = (savedState) => {
     )
     const savedAreaId = COMBAT_ACTION_BY_AREA_ID[savedCombat.selectedAreaId]
         ? savedCombat.selectedAreaId
-        : WORLD_DATA.map.startingAreaId
-    const selectedAreaId = runningCombatAction?.areaId ??
-        (getExplorationAreaUnlocked(savedAreaId)
-            ? savedAreaId
-            : COMBAT_CONFIG.actions.find(action => getExplorationAreaUnlocked(action.areaId))?.areaId ??
-                WORLD_DATA.map.startingAreaId)
-    const selectedCombatAction = COMBAT_ACTION_BY_AREA_ID[selectedAreaId]
+        : null
+    const firstUnlockedAreaId = COMBAT_CONFIG.actions.find(action =>
+        getExplorationAreaUnlocked(action.areaId)
+    )?.areaId ?? WORLD_DATA.map.startingAreaId
+    const selectedAreaId = savedAreaId && getExplorationAreaUnlocked(savedAreaId)
+        ? savedAreaId
+        : runningCombatAction?.areaId ?? firstUnlockedAreaId
+    const savedActiveAreaId = COMBAT_ACTION_BY_AREA_ID[savedCombat.activeAreaId]
+        ? savedCombat.activeAreaId
+        : runningCombatAction?.areaId ?? (
+            savedCombat.phase && savedCombat.phase !== "idle" && !Object.hasOwn(savedCombat, "activeAreaId")
+                ? selectedAreaId
+                : null
+        )
+    const activeAreaId = savedActiveAreaId && getExplorationAreaUnlocked(savedActiveAreaId)
+        ? savedActiveAreaId
+        : null
+    const selectedCombatAction = COMBAT_ACTION_BY_AREA_ID[activeAreaId ?? selectedAreaId]
     const rotationSlots = clampInteger(
         savedCombat.rotationSlots,
         COMBAT_CONFIG.player.initialRotationSlots,
@@ -300,21 +313,22 @@ export const normalizePlayerState = (savedState) => {
                 : savedPhase === "inventoryFull"
                     ? "rest"
                     : savedPhase
-    const combatRunning = combatSkillUnlocked &&
-        Boolean(skills[COMBAT_CONFIG.id]?.actions?.[selectedCombatAction?.id]?.running) &&
-        getExplorationAreaUnlocked(selectedAreaId)
+    const combatRunning = combatSkillUnlocked && Boolean(activeAreaId) &&
+        Boolean(skills[COMBAT_CONFIG.id]?.actions?.[COMBAT_ACTION_BY_AREA_ID[activeAreaId]?.id]?.running) &&
+        getExplorationAreaUnlocked(activeAreaId)
     for (const action of COMBAT_CONFIG.actions) {
         const current = skills[COMBAT_CONFIG.id]?.actions?.[action.id]
         if (current) {
             skills[COMBAT_CONFIG.id].actions[action.id] = {
                 ...current,
-                running: combatRunning && action.id === selectedCombatAction?.id,
+                running: combatRunning && action.areaId === activeAreaId,
             }
         }
     }
     const combat = {
         ...createInitialCombatState(),
         selectedAreaId,
+        activeAreaId,
         rotation,
         rotationSlots,
         phase,
@@ -333,6 +347,13 @@ export const normalizePlayerState = (savedState) => {
         Object.entries(normalizeNumberMap(savedState.inventory))
             .filter(([itemId]) => hasOwn(ITEM_DATA_BY_ID, itemId))
     )
+    const identifiedArtifacts = [...new Set([
+        ...(Array.isArray(savedState.identifiedArtifacts) ? savedState.identifiedArtifacts : [])
+            .filter(itemId => ITEM_DATA_BY_ID[itemId]?.type === "artifact"),
+        ...Object.entries(inventory)
+            .filter(([itemId, amount]) => amount > 0 && ITEM_DATA_BY_ID[itemId]?.type === "artifact")
+            .map(([itemId]) => itemId),
+    ])]
     const occupiedSlots = Object.values(inventory).filter(amount => amount > 0).length
     const inventorySlots = Math.max(
         occupiedSlots,
@@ -429,6 +450,7 @@ export const normalizePlayerState = (savedState) => {
         missionTier,
         completedMissions,
         unlockedCompanions,
+        identifiedArtifacts,
         companionProgress,
         unlockedCompanionSlots,
         activeCompanionSlots,

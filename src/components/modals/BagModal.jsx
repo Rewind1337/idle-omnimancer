@@ -42,6 +42,7 @@ const BAG_GROUP_FILTERS = [
     { id: "transmutation", label: "Transmutation", icon: SKILL_ICONS.TRANSMUTATION, variant: "transmutation" },
     { id: "exploration", label: "Exploration", icon: SKILL_ICONS.EXPLORATION, variant: "exploration" },
     { id: "combat", label: "Combat", icon: SKILL_ICONS.COMBAT, variant: "combat" },
+    { id: "artifacts", label: "Artifacts", icon: OTHER_ICONS.ARTIFACT, variant: "combat" },
     { id: "companions", label: "Companions", icon: SKILL_ICONS.COMPANIONS, variant: "companions" },
     { id: "shop", label: "Shop", icon: SHOP_ICONS.GENERAL_GOODS, variant: "shop" },
 ]

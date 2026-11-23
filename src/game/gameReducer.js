@@ -37,16 +37,17 @@ export const gameReducer = (state, action) => {
 
             if (activity === "passive" && skillId === COMBAT_CONFIG.id) {
                 const selectedAction = COMBAT_CONFIG.actions.find(entry => entry.id === actionId)
-                const areaChanged = state.combat?.selectedAreaId !== selectedAction?.areaId
+                const activeAreaChanged = state.combat?.activeAreaId !== selectedAction?.areaId
                 const nextCombat = {
                     ...state.combat,
                     selectedAreaId: selectedAction.areaId,
-                    phase: areaChanged
+                    activeAreaId: selectedAction.areaId,
+                    phase: activeAreaChanged
                         ? ((state.combat?.pendingRewards?.length ?? 0) > 0 ? "inventoryFull" : "idle")
                         : state.combat?.phase ?? "idle",
-                    encounter: areaChanged ? null : state.combat?.encounter ?? null,
-                    cycleRemainingMs: areaChanged ? 0 : state.combat?.cycleRemainingMs ?? 0,
-                    lastRewards: areaChanged ? [] : state.combat?.lastRewards ?? [],
+                    encounter: activeAreaChanged ? null : state.combat?.encounter ?? null,
+                    cycleRemainingMs: activeAreaChanged ? 0 : state.combat?.cycleRemainingMs ?? 0,
+                    lastRewards: activeAreaChanged ? [] : state.combat?.lastRewards ?? [],
                 }
                 const actions = { ...state.skills[skillId].actions }
                 for (const combatAction of COMBAT_CONFIG.actions) {
@@ -209,37 +210,14 @@ export const gameReducer = (state, action) => {
                 state.combat?.selectedAreaId === areaId
             ) return state
 
-            const wasRunning = COMBAT_CONFIG.actions.some(entry =>
-                state.skills?.[COMBAT_CONFIG.id]?.actions?.[entry.id]?.running
-            )
-            const pendingRewards = state.combat?.pendingRewards ?? []
-            const nextActions = { ...state.skills[COMBAT_CONFIG.id].actions }
-            for (const entry of COMBAT_CONFIG.actions) {
-                const current = nextActions[entry.id]
-                if (current) {
-                    nextActions[entry.id] = {
-                        ...current,
-                        running: wasRunning && entry.id === combatAction.id,
-                    }
-                }
-            }
-
+            // Choosing a map tile changes only the pending selection. The
+            // running encounter continues in activeAreaId until Start Combat
+            // explicitly commits the newly selected area.
             return {
                 ...state,
                 combat: {
                     ...state.combat,
                     selectedAreaId: areaId,
-                    phase: pendingRewards.length > 0 ? "inventoryFull" : "idle",
-                    encounter: null,
-                    cycleRemainingMs: 0,
-                    lastRewards: [],
-                },
-                skills: {
-                    ...state.skills,
-                    [COMBAT_CONFIG.id]: {
-                        ...state.skills[COMBAT_CONFIG.id],
-                        actions: nextActions,
-                    },
                 },
             }
         }

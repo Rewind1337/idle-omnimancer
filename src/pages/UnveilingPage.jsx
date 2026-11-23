@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { cloneElement, useState } from "react"
 
 import { Flex } from "../components/Flex"
 import { Paper } from "../components/Paper"
@@ -71,17 +71,54 @@ function UnveilingActionCard({
     const experienceItem = isDuplicateCompanion
         ? UNVEILING_CONFIG.companionRewards?.experienceItemsByElement?.[selectedItem.variant]
         : null
-    const producedResources = experienceItem
-        ? [{
+    const unidentifiedArtifact = selectedItem?.type === "unidentifiedArtifact"
+        ? ITEM_DATA_BY_ID[selectedItem.revealsItemId]
+        : null
+    const identificationChance = action.processesUnidentifiedArtifacts
+        ? action.identificationChance ?? 0.1
+        : 0
+    const producedResources = [
+        ...(experienceItem ? [{
             item: experienceItem,
             amount: selectedCompanion.duplicateCandyAmount ?? selectedCompanion.tier ?? 1,
-        }]
-        : []
+        }] : []),
+        ...(unidentifiedArtifact && identificationChance > 0 ? [{
+            item: unidentifiedArtifact.id,
+            amountLabel: (identificationChance * 100).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+            }) + "% chance per unveil",
+        }] : []),
+    ]
+    const actionIcon = action.processesUnidentifiedArtifacts
+        ? OTHER_ICONS.ARTIFACT
+        : action.id === "action:destroy_research_books"
+            ? SKILL_ICONS.RESEARCH
+            : action.id === "action:destroy_spellcraft_materials"
+                ? SKILL_ICONS.SPELLCRAFT
+                : action.id === "action:destroy_transmutation_materials"
+                    ? SKILL_ICONS.TRANSMUTATION
+                    : action.id === "action:destroy_exploration_materials"
+                        ? SKILL_ICONS.EXPLORATION
+                        : SKILL_ICONS.COMBAT
 
     return (
         <Paper layer={1} variant="unveiling" className="action action-unveiling">
             <Flex direction="column">
-                <Flex direction="column" gap={4}>
+                <Flex direction="row" align="center" gap={12}>
+                    <Paper round layer="0" interactive className="w-min" padding={4}>
+                        <Icon
+                            size={48}
+                            variant="unveiling"
+                            outerRunes="wide"
+                            outerShape={7}
+                            innerRunes="gap"
+                            innerShape={8}
+                        >
+                            {cloneElement(actionIcon, { size: 48 })}
+                        </Icon>
+                    </Paper>
+                    <Flex direction="column" gap={4} className="flex-grow">
                     <ActionHeader
                         name={action.name}
                         level={actionState.level}
@@ -130,6 +167,7 @@ function UnveilingActionCard({
                             Unlock
                         </Button>
                     )}
+                    </Flex>
                 </Flex>
 
                 {isUnlocked ? (
@@ -138,7 +176,7 @@ function UnveilingActionCard({
                             actionTime={durationMs / 1000}
                             actionXP={getActionXPReward(UNVEILING_CONFIG, action, player)}
                             outputMultiplier={outputMultiplier}
-                            itemValue={action.processesCompanionContainers ? null : selectedItem?.baseValue ?? null}
+                            itemValue={selectedItem?.type === "companionContainer" ? null : selectedItem?.baseValue ?? null}
                             preservationChance={getActionPreservationChance(player, UNVEILING_CONFIG, action)}
                             effectStacks={effectStacks}
                         />

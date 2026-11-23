@@ -47,7 +47,7 @@ const formatActionValue = value => Number(value.toFixed(2)).toLocaleString()
 const InnerShapeMap = ["dot", 3, 4, 5, 6, 7, 8, 9, 10, "star"]
 const OuterRunesMap = ["dotted", "dotted", "dashed", "dashed", "gap", "gap", "wide", "wide", "solid", "solid"]
 
-function CompanionSlotCard({ slotId, slot, companion, unlocked, player, onUnlock, onChoose }) {
+function CompanionSlotCard({ slotId, slot, companion, unlocked, player, isTraining, onUnlock, onChoose }) {
     const unlockCost = getCompanionSlotUnlockCost(player, slotId)
     const slotVariant = slot.element ?? "companions"
     const slotIcon = ELEMENT_ICONS[slot.element?.toUpperCase() ?? "ALL"]
@@ -152,6 +152,7 @@ function CompanionSlotCard({ slotId, slot, companion, unlocked, player, onUnlock
                                             percentage={companionProgress.neededXP
                                                 ? companionProgress.xp / companionProgress.neededXP * 100
                                                 : 100}
+                                            animated={isTraining}
                                         />
                                         <Button
                                             variant={companion.element}
@@ -233,12 +234,14 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                         <Flex direction="row" gap={8} className="flex-grow" justify="end" align="center" wrap>
                             <Badge
                                 size="small"
-                                icon={OTHER_ICONS.MERGE}
+                                icon={OTHER_ICONS.SPARKLES}
                                 variant={companion.element}
                                 interactive
-                                tooltip="Companion tier determines the base XP required for each level."
+                                tooltip="Companion XP earned toward the next companion level."
                             >
-                                Tier {companion.tier}
+                                {progress.neededXP === null
+                                    ? "MAX LEVEL"
+                                    : progress.xp.toLocaleString() + " / " + progress.neededXP.toLocaleString() + " XP"}
                             </Badge>
                             <Badge
                                 size="small"
@@ -249,12 +252,22 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                             >
                                 Lv. {progress.level}
                             </Badge>
+                            <Badge
+                                size="small"
+                                icon={OTHER_ICONS.MERGE}
+                                variant={companion.element}
+                                interactive
+                                tooltip="Companion tier determines the base XP required for each level."
+                            >
+                                Tier {companion.tier}
+                            </Badge>
                         </Flex>
                     </Flex>
                 </Flex>
                 <Progress
                     layer={2}
                     size="small"
+                    corners="rounded"
                     variant={companion.element}
                     percentage={progress.neededXP ? progress.xp / progress.neededXP * 100 : 100}
                 />
@@ -376,16 +389,30 @@ export function CompanionPage() {
 
             <Paper layer={0} className="companion-training-panel">
                 <Flex direction="column" gap={10}>
-                    <ActionHeader
-                        name={trainingAction.name}
-                        level={actionState.level}
-                        isUnlocked={Boolean(actionState.unlocked)}
-                        currentXP={actionState.xp}
-                        neededXP={neededXP}
-                        tier={trainingAction.tier}
-                        actionXPTable={actionXPTable}
-                        actionMilestones={actionMilestones}
-                    />
+                    <Flex direction="row" align="center" gap={12}>
+                        <Paper round layer="0" interactive className="w-min" padding={4}>
+                            <Icon
+                                size={48}
+                                variant="companions"
+                                outerRunes="wide"
+                                outerShape={7}
+                                innerRunes="gap"
+                                innerShape={8}
+                            >
+                                {cloneElement(SKILL_ICONS.COMPANIONS, { size: 48 })}
+                            </Icon>
+                        </Paper>
+                        <ActionHeader
+                            name={trainingAction.name}
+                            level={actionState.level}
+                            isUnlocked={Boolean(actionState.unlocked)}
+                            currentXP={actionState.xp}
+                            neededXP={neededXP}
+                            tier={trainingAction.tier}
+                            actionXPTable={actionXPTable}
+                            actionMilestones={actionMilestones}
+                        />
+                    </Flex>
                     <Flex wrap gap={8}>
                         <Badge variant="transparent" interactive icon={OTHER_ICONS.HOURGLASS}
                             tooltip={<Flex direction="column" gap={8}>
@@ -469,6 +496,7 @@ export function CompanionPage() {
                                     companion={companion}
                                     unlocked={unlockedSlots.has(slotId)}
                                     player={player}
+                                    isTraining={isActive}
                                     onUnlock={() => unlockCompanionSlot(slotId)}
                                     onChoose={() => setSelectionSlotId(slotId)}
                                 />

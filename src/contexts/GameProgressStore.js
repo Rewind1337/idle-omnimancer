@@ -60,6 +60,7 @@ export const createGameProgressStore = () => {
     let unlockedCompanions = EMPTY_ARRAY
     let combatSnapshot = Object.freeze({
         selectedAreaId: null,
+        activeAreaId: null,
         rotation: ["omnibolt"],
         running: false,
         phase: "idle",
@@ -192,6 +193,7 @@ export const createGameProgressStore = () => {
             const encounter = combat.encounter
             const nextCombatSnapshot = {
                 selectedAreaId: combat.selectedAreaId ?? null,
+                activeAreaId: combat.activeAreaId ?? null,
                 rotation: Array.isArray(combat.rotation) ? [...combat.rotation] : ["omnibolt"],
                 running: selectedActionRunning,
                 phase: combat.phase ?? "idle",

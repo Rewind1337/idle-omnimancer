@@ -24,13 +24,10 @@ import { ExplorationPage } from "./pages/ExplorationPage"
 import { CombatPage } from "./pages/CombatPage";
 import { UnveilingPage } from "./pages/UnveilingPage";
 import { CompanionPage } from "./pages/CompanionPage";
-import { OTHER_ICONS, SKILL_ICONS } from "./data/iconLibrary";
-import { COMPANION_DATA } from "./data/companionData";
-import { useGame, useGameUnlockedCompanions, useGameUnlockedSkills } from "./hooks/useGame";
+import { OTHER_ICONS } from "./data/iconLibrary";
+import { useGame } from "./hooks/useGame";
 
 import { SKILL_NAVIGATION, SHOP_NAVIGATION } from "./data/navigationData";
-
-const COMPANIONS_NAVIGATION = SKILL_NAVIGATION.find(skill => skill.skillId === "skill:companions")
 
 function ResponsivePage({
   children,
@@ -48,9 +45,6 @@ function ResponsivePage({
   const [bagModalVisible, setBagModalVisible] = useState(false)
   const [settingsModalVisible, setSettingsModalVisible] = useState(false)
   const { resetGame } = useGame()
-  const unlockedSkills = useGameUnlockedSkills()
-  const unlockedCompanions = useGameUnlockedCompanions()
-  const companionsUnlocked = unlockedSkills.includes("skill:companions")
 
   const handleCloseBag = useCallback(() => setBagModalVisible(false), [])
   const closeBagButton = useMemo(() => (
@@ -77,19 +71,6 @@ function ResponsivePage({
       onClick={() => { setMissionsModalTab("overview"); setMissionsModalVisible(true) }}
     />
   )
-  const companionsButton = companionsUnlocked ? (
-    <Button
-      variant="companions"
-      size="medium"
-      icon={SKILL_ICONS.COMPANIONS}
-      badge={`${unlockedCompanions.length} / ${COMPANION_DATA.length}`}
-      badgeIcon={OTHER_ICONS.COMPANION_EGG}
-      checked={activePage === COMPANIONS_NAVIGATION?.id}
-      onClick={() => setActivePage(COMPANIONS_NAVIGATION.id)}
-    >
-      Companions
-    </Button>
-  ) : null
   const bagButton = (
     <BagButton
       active={bagModalVisible}
@@ -110,7 +91,6 @@ function ResponsivePage({
 
   const sideActionsLeft = (
     <Flex direction="column" gap={8} className="navigation-side-actions">
-      {companionsButton}
       {shopButton}
       {missionsButton}
       {bagButton}
@@ -147,7 +127,6 @@ function ResponsivePage({
 
   const floatingButtons = navigationPosition === "top" ? (
     <FloatingPanel mode={navigationMode}>
-      {companionsButton}
       {shopButton}
       {missionsButton}
       {bagButton}

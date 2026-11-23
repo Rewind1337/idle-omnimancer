@@ -8,6 +8,7 @@ import { Icon } from "../components/Icon"
 import { InputSelect } from "../components/InputSelect"
 import { Paper } from "../components/Paper"
 import { Progress } from "../components/Progress"
+import { EffectStack } from "../components/EffectStack"
 import { Text } from "../components/Text"
 import { HexMap } from "../components/maps/HexMap"
 import { ActionHeader } from "../components/actions/ActionHeader"
@@ -19,7 +20,7 @@ import { EXPLORATION_CONFIG } from "../data/explorationConfig"
 import { SPELLCRAFT_CONFIG } from "../data/spellcraftConfig"
 import { WORLD_AREAS, WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
-import { SKILL_ICONS } from "../data/iconLibrary"
+import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
     canStartAction,
@@ -27,6 +28,8 @@ import {
     getCombatOutputMultiplier,
     getCombatPlayerStats,
     getCombatXPReward,
+    getActionEffectStacks,
+    getActionEffectSummary,
     getSkillMilestoneDetails,
     getActionMilestoneDetails,
     getSkillProgress,
@@ -46,13 +49,13 @@ const formatSeconds = milliseconds =>
 const getRewardItemId = reward =>
     typeof reward === "string" ? reward : reward?.item
 
-const getRewardResources = (player, action) =>
-    (action.rewards ?? []).flatMap(reward => {
+const getRewardResources = (player, action) => {
+    const rareDrops = (action.rewards ?? []).flatMap(reward => {
         const itemId = getRewardItemId(reward)
         const itemData = ITEM_DATA_BY_ID[itemId]
         if (!itemData) return []
 
-        if (itemData.type === "artifact") {
+        if (itemData.type === "unidentifiedArtifact") {
             const chance = getCombatArtifactChance(player, action)
             return chance > 0 ? [{
                 item: itemId,
@@ -68,12 +71,20 @@ const getRewardResources = (player, action) =>
             amount: typeof reward === "string" ? 1 : reward.amount ?? 1,
         }]
     })
+    const explorationRewards = (action.explorationRewards ?? []).map(reward => ({
+        item: getRewardItemId(reward),
+        amount: typeof reward === "string" ? 1 : reward.amount ?? 1,
+    }))
+
+    return [...rareDrops, ...explorationRewards]
+}
 
 function CombatPanel({ player, action, rotationOptions }) {
     const snapshot = useGameCombatSnapshot()
+    const activeAction = COMBAT_ACTION_BY_AREA_ID[snapshot.activeAreaId] ?? action
     const encounter = snapshot.encounter
     const playerState = encounter?.player
-    const displayPlayer = playerState ?? getCombatPlayerStats(player, action)
+    const displayPlayer = playerState ?? getCombatPlayerStats(player, activeAction)
     const health = playerState?.health ?? displayPlayer.maxHealth
     const maxHealth = playerState?.maxHealth ?? displayPlayer.maxHealth
     const barrier = playerState?.barrier ?? displayPlayer.barrier
@@ -100,7 +111,12 @@ function CombatPanel({ player, action, rotationOptions }) {
         <Paper layer={0} className="combat-panel">
             <Flex direction="column" align="stretch" gap={12}>
                 <Flex direction="row" justify="space-between" align="center" wrap>
-                    <Heading h="2">Combat Panel</Heading>
+                    <Flex direction="column" align="start" gap={2}>
+                        <Heading h="2">Combat Panel</Heading>
+                        <Text size="small">
+                            {snapshot.activeAreaId ? "Fighting in " + (activeAction?.name ?? "the selected area") : "No active Combat area"}
+                        </Text>
+                    </Flex>
                     <Badge variant="combat">{phaseLabel}</Badge>
                 </Flex>
 
@@ -271,7 +287,7 @@ function CombatActionCard({ player, action, actionState, isSkillUnlocked, isArea
     const neededXP = actionState.level >= 100
         ? null
         : xpTable?.[actionState.level - 1]?.neededXP ?? null
-    const artifactChance = getCombatArtifactChance(player, action)
+    const actionEffects = getActionEffectStacks(player, COMBAT_CONFIG, action)
 
     return (
         <Paper layer={1} variant="combat" className="action action-combat combat-action-card">
@@ -319,9 +335,46 @@ function CombatActionCard({ player, action, actionState, isSkillUnlocked, isArea
                 {isSkillUnlocked && (
                     <>
                         <Flex direction="row" wrap gap={8}>
-                            <Badge variant="transparent">Victory XP: {formatNumber(getCombatXPReward(player, action))}</Badge>
-                            <Badge variant="transparent">Artifact Chance: {(artifactChance * 100).toFixed(2)}%</Badge>
-                            <Badge variant="transparent">Area Output: x{getCombatOutputMultiplier(player, action).toFixed(2)}</Badge>
+                            <Badge
+                                variant="transparent"
+                                interactive
+                                icon={OTHER_ICONS.SPARKLES}
+                                tooltip={<Flex direction="column" gap={8}>
+                                    <Heading h="4" className="w-100 align-center">
+                                        Combat XP awarded for each completed encounter.
+                                    </Heading>
+                                    <Text size="small">
+                                        The displayed reward includes the selected area's Exploration-level output bonus.
+                                    </Text>
+                                    <hr />
+                                    <EffectStack
+                                        title="Action XP effects"
+                                        icon={OTHER_ICONS.SPARKLES}
+                                        entries={actionEffects.xpGain ?? []}
+                                        summary={getActionEffectSummary(player, COMBAT_CONFIG, action, "xpGain")}
+                                    />
+                                </Flex>}
+                            >
+                                Victory XP: {formatNumber(getCombatXPReward(player, action))}
+                            </Badge>
+                            <Badge
+                                variant="transparent"
+                                interactive
+                                icon={OTHER_ICONS.FLAME}
+                                tooltip={<Flex direction="column" gap={8}>
+                                    <Heading h="4" className="w-100 align-center">
+                                        Exploration progression improves this area's Combat rewards.
+                                    </Heading>
+                                    <Text size="small">
+                                        Each level above Exploration Action Level 1 adds 1% to ordinary Combat item output, Combat XP and the chance of the area's unidentified artifact dropping.
+                                    </Text>
+                                    <Text size="small">
+                                        Current Exploration Action Level: {player.skills?.[EXPLORATION_CONFIG.id]?.actions?.[WORLD_AREA_BY_ID[action.areaId]?.actionId]?.level ?? 1}
+                                    </Text>
+                                </Flex>}
+                            >
+                                Area Output: x{getCombatOutputMultiplier(player, action).toFixed(2)}
+                            </Badge>
                         </Flex>
                         <ActionResources produces={getRewardResources(player, action)}
                             outputMultiplier={getCombatOutputMultiplier(player, action)} />
@@ -383,14 +436,13 @@ export function CombatPage() {
                 label: spell.name ?? humanize(spell.id.replace(/^action:/, "")),
             })),
     ], [player.skills, player.unlockedSkills])
-    const areaMarkers = useMemo(() => Object.fromEntries(COMBAT_CONFIG.actions.flatMap(action => {
-        const artifactReward = action.rewards.find(reward =>
-            ITEM_DATA_BY_ID[getRewardItemId(reward)]?.type === "artifact"
-        )
-        return artifactReward && (player.inventory?.[getRewardItemId(artifactReward)] ?? 0) > 0
-            ? [[action.areaId, "discovered"]]
-            : []
-    })), [player.inventory])
+    const areaMarkers = useMemo(() => {
+        const identifiedArtifacts = new Set(player.identifiedArtifacts ?? [])
+        return Object.fromEntries(COMBAT_CONFIG.actions.map(action => [
+            action.areaId,
+            identifiedArtifacts.has(action.artifactId) ? "discovered" : "unknown",
+        ]))
+    }, [player.identifiedArtifacts])
     const actionIsRunning = Boolean(actionState.running)
 
     return (

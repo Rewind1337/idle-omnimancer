@@ -64,7 +64,7 @@ export function EffectStack({
                             <Badge variant={entry.sourceVariant ?? entry.variant ?? "transparent"} size="small">
                                 <Heading h="5" weight={400}>{entry.source}</Heading>
                             </Badge>
-                        )}}
+                        )}
                     </Flex>
                 </Flex>
             )) : (

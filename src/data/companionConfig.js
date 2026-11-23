@@ -50,7 +50,7 @@ export const COMPANION_CONFIG = {
         { level: 20, reach: "skill:unveiling", type: "mult", effect: "actionTime", value: 1.1 },
         { level: 30, reach: "global", type: "mult", effect: "xpGain", value: 1.2 },
         { level: 40, reach: "local", type: "mult", effect: "actionTime", value: 1.25 },
-        { level: 50, reach: "skill:unveiling", type: "mult", effect: "xpGain", value: 1.25 },
+        { level: 50, reach: "skill:research", type: "mult", effect: "itemOutput", value: 1.25 },
     ],
     actionMilestones: [
         { levels: 5, type: "mult", effect: "actionTime", value: 1.02 },

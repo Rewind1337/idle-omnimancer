@@ -36,7 +36,7 @@ export const UNVEILING_CONFIG = {
         { level: 20, reach: "skill:companions", type: "mult", effect: "sellValue", value: 1.1 },
         { level: 30, reach: "global", type: "mult", effect: "xpGain", value: 1.2 },
         { level: 40, reach: "local", type: "mult", effect: "preservation", value: 1.25 },
-        { level: 50, reach: "skill:companions", type: "mult", effect: "actionTime", value: 1.25 },
+        { level: 50, reach: "skill:spellcraft", type: "mult", effect: "manaRegeneration", value: 1.25 },
     ],
     actionMilestones: [
         { levels: 5, type: "mult", effect: "actionTime", value: 1.02 },

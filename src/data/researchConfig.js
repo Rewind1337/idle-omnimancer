@@ -46,7 +46,7 @@ export const RESEARCH_CONFIG = {
     */
     milestones: [
         { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 1.1 },
-        { level: 20, reach: "skill:spellcraft", type: "mult", effect: "manaRegeneration", value: 1.1 },
+        { level: 20, reach: "skill:transmutation", type: "mult", effect: "xpGain", value: 1.1 },
         { level: 30, reach: "global", type: "mult", effect: "xpGain", value: 1.2 },
         { level: 40, reach: "local", type: "mult", effect: "itemOutput", value: 1.25 },
         { level: 50, reach: "skill:spellcraft", type: "mult", effect: "manaCapacity", value: 1.25 },

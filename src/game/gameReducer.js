@@ -9,6 +9,9 @@ import {
 import { COMPANION_DATA_BY_ID } from "../data/companionData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { RESEARCH_BREAKTHROUGH_CONFIG, getResearchBreakthroughCost } from "../data/researchBreakthroughConfig"
+import { COMBAT_CONFIG, COMBAT_ACTION_BY_AREA_ID } from "../data/combatConfig"
+import { SPELLCRAFT_CONFIG } from "../data/spellcraftConfig"
+import { WORLD_AREA_BY_ID } from "../data/worldData"
 import {
     advanceGame,
     canStartAction,
@@ -31,6 +34,39 @@ export const gameReducer = (state, action) => {
             if (!canStartAction(state, skillId, actionId)) return state
 
             const activity = getActionActivity(skillId, actionId)
+
+            if (activity === "passive" && skillId === COMBAT_CONFIG.id) {
+                const selectedAction = COMBAT_CONFIG.actions.find(entry => entry.id === actionId)
+                const areaChanged = state.combat?.selectedAreaId !== selectedAction?.areaId
+                const nextCombat = {
+                    ...state.combat,
+                    selectedAreaId: selectedAction.areaId,
+                    phase: areaChanged
+                        ? ((state.combat?.pendingRewards?.length ?? 0) > 0 ? "inventoryFull" : "idle")
+                        : state.combat?.phase ?? "idle",
+                    encounter: areaChanged ? null : state.combat?.encounter ?? null,
+                    cycleRemainingMs: areaChanged ? 0 : state.combat?.cycleRemainingMs ?? 0,
+                    lastRewards: areaChanged ? [] : state.combat?.lastRewards ?? [],
+                }
+                const actions = { ...state.skills[skillId].actions }
+                for (const combatAction of COMBAT_CONFIG.actions) {
+                    const currentAction = actions[combatAction.id]
+                    if (currentAction) {
+                        actions[combatAction.id] = {
+                            ...currentAction,
+                            running: combatAction.id === actionId,
+                        }
+                    }
+                }
+                return {
+                    ...state,
+                    combat: nextCombat,
+                    skills: {
+                        ...state.skills,
+                        [skillId]: { ...state.skills[skillId], actions },
+                    },
+                }
+            }
 
             if (activity === "passive") {
                 const current = state.skills[skillId].actions[actionId]
@@ -94,8 +130,24 @@ export const gameReducer = (state, action) => {
             const current = state.skills[skillId]?.actions[actionId]
             if (!current) return state
 
-            // Passive work cannot be stopped. Future target changes must
-            // update the target separately without toggling the process off.
+            if (activity === "passive" && skillId === COMBAT_CONFIG.id) {
+                if (!current.running) return state
+                return {
+                    ...state,
+                    skills: {
+                        ...state.skills,
+                        [skillId]: {
+                            ...state.skills[skillId],
+                            actions: {
+                                ...state.skills[skillId].actions,
+                                [actionId]: { ...current, running: false },
+                            },
+                        },
+                    },
+                }
+            }
+
+            // Other passive work cannot be stopped once it has been started.
             if (activity === "passive") return state
 
             if (state.activeAction?.skillId !== skillId || state.activeAction?.actionId !== actionId) {
@@ -140,6 +192,83 @@ export const gameReducer = (state, action) => {
                             [actionId]: { ...current, running: true },
                         },
                     },
+                },
+            }
+        }
+
+        case "SELECT_COMBAT_AREA": {
+            if (!state.unlockedSkills?.includes(COMBAT_CONFIG.id)) return state
+            const { areaId } = action
+            const combatAction = COMBAT_ACTION_BY_AREA_ID[areaId]
+            const explorationActionId = WORLD_AREA_BY_ID[areaId]?.actionId
+            if (
+                !combatAction ||
+                !explorationActionId ||
+                !state.skills?.["skill:exploration"]?.actions?.[explorationActionId]?.unlocked ||
+                state.combat?.selectedAreaId === areaId
+            ) return state
+
+            const wasRunning = COMBAT_CONFIG.actions.some(entry =>
+                state.skills?.[COMBAT_CONFIG.id]?.actions?.[entry.id]?.running
+            )
+            const pendingRewards = state.combat?.pendingRewards ?? []
+            const nextActions = { ...state.skills[COMBAT_CONFIG.id].actions }
+            for (const entry of COMBAT_CONFIG.actions) {
+                const current = nextActions[entry.id]
+                if (current) {
+                    nextActions[entry.id] = {
+                        ...current,
+                        running: wasRunning && entry.id === combatAction.id,
+                    }
+                }
+            }
+
+            return {
+                ...state,
+                combat: {
+                    ...state.combat,
+                    selectedAreaId: areaId,
+                    phase: pendingRewards.length > 0 ? "inventoryFull" : "idle",
+                    encounter: null,
+                    cycleRemainingMs: 0,
+                    lastRewards: [],
+                },
+                skills: {
+                    ...state.skills,
+                    [COMBAT_CONFIG.id]: {
+                        ...state.skills[COMBAT_CONFIG.id],
+                        actions: nextActions,
+                    },
+                },
+            }
+        }
+
+        case "SET_COMBAT_ROTATION": {
+            if (!state.unlockedSkills?.includes(COMBAT_CONFIG.id)) return state
+            const requested = Array.isArray(action.rotation) ? action.rotation : []
+            const slots = state.combat?.rotationSlots ?? COMBAT_CONFIG.player.initialRotationSlots
+            if (requested.length < 1 || requested.length > slots || requested.length > COMBAT_CONFIG.player.maxRotationSlots) {
+                return state
+            }
+
+            const valid = requested.every((attackId, index) =>
+                typeof attackId === "string" &&
+                requested.indexOf(attackId) === index &&
+                (attackId === "omnibolt" ||
+                    (SPELLCRAFT_CONFIG.actions.some(spell => spell.id === attackId) &&
+                        state.unlockedSkills.includes(SPELLCRAFT_CONFIG.id) &&
+                        state.skills?.[SPELLCRAFT_CONFIG.id]?.actions?.[attackId]?.unlocked))
+            )
+            if (!valid) return state
+
+            return {
+                ...state,
+                combat: {
+                    ...state.combat,
+                    rotation: [...requested],
+                    encounter: state.combat?.encounter
+                        ? { ...state.combat.encounter, rotationIndex: 0 }
+                        : state.combat?.encounter ?? null,
                 },
             }
         }

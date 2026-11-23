@@ -14,12 +14,27 @@ import {
     createEmptyActiveCompanionSlots,
 } from "../data/companionConfig"
 import { RESEARCH_BREAKTHROUGH_CONFIG } from "../data/researchBreakthroughConfig"
+import { COMBAT_CONFIG, COMBAT_ACTION_BY_AREA_ID } from "../data/combatConfig"
+import { SPELLCRAFT_CONFIG } from "../data/spellcraftConfig"
+import { WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
 
 export const SAVE_KEY = "omnimancer-idle-save"
 export const DEFAULT_INVENTORY_SLOTS = GLOBAL_CONFIG.startingBagSpace
 
 // The save contains only serializable player data. Configurations, functions,
 // generated XP tables and derived skill levels are deliberately not stored.
+const createInitialCombatState = () => ({
+    selectedAreaId: WORLD_DATA.map.startingAreaId,
+    rotation: ["omnibolt"],
+    rotationSlots: COMBAT_CONFIG.player.initialRotationSlots,
+    phase: "idle",
+    encounter: null,
+    cycleRemainingMs: 0,
+    encountersCompleted: 0,
+    lastRewards: [],
+    pendingRewards: [],
+})
+
 export const createInitialPlayerState = () => {
     const defaultUnlockedSkills = new Set(
         SKILL_CONFIGS
@@ -59,6 +74,7 @@ export const createInitialPlayerState = () => {
             .map(({ skillId }) => skillId),
         activeAction: null,
         skills,
+        combat: createInitialCombatState(),
         inventory: {},
         inventorySlots: DEFAULT_INVENTORY_SLOTS,
         researchBreakthroughTier: 0,
@@ -168,6 +184,137 @@ export const normalizePlayerState = (savedState) => {
         skills[skill.id] = { actions }
     }
 
+    const savedCombat = isRecord(savedState.combat) ? savedState.combat : {}
+    const combatSkillUnlocked = unlockedSkills.includes(COMBAT_CONFIG.id)
+    const getExplorationAreaUnlocked = areaId => {
+        const explorationActionId = WORLD_AREA_BY_ID[areaId]?.actionId
+        return Boolean(
+            explorationActionId &&
+            skills["skill:exploration"]?.actions?.[explorationActionId]?.unlocked
+        )
+    }
+    const runningCombatAction = COMBAT_CONFIG.actions.find(action =>
+        skills[COMBAT_CONFIG.id]?.actions?.[action.id]?.running &&
+        getExplorationAreaUnlocked(action.areaId)
+    )
+    const savedAreaId = COMBAT_ACTION_BY_AREA_ID[savedCombat.selectedAreaId]
+        ? savedCombat.selectedAreaId
+        : WORLD_DATA.map.startingAreaId
+    const selectedAreaId = runningCombatAction?.areaId ??
+        (getExplorationAreaUnlocked(savedAreaId)
+            ? savedAreaId
+            : COMBAT_CONFIG.actions.find(action => getExplorationAreaUnlocked(action.areaId))?.areaId ??
+                WORLD_DATA.map.startingAreaId)
+    const selectedCombatAction = COMBAT_ACTION_BY_AREA_ID[selectedAreaId]
+    const rotationSlots = clampInteger(
+        savedCombat.rotationSlots,
+        COMBAT_CONFIG.player.initialRotationSlots,
+        COMBAT_CONFIG.player.maxRotationSlots,
+        COMBAT_CONFIG.player.initialRotationSlots
+    )
+    const savedRotation = Array.isArray(savedCombat.rotation) ? savedCombat.rotation : ["omnibolt"]
+    const rotation = [...new Set(savedRotation.filter(attackId =>
+        attackId === "omnibolt" ||
+        (typeof attackId === "string" &&
+            SPELLCRAFT_CONFIG.actions.some(action =>
+                action.id === attackId &&
+                unlockedSkills.includes(SPELLCRAFT_CONFIG.id) &&
+                skills[SPELLCRAFT_CONFIG.id]?.actions?.[attackId]?.unlocked
+            ))
+    ))].slice(0, rotationSlots)
+    if (rotation.length === 0) rotation.push("omnibolt")
+
+    const savedPhase = ["idle", "fighting", "rest", "inventoryFull"].includes(savedCombat.phase)
+        ? savedCombat.phase
+        : "idle"
+    const savedEncounter = isRecord(savedCombat.encounter) ? savedCombat.encounter : null
+    const expectedLineup = selectedCombatAction?.enemyLineup ?? []
+    const validEnemyStates = savedEncounter &&
+        Array.isArray(savedEncounter.enemies) &&
+        savedEncounter.enemies.length === expectedLineup.length &&
+        savedEncounter.enemies.every((enemy, index) => {
+            const expectedArchetype = expectedLineup[index]?.archetype ?? "average"
+            return isRecord(enemy) &&
+                enemy.archetype === expectedArchetype &&
+                Number.isFinite(enemy.maxHealth) && enemy.maxHealth > 0 &&
+                Number.isFinite(enemy.health) && enemy.health >= 0 &&
+                Number.isFinite(enemy.damage) && enemy.damage >= 0 &&
+                Number.isFinite(enemy.attackIntervalMs) && enemy.attackIntervalMs > 0 &&
+                Number.isFinite(enemy.attackTimerMs) && enemy.attackTimerMs >= 0
+        })
+    const validCombatEncounter = savedEncounter && validEnemyStates &&
+        isRecord(savedEncounter.player) &&
+        Number.isFinite(savedEncounter.player.maxHealth) && savedEncounter.player.maxHealth > 0 &&
+        Number.isFinite(savedEncounter.player.health) && savedEncounter.player.health >= 0 &&
+        Number.isFinite(savedEncounter.player.barrier) && savedEncounter.player.barrier >= 0 &&
+        Number.isFinite(savedEncounter.player.attackIntervalMs) && savedEncounter.player.attackIntervalMs > 0 &&
+        Number.isFinite(savedEncounter.player.attackTimerMs) && savedEncounter.player.attackTimerMs >= 0
+        ? {
+            enemies: savedEncounter.enemies.map((enemy, index) => ({
+                ...enemy,
+                id: selectedCombatAction.id + "-enemy-" + index,
+                health: Math.min(enemy.maxHealth, enemy.health),
+                attackTimerMs: Math.min(enemy.attackIntervalMs, enemy.attackTimerMs),
+            })),
+            player: {
+                ...savedEncounter.player,
+                health: Math.min(savedEncounter.player.maxHealth, savedEncounter.player.health),
+                barrier: Math.min(savedEncounter.player.maxHealth * 0.49, savedEncounter.player.barrier),
+                attackTimerMs: Math.min(savedEncounter.player.attackIntervalMs, savedEncounter.player.attackTimerMs),
+            },
+            rotationIndex: clampInteger(savedEncounter.rotationIndex, 0, rotation.length - 1, 0),
+        }
+        : null
+    const pendingRewards = Array.isArray(savedCombat.pendingRewards)
+        ? savedCombat.pendingRewards.filter(reward =>
+            isRecord(reward) &&
+            typeof reward.item === "string" &&
+            hasOwn(ITEM_DATA_BY_ID, reward.item) &&
+            Number.isSafeInteger(reward.amount) &&
+            reward.amount > 0
+        )
+        : []
+    const lastRewards = Array.isArray(savedCombat.lastRewards)
+        ? savedCombat.lastRewards.filter(reward =>
+            isRecord(reward) &&
+            typeof reward.item === "string" &&
+            hasOwn(ITEM_DATA_BY_ID, reward.item) &&
+            Number.isSafeInteger(reward.amount) &&
+            reward.amount > 0
+        )
+        : []
+    const phase = savedPhase === "fighting" && !validCombatEncounter
+        ? "idle"
+        : savedPhase === "inventoryFull" && pendingRewards.length === 0
+            ? "rest"
+            : savedPhase
+    const combatRunning = combatSkillUnlocked &&
+        Boolean(skills[COMBAT_CONFIG.id]?.actions?.[selectedCombatAction?.id]?.running) &&
+        getExplorationAreaUnlocked(selectedAreaId)
+    for (const action of COMBAT_CONFIG.actions) {
+        const current = skills[COMBAT_CONFIG.id]?.actions?.[action.id]
+        if (current) {
+            skills[COMBAT_CONFIG.id].actions[action.id] = {
+                ...current,
+                running: combatRunning && action.id === selectedCombatAction?.id,
+            }
+        }
+    }
+    const combat = {
+        ...createInitialCombatState(),
+        selectedAreaId,
+        rotation,
+        rotationSlots,
+        phase,
+        encounter: validCombatEncounter,
+        cycleRemainingMs: phase === "rest"
+            ? Math.min(COMBAT_CONFIG.timing.encounterDelayMs, Math.max(0, finiteNumber(savedCombat.cycleRemainingMs, 0)))
+            : 0,
+        encountersCompleted: clampInteger(savedCombat.encountersCompleted, 0, Number.MAX_SAFE_INTEGER, 0),
+        lastRewards,
+        pendingRewards,
+    }
+
     const activeAction = isKnownAction(savedState.activeAction, unlockedSkills, skills)
 
     const inventory = Object.fromEntries(
@@ -258,6 +405,7 @@ export const normalizePlayerState = (savedState) => {
         unlockedSkills,
         activeAction,
         skills,
+        combat,
         inventory,
         inventorySlots,
         researchBreakthroughTier: clampInteger(

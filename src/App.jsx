@@ -44,7 +44,14 @@ function ResponsivePage({
 }) {
   const [bagModalVisible, setBagModalVisible] = useState(false)
   const [settingsModalVisible, setSettingsModalVisible] = useState(false)
+  const [viewportHeight, setViewportHeight] = useState(() => window.innerHeight)
   const { resetGame } = useGame()
+
+  useEffect(() => {
+    const handleResize = () => setViewportHeight(window.innerHeight)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   const handleCloseBag = useCallback(() => setBagModalVisible(false), [])
   const closeBagButton = useMemo(() => (
@@ -119,7 +126,7 @@ function ResponsivePage({
         sideActionsLeft={sideActionsLeft}
         sideActionsRight={sideActionsRight}
       />
-      <ScrollArea maxHeight={window.innerHeight} padding={0}>
+      <ScrollArea maxHeight={viewportHeight} padding={0}>
         {children}
       </ScrollArea>
     </Flex>

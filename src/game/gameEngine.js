@@ -779,7 +779,7 @@ const getActionMilestoneBonuses = (player, skill, action) => {
         : 0
 
     for (const milestone of skill.actionMilestones ?? []) {
-        if (!Number.isFinite(milestone.levels) || milestone.levels <= 0) continue
+        if (milestone.displayOnly || !Number.isFinite(milestone.levels) || milestone.levels <= 0) continue
 
         // Levels are counted from zero: levels: 2 awards its first stack at action level 2.
         const completedMilestones = Math.floor(actionLevel / milestone.levels)
@@ -799,10 +799,15 @@ export const getSkillMilestoneDetails = (player, skill) => {
         .map((milestone, index) => {
             const active = skillUnlocked && skillLevel >= milestone.level
 
+            const targetSkillId = milestone.reach === "local" ? skill.id : milestone.reach
+
             return {
                 id: "skill-" + skill.id + "-milestone-" + milestone.level + "-" + index,
                 title: getSkillName(skill.id) + " Level " + milestone.level,
                 source: getMilestoneTargetLabel(skill, milestone.reach),
+                sourceVariant: milestone.reach === "global"
+                    ? "transparent"
+                    : SKILL_CONFIG_BY_ID[targetSkillId]?.variant ?? "transparent",
                 effect: milestone.effect,
                 type: milestone.type,
                 value: milestone.value,
@@ -824,12 +829,21 @@ export const getActionMilestoneDetails = (player, skill, action) => {
     return (skill.actionMilestones ?? [])
         .filter(milestone => Number.isFinite(milestone.levels) && milestone.levels > 0)
         .map((milestone, index) => {
-            const stacks = Math.floor(actionLevel / milestone.levels)
+            const stacks = milestone.displayOnly
+                ? Math.floor(Math.max(0, actionLevel - 1) / milestone.levels)
+                : Math.floor(actionLevel / milestone.levels)
             const active = stacks > 0
+            const targetSkillId = milestone.reach === "local" ? skill.id : milestone.reach
 
             return {
                 id: "action-" + skill.id + "-" + action.id + "-milestone-" + milestone.levels + "-" + index,
-                title: "Every " + milestone.levels + " Levels",
+                title: milestone.title ?? (milestone.levels === 1
+                    ? "Each Level"
+                    : "Every " + milestone.levels + " Levels"),
+                source: milestone.reach ? getMilestoneTargetLabel(skill, milestone.reach) : undefined,
+                sourceVariant: milestone.reach === "global"
+                    ? "transparent"
+                    : SKILL_CONFIG_BY_ID[targetSkillId]?.variant ?? "transparent",
                 effect: milestone.effect,
                 type: milestone.type,
                 value: milestone.value,
@@ -1134,6 +1148,7 @@ export const getActionEffectStacks = (player, skill, action) => {
 
         for (const [milestoneIndex, milestone] of (skill.actionMilestones ?? []).entries()) {
             if (
+                milestone.displayOnly ||
                 milestone.effect !== effect ||
                 !Number.isFinite(milestone.levels) ||
                 milestone.levels <= 0
@@ -1463,7 +1478,7 @@ export const getCombatElementMultiplier = (attackElement, targetElement) => {
     return COMBAT_CONFIG.elementalMatchups.neutralMultiplier
 }
 
-const getCombatAttackDetails = (player, attackId) => {
+export const getCombatAttackDetails = (player, attackId) => {
     if (attackId === "omnibolt") {
         const spellcraftLevel = getSkillProgress(player, "skill:spellcraft")?.level ?? 1
         const tier = COMBAT_CONFIG.player.omniboltTier

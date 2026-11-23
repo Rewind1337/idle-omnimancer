@@ -55,10 +55,16 @@ export function EffectStack({
                         <Heading h="5" className="flex-grow align-right">
                             {formatEffectDescription(entry)}
                         </Heading>
-                        {(entry.showStacks || entry.source) && <Heading h="5" className="align-right">
-                            {entry.showStacks ? "x" + entry.stacks : ""}
-                            {entry.source && entry.title && entry.source}
-                        </Heading>}
+                        {entry.showStacks && (
+                            <Badge variant="transparent" size="small">
+                                <Heading h="5" weight={400}>x{entry.stacks}</Heading>
+                            </Badge>
+                        )}
+                        {entry.source && entry.title && (
+                            <Badge variant={entry.sourceVariant ?? entry.variant ?? "transparent"} size="small">
+                                <Heading h="5" weight={400}>{entry.source}</Heading>
+                            </Badge>
+                        )}}
                     </Flex>
                 </Flex>
             )) : (

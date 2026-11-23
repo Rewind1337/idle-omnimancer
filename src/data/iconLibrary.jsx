@@ -92,6 +92,7 @@ export const OTHER_ICONS = {
     MISSION_DONE: <ClipboardCheck />,
     UNIDENTIFIED_ARTIFACT: <PackageQuestionMark />,
     ARTIFACT: <Package />,
+    PYRAMID: <Pyramid />,
     COMPANION_GEODE: <Stone />,
     COMPANION_EGG: <Egg />,
     COMPANION_SHELL: <Shell />,
@@ -332,10 +333,10 @@ export const ITEM_SPRITES = {
     "item:earth_geode_v": OTHER_ICONS.COMPANION_GEODE,
     "item:air_egg_v": OTHER_ICONS.COMPANION_EGG,
     "item:water_shell_v": OTHER_ICONS.COMPANION_SHELL,
-    "item:neutral_prism_i": OTHER_ICONS.ARTIFACT,
-    "item:neutral_prism_ii": <Gem />,
-    "item:neutral_prism_iii": <Gem />,
-    "item:neutral_prism_iv": <Gem />,
+    "item:neutral_prism_i": OTHER_ICONS.PYRAMID,
+    "item:neutral_prism_ii": OTHER_ICONS.PYRAMID,
+    "item:neutral_prism_iii": OTHER_ICONS.PYRAMID,
+    "item:neutral_prism_iv": OTHER_ICONS.PYRAMID,
 
     // Duplicate companion rewards use the existing elemental Candy items.
     "item:earth_companion_xp": <Candy />,

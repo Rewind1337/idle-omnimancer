@@ -1,11 +1,11 @@
-import { cloneElement, useMemo } from "react"
+import { cloneElement, useMemo, useState } from "react"
 
 import { Badge } from "../components/Badge"
 import { Button } from "../components/Button"
 import { Flex } from "../components/Flex"
 import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
-import { InputSelect } from "../components/InputSelect"
+import { SpellSelectionModal } from "../components/modals/SpellSelectionModal"
 import { Paper } from "../components/Paper"
 import { Progress } from "../components/Progress"
 import { EffectStack } from "../components/EffectStack"
@@ -20,13 +20,14 @@ import { EXPLORATION_CONFIG } from "../data/explorationConfig"
 import { SPELLCRAFT_CONFIG } from "../data/spellcraftConfig"
 import { WORLD_AREAS, WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
 import { ITEM_DATA_BY_ID } from "../data/itemData"
-import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
+import { OTHER_ICONS, SKILL_ICONS, SPELLCRAFT_ACTION_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
     canStartAction,
     getCombatArtifactChance,
     getCombatOutputMultiplier,
     getCombatPlayerStats,
+    getCombatAttackDetails,
     getCombatXPReward,
     getActionEffectStacks,
     getActionEffectSummary,
@@ -62,7 +63,7 @@ const getRewardResources = (player, action) => {
                 amountLabel: (chance * 100).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
-                }) + "% chance per victory",
+                }) + "%",
             }] : []
         }
 
@@ -76,7 +77,7 @@ const getRewardResources = (player, action) => {
         amount: typeof reward === "string" ? 1 : reward.amount ?? 1,
     }))
 
-    return [...rareDrops, ...explorationRewards]
+    return [...explorationRewards, ...rareDrops]
 }
 
 function CombatPanel({ player, action, rotationOptions }) {
@@ -234,20 +235,24 @@ function CombatPanel({ player, action, rotationOptions }) {
     )
 }
 
-function CombatRotation({ player, rotation, rotationSlots, isSkillUnlocked, onChange }) {
-    const spellcraftUnlocked = player.unlockedSkills?.includes(SPELLCRAFT_CONFIG.id)
-    const options = [
-        { value: "omnibolt", label: "Omnibolt · Neutral" },
-        ...(spellcraftUnlocked
-            ? SPELLCRAFT_CONFIG.actions
-                .filter(spell => player.skills?.[SPELLCRAFT_CONFIG.id]?.actions?.[spell.id]?.unlocked)
-                .map(spell => ({
-                    value: spell.id,
-                    label: (spell.name ?? humanize(spell.id.replace(/^action:/, ""))) +
-                        " · " + humanize(spell.element) + " · Tier " + spell.tier,
-                }))
-            : []),
-    ]
+function CombatRotation({ player, rotation, rotationSlots, isSkillUnlocked, action, onChange }) {
+    const [selectionSlotIndex, setSelectionSlotIndex] = useState(null)
+    const activeCombatAction = COMBAT_ACTION_BY_AREA_ID[player.combat?.activeAreaId] ?? action
+    const damageMultiplier = getCombatPlayerStats(player, activeCombatAction).damageMultiplier
+
+    const selectAttack = attackId => {
+        if (selectionSlotIndex === null) return
+
+        const next = [...rotation]
+        if (selectionSlotIndex === next.length) next.push(attackId)
+        else if (selectionSlotIndex < next.length) next[selectionSlotIndex] = attackId
+        else return
+
+        if (next.some((selected, index) => !selected || next.indexOf(selected) !== index)) return
+
+        onChange(next)
+        setSelectionSlotIndex(null)
+    }
 
     return (
         <Paper layer={0}>
@@ -256,32 +261,82 @@ function CombatRotation({ player, rotation, rotationSlots, isSkillUnlocked, onCh
                     <Flex direction="row" justify="space-between" align="center" wrap>
                         <Heading h="3">Attack Rotation</Heading>
                         <Badge variant="transparent">
-                            {rotationSlots} / {COMBAT_CONFIG.player.maxRotationSlots} Slots
+                            {rotation.length} / {rotationSlots} Active Slots
                         </Badge>
                     </Flex>
-                    {Array.from({ length: rotationSlots }, (_, index) => (
-                        <InputSelect
-                            key={index}
-                            label={"Rotation Slot " + (index + 1)}
-                            variant="combat"
-                            values={options}
-                            value={rotation[index] ?? ""}
-                            disabled={!isSkillUnlocked}
-                            onChange={value => {
-                                if (!value || rotation.some((selected, selectedIndex) =>
-                                    selected === value && selectedIndex !== index
-                                )) return
-                                const next = [...rotation]
-                                next[index] = value
-                                onChange(next)
-                            }}
-                        />
-                    ))}
+                    {Array.from({ length: rotationSlots }, (_, index) => {
+                        const attackId = rotation[index] ?? null
+                        const attack = attackId ? getCombatAttackDetails(player, attackId) : null
+                        const spell = attackId && attackId !== "omnibolt"
+                            ? SPELLCRAFT_CONFIG.actions.find(entry => entry.id === attackId)
+                            : null
+                        const spellIcon = spell
+                            ? SPELLCRAFT_ACTION_ICONS[spell.element?.toUpperCase()]?.[spell.tier - 1]
+                            : OTHER_ICONS.ZAP
+
+                        return (
+                            <Paper
+                                key={index}
+                                layer={2}
+                                variant={attack?.element ?? "combat"}
+                                className="combat-rotation-slot"
+                            >
+                                <Flex direction="column" align="stretch" gap={8}>
+                                    <Flex direction="row" align="center" gap={12}>
+                                        <Paper round layer="0" className="w-min" padding={4}>
+                                            <Icon size={48} variant={attack?.element ?? "combat"} interactive={false}
+                                                outerShape={7} innerShape={5}>
+                                                {spellIcon && cloneElement(spellIcon, { size: 36 })}
+                                            </Icon>
+                                        </Paper>
+                                        <Flex direction="column" align="start" className="flex-grow" gap={4}>
+                                            <Heading h="4">{attack?.name ?? "Empty Rotation Slot"}</Heading>
+                                            <Flex direction="row" wrap gap={6}>
+                                                {attack && (
+                                                    <>
+                                                        <Badge size="small" variant="transparent">
+                                                            {humanize(attack.element)} · Tier {attack.tier}
+                                                        </Badge>
+                                                        <Badge size="small" variant="transparent">
+                                                            Level {attack.level}
+                                                        </Badge>
+                                                        <Badge size="small" variant="transparent">
+                                                            Damage: {formatNumber(attack.baseDamage * damageMultiplier)}
+                                                        </Badge>
+                                                    </>
+                                                )}
+                                            </Flex>
+                                        </Flex>
+                                        <Button
+                                            variant="combat"
+                                            size="medium"
+                                            disabled={!isSkillUnlocked || (!attack && index > rotation.length)}
+                                            onClick={() => setSelectionSlotIndex(index)}
+                                        >
+                                            {attack ? "Change" : "Choose"}
+                                        </Button>
+                                    </Flex>
+                                    {!attack && index > rotation.length && (
+                                        <Text size="small">Choose the previous slot before filling this one.</Text>
+                                    )}
+                                </Flex>
+                            </Paper>
+                        )
+                    })}
                     <Text size="small">
-                        Omnibolt is always available. Learned Spellcraft actions can be added to the rotation once unlocked.
+                        Omnibolt is always available. Unlocked Spellcraft actions can be added to the rotation.
                     </Text>
                 </Flex>
             </Paper>
+            <SpellSelectionModal
+                visible={selectionSlotIndex !== null}
+                slotIndex={selectionSlotIndex ?? 0}
+                player={player}
+                selectedAttackId={selectionSlotIndex === null ? null : rotation[selectionSlotIndex] ?? null}
+                unavailableAttackIds={rotation.filter((_, index) => index !== selectionSlotIndex)}
+                onSelect={selectAttack}
+                onClose={() => setSelectionSlotIndex(null)}
+            />
         </Paper>
     )
 }
@@ -433,7 +488,7 @@ export function CombatPage() {
     )
     const rotation = player.combat?.rotation?.length ? player.combat.rotation : ["omnibolt"]
     const rotationOptions = useMemo(() => [
-        { value: "omnibolt", label: "Omnibolt" },
+        { value: "omnibolt", label: "Omnibolt · Neutral · Tier " + COMBAT_CONFIG.player.omniboltTier },
         ...SPELLCRAFT_CONFIG.actions
             .filter(spell => player.unlockedSkills?.includes(SPELLCRAFT_CONFIG.id) &&
                 player.skills?.[SPELLCRAFT_CONFIG.id]?.actions?.[spell.id]?.unlocked)
@@ -501,6 +556,7 @@ export function CombatPage() {
                 rotation={rotation}
                 rotationSlots={rotationSlots}
                 isSkillUnlocked={isSkillUnlocked}
+                action={selectedAction}
                 onChange={setCombatRotation}
             />
 

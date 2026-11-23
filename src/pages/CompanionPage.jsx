@@ -212,7 +212,6 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
     const targetSkillId = companion.activeEffect.targetSkillId
     const targetSkillConfig = SKILL_NAVIGATION.find(entry => entry.skillId === targetSkillId)
     const targetSkill = targetSkillConfig?.name ?? targetSkillId.replace("skill:", "")
-    const targetSkillVariant = targetSkillConfig?.variant ?? "transparent"
 
     return (
         <Paper layer={1} variant={companion.element} className="companion-collection-card">
@@ -297,16 +296,8 @@ function CompanionCollectionCard({ companion, player, assigned = false }) {
                             variant={assigned ? "exploration" : "transparent"}
                             interactive
                             tooltip={assigned
-                                ? "This companion is assigned to an active slot, so its active effect is enabled."
-                                : "This companion is not assigned to a slot, so its active effect is currently disabled."}
-                        >
-                            {assigned ? "Active" : "Inactive"}
-                        </Badge>
-                        <Badge
-                            size="small"
-                            variant={targetSkillVariant}
-                            interactive
-                            tooltip="The active effect only applies to actions belonging to this skill."
+                                ? "This companion is assigned to an active slot, so its active effect is enabled for " + targetSkill + "."
+                                : "This companion is not assigned to a slot, so its active effect for " + targetSkill + " is currently disabled."}
                         >
                             {targetSkill}
                         </Badge>

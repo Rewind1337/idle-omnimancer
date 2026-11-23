@@ -17,3 +17,17 @@
         min-width: 0;
     }
 }
+
+
+.spell-selection-option {
+    height: auto;
+    min-height: 64px;
+
+    > .flex {
+        align-items: center;
+    }
+}
+
+.combat-rotation-slot {
+    min-width: 0;
+}

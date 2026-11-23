@@ -23,11 +23,12 @@ export function CompanionEffectBadge({
 
     const isPermanent = effectKey === "permanentEffect"
     const effectIcon = EFFECT_ICONS[entry.effect] ?? OTHER_ICONS.INFO
+    const targetSkillName = SKILL_NAVIGATION.find(entry =>
+        entry.skillId === companion.activeEffect?.targetSkillId
+    )?.name ?? humanize((companion.activeEffect?.targetSkillId ?? "").replace(/^skill:/, ""))
     const effectScope = isPermanent
         ? "This effect applies globally while this companion is unlocked."
-        : "This effect applies to " +
-            (SKILL_NAVIGATION.find(entry => entry.skillId === companion.activeEffect.targetSkillId)?.name ??
-                humanize(companion.activeEffect.targetSkillId.replace(/^skill:/, ""))) +
+        : "This effect applies to " + targetSkillName +
             " while this companion is assigned to an active slot."
 
     return (
@@ -51,7 +52,7 @@ export function CompanionEffectBadge({
                 </Flex>
             }
         >
-            {showScopeLabel ? (isPermanent ? "Permanent · " : "Active · ") : ""}
+            {showScopeLabel ? (isPermanent ? "Permanent · " : targetSkillName + " - ") : ""}
             {formatEffectDescription(entry)}
         </Badge>
     )

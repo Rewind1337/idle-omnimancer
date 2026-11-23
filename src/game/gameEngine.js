@@ -772,8 +772,8 @@ export const getCompanionSlotUnlockCost = (player, element) => {
 }
 
 // One-level milestones measure levels gained after the initial Action level.
- // Milestones of two or more levels continue to trigger at their exact
- // multiples (for example, levels 20, 40, 60).
+// Milestones of two or more levels continue to trigger at their exact
+// multiples (for example, levels 20, 40, 60).
 const getActionMilestoneStacks = (actionLevel, milestone) => {
     const startingOffset = milestone.levels === 1 ? 1 : 0
     return Math.floor(Math.max(0, actionLevel - startingOffset) / milestone.levels)

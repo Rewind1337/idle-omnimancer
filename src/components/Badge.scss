@@ -68,8 +68,9 @@
             #af52de,
             #ff3b30
         );
-        outline-color: rgba(255, 255, 255, 0.35);
-        animation: badge-rainbow-hue 10s linear infinite;
+        background-size: 400%;
+        outline-color: rgba(255, 255, 255, 0.2);
+        animation: badge-rainbow-hue 5s linear infinite;
 
         &.badge-interactive:hover {
             cursor: pointer;

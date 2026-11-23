@@ -13,7 +13,7 @@ import { cx } from '../utility/helpers'
 export function Navigation({
   className = '',
   position = "top",
-  mode = "default",
+  mode = "detailed",
   activePage,
   setActivePage,
   sideActionsLeft = null,

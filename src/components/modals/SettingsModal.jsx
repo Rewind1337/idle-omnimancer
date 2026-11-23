@@ -63,7 +63,7 @@ export function SettingsModal({
             content={
                 <Flex direction="column" align="stretch" gap={12}>
                     <SettingOptions
-                        title="Sidebar Position"
+                        title="Navigation Position"
                         description="Choose whether the main navigation appears above the page or beside it."
                         value={settings.position}
                         options={[
@@ -73,11 +73,11 @@ export function SettingsModal({
                         onChange={value => onChange("position", value)}
                     />
                     <SettingOptions
-                        title="Sidebar Mode"
-                        description="Compact mode shows only the navigation icons. This setting works independently of the position."
+                        title="Navigation Button Style"
+                        description="Detailed shows button labels with their icons. Compact reduces buttons to icons in the main navigation and floating panels."
                         value={settings.mode}
                         options={[
-                            { value: "default", label: "Default" },
+                            { value: "detailed", label: "Detailed" },
                             { value: "compact", label: "Compact" },
                         ]}
                         onChange={value => onChange("mode", value)}

@@ -36,7 +36,7 @@ function ResponsivePage({
   activePage,
   setActivePage,
   navigationPosition = "top",
-  navigationMode = "default",
+  navigationMode = "detailed",
   onNavigationSettingsChange = () => { },
   className = '',
 }) {
@@ -142,7 +142,7 @@ function ResponsivePage({
   ) : null
 
   const floatingButtons = navigationPosition === "top" ? (
-    <FloatingPanel>
+    <FloatingPanel mode={navigationMode}>
       {companionsButton}
       {shopButton}
       {missionsButton}
@@ -171,7 +171,7 @@ function ResponsivePage({
       />
       {floatingButtons}
       {navigationPosition === "top" && (
-        <FloatingPanel position="right">
+        <FloatingPanel position="right" mode={navigationMode}>
           {settingsButton}
         </FloatingPanel>
       )}
@@ -180,14 +180,14 @@ function ResponsivePage({
 }
 
 const SETTINGS_KEY = "omnimancer-idle-settings"
-const DEFAULT_NAVIGATION_SETTINGS = { position: "top", mode: "default" }
+const DEFAULT_NAVIGATION_SETTINGS = { position: "top", mode: "detailed" }
 
 const loadNavigationSettings = () => {
   try {
     const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? "null")
     return {
       position: ["top", "side"].includes(saved?.position) ? saved.position : "top",
-      mode: ["compact", "default"].includes(saved?.mode) ? saved.mode : "default",
+      mode: saved?.mode === "compact" ? "compact" : "detailed",
     }
   } catch {
     return DEFAULT_NAVIGATION_SETTINGS

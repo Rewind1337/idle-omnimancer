@@ -8,11 +8,12 @@ export function FloatingPanel({
   className = '',
   margin = 8,
   position = "left",
+  mode = "detailed",
 }) {
   const isRight = position === "right"
 
   return (
-    <Paper layer={0} className={cx("floating-panel", "w-min", className)} style={{
+    <Paper layer={0} className={cx("floating-panel", "w-min", `floating-panel-${mode}`, className)} style={{
       zIndex: 99,
       position: "fixed",
       left: isRight ? "auto" : margin,

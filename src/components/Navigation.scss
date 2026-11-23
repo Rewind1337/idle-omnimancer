@@ -105,6 +105,22 @@
   }
 }
 
+/* Floating panels use the same label visibility as the selected navigation button style. */
+.floating-panel-compact {
+  .button {
+    flex-grow: 1;
+
+    .button-icon {
+      width: 100%;
+      place-items: flex-start;
+    }
+
+    .button-content {
+      display: none;
+    }
+  }
+}
+
 /* Keep compact side-navigation icons centered without stretching the SVG itself. */
 .navigation.navigation-side.navigation-compact {
   .button {

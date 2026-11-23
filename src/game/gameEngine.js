@@ -18,15 +18,23 @@ import {
 
 
 
-// The first additional bag slot costs the configured base price. Every
-// purchased slot increases the next price by the configured multiplier.
+// The first ten additional slots rise from 1x to 10x the base cost.
+// Later groups rise from 2x to 10x the next order of magnitude.
 export const getNextBagSlotCost = (inventorySlots = GLOBAL_CONFIG.startingBagSpace) => {
     const purchasedSlots = Math.max(
         0,
         Math.floor(inventorySlots) - GLOBAL_CONFIG.startingBagSpace
     )
-    const cost = GLOBAL_CONFIG.bagSlotStartingCost *
-        Math.pow(GLOBAL_CONFIG.bagSlotCostMultiplier, purchasedSlots)
+    const baseCost = GLOBAL_CONFIG.bagSlotStartingCost
+
+    const cost = purchasedSlots < 10
+        ? baseCost * (purchasedSlots + 1)
+        : (() => {
+            const slotsAfterFirstGroup = purchasedSlots - 10
+            const costTier = Math.floor(slotsAfterFirstGroup / 9) + 1
+            const costStep = (slotsAfterFirstGroup % 9) + 2
+            return baseCost * costStep * Math.pow(10, costTier)
+        })()
 
     return Number.isFinite(cost) ? Math.ceil(cost) : Infinity
 }

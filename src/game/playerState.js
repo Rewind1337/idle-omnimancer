@@ -82,6 +82,12 @@ export const createInitialPlayerState = () => {
     }
 }
 
+// Older saves used element/tier placeholder IDs for post-tier-4 Exploration actions.
+const getLegacyExplorationActionId = action =>
+    action.areaId && action.element && action.tier > 4
+        ? `action:${action.element}_tier_${action.tier}`
+        : null
+
 // Rebuild saved data from known game definitions instead of trusting arbitrary save objects.
 export const normalizePlayerState = (savedState) => {
     const initial = createInitialPlayerState()
@@ -114,7 +120,9 @@ export const normalizePlayerState = (savedState) => {
         const actions = { ...initial.skills[skill.id].actions }
 
         for (const action of skill.actions) {
-            const savedAction = getOwn(savedActions, action.id)
+            const legacyActionId = getLegacyExplorationActionId(action)
+            const savedAction = getOwn(savedActions, action.id) ??
+                (legacyActionId ? getOwn(savedActions, legacyActionId) : undefined)
             if (!isRecord(savedAction)) continue
 
             const defaultAction = actions[action.id]
@@ -320,14 +328,16 @@ const isKnownAction = (selection, unlockedSkills, skills) => {
     ) return null
 
     const skill = SKILL_CONFIG_BY_ID[skillId]
-    const action = skill.actions.find(entry => entry.id === actionId)
-    const actionState = skills[skillId]?.actions?.[actionId]
+    const action = skill.actions.find(entry => entry.id === actionId) ??
+        skill.actions.find(entry => getLegacyExplorationActionId(entry) === actionId)
+    const canonicalActionId = action?.id
+    const actionState = skills[skillId]?.actions?.[canonicalActionId]
     const isPassiveAction = (action?.activity ?? skill.activity ?? "active") === "passive"
     const isMaxLevelActiveAction = action?.tracksProgress !== false &&
         actionState?.level >= GLOBAL_CONFIG.maxActionLevel
 
     return action && !isPassiveAction && !isMaxLevelActiveAction && actionState?.unlocked
-        ? { skillId, actionId }
+        ? { skillId, actionId: canonicalActionId }
         : null
 }
 

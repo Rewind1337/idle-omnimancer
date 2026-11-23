@@ -36,6 +36,7 @@ import {
     getActionEffectSummary,
     getCompanionLevelProgress,
     getCompanionSlotUnlockCost,
+    getSkillMilestoneDetails,
     getSkillProgress,
 } from "../game/gameEngine"
 import { useGame, useGameActionProgress } from "../hooks/useGame"
@@ -364,10 +365,10 @@ export function CompanionPage() {
                     skillId={skillId}
                     title="Companions"
                     skillProgress={skillProgress}
-                    milestones={[]}
+                    milestones={getSkillMilestoneDetails(player, COMPANION_CONFIG)}
                     variant="companions"
                     progressEnabled
-                    skillXPTooltip={`Companion skill XP is derived from the combined levels of all ${COMPANION_DATA.length} companions.`}
+                    skillXPTooltip={`Companion skill XP is derived from the combined levels of all ${COMPANION_DATA.length} companions. The XP required for each Skill level increases gradually.`}
                     totalProgressTooltip={`Total progress is the sum of all companion levels, for a maximum of ${COMPANION_DATA.length * COMPANION_CONFIG.companionLeveling.maxLevel} levels.`}
                     icon={
                         <Icon size={64} variant="companions" outerRunes="solid" outerShape={7}

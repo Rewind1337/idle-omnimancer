@@ -619,6 +619,43 @@ const getCompanionEffectMultiplier = (effect, level, perLevel) => {
     return 1 + growth
 }
 
+// Companion Effect Strength scales the bonus portion of every companion effect,
+// preserving additive stacking between separate effects.
+const getCompanionEffectStrengthMultiplier = player => {
+    let strength = 1
+
+    for (const sourceSkill of Object.values(SKILL_CONFIG_BY_ID)) {
+        if (!player.unlockedSkills?.includes(sourceSkill.id)) continue
+
+        const sourceLevel = getSkillProgress(player, sourceSkill.id)?.level ?? 1
+        for (const milestone of sourceSkill.milestones ?? []) {
+            if (
+                milestone.effect !== "companionEffect" ||
+                milestone.reach !== "global" ||
+                !Number.isFinite(milestone.level) ||
+                sourceLevel < milestone.level ||
+                milestone.type !== "mult" ||
+                !Number.isFinite(milestone.value)
+            ) continue
+
+            strength += milestone.value - 1
+        }
+    }
+
+    return Math.max(0, strength)
+}
+
+const getCompanionEffectValue = (player, effect, level, perLevel, type = "mult") => {
+    const baseValue = getCompanionEffectMultiplier(effect, level, perLevel)
+    const strength = getCompanionEffectStrengthMultiplier(player)
+    if (type !== "mult") return baseValue * strength
+
+    const boostedValue = 1 + (baseValue - 1) * strength
+    return ["manaCost", "unlockCostReduction", "combatInterval"].includes(effect)
+        ? Math.max(0.1, boostedValue)
+        : boostedValue
+}
+
 export const getCompanionEffectEntry = (player, companion, effectKey) => {
     const effectConfig = companion?.[effectKey]
     if (!effectConfig) return null
@@ -631,10 +668,12 @@ export const getCompanionEffectEntry = (player, companion, effectKey) => {
         title: companion.name + " Level " + level,
         effect,
         type: effectConfig.type ?? "mult",
-        value: getCompanionEffectMultiplier(
+        value: getCompanionEffectValue(
+            player,
             effect,
             level,
-            effectConfig.perLevel ?? (effectKey === "permanentEffect" ? 0.01 : 0.025)
+            effectConfig.perLevel ?? (effectKey === "permanentEffect" ? 0.01 : 0.025),
+            effectConfig.type ?? "mult"
         ),
         stacks: 1,
         mode: "companion",
@@ -663,7 +702,7 @@ const getCompanionEffectEntries = (player, targetSkillId, effect) => {
                 kind: "Permanent",
                 effect,
                 type: permanent.type ?? "mult",
-                value: getCompanionEffectMultiplier(effect, level, permanent.perLevel ?? 0.01),
+                value: getCompanionEffectValue(player, effect, level, permanent.perLevel ?? 0.01, permanent.type ?? "mult"),
             })
         }
 
@@ -680,7 +719,7 @@ const getCompanionEffectEntries = (player, targetSkillId, effect) => {
                 kind: "Active",
                 effect,
                 type: activeEffect.type ?? "mult",
-                value: getCompanionEffectMultiplier(effect, level, activeEffect.perLevel ?? 0.025),
+                value: getCompanionEffectValue(player, effect, level, activeEffect.perLevel ?? 0.025, activeEffect.type ?? "mult"),
             })
         }
     }
@@ -810,7 +849,7 @@ export const getSkillMilestoneDetails = (player, skill) => {
 
             return {
                 id: "skill-" + skill.id + "-milestone-" + milestone.level + "-" + index,
-                title: getSkillName(skill.id) + " Level " + milestone.level,
+                title: getSkillName(skill.id) + " Lv. " + milestone.level,
                 source: getMilestoneTargetLabel(skill, milestone.reach),
                 sourceVariant: milestone.reach === "global"
                     ? "transparent"
@@ -821,7 +860,7 @@ export const getSkillMilestoneDetails = (player, skill) => {
                 stacks: 1,
                 mode: "milestone",
                 active,
-                status: active ? "Active" : "Unlocks at Level " + milestone.level,
+                status: active ? "Active" : "Unlocks at Lv. " + milestone.level,
                 variant: skill.variant
             }
         })
@@ -843,8 +882,8 @@ export const getActionMilestoneDetails = (player, skill, action) => {
             return {
                 id: "action-" + skill.id + "-" + action.id + "-milestone-" + milestone.levels + "-" + index,
                 title: milestone.title ?? (milestone.levels === 1
-                    ? "Each Level"
-                    : "Every " + milestone.levels + " Levels"),
+                    ? "Each Lv."
+                    : "Every " + milestone.levels + " Lvls."),
                 source: milestone.reach ? getMilestoneTargetLabel(skill, milestone.reach) : undefined,
                 sourceVariant: milestone.reach === "global"
                     ? "transparent"
@@ -1091,7 +1130,7 @@ export const getActionEffectSummary = (player, skill, action, effect) => {
 // Return active contributors from element modifiers, applicable skill milestones
 // and repeated action milestones. These records are used by the action tooltips.
 export const getActionEffectStacks = (player, skill, action) => {
-    const effectNames = ["actionTime", "xpGain", "manaCost", "itemOutput", "preservation", "manaCapacity", "manaRegeneration", "sellValue", "unlockCostReduction", "companionChance", "artifactChance", "baseGoldCost", "combatInterval", "combatDamage", "combatHealth", "combatShield"]
+    const effectNames = ["actionTime", "xpGain", "manaCost", "itemOutput", "preservation", "manaCapacity", "manaRegeneration", "sellValue", "unlockCostReduction", "companionChance", "artifactChance", "baseGoldCost", "companionEffect", "combatInterval", "combatDamage", "combatHealth", "combatShield"]
     const elementProperties = {
         actionTime: "timeMultiplier",
         xpGain: "xpMultiplier",
@@ -1135,7 +1174,7 @@ export const getActionEffectStacks = (player, skill, action) => {
 
                 entries.push({
                     id: "skill-" + sourceSkill.id + "-" + milestone.level + "-" + effect + "-" + milestoneIndex,
-                    title: getSkillName(sourceSkill.id) + " Level " + milestone.level,
+                    title: getSkillName(sourceSkill.id) + " Lv. " + milestone.level,
                     effect,
                     type: milestone.type,
                     value: milestone.value,
@@ -1164,7 +1203,7 @@ export const getActionEffectStacks = (player, skill, action) => {
 
             entries.push({
                 id: "action-" + skill.id + "-" + action.id + "-" + milestone.levels + "-" + effect + "-" + milestoneIndex,
-                source: (action.name ?? humanize(action.id)) + " Level " + actionLevel,
+                source: (action.name ?? humanize(action.id)) + " Lv. " + actionLevel,
                 effect,
                 type: milestone.type,
                 value: milestone.value,

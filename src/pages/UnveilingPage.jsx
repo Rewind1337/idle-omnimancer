@@ -172,14 +172,16 @@ function UnveilingActionCard({
 
                 {isUnlocked ? (
                     <>
-                        <ActionDetails player={player} skill={UNVEILING_CONFIG} action={action}
-                            actionTime={durationMs / 1000}
-                            actionXP={getActionXPReward(UNVEILING_CONFIG, action, player)}
-                            outputMultiplier={outputMultiplier}
-                            itemValue={selectedItem?.type === "companionContainer" ? null : selectedItem?.baseValue ?? null}
-                            preservationChance={getActionPreservationChance(player, UNVEILING_CONFIG, action)}
-                            effectStacks={effectStacks}
-                        />
+                        {(!action.inputSelection || selectedItem) && (
+                            <ActionDetails player={player} skill={UNVEILING_CONFIG} action={action}
+                                actionTime={durationMs / 1000}
+                                actionXP={getActionXPReward(UNVEILING_CONFIG, action, player)}
+                                outputMultiplier={outputMultiplier}
+                                itemValue={selectedItem?.type === "companionContainer" ? null : selectedItem?.baseValue ?? null}
+                                preservationChance={getActionPreservationChance(player, UNVEILING_CONFIG, action)}
+                                effectStacks={effectStacks}
+                            />
+                        )}
                         <ActionResources
                             consumes={selectedItem ? [selectedItem.id] : []}
                             produces={producedResources}

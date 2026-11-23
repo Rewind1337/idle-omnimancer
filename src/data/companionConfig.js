@@ -6,6 +6,7 @@ export const COMPANION_CONFIG = {
     id: "skill:companions",
     variant: "companions",
     activity: "active",
+    skillXP: { firstLevelXP: 3 },
     progression: {
         type: "companionLevels",
         companionCount: COMPANION_DATA.length,
@@ -46,10 +47,10 @@ export const COMPANION_CONFIG = {
         finalMultPerLevel: 1,
     },
     milestones: [
-        { level: 10, reach: "local", type: "mult", effect: "sellValue", value: 1.1 },
-        { level: 20, reach: "skill:unveiling", type: "mult", effect: "actionTime", value: 1.1 },
-        { level: 30, reach: "global", type: "mult", effect: "xpGain", value: 1.2 },
-        { level: 40, reach: "local", type: "mult", effect: "actionTime", value: 1.25 },
+        { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 1.1 },
+        { level: 20, reach: "skill:unveiling", type: "mult", effect: "xpGain", value: 1.1 },
+        { level: 30, reach: "global", type: "mult", effect: "companionEffect", value: 1.2 },
+        { level: 40, reach: "local", type: "mult", effect: "xpGain", value: 1.25 },
         { level: 50, reach: "skill:research", type: "mult", effect: "itemOutput", value: 1.25 },
     ],
     actionMilestones: [

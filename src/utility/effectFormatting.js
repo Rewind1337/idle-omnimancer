@@ -13,6 +13,7 @@ const EFFECT_LABELS = {
     companionChance: "Companion Chance",
     artifactChance: "Artifact Chance",
     baseGoldCost: "Gold Cost",
+    companionEffect: "Companion Effect Strength",
     combatInterval: "Combat Interval",
     combatDamage: "Combat Damage",
     combatHealth: "Combat Health",

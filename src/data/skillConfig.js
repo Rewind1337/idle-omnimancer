@@ -50,28 +50,12 @@ export const generateActionXPTable = (config, tier) => {
 export const generateSkillXPTable = (config) => {
     const maxSkillLevel = GLOBAL_CONFIG.maxSkillLevel
 
-    if (config.progression?.type === "companionLevels") {
-        const maxXP = config.progression.companionCount * config.companionLeveling.maxLevel
-        return Array.from({ length: maxSkillLevel }, (_, index) => {
-            const level = index + 1
-            const totalXP = level === maxSkillLevel
-                ? maxXP
-                : Math.floor((level - 1) * maxXP / (maxSkillLevel - 1))
-            const nextTotalXP = level === maxSkillLevel
-                ? null
-                : Math.floor(level * maxXP / (maxSkillLevel - 1))
-
-            return {
-                level,
-                neededXP: nextTotalXP === null ? null : nextTotalXP - totalXP,
-                totalXP,
-            }
-        })
-    }
     const maxActionLevel = GLOBAL_CONFIG.maxActionLevel
-    const actionCount = config.actions.length
+    const isCompanionProgression = config.progression?.type === "companionLevels"
+    const maxXP = isCompanionProgression
+        ? config.progression.companionCount * config.companionLeveling.maxLevel
+        : config.actions.length * (maxActionLevel - 1)
     const firstLevelXP = config.skillXP.firstLevelXP
-    const maxXP = actionCount * (maxActionLevel - 1)
     const levelUps = maxSkillLevel - 1
     const averageXP = maxXP / levelUps
 

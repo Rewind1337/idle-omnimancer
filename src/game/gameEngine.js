@@ -239,7 +239,7 @@ export const getItemActionSources = (itemId, player = null) => {
                 if (combatReward) {
                     const rewardItem = typeof combatReward === "string" ? combatReward : combatReward.item
                     const rewardAmount = typeof combatReward === "string" ? 1 : combatReward.amount ?? 1
-                    const artifactChance = ITEM_DATA_BY_ID[rewardItem]?.type === "artifact"
+                    const artifactChance = ITEM_DATA_BY_ID[rewardItem]?.type === "unidentifiedArtifact"
                         ? (player ? getCombatArtifactChance(player, action) : EXPLORATION_CONFIG.artifactChance?.base ?? 0)
                         : 1
                     if (artifactChance > 0) {
@@ -247,13 +247,50 @@ export const getItemActionSources = (itemId, player = null) => {
                             id: "combat-reward-" + action.id + "-" + rewardItem,
                             name: actionName + " Combat",
                             amount: rewardAmount,
-                            amountLabel: ITEM_DATA_BY_ID[rewardItem]?.type === "artifact"
+                            amountLabel: ITEM_DATA_BY_ID[rewardItem]?.type === "unidentifiedArtifact"
                                 ? (artifactChance * 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "% chance per victory"
                                 : String(rewardAmount) + " per victory",
                             type: "action",
                             badgeVariant: "combat",
                         })
                     }
+                }
+
+                const explorationReward = (action.explorationRewards ?? []).find(reward =>
+                    (typeof reward === "string" ? reward : reward?.item) === itemId
+                )
+                if (explorationReward) {
+                    const rewardAmount = typeof explorationReward === "string"
+                        ? 1
+                        : explorationReward.amount ?? 1
+                    obtainedBy.push({
+                        id: "combat-exploration-reward-" + action.id + "-" + itemId,
+                        name: actionName + " Combat",
+                        amount: rewardAmount,
+                        amountLabel: String(rewardAmount) + " per victory",
+                        type: "action",
+                        badgeVariant: "combat",
+                    })
+                }
+            }
+
+            if (action.processesUnidentifiedArtifacts) {
+                const unidentifiedSources = ITEM_DATA.filter(candidate =>
+                    candidate.type === "unidentifiedArtifact" &&
+                    candidate.revealsItemId === itemId
+                )
+                for (const sourceItem of unidentifiedSources) {
+                    obtainedBy.push({
+                        id: "unveil-artifact-" + action.id + "-" + sourceItem.id,
+                        name: actionName,
+                        amount: 1,
+                        amountLabel: ((action.identificationChance ?? 0.1) * 100).toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2,
+                        }) + "% chance per unveil",
+                        type: "action",
+                        badgeVariant: skill.variant,
+                    })
                 }
             }
 
@@ -408,6 +445,17 @@ const canStoreActionOutputs = (player, skill, action) => {
         if (rewardItemsToAdd.length > 0 && availableSlots <= 0) return false
     }
 
+    if (action.processesUnidentifiedArtifacts && selectedItem?.type === "unidentifiedArtifact") {
+        const identifiedArtifact = ITEM_DATA_BY_ID[selectedItem.revealsItemId]
+        const artifactAlreadyOwned = (inventory[selectedItem.revealsItemId] ?? 0) > 0
+        const itemSlotFreed = (inventory[selectedItem.id] ?? 0) === 1
+        const availableSlots = (player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace) -
+            occupiedSlots + (itemSlotFreed ? 1 : 0)
+        if (identifiedArtifact?.type === "artifact" && !artifactAlreadyOwned && availableSlots <= 0) {
+            return false
+        }
+    }
+
     const companionContainerId = typeof action.companionContainer === "string"
         ? action.companionContainer
         : action.companionContainer?.item
@@ -549,10 +597,11 @@ const milestoneTargetsSkill = (sourceSkill, targetSkillId, milestone) =>
 
 // Permanent companion effects apply globally; active-slot effects target one skill.
 const getCompanionEffectMultiplier = (effect, level, perLevel) => {
-    const startingBonus = effect === "preservation"
+    const hasSlowGrowth = effect === "preservation" || effect === "unlockCostReduction"
+    const startingBonus = hasSlowGrowth
         ? 0
         : COMPANION_CONFIG.companionLeveling.effectStartingBonus ?? 0
-    const growth = effect === "preservation"
+    const growth = hasSlowGrowth
         ? level * perLevel
         : startingBonus + Math.max(0, level - 1) * perLevel
     if (effect === "manaCost" || effect === "unlockCostReduction" || effect === "combatInterval") {
@@ -1415,7 +1464,7 @@ const getCombatAttackDetails = (player, attackId) => {
             element: "neutral",
             tier,
             level: spellcraftLevel,
-            baseDamage: tier * 10 * (1 + 0.01 * spellcraftLevel),
+            baseDamage: tier * (COMBAT_CONFIG.player.damagePerTier ?? 5) * (1 + 0.01 * spellcraftLevel),
         }
     }
 
@@ -1431,7 +1480,7 @@ const getCombatAttackDetails = (player, attackId) => {
         element: action.element ?? "neutral",
         tier: action.tier,
         level: actionState.level ?? 1,
-        baseDamage: action.tier * 10 * (1 + 0.01 * (actionState.level ?? 1)),
+        baseDamage: action.tier * (COMBAT_CONFIG.player.damagePerTier ?? 5) * (1 + 0.01 * (actionState.level ?? 1)),
     }
 }
 
@@ -1549,12 +1598,30 @@ const finishCombatEncounter = (player, action) => {
         if (!itemData || !Number.isFinite(baseAmount) || baseAmount <= 0) continue
 
         let amount
-        if (itemData.type === "artifact") {
+        if (itemData.type === "unidentifiedArtifact") {
             if (Math.random() >= getCombatArtifactChance(player, action)) continue
             amount = Math.max(1, Math.floor(baseAmount))
         } else {
             amount = rollActionOutputAmount(baseAmount, outputMultiplier)
         }
+        if (amount <= 0) continue
+
+        if (grantCombatItem(player, itemId, amount)) {
+            rewards.push({ item: itemId, amount })
+        } else {
+            pending.push({ item: itemId, amount })
+        }
+    }
+
+    // Combat also grants the selected area's ordinary Exploration resources.
+    // Companion containers are excluded in combatConfig; only regular items
+    // are rolled here and they benefit from the Exploration-level output bonus.
+    for (const reward of action.explorationRewards ?? []) {
+        const itemId = typeof reward === "string" ? reward : reward?.item
+        const baseAmount = typeof reward === "string" ? 1 : reward?.amount ?? 1
+        if (!ITEM_DATA_BY_ID[itemId] || !Number.isFinite(baseAmount) || baseAmount <= 0) continue
+
+        const amount = rollActionOutputAmount(baseAmount, outputMultiplier)
         if (amount <= 0) continue
 
         if (grantCombatItem(player, itemId, amount)) {
@@ -1606,7 +1673,8 @@ const advanceCombat = (player, deltaMs) => {
     const combat = player.combat
     if (!combat || !player.unlockedSkills?.includes(COMBAT_CONFIG.id)) return
 
-    const action = COMBAT_ACTION_BY_AREA_ID[combat.selectedAreaId]
+    const activeAreaId = combat.activeAreaId ?? combat.selectedAreaId
+    const action = COMBAT_ACTION_BY_AREA_ID[activeAreaId]
     const actionState = action
         ? player.skills?.[COMBAT_CONFIG.id]?.actions?.[action.id]
         : null
@@ -1774,6 +1842,20 @@ const awardActionXP = (player, skill, action, actionState) => {
         ? player.skills?.[skill.id]?.actions?.[action.id]?.selectedItemId
         : null
     const selectedItem = ITEM_DATA_BY_ID[selectedItemId]
+
+    if (action.processesUnidentifiedArtifacts && selectedItem?.type === "unidentifiedArtifact") {
+        const artifactId = selectedItem.revealsItemId
+        const artifact = ITEM_DATA_BY_ID[artifactId]
+        const chance = action.identificationChance ?? 0.1
+
+        if (artifact?.type === "artifact" && Math.random() < chance) {
+            player.identifiedArtifacts = [...new Set([
+                ...(player.identifiedArtifacts ?? []),
+                artifactId,
+            ])]
+            player.inventory[artifactId] = (player.inventory[artifactId] ?? 0) + 1
+        }
+    }
 
     if (action.processesCompanionContainers && selectedItem?.type === "companionContainer") {
         const rewards = skill.companionRewards

@@ -43,6 +43,7 @@ export const createGameProgressStore = () => {
     const actionCanStart = new Map()
     const actionCanStartListeners = new Map()
     const manaListeners = new Set()
+    const combatListeners = new Set()
 
     const inventoryListeners = new Set()
     const currenciesListeners = new Set()
@@ -57,6 +58,18 @@ export const createGameProgressStore = () => {
     let inventorySlots = null
     let unlockedSkills = EMPTY_ARRAY
     let unlockedCompanions = EMPTY_ARRAY
+    let combatSnapshot = Object.freeze({
+        selectedAreaId: null,
+        rotation: ["omnibolt"],
+        running: false,
+        phase: "idle",
+        cycleRemainingMs: 0,
+        encountersCompleted: 0,
+        encounter: null,
+        lastRewards: [],
+        pendingRewards: [],
+    })
+    let combatSnapshotSignature = JSON.stringify(combatSnapshot)
 
     return {
         getActionProgress(skillId, actionId) {
@@ -91,6 +104,15 @@ export const createGameProgressStore = () => {
         subscribeMana(listener) {
             manaListeners.add(listener)
             return () => manaListeners.delete(listener)
+        },
+
+        getCombatSnapshot() {
+            return combatSnapshot
+        },
+
+        subscribeCombat(listener) {
+            combatListeners.add(listener)
+            return () => combatListeners.delete(listener)
         },
 
         getInventory() {
@@ -162,6 +184,36 @@ export const createGameProgressStore = () => {
             }
 
             activeActionKey = nextActionKey
+
+            const combat = player.combat ?? {}
+            const selectedActionRunning = Object.entries(
+                player.skills?.["skill:combat"]?.actions ?? {}
+            ).some(([actionId, actionState]) =>
+                actionState?.running && actionId ===
+                    "action:combat_" + String(combat.selectedAreaId ?? "").replace(/^area:/, "")
+            )
+            const encounter = combat.encounter
+            const nextCombatSnapshot = {
+                selectedAreaId: combat.selectedAreaId ?? null,
+                rotation: Array.isArray(combat.rotation) ? [...combat.rotation] : ["omnibolt"],
+                running: selectedActionRunning,
+                phase: combat.phase ?? "idle",
+                cycleRemainingMs: Math.max(0, combat.cycleRemainingMs ?? 0),
+                encountersCompleted: combat.encountersCompleted ?? 0,
+                encounter: encounter ? {
+                    rotationIndex: encounter.rotationIndex ?? 0,
+                    player: encounter.player ? { ...encounter.player } : null,
+                    enemies: (encounter.enemies ?? []).map(enemy => ({ ...enemy })),
+                } : null,
+                lastRewards: (combat.lastRewards ?? []).map(reward => ({ ...reward })),
+                pendingRewards: (combat.pendingRewards ?? []).map(reward => ({ ...reward })),
+            }
+            const nextCombatSignature = JSON.stringify(nextCombatSnapshot)
+            if (nextCombatSignature !== combatSnapshotSignature) {
+                combatSnapshot = nextCombatSnapshot
+                combatSnapshotSignature = nextCombatSignature
+                notifySet(combatListeners)
+            }
 
             const nextManaCurrent = Number(player.mana?.current) || 0
             if (nextManaCurrent !== manaCurrent) {

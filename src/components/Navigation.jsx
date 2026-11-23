@@ -42,7 +42,8 @@ export function Navigation({
           disabled: !isUnlocked,
           badge: skillProgress ? "Lv. " + skillProgress.level : null,
           badgeIcon: null,
-          toggled: player.activeAction?.skillId === skill.skillId,
+          toggled: player.activeAction?.skillId === skill.skillId ||
+            Object.values(player.skills?.[skill.skillId]?.actions ?? {}).some(action => action.running),
         }
       }),
   ]

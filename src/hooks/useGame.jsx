@@ -54,6 +54,20 @@ export function useGameActionCanStart(skillId, actionId, fallback = true) {
     return useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
 }
 
+export function useGameCombatSnapshot() {
+    const { progressStore } = useGameServices()
+    const subscribe = useCallback(
+        listener => progressStore.subscribeCombat(listener),
+        [progressStore]
+    )
+    const getSnapshot = useCallback(
+        () => progressStore.getCombatSnapshot(),
+        [progressStore]
+    )
+
+    return useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
+}
+
 export function useGameManaCurrent() {
     const { progressStore } = useGameServices()
     const subscribe = useCallback(

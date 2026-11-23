@@ -61,6 +61,9 @@ const hasVisiblePlayerChanges = (previous, next) => {
         !areSameArray(previous.unlockedCompanions, next.unlockedCompanions) ||
         !areSameArray(previous.unlockedCompanionSlots, next.unlockedCompanionSlots) ||
         !areSameArray(previous.completedMissions, next.completedMissions) ||
+        previous.combat?.selectedAreaId !== next.combat?.selectedAreaId ||
+        previous.combat?.rotationSlots !== next.combat?.rotationSlots ||
+        !areSameArray(previous.combat?.rotation ?? [], next.combat?.rotation ?? []) ||
         !areSameRecord(previous.inventory, next.inventory) ||
         !areSameRecord(previous.currencies, next.currencies) ||
         !areSameRecord(previous.activeCompanionSlots, next.activeCompanionSlots) ||
@@ -764,6 +767,14 @@ export function GameProvider({ children }) {
         dispatch({ type: "START_ACTION", skillId, actionId })
     }, [])
 
+    const selectCombatArea = useCallback(areaId => {
+        dispatch({ type: "SELECT_COMBAT_AREA", areaId })
+    }, [])
+
+    const setCombatRotation = useCallback(rotation => {
+        dispatch({ type: "SET_COMBAT_ROTATION", rotation })
+    }, [])
+
     const stopAction = useCallback((skillId, actionId) => {
         dispatch({ type: "STOP_ACTION", skillId, actionId })
     }, [])
@@ -815,6 +826,8 @@ export function GameProvider({ children }) {
     const commands = useMemo(() => ({
         resetGame,
         startAction,
+        selectCombatArea,
+        setCombatRotation,
         stopAction,
         togglePassiveAction,
         unlockAction,
@@ -827,7 +840,7 @@ export function GameProvider({ children }) {
         selectActionItem,
         unlockCompanionSlot,
         selectCompanion,
-    }), [resetGame, startAction, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyResearchBreakthrough, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
+    }), [resetGame, startAction, selectCombatArea, setCombatRotation, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyResearchBreakthrough, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
 
     const servicesValue = useMemo(() => ({
         progressStore,

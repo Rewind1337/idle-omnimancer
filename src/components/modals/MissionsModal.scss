@@ -1,9 +1,8 @@
 .modal-backdrop.modal-missions {
-    padding: 16px !important;
+    padding: 64px !important;
 
     .modal-wrapper {
-        width: min(100%, 1200px);
-        max-height: calc(100vh - 32px);
+        width: min(100%, 1400px);
     }
 
     .missions-modal-content {

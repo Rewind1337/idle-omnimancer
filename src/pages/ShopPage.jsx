@@ -110,7 +110,7 @@ function BagSlotImprovement({ player, buyBagSlot }) {
                         disabled={!canPurchase}
                         onClick={buyBagSlot}
                     >
-                        Buy for {formatCoins(nextSlotCost)} Coins
+                        {formatCoins(nextSlotCost)} Coins
                     </Button>
                 </Flex>
             </Flex>
@@ -141,9 +141,6 @@ function ResearchBreakthroughImprovement({ player, buyResearchBreakthrough }) {
                     <Flex direction="column" gap={8}>
                         <Heading h="3">Research Breakthrough</Heading>
                         <Text size="small">
-                            Unlock rare Flame discoveries as additional rewards from Research.
-                        </Text>
-                        <Text size="small">
                             Current Tier: {currentTier} / {RESEARCH_BREAKTHROUGH_CONFIG.maxTier}
                         </Text>
                         <Button
@@ -155,8 +152,7 @@ function ResearchBreakthroughImprovement({ player, buyResearchBreakthrough }) {
                         >
                             {isMaxTier
                                 ? "All Tiers Unlocked"
-                                : "Upgrade to Tier " + (currentTier + 1) + " · " +
-                                formatCoins(nextCost) + " Coins"}
+                                : formatCoins(nextCost) + " Coins"}
                         </Button>
                     </Flex>
                 </Flex>

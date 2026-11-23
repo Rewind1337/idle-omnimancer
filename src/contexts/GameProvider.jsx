@@ -21,6 +21,8 @@ import { ITEM_DATA_BY_ID, CURRENCY_DATA_BY_ID } from "../data/itemData"
 import { SKILL_CONFIGS } from "../data/skillConfig"
 import { COMPANION_DATA } from "../data/companionData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
+import { COMBAT_CONFIG } from "../data/combatConfig"
+import { WORLD_AREA_BY_ID } from "../data/worldData"
 import { humanize } from "../utility/helpers"
 import { useToast } from "../hooks/useToast"
 import { OfflineProgressModal } from "../components/modals/OfflineProgressModal"
@@ -270,6 +272,17 @@ const updateActionReadinessForChanges = (progressStore, previous, next) => {
                 )
             ) {
                 affectedActions.add(skill.id + "::" + action.id)
+            }
+
+            // A Combat action becomes startable as soon as its matching
+            // Exploration action is unlocked, even though its own unlock flag
+            // was granted earlier with the Combat skill.
+            if (skill.id === "skill:exploration" &&
+                previousAction?.unlocked !== nextAction?.unlocked) {
+                const combatAction = COMBAT_CONFIG.actions.find(entry =>
+                    WORLD_AREA_BY_ID[entry.areaId]?.actionId === action.id
+                )
+                if (combatAction) affectedActions.add(COMBAT_CONFIG.id + "::" + combatAction.id)
             }
 
             if (!Object.is(previousAction?.level, nextAction?.level)) {

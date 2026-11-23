@@ -40,10 +40,12 @@ function ResponsivePage({
   navigationMode = "detailed",
   onNavigationSettingsChange = () => { },
   className = '',
+  missionsModalVisible,
+  setMissionsModalVisible,
+  missionsModalTab,
+  setMissionsModalTab,
 }) {
   const [bagModalVisible, setBagModalVisible] = useState(false)
-  const [missionsModalVisible, setMissionsModalVisible] = useState(false)
-  const [missionsModalTab, setMissionsModalTab] = useState("overview")
   const [settingsModalVisible, setSettingsModalVisible] = useState(false)
   const { resetGame } = useGame()
   const unlockedSkills = useGameUnlockedSkills()
@@ -199,6 +201,8 @@ const loadNavigationSettings = () => {
 }
 
 function App() {
+  const [missionsModalVisible, setMissionsModalVisible] = useState(false)
+  const [missionsModalTab, setMissionsModalTab] = useState("overview")
   const [activePage, setActivePage] = useState(
     SKILL_NAVIGATION.find(skill => skill.skillId === "skill:research").id
   )
@@ -224,6 +228,10 @@ function App() {
             setNavigationSettings(current => ({ ...current, [key]: value }))
           }
           setActivePage={setActivePage}
+          missionsModalVisible={missionsModalVisible}
+          setMissionsModalVisible={setMissionsModalVisible}
+          missionsModalTab={missionsModalTab}
+          setMissionsModalTab={setMissionsModalTab}
         >
           {activeSkill?.skillId === "skill:research" && <ResearchPage />}
           {activeSkill?.skillId === "skill:spellcraft" && <SpellcraftPage />}

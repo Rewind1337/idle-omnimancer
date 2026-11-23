@@ -206,7 +206,7 @@ function CombatPanel({ player, action, snapshot, rotationOptions }) {
     )
 }
 
-function CombatRotation({ player, rotation, rotationSlots, onChange }) {
+function CombatRotation({ player, rotation, rotationSlots, isSkillUnlocked, onChange }) {
     const spellcraftUnlocked = player.unlockedSkills?.includes(SPELLCRAFT_CONFIG.id)
     const options = [
         { value: "omnibolt", label: "Omnibolt · Neutral" },
@@ -237,6 +237,7 @@ function CombatRotation({ player, rotation, rotationSlots, onChange }) {
                         variant="combat"
                         values={options}
                         value={rotation[index] ?? ""}
+                        disabled={!isSkillUnlocked}
                         onChange={value => {
                             if (!value || rotation.some((selected, selectedIndex) =>
                                 selected === value && selectedIndex !== index
@@ -431,6 +432,7 @@ export function CombatPage() {
                 player={player}
                 rotation={rotation}
                 rotationSlots={rotationSlots}
+                isSkillUnlocked={isSkillUnlocked}
                 onChange={setCombatRotation}
             />
 

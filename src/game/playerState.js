@@ -265,7 +265,7 @@ export const normalizePlayerState = (savedState) => {
             rotationIndex: clampInteger(savedEncounter.rotationIndex, 0, rotation.length - 1, 0),
         }
         : null
-    const pendingRewards = Array.isArray(savedCombat.pendingRewards)
+    const pendingRewards = combatSkillUnlocked && Array.isArray(savedCombat.pendingRewards)
         ? savedCombat.pendingRewards.filter(reward =>
             isRecord(reward) &&
             typeof reward.item === "string" &&
@@ -274,7 +274,7 @@ export const normalizePlayerState = (savedState) => {
             reward.amount > 0
         )
         : []
-    const lastRewards = Array.isArray(savedCombat.lastRewards)
+    const lastRewards = combatSkillUnlocked && Array.isArray(savedCombat.lastRewards)
         ? savedCombat.lastRewards.filter(reward =>
             isRecord(reward) &&
             typeof reward.item === "string" &&
@@ -283,11 +283,13 @@ export const normalizePlayerState = (savedState) => {
             reward.amount > 0
         )
         : []
-    const phase = savedPhase === "fighting" && !validCombatEncounter
+    const phase = !combatSkillUnlocked
         ? "idle"
-        : savedPhase === "inventoryFull" && pendingRewards.length === 0
-            ? "rest"
-            : savedPhase
+        : savedPhase === "fighting" && !validCombatEncounter
+            ? "idle"
+            : savedPhase === "inventoryFull" && pendingRewards.length === 0
+                ? "rest"
+                : savedPhase
     const combatRunning = combatSkillUnlocked &&
         Boolean(skills[COMBAT_CONFIG.id]?.actions?.[selectedCombatAction?.id]?.running) &&
         getExplorationAreaUnlocked(selectedAreaId)
@@ -306,7 +308,7 @@ export const normalizePlayerState = (savedState) => {
         rotation,
         rotationSlots,
         phase,
-        encounter: validCombatEncounter,
+        encounter: phase === "idle" ? null : validCombatEncounter,
         cycleRemainingMs: phase === "rest"
             ? Math.min(COMBAT_CONFIG.timing.encounterDelayMs, Math.max(0, finiteNumber(savedCombat.cycleRemainingMs, 0)))
             : 0,

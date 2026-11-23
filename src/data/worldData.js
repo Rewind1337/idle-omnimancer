@@ -38,7 +38,7 @@ export const WORLD_DATA = {
             areaNumber: 1,
             position: { q: 0, r: 0 },
             exploration: { produces: ["item:crossroads_field_notes", "item:neutral_prism_i"] },
-            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:crossroads_waystone"] },
+            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:unidentified_crossroads_artifact"], artifactId: "item:crossroads_waystone" },
         },
         {
             id: "area:mossbound_foothills",
@@ -52,7 +52,7 @@ export const WORLD_DATA = {
                 produces: ["item:mossbound_ore"],
                 unlockCosts: AREA_UNLOCK_COSTS[1],
             },
-            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:mossbound_heartstone"] },
+            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:unidentified_mossbound_foothills_artifact"], artifactId: "item:mossbound_heartstone" },
         },
         {
             id: "area:whispering_fields",
@@ -66,7 +66,7 @@ export const WORLD_DATA = {
                 produces: ["item:whispering_seeds"],
                 unlockCosts: AREA_UNLOCK_COSTS[1],
             },
-            combat: { enemyLineup: [{ archetype: "heavyHitter" }], produces: ["item:whispering_chime"] },
+            combat: { enemyLineup: [{ archetype: "strong" }], produces: ["item:unidentified_whispering_fields_artifact"], artifactId: "item:whispering_chime" },
         },
         {
             id: "area:stillwater_pools",
@@ -80,7 +80,7 @@ export const WORLD_DATA = {
                 produces: ["item:stillwater_reeds"],
                 unlockCosts: AREA_UNLOCK_COSTS[1],
             },
-            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:stillwater_idol"] },
+            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:unidentified_stillwater_pools_artifact"], artifactId: "item:stillwater_idol" },
         },
         {
             id: "area:ironroot_ravine",
@@ -94,7 +94,7 @@ export const WORLD_DATA = {
                 produces: ["item:ironroot_ore", "item:earth_geode_i"],
                 unlockCosts: AREA_UNLOCK_COSTS[2],
             },
-            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:ironroot_golem_core"] },
+            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:unidentified_ironroot_ravine_artifact"], artifactId: "item:ironroot_golem_core" },
         },
         {
             id: "area:zephyr_heights",
@@ -108,7 +108,7 @@ export const WORLD_DATA = {
                 produces: ["item:zephyr_plumes", "item:air_egg_i"],
                 unlockCosts: AREA_UNLOCK_COSTS[2],
             },
-            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:zephyr_wisp_chime"] },
+            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:unidentified_zephyr_heights_artifact"], artifactId: "item:zephyr_wisp_chime" },
         },
         {
             id: "area:moonlit_fen",
@@ -122,7 +122,7 @@ export const WORLD_DATA = {
                 produces: ["item:moonlit_pearls", "item:water_shell_i"],
                 unlockCosts: AREA_UNLOCK_COSTS[2],
             },
-            combat: { enemyLineup: [{ archetype: "heavyHitter" }], produces: ["item:fenwarden_idol"] },
+            combat: { enemyLineup: [{ archetype: "strong" }], produces: ["item:unidentified_moonlit_fen_artifact"], artifactId: "item:fenwarden_idol" },
         },
         {
             id: "area:shattered_crags",
@@ -136,7 +136,7 @@ export const WORLD_DATA = {
                 produces: ["item:shatterstone_fragments"],
                 unlockCosts: AREA_UNLOCK_COSTS[3],
             },
-            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:cragbound_relic"] },
+            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:unidentified_shattered_crags_artifact"], artifactId: "item:cragbound_relic" },
         },
         {
             id: "area:tempest_reach",
@@ -150,7 +150,7 @@ export const WORLD_DATA = {
                 produces: ["item:stormglass_shards"],
                 unlockCosts: AREA_UNLOCK_COSTS[3],
             },
-            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:tempest_eye"] },
+            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:unidentified_tempest_reach_artifact"], artifactId: "item:tempest_eye" },
         },
         {
             id: "area:drowned_sanctum",
@@ -164,7 +164,7 @@ export const WORLD_DATA = {
                 produces: ["item:abyssal_ink"],
                 unlockCosts: AREA_UNLOCK_COSTS[3],
             },
-            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:drowned_scepter"] },
+            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:unidentified_drowned_sanctum_artifact"], artifactId: "item:drowned_scepter" },
         },
         {
             id: "area:basalt_crown",
@@ -178,7 +178,7 @@ export const WORLD_DATA = {
                 produces: ["item:basalt_heart", "item:earth_geode_ii"],
                 unlockCosts: AREA_UNLOCK_COSTS[4],
             },
-            combat: { enemyLineup: [{ archetype: "heavyHitter" }], produces: ["item:basalt_crown_fragment"] },
+            combat: { enemyLineup: [{ archetype: "strong" }], produces: ["item:unidentified_basalt_crown_artifact"], artifactId: "item:basalt_crown_fragment" },
         },
         {
             id: "area:skybreak_summit",
@@ -192,7 +192,7 @@ export const WORLD_DATA = {
                 produces: ["item:skybreak_aether", "item:air_egg_ii"],
                 unlockCosts: AREA_UNLOCK_COSTS[4],
             },
-            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:skybreak_sigil"] },
+            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:unidentified_skybreak_summit_artifact"], artifactId: "item:skybreak_sigil" },
         },
         {
             id: "area:tidal_abyss",
@@ -206,7 +206,7 @@ export const WORLD_DATA = {
                 produces: ["item:tidal_heart", "item:water_shell_ii"],
                 unlockCosts: AREA_UNLOCK_COSTS[4],
             },
-            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:abyssal_crown"] },
+            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:unidentified_tidal_abyss_artifact"], artifactId: "item:abyssal_crown" },
         },
         {
             id: "area:deepstone_warrens",
@@ -220,7 +220,7 @@ export const WORLD_DATA = {
                 produces: ["item:deepstone_crystals"],
                 unlockCosts: AREA_UNLOCK_COSTS[5],
             },
-            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:deepstone_guardian_core"] },
+            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:unidentified_deepstone_warrens_artifact"], artifactId: "item:deepstone_guardian_core" },
         },
         {
             id: "area:highwind_expanse",
@@ -234,7 +234,7 @@ export const WORLD_DATA = {
                 produces: ["item:highwind_plumes"],
                 unlockCosts: AREA_UNLOCK_COSTS[5],
             },
-            combat: { enemyLineup: [{ archetype: "heavyHitter" }], produces: ["item:highwind_wisp_chime"] },
+            combat: { enemyLineup: [{ archetype: "strong" }], produces: ["item:unidentified_highwind_expanse_artifact"], artifactId: "item:highwind_wisp_chime" },
         },
         {
             id: "area:mooncurrent_basin",
@@ -248,7 +248,7 @@ export const WORLD_DATA = {
                 produces: ["item:mooncurrent_pearls"],
                 unlockCosts: AREA_UNLOCK_COSTS[5],
             },
-            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:mooncurrent_tide_idol"] },
+            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:unidentified_mooncurrent_basin_artifact"], artifactId: "item:mooncurrent_tide_idol" },
         },
         {
             id: "area:verdant_crucible",
@@ -262,7 +262,7 @@ export const WORLD_DATA = {
                 produces: ["item:verdant_heartwood", "item:earth_geode_iii"],
                 unlockCosts: AREA_UNLOCK_COSTS[6],
             },
-            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:verdant_golem_core"] },
+            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:unidentified_verdant_crucible_artifact"], artifactId: "item:verdant_golem_core" },
         },
         {
             id: "area:stormwing_pinnacles",
@@ -276,7 +276,7 @@ export const WORLD_DATA = {
                 produces: ["item:stormwing_feathers", "item:air_egg_iii"],
                 unlockCosts: AREA_UNLOCK_COSTS[6],
             },
-            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:stormwing_wisp_chime"] },
+            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:unidentified_stormwing_pinnacles_artifact"], artifactId: "item:stormwing_wisp_chime" },
         },
         {
             id: "area:glacial_mirror",
@@ -290,7 +290,7 @@ export const WORLD_DATA = {
                 produces: ["item:glacial_pearls", "item:water_shell_iii"],
                 unlockCosts: AREA_UNLOCK_COSTS[6],
             },
-            combat: { enemyLineup: [{ archetype: "heavyHitter" }], produces: ["item:glacial_tide_idol"] },
+            combat: { enemyLineup: [{ archetype: "strong" }], produces: ["item:unidentified_glacial_mirror_artifact"], artifactId: "item:glacial_tide_idol" },
         },
         {
             id: "area:obsidian_throne",
@@ -304,7 +304,7 @@ export const WORLD_DATA = {
                 produces: ["item:obsidian_fragments"],
                 unlockCosts: AREA_UNLOCK_COSTS[7],
             },
-            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:obsidian_golem_relic"] },
+            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:unidentified_obsidian_throne_artifact"], artifactId: "item:obsidian_golem_relic" },
         },
         {
             id: "area:celestial_rift",
@@ -318,7 +318,7 @@ export const WORLD_DATA = {
                 produces: ["item:celestial_aether"],
                 unlockCosts: AREA_UNLOCK_COSTS[7],
             },
-            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:celestial_wisp_chime"] },
+            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:unidentified_celestial_rift_artifact"], artifactId: "item:celestial_wisp_chime" },
         },
         {
             id: "area:leviathan_trench",
@@ -332,7 +332,7 @@ export const WORLD_DATA = {
                 produces: ["item:abyssal_corals"],
                 unlockCosts: AREA_UNLOCK_COSTS[7],
             },
-            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:abyssal_tide_scepter"] },
+            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:unidentified_leviathan_trench_artifact"], artifactId: "item:abyssal_tide_scepter" },
         },
         {
             id: "area:primordial_forge",
@@ -346,7 +346,7 @@ export const WORLD_DATA = {
                 produces: ["item:primordial_ore", "item:earth_geode_iv"],
                 unlockCosts: AREA_UNLOCK_COSTS[8],
             },
-            combat: { enemyLineup: [{ archetype: "heavyHitter" }], produces: ["item:primordial_golem_heart"] },
+            combat: { enemyLineup: [{ archetype: "strong" }], produces: ["item:unidentified_primordial_forge_artifact"], artifactId: "item:primordial_golem_heart" },
         },
         {
             id: "area:starfall_firmament",
@@ -360,7 +360,7 @@ export const WORLD_DATA = {
                 produces: ["item:starfall_aether", "item:air_egg_iv"],
                 unlockCosts: AREA_UNLOCK_COSTS[8],
             },
-            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:starfall_wisp_sigil"] },
+            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:unidentified_starfall_firmament_artifact"], artifactId: "item:starfall_wisp_sigil" },
         },
         {
             id: "area:worldtide_sanctum",
@@ -374,7 +374,7 @@ export const WORLD_DATA = {
                 produces: ["item:worldtide_pearls", "item:water_shell_iv"],
                 unlockCosts: AREA_UNLOCK_COSTS[8],
             },
-            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:worldtide_tide_crown"] },
+            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:unidentified_worldtide_sanctum_artifact"], artifactId: "item:worldtide_tide_crown" },
         },
         {
             id: "area:worldcore_caldera",
@@ -388,7 +388,7 @@ export const WORLD_DATA = {
                 produces: ["item:worldcore_shards"],
                 unlockCosts: AREA_UNLOCK_COSTS[9],
             },
-            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:worldcore_relic"] },
+            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:unidentified_worldcore_caldera_artifact"], artifactId: "item:worldcore_relic" },
         },
         {
             id: "area:boundless_empyrean",
@@ -402,7 +402,7 @@ export const WORLD_DATA = {
                 produces: ["item:firmament_plumes"],
                 unlockCosts: AREA_UNLOCK_COSTS[9],
             },
-            combat: { enemyLineup: [{ archetype: "heavyHitter" }], produces: ["item:firmament_wisp_chime"] },
+            combat: { enemyLineup: [{ archetype: "strong" }], produces: ["item:unidentified_boundless_empyrean_artifact"], artifactId: "item:firmament_wisp_chime" },
         },
         {
             id: "area:leviathans_grave",
@@ -416,7 +416,7 @@ export const WORLD_DATA = {
                 produces: ["item:leviathan_essence"],
                 unlockCosts: AREA_UNLOCK_COSTS[9],
             },
-            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:leviathan_tide_scepter"] },
+            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:unidentified_leviathans_grave_artifact"], artifactId: "item:leviathan_tide_scepter" },
         },
         {
             id: "area:genesis_bastion",
@@ -430,7 +430,7 @@ export const WORLD_DATA = {
                 produces: ["item:genesis_ore", "item:earth_geode_v"],
                 unlockCosts: AREA_UNLOCK_COSTS[10],
             },
-            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:genesis_golem_core"] },
+            combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:unidentified_genesis_bastion_artifact"], artifactId: "item:genesis_golem_core" },
         },
         {
             id: "area:origin_zenith",
@@ -444,7 +444,7 @@ export const WORLD_DATA = {
                 produces: ["item:origin_aether", "item:air_egg_v"],
                 unlockCosts: AREA_UNLOCK_COSTS[10],
             },
-            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:origin_wisp_sigil"] },
+            combat: { enemyLineup: [{ archetype: "quick" }], produces: ["item:unidentified_origin_zenith_artifact"], artifactId: "item:origin_wisp_sigil" },
         },
         {
             id: "area:eternal_deep",
@@ -458,7 +458,7 @@ export const WORLD_DATA = {
                 produces: ["item:eternal_tideheart", "item:water_shell_v"],
                 unlockCosts: AREA_UNLOCK_COSTS[10],
             },
-            combat: { enemyLineup: [{ archetype: "heavyHitter" }], produces: ["item:eternal_tide_crown"] },
+            combat: { enemyLineup: [{ archetype: "strong" }], produces: ["item:unidentified_eternal_deep_artifact"], artifactId: "item:eternal_tide_crown" },
         },
     ],
 }

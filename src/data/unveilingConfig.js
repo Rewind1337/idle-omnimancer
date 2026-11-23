@@ -95,9 +95,10 @@ export const UNVEILING_CONFIG = {
             tier: 1,
             time: { base: 15, perTier: 0 },
             actionXPReward: 50,
-            // Unidentified objects will be added when Combat defines their item and reward data.
-            inputSelection: { types: ["companionContainer"], maxTier: 5 },
+            inputSelection: { types: ["companionContainer", "unidentifiedArtifact"] },
             processesCompanionContainers: true,
+            processesUnidentifiedArtifacts: true,
+            identificationChance: 0.1,
             unlockedByDefault: true,
         },
     ],

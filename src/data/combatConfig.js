@@ -1,10 +1,11 @@
 // Combat is a passive world activity. Enemy balance lives here while each
 // area's lineup and reward pool remain attached to its world-data record.
 import { WORLD_DATA } from "./worldData"
+import { COMPANION_DATA_BY_CONTAINER_ID } from "./companionData"
 
 const ENEMY_ARCHETYPES = {
     average: { label: "Average", healthMultiplier: 1, damageMultiplier: 1, intervalMultiplier: 1 },
-    heavyHitter: { label: "Heavy Hitter", healthMultiplier: 1.1, damageMultiplier: 1.5, intervalMultiplier: 1.25 },
+    strong: { label: "Strong", healthMultiplier: 1.1, damageMultiplier: 1.5, intervalMultiplier: 1.25 },
     quick: { label: "Quick", healthMultiplier: 0.85, damageMultiplier: 0.75, intervalMultiplier: 0.7 },
     tank: { label: "Tank", healthMultiplier: 1.8, damageMultiplier: 0.65, intervalMultiplier: 1.2 },
 }
@@ -45,6 +46,7 @@ export const COMBAT_CONFIG = {
         baseHealth: 100,
         baseBarrier: 5,
         omniboltTier: 1,
+        damagePerTier: 5,
         initialRotationSlots: 1,
         maxRotationSlots: 3,
     },
@@ -81,6 +83,11 @@ export const COMBAT_CONFIG = {
         element: area.element ?? "neutral",
         enemyLineup: area.combat?.enemyLineup ?? [{ archetype: "average" }],
         rewards: area.combat?.produces ?? [],
+        artifactId: area.combat?.artifactId ?? null,
+        explorationRewards: (area.exploration?.produces ?? []).filter(reward => {
+            const itemId = typeof reward === "string" ? reward : reward?.item
+            return itemId && !COMPANION_DATA_BY_CONTAINER_ID[itemId]
+        }),
         unlockedByDefault: true,
     })),
 }

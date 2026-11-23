@@ -28,6 +28,7 @@ import {
     getCombatOutputMultiplier,
     getCombatPlayerStats,
     getCombatAttackDetails,
+    getCombatElementMultiplier,
     getCombatXPReward,
     getActionEffectStacks,
     getActionEffectSummary,
@@ -237,8 +238,16 @@ function CombatPanel({ player, action, rotationOptions }) {
 
 function CombatRotation({ player, rotation, rotationSlots, isSkillUnlocked, action, onChange }) {
     const [selectionSlotIndex, setSelectionSlotIndex] = useState(null)
+    const combatSnapshot = useGameCombatSnapshot()
     const activeCombatAction = COMBAT_ACTION_BY_AREA_ID[player.combat?.activeAreaId] ?? action
-    const damageMultiplier = getCombatPlayerStats(player, activeCombatAction).damageMultiplier
+    const playerStats = getCombatPlayerStats(player, activeCombatAction)
+    const currentTarget = combatSnapshot.phase === "fighting"
+        ? combatSnapshot.encounter?.enemies?.find(enemy => enemy.health > 0)
+        : null
+    const currentHealth = combatSnapshot.phase === "fighting"
+        ? combatSnapshot.encounter?.player?.health ?? playerStats.maxHealth
+        : playerStats.maxHealth
+    const healthMultiplier = Math.min(1, currentHealth / Math.max(1, 0.5 * playerStats.maxHealth))
 
     const selectAttack = attackId => {
         if (selectionSlotIndex === null) return
@@ -301,7 +310,12 @@ function CombatRotation({ player, rotation, rotationSlots, isSkillUnlocked, acti
                                                             Level {attack.level}
                                                         </Badge>
                                                         <Badge size="small" variant="transparent">
-                                                            Damage: {formatNumber(attack.baseDamage * damageMultiplier)}
+                                                            Damage: {formatNumber(
+                                                                attack.baseDamage *
+                                                                playerStats.damageMultiplier *
+                                                                healthMultiplier *
+                                                                getCombatElementMultiplier(attack.element, currentTarget?.element)
+                                                            )}
                                                         </Badge>
                                                     </>
                                                 )}

@@ -21,7 +21,6 @@ export function SkillSummary({
     progressionMilestones = [],
     progressEnabled = true,
     skillXPTooltip = "Skill XP",
-    totalProgressTooltip = "Skill progression",
 }) {
     const totalPercentage = progressEnabled && skillProgress?.maxXP > 0
         ? (skillProgress.totalXP / skillProgress.maxXP) * 100

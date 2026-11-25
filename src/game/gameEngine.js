@@ -1253,7 +1253,6 @@ export const getActionEffectStacks = (player, skill, action) => {
             }
         }
 
-        const progressionEntries = []
         for (const sourceSkill of Object.values(SKILL_CONFIG_BY_ID)) {
             if (!player.unlockedSkills?.includes(sourceSkill.id)) continue
 

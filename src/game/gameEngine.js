@@ -5,7 +5,7 @@ import {
     getActionXPTable,
     getSkillXPTable,
 } from "../data/skillConfig"
-import { ITEM_DATA, ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID, ARTIFACT_TRASH_BY_SOURCE_ID } from "../data/itemData"
+import { ITEM_DATA, ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID, ARTIFACT_DATA, ARTIFACT_TRASH_BY_SOURCE_ID } from "../data/itemData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { humanize } from "../utility/helpers"
 import { COMPANION_DATA, COMPANION_DATA_BY_ID, COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
@@ -669,6 +669,19 @@ const getCompanionEffectStrengthMultiplier = player => {
         }
     }
 
+    // Permanent pet and collected artifact effects can also strengthen the entire companion system.
+    for (const companion of COMPANION_DATA) {
+        if (!player.unlockedCompanions?.includes(companion.id)) continue
+        const effect = companion.permanentEffect
+        if (effect?.effect !== "companionEffect") continue
+        const level = player.companionProgress?.[companion.id]?.level ?? 1
+        if (level <= 0) continue
+        strength += getCompanionEffectMultiplier("companionEffect", level, effect.perLevel ?? 0.01) - 1
+    }
+    for (const entry of getArtifactEffectEntries(player, "skill:companions", "companionEffect")) {
+        strength += entry.value - 1
+    }
+
     return Math.max(0, strength)
 }
 
@@ -721,7 +734,10 @@ const getCompanionEffectEntries = (player, targetSkillId, effect) => {
         if (level <= 0) continue
 
         const permanent = companion.permanentEffect
-        if (permanent?.effect === effect) {
+        if (
+            permanent?.effect === effect &&
+            (!permanent.targetSkillId || permanent.targetSkillId === targetSkillId)
+        ) {
             entries.push({
                 id: "companion-permanent-" + companion.id + "-" + effect,
                 companion,
@@ -764,6 +780,41 @@ const getMilestoneTargetLabel = (sourceSkill, reach) => {
 
     return targetName
 }
+
+// Artifact effect strength is determined by array position. Collected artifacts contribute once,
+// regardless of duplicate copies in the Bag; unscoped effects apply to every skill.
+export const getArtifactEffectDefinitionEntries = artifact =>
+    (artifact?.effects ?? []).map((effectConfig, index) => {
+        const targetSkillId = effectConfig.targetSkillId ?? null
+        const targetSkill = targetSkillId ? SKILL_CONFIG_BY_ID[targetSkillId] : null
+        const effectCount = artifact.effects.length
+        return {
+            id: "artifact-" + artifact.id + "-effect-" + index,
+            title: effectCount > 1 ? artifact.name + " · Effect " + (index + 1) : artifact.name,
+            source: targetSkillId ? getSkillName(targetSkillId) : "All Skills",
+            sourceVariant: targetSkill?.variant ?? "rainbow",
+            targetSkillId,
+            effect: effectConfig.effect,
+            type: effectConfig.type ?? "mult",
+            value: effectConfig.value,
+            stacks: 1,
+            mode: "artifact",
+            variant: artifact.variant ?? "combat",
+        }
+    })
+
+export const getArtifactCollectionEffectEntries = player => {
+    const collected = new Set(player.identifiedArtifacts ?? [])
+    return ARTIFACT_DATA
+        .filter(artifact => collected.has(artifact.id))
+        .flatMap(getArtifactEffectDefinitionEntries)
+}
+
+const getArtifactEffectEntries = (player, targetSkillId, effect = null) =>
+    getArtifactCollectionEffectEntries(player).filter(entry =>
+        (!effect || entry.effect === effect) &&
+        (!entry.targetSkillId || entry.targetSkillId === targetSkillId)
+    )
 
 const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
     const totals = {}
@@ -823,6 +874,10 @@ const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
         for (const companionEntry of getCompanionEffectEntries(player, targetSkillId, companionEffect)) {
             addMilestoneBonus(totals, companionEntry)
         }
+    }
+
+    for (const artifactEntry of getArtifactEffectEntries(player, targetSkillId, effect)) {
+        addMilestoneBonus(totals, artifactEntry)
     }
 
     return totals
@@ -1379,6 +1434,8 @@ export const getActionEffectStacks = (player, skill, action) => {
                 variant: "companions",
             })
         }
+
+        entries.push(...getArtifactEffectEntries(player, skill.id, effect))
 
         return entries.filter(entry => Number.isFinite(entry.value) && entry.value !== 0)
     }

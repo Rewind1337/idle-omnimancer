@@ -863,6 +863,7 @@ const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
             "manaRegeneration",
             "unlockCostReduction",
             "companionChance",
+            "companionEffect",
             "artifactChance",
             "baseGoldCost",
             "combatInterval",

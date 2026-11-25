@@ -43,6 +43,7 @@ export const createGameProgressStore = () => {
     const actionCanStart = new Map()
     const actionCanStartListeners = new Map()
     const manaListeners = new Set()
+    const companionPassiveProgressListeners = new Set()
     const combatListeners = new Set()
 
     const inventoryListeners = new Set()
@@ -53,6 +54,7 @@ export const createGameProgressStore = () => {
 
     let activeActionKey = null
     let manaCurrent = 0
+    let companionPassiveProgressMs = 0
     let inventory = EMPTY_RECORD
     let currencies = EMPTY_RECORD
     let inventorySlots = null
@@ -100,6 +102,15 @@ export const createGameProgressStore = () => {
 
         getManaCurrent() {
             return manaCurrent
+        },
+
+        getCompanionPassiveProgress() {
+            return companionPassiveProgressMs
+        },
+
+        subscribeCompanionPassiveProgress(listener) {
+            companionPassiveProgressListeners.add(listener)
+            return () => companionPassiveProgressListeners.delete(listener)
         },
 
         subscribeMana(listener) {
@@ -212,6 +223,12 @@ export const createGameProgressStore = () => {
                 combatSnapshot = nextCombatSnapshot
                 combatSnapshotSignature = nextCombatSignature
                 notifySet(combatListeners)
+            }
+
+            const nextCompanionPassiveProgress = Math.max(0, Number(player.companionPassiveProgressMs) || 0)
+            if (nextCompanionPassiveProgress !== companionPassiveProgressMs) {
+                companionPassiveProgressMs = nextCompanionPassiveProgress
+                notifySet(companionPassiveProgressListeners)
             }
 
             const nextManaCurrent = Number(player.mana?.current) || 0

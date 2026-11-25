@@ -2114,6 +2114,47 @@ const awardActionXP = (player, skill, action, actionState) => {
 
 // Advance one running action by elapsed milliseconds. The while loop handles
 // delayed browser ticks and offline time that span multiple action completions.
+export const getCompanionPassiveTrainingDurationMs = player => {
+    const action = COMPANION_CONFIG.actions[0]
+    const timeBonuses = getBonusForEffect(
+        getActionMilestoneBonuses(player, COMPANION_CONFIG, action),
+        "actionTime"
+    )
+    const speedMultiplier = Math.max(0.01, 1 + timeBonuses.mult + timeBonuses.flat)
+    return Math.max(1, (COMPANION_CONFIG.passiveLearning.baseTimeSeconds * 1000) / speedMultiplier)
+}
+
+// This independent free cycle runs alongside ordinary actions and is included
+// in advanceGame, so it continues through offline simulation as well.
+const advanceCompanionPassiveTraining = (player, deltaMs) => {
+    const skill = COMPANION_CONFIG
+    const action = skill.actions[0]
+    const actionState = player.skills?.[skill.id]?.actions?.[action.id]
+
+    if (
+        !player.unlockedSkills?.includes(skill.id) ||
+        !actionState?.unlocked ||
+        getTrainableActiveCompanionIds(player).length === 0
+    ) return
+
+    let remainingMs = deltaMs
+
+    while (remainingMs > 0 && getTrainableActiveCompanionIds(player).length > 0) {
+        const durationMs = getCompanionPassiveTrainingDurationMs(player)
+        const currentProgress = Math.max(0, Number(player.companionPassiveProgressMs) || 0)
+        const timeToComplete = Math.max(0, durationMs - currentProgress)
+
+        if (timeToComplete > remainingMs) {
+            player.companionPassiveProgressMs = currentProgress + remainingMs
+            break
+        }
+
+        remainingMs -= timeToComplete
+        player.companionPassiveProgressMs = 0
+        awardActionXP(player, skill, action, actionState)
+    }
+}
+
 const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive) => {
     let remainingMs = deltaMs
 
@@ -2198,6 +2239,7 @@ const advanceRunningActions = (player, deltaMs) => {
         }
     }
 
+    advanceCompanionPassiveTraining(player, deltaMs)
     advanceCombat(player, deltaMs)
 }
 

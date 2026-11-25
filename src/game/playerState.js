@@ -83,6 +83,7 @@ export const createInitialPlayerState = () => {
         completedMissions: [],
         unlockedCompanions: [],
         identifiedArtifacts: [],
+        companionPassiveProgressMs: 0,
         companionProgress: Object.fromEntries(COMPANION_DATA.map(companion => [
             companion.id,
             { level: 0, xp: 0 },
@@ -458,6 +459,7 @@ export const normalizePlayerState = (savedState) => {
         completedMissions,
         unlockedCompanions,
         identifiedArtifacts,
+        companionPassiveProgressMs: Math.max(0, finiteNumber(savedState.companionPassiveProgressMs, 0)),
         companionProgress,
         unlockedCompanionSlots,
         activeCompanionSlots,

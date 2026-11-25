@@ -35,11 +35,12 @@ import {
     getActionMilestoneDetails,
     getActionEffectSummary,
     getCompanionLevelProgress,
+    getCompanionPassiveTrainingDurationMs,
     getCompanionSlotUnlockCost,
     getSkillMilestoneDetails,
     getSkillProgress,
 } from "../game/gameEngine"
-import { useGame, useGameActionProgress } from "../hooks/useGame"
+import { useGame, useGameActionProgress, useGameCompanionPassiveProgress } from "../hooks/useGame"
 
 import "./CompanionPage.scss"
 
@@ -321,6 +322,12 @@ export function CompanionPage() {
     const skillId = COMPANION_CONFIG.id
     const trainingAction = COMPANION_CONFIG.actions[0]
     const skillProgress = getSkillProgress(player, skillId)
+    const passiveLearningProgressMs = useGameCompanionPassiveProgress()
+    const passiveLearningDurationMs = getCompanionPassiveTrainingDurationMs(player)
+    const passiveLearningPercentage = getActionProgress(
+        { progressMs: passiveLearningProgressMs },
+        passiveLearningDurationMs
+    )
     const actionState = player.skills?.[skillId]?.actions?.[trainingAction.id] ?? {
         level: 1, xp: 0, progressMs: 0, unlocked: false,
     }
@@ -375,6 +382,47 @@ export function CompanionPage() {
                         </Icon>
                     }
                 />
+            </Paper>
+
+            <Paper layer={0} className="companion-passive-learning-panel">
+                <Paper layer={1} variant="companions">
+                    <Flex direction="column" gap={10}>
+                        <Flex direction="row" align="center" gap={12}>
+                            <Paper round layer="0" className="w-min" padding={4}>
+                                <Icon
+                                    size={48}
+                                    variant="companions"
+                                    outerRunes="wide"
+                                    outerShape={7}
+                                    innerRunes="gap"
+                                    innerShape={8}
+                                >
+                                    {OTHER_ICONS.REPEAT2}
+                                </Icon>
+                            </Paper>
+                            <Flex direction="column" gap={4} className="flex-grow">
+                                <Heading h="2">Passive Learning</Heading>
+                                <Text size="small">One free Tend to Companions action per cycle.</Text>
+                            </Flex>
+                            <Badge variant="transparent" icon={OTHER_ICONS.HOURGLASS}>
+                                {formatActionValue(passiveLearningDurationMs / 1000)}s
+                            </Badge>
+                        </Flex>
+                        <Progress
+                            layer={2}
+                            size="medium"
+                            corners="rounded"
+                            variant="companions"
+                            percentage={passiveLearningPercentage}
+                        />
+                        <Flex direction="row" align="center" justify="space-between">
+                            <Text size="small">Progress</Text>
+                            <Badge variant="transparent">
+                                {formatActionValue(passiveLearningProgressMs / 1000)} / {formatActionValue(passiveLearningDurationMs / 1000)}s
+                            </Badge>
+                        </Flex>
+                    </Flex>
+                </Paper>
             </Paper>
 
             <Paper layer={0} className="companion-training-panel">

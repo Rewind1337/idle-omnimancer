@@ -82,6 +82,20 @@ export function useGameManaCurrent() {
     return useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
 }
 
+export function useGameCompanionPassiveProgress() {
+    const { progressStore } = useGameServices()
+    const subscribe = useCallback(
+        listener => progressStore.subscribeCompanionPassiveProgress(listener),
+        [progressStore]
+    )
+    const getSnapshot = useCallback(
+        () => progressStore.getCompanionPassiveProgress(),
+        [progressStore]
+    )
+
+    return useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
+}
+
 function useGameStoreSnapshot(subscribeMethod, getSnapshotMethod) {
     const { progressStore } = useGameServices()
     const subscribe = useCallback(

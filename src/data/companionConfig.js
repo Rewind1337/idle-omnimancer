@@ -17,6 +17,9 @@ export const COMPANION_CONFIG = {
         air: { name: "Air", element: "air", unlockedByDefault: false, unlockCost: 2000000 },
         water: { name: "Water", element: "water", unlockedByDefault: false, unlockCost: 3000000 },
     },
+    passiveLearning: {
+        baseTimeSeconds: 300,
+    },
     companionLeveling: {
         maxLevel: 100,
         effectStartingBonus: 0.05,

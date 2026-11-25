@@ -17,6 +17,7 @@ import { INTRO_GUIDE_DATA } from "../../data/introGuideData"
 import { SKILL_NAVIGATION } from "../../data/navigationData"
 import { SKILL_CONFIG_BY_ID, getActionXPTable } from "../../data/skillConfig"
 import { MISSION_DATA } from "../../data/missionData"
+import { ITEM_DATA_BY_ID } from "../../data/itemData"
 import { EFFECT_ICONS, OTHER_ICONS, SHOP_ICONS } from "../../data/iconLibrary"
 import { humanize } from "../../utility/helpers"
 
@@ -90,8 +91,38 @@ function SampleActionDemo({ skillId, variant, action }) {
     const neededXP = actionXPTable[2]?.neededXP ?? actionXPTable[0]?.neededXP ?? 12
     const currentXP = Math.round(neededXP * 0.42)
     const actionName = action.name ?? humanize(action.id.replace(/^action:/, ""))
-    const outputItems = action.produces ?? []
-    const inputItems = action.consumes ?? []
+    const inputItems = skillId === "skill:unveiling" && action.inputSelection
+        ? [{ item: "item:loose_notes", amount: 1 }]
+        : skillId === "skill:companions" && action.companionTraining
+            ? [{ item: "currency:coins", amount: 30 }]
+            : action.consumes ?? []
+
+    const combatRewards = (action.rewards ?? []).map(reward => {
+        const itemId = typeof reward === "string" ? reward : reward?.item
+        if (!itemId) return null
+        if (ITEM_DATA_BY_ID[itemId]?.type === "unidentifiedArtifact") {
+            return { item: itemId, amountLabel: "Rare chance" }
+        }
+        return typeof reward === "string"
+            ? { item: itemId, amount: 1 }
+            : reward
+    }).filter(Boolean)
+
+    const outputItems = skillId === "skill:combat"
+        ? [...(action.explorationRewards ?? []), ...combatRewards]
+        : skillId === "skill:exploration" && action.companionContainer
+            ? [...(action.produces ?? []), { item: action.companionContainer, amountLabel: "Chance-based" }]
+            : action.produces ?? []
+
+    const resourceExplanation = skillId === "skill:unveiling"
+        ? "This example selects one Loose Note from the Research group. Unveiling consumes the selected item and grants XP; special selections can instead reveal items or produce other rewards."
+        : skillId === "skill:companions"
+            ? "Tending to Companions uses Coins based on the combined levels of active companions. This sample shows 30 Coins for three combined levels and grants Companion XP rather than a bag item."
+            : skillId === "skill:combat"
+                ? "Combat rewards depend on the selected area. The area resources shown here are encounter loot, while the unidentified artifact is a separate rare chance-based drop."
+                : skillId === "skill:exploration"
+                    ? "Exploration produces the selected area's local resources. A companion container, when the area has one, is an additional chance-based reward."
+                    : "Consumes lists the items deducted when a cycle finishes; Produces lists the items added to your Bag. Hover item tiles to inspect their tooltips. Unlock costs are shown separately from per-cycle inputs."
 
     useEffect(() => {
         if (!isPlaying) return undefined
@@ -140,7 +171,7 @@ function SampleActionDemo({ skillId, variant, action }) {
                         <Button variant="secondary" size="small" onClick={() => setProgress(0)}>Reset sample</Button>
                     </Flex>
                 </Flex>
-                <Text size="small">Consumes lists the items deducted when a cycle finishes; Produces lists the items added to your Bag. Hover the item tiles to see their item tooltips. Some actions have no inputs, while others also show unlock requirements separately.</Text>
+                <Text size="small">{resourceExplanation}</Text>
                 <Flex direction="row" wrap gap={8} className="intro-guide-resource-demo">
                     {inputItems.length > 0
                         ? <ActionResources consumes={inputItems} />

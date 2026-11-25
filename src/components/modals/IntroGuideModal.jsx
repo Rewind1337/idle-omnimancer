@@ -104,6 +104,7 @@ function SampleActionDemo({ skillId, variant, action }) {
     return (
         <Paper layer={1} variant={variant} className="intro-guide-action-demo">
             <Flex direction="column" gap={12}>
+                <Text size="small">The action name tells you what this activity does. Its tier badge shows its place in the progression, while the level and XP badges track this action separately from the overall skill.</Text>
                 <Flex direction="row" align="center" gap={12}>
                     <Icon size={48} variant={variant}>
                         {cloneElement(SKILL_NAVIGATION.find(entry => entry.skillId === skillId)?.icon ?? OTHER_ICONS.SPARKLES, { size: 40 })}
@@ -119,6 +120,7 @@ function SampleActionDemo({ skillId, variant, action }) {
                             actionXPTable={actionXPTable}
                             actionMilestones={[]}
                         />
+                        <Text size="small">These effect badges summarize the bonuses currently affecting the action. Hover them to learn what Action Speed, Preservation, and Item Output change.</Text>
                         <Flex direction="row" wrap gap={6} className="intro-guide-action-effects">
                             <Badge variant={variant} icon={EFFECT_ICONS.actionTime} interactive tooltip="Example bonus: this action completes faster.">Action Speed ×1.10</Badge>
                             <Badge variant={variant} icon={EFFECT_ICONS.preservation} interactive tooltip="Example bonus: a small chance to keep consumed inputs.">Preservation 3%</Badge>
@@ -127,6 +129,7 @@ function SampleActionDemo({ skillId, variant, action }) {
                     </Flex>
                 </Flex>
                 <Flex direction="column" gap={6}>
+                    <Text size="small">The progress bar fills as the action completes a cycle. The sample advances automatically, and you can pause, resume, or reset it.</Text>
                     <Flex direction="row" align="center" justify="space-between">
                         <Heading h="4">Action progress</Heading>
                         <Text size="small">{progress}%</Text>
@@ -137,6 +140,7 @@ function SampleActionDemo({ skillId, variant, action }) {
                         <Button variant="secondary" size="small" onClick={() => setProgress(0)}>Reset sample</Button>
                     </Flex>
                 </Flex>
+                <Text size="small">Consumes lists the items deducted when a cycle finishes; Produces lists the items added to your Bag. Hover the item tiles to see their item tooltips. Some actions have no inputs, while others also show unlock requirements separately.</Text>
                 <Flex direction="row" wrap gap={8} className="intro-guide-resource-demo">
                     {inputItems.length > 0
                         ? <ActionResources consumes={inputItems} />

@@ -96,7 +96,7 @@
 
 @media (max-width: 700px) {
     .modal-backdrop.intro-guide-modal {
-        padding: 8px;
+        padding: 8px !important;
 
         .modal-wrapper,
         .modal-flex {
@@ -105,7 +105,7 @@
             max-height: calc(100dvh - 16px);
         }
 
-        .intro-guide-header,
+        .modal-header,
         .modal-footer {
             padding-inline: 8px;
         }

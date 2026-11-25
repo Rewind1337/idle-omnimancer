@@ -311,12 +311,12 @@ export const normalizePlayerState = (savedState) => {
         ? savedCombat.pendingRewards
             .map(reward => isRecord(reward) ? { ...reward, item: migrateItemId(reward.item) } : reward)
             .filter(reward =>
-            isRecord(reward) &&
-            typeof reward.item === "string" &&
-            hasOwn(ITEM_DATA_BY_ID, reward.item) &&
-            Number.isSafeInteger(reward.amount) &&
-            reward.amount > 0
-        )
+                isRecord(reward) &&
+                typeof reward.item === "string" &&
+                hasOwn(ITEM_DATA_BY_ID, reward.item) &&
+                Number.isSafeInteger(reward.amount) &&
+                reward.amount > 0
+            )
         : []
     const lastRewards = combatSkillUnlocked && Array.isArray(savedCombat.lastRewards)
         ? savedCombat.lastRewards

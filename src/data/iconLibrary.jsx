@@ -1,5 +1,5 @@
 import {
-    Settings, PackageQuestionMark, Egg, ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus,
+    Settings, PackageQuestionMark, Egg, ArrowUpRight, Grip, Activity, AlertTriangle, AudioWaveform, BallWave, Book, BookAudio, BookDown, BookHeadphones, BookHeart, BookMinus, Box, Repeat2,
     BookOpenText, BookPlus, BookText, BookUp, BookX, CheckCircle, CircleDollarSign, Coins, DollarSign, CircleDot, CirclePile, Cloud, CloudLightning, CloudRainWind, Compass, Droplet,
     Droplets, Earth, Eye, Feather, Flame, GraduationCap, Haze, Hourglass, Info, LayerArrowUp, Layers2, Merge, Mountain, MountainSnow, PawPrint, Recycle, Shell, ShoppingCart, Sparkles,
     Star, Stone, Swords, Tornado, WandSparkles, Waves, WavesArrowDown, Wind, WindArrowDown, WindArrowUp, X, XCircle, Scale, Zap, ClipboardList, ClipboardCheck, CircleFadingArrowUp,
@@ -95,6 +95,8 @@ export const OTHER_ICONS = {
     COMPANION_GEODE: <Stone />,
     COMPANION_EGG: <Egg />,
     COMPANION_SHELL: <Shell />,
+    BOX: <Box />,
+    REPEAT2: <Repeat2 />,
 }
 
 export const EFFECT_ICONS = {

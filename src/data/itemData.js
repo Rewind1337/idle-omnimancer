@@ -223,7 +223,77 @@ const ITEM_DEFINITIONS = [
 // Example: { id: "item:minor_tonic", name: "Minor Tonic", tier: 1, shopPrice: 100, description: "A simple restorative.", variant: "shop", icon: OTHER_ICONS.STAR }
 export const SHOP_ITEM_DEFINITIONS = []
 
-const ALL_ITEM_DEFINITIONS = [...ITEM_DEFINITIONS, ...SHOP_ITEM_DEFINITIONS]
+const ARTIFACT_TRASH_NAMES = {
+    crossroads: "Crossroads Scrap",
+    mossbound_foothills: "Mossbound Debris",
+    whispering_fields: "Field Litter",
+    stillwater_pools: "Silt-Caked Clump",
+    ironroot_ravine: "Rusted Shavings",
+    zephyr_heights: "Torn Canvas",
+    moonlit_fen: "Fen Mud",
+    shattered_crags: "Loose Scree",
+    tempest_reach: "Windworn Flotsam",
+    drowned_sanctum: "Soaked Rubble",
+    basalt_crown: "Basalt Slag",
+    skybreak_summit: "Summit Litter",
+    tidal_abyss: "Saltworn Scrap",
+    deepstone_warrens: "Cave Gravel",
+    highwind_expanse: "Dry Paper",
+    mooncurrent_basin: "Silt Pebbles",
+    verdant_crucible: "Compost Clump",
+    stormwing_pinnacles: "Loose Plumes",
+    glacial_mirror: "Frost Chips",
+    obsidian_throne: "Obsidian Shavings",
+    celestial_rift: "Ashen Fragments",
+    leviathan_trench: "Trench Silt",
+    primordial_forge: "Forge Cinders",
+    starfall_firmament: "Old Fabric",
+    worldtide_sanctum: "Tideworn Rubble",
+    worldcore_caldera: "Caldera Dust",
+    boundless_empyrean: "Worn Packing",
+    leviathans_grave: "Grave Pebbles",
+    genesis_bastion: "Bastion Chippings",
+    origin_zenith: "Zenith Dust",
+    eternal_deep: "Deepwater Sediment",
+}
+
+const getArtifactTrashItemId = unidentifiedItem => {
+    const areaId = unidentifiedItem.id
+        .replace(/^item:unidentified_/, "")
+        .replace(/_artifact$/, "")
+    return "item:artifact_trash_" + areaId
+}
+
+const unidentifiedArtifactDefinitions = ITEM_DEFINITIONS.filter(item =>
+    item.type === "unidentifiedArtifact"
+)
+const ARTIFACT_TRASH_DEFINITIONS = unidentifiedArtifactDefinitions.map(item => {
+    const areaId = item.id.replace(/^item:unidentified_/, "").replace(/_artifact$/, "")
+    const name = ARTIFACT_TRASH_NAMES[areaId]
+    if (!name) throw new Error("Missing artifact trash name for " + item.id)
+
+    return {
+        id: getArtifactTrashItemId(item),
+        name,
+        tier: item.tier,
+        variant: item.variant,
+        baseValue: 250,
+        type: "artifactTrash",
+        icon: OTHER_ICONS.BOX,
+    }
+})
+
+const ITEM_DEFINITIONS_WITH_TRASH = ITEM_DEFINITIONS.map(item =>
+    item.type === "unidentifiedArtifact"
+        ? { ...item, revealsTrashItemId: getArtifactTrashItemId(item) }
+        : item
+)
+
+const ALL_ITEM_DEFINITIONS = [
+    ...ITEM_DEFINITIONS_WITH_TRASH,
+    ...ARTIFACT_TRASH_DEFINITIONS,
+    ...SHOP_ITEM_DEFINITIONS,
+]
 
 const getItemClassification = (item) => {
     if (item.shopPrice !== undefined || item.variant === "shop") {
@@ -235,8 +305,8 @@ const getItemClassification = (item) => {
     if (item.type === "unidentifiedArtifact") {
         return { group: "combat", type: "unidentifiedArtifact" }
     }
-    if (item.type === "artifact") {
-        return { group: "artifacts", type: "artifact" }
+    if (item.type === "artifact" || item.type === "artifactTrash") {
+        return { group: "artifacts", type: item.type }
     }
     if (item.type === "resource") {
         return { group: "exploration", type: "resource" }

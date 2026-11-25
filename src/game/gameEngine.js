@@ -293,6 +293,24 @@ export const getItemActionSources = (itemId, player = null) => {
                         badgeVariant: skill.variant,
                     })
                 }
+
+                const artifactTrashSources = ITEM_DATA.filter(candidate =>
+                    candidate.type === "unidentifiedArtifact" &&
+                    candidate.revealsTrashItemId === itemId
+                )
+                for (const sourceItem of artifactTrashSources) {
+                    obtainedBy.push({
+                        id: "unveil-artifact-trash-" + action.id + "-" + sourceItem.id,
+                        name: actionName,
+                        amount: 1,
+                        amountLabel: ((1 - (action.identificationChance ?? 0.1)) * 100).toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2,
+                        }) + "%",
+                        type: "action",
+                        badgeVariant: skill.variant,
+                    })
+                }
             }
 
             if (outputAmount > 0) {
@@ -452,9 +470,13 @@ const canStoreActionOutputs = (player, skill, action) => {
         const itemSlotFreed = (inventory[selectedItem.id] ?? 0) === 1
         const availableSlots = (player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace) -
             occupiedSlots + (itemSlotFreed ? 1 : 0)
-        if (identifiedArtifact?.type === "artifact" && !artifactAlreadyOwned && availableSlots <= 0) {
-            return false
-        }
+        const trashItemId = selectedItem.revealsTrashItemId
+        const trashAlreadyOwned = (inventory[trashItemId] ?? 0) > 0
+        if (
+            identifiedArtifact?.type === "artifact" &&
+            !(artifactAlreadyOwned && trashAlreadyOwned) &&
+            availableSlots <= 0
+        ) return false
     }
 
     const companionContainerId = typeof action.companionContainer === "string"
@@ -1993,6 +2015,8 @@ const awardActionXP = (player, skill, action, actionState) => {
     if (action.processesUnidentifiedArtifacts && selectedItem?.type === "unidentifiedArtifact") {
         const artifactId = selectedItem.revealsItemId
         const artifact = ITEM_DATA_BY_ID[artifactId]
+        const trashItemId = selectedItem.revealsTrashItemId
+        const trashItem = ITEM_DATA_BY_ID[trashItemId]
         const chance = action.identificationChance ?? 0.1
 
         if (artifact?.type === "artifact" && Math.random() < chance) {
@@ -2001,6 +2025,8 @@ const awardActionXP = (player, skill, action, actionState) => {
                 artifactId,
             ])]
             player.inventory[artifactId] = (player.inventory[artifactId] ?? 0) + 1
+        } else if (trashItem?.type === "artifactTrash") {
+            player.inventory[trashItemId] = (player.inventory[trashItemId] ?? 0) + 1
         }
     }
 

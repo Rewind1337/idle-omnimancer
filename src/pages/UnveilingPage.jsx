@@ -82,13 +82,22 @@ function UnveilingActionCard({
             item: experienceItem,
             amount: selectedCompanion.duplicateCandyAmount ?? selectedCompanion.tier ?? 1,
         }] : []),
-        ...(unidentifiedArtifact && identificationChance > 0 ? [{
-            item: unidentifiedArtifact.id,
-            amountLabel: (identificationChance * 100).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-            }) + "% chance per unveil",
-        }] : []),
+        ...(unidentifiedArtifact && selectedItem?.revealsTrashItemId && identificationChance > 0 ? [
+            {
+                item: unidentifiedArtifact.id,
+                amountLabel: (identificationChance * 100).toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                }) + "%",
+            },
+            {
+                item: selectedItem.revealsTrashItemId,
+                amountLabel: ((1 - identificationChance) * 100).toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                }) + "%",
+            },
+        ] : []),
     ]
     const actionIcon = action.processesUnidentifiedArtifacts
         ? OTHER_ICONS.ARTIFACT

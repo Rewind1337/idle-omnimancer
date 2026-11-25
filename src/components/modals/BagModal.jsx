@@ -25,6 +25,7 @@ import {
     useGameCurrencies,
     useGameInventory,
     useGameInventorySlots,
+    useGameUnlockedSkills,
 } from '../../hooks/useGame'
 import { GLOBAL_CONFIG } from "../../data/skillConfig"
 
@@ -37,13 +38,13 @@ const AMOUNT_PRESETS = [
 
 const BAG_GROUP_FILTERS = [
     { id: "all", label: "All", icon: OTHER_ICONS.SPARKLES, variant: "primary" },
-    { id: "research", label: "Research", icon: SKILL_ICONS.RESEARCH, variant: "research" },
-    { id: "spellcraft", label: "Spellcraft", icon: SKILL_ICONS.SPELLCRAFT, variant: "spellcraft" },
-    { id: "transmutation", label: "Transmutation", icon: SKILL_ICONS.TRANSMUTATION, variant: "transmutation" },
-    { id: "exploration", label: "Exploration", icon: SKILL_ICONS.EXPLORATION, variant: "exploration" },
-    { id: "combat", label: "Combat", icon: SKILL_ICONS.COMBAT, variant: "combat" },
-    { id: "artifacts", label: "Artifacts", icon: OTHER_ICONS.ARTIFACT, variant: "combat" },
-    { id: "companions", label: "Companions", icon: SKILL_ICONS.COMPANIONS, variant: "companions" },
+    { id: "research", label: "Research", icon: SKILL_ICONS.RESEARCH, variant: "research", skillId: "skill:research" },
+    { id: "spellcraft", label: "Spellcraft", icon: SKILL_ICONS.SPELLCRAFT, variant: "spellcraft", skillId: "skill:spellcraft" },
+    { id: "transmutation", label: "Transmutation", icon: SKILL_ICONS.TRANSMUTATION, variant: "transmutation", skillId: "skill:transmutation" },
+    { id: "exploration", label: "Exploration", icon: SKILL_ICONS.EXPLORATION, variant: "exploration", skillId: "skill:exploration" },
+    { id: "combat", label: "Combat", icon: SKILL_ICONS.COMBAT, variant: "combat", skillId: "skill:combat" },
+    { id: "artifacts", label: "Artifacts", icon: OTHER_ICONS.ARTIFACT, variant: "combat", skillId: "skill:combat" },
+    { id: "companions", label: "Companions", icon: SKILL_ICONS.COMPANIONS, variant: "companions", skillId: "skill:companions" },
     { id: "shop", label: "Shop", icon: SHOP_ICONS.GENERAL_GOODS, variant: "shop" },
 ]
 
@@ -85,6 +86,10 @@ function BagModalContent({
     const inventory = useGameInventory()
     const currencies = useGameCurrencies()
     const storedInventorySlots = useGameInventorySlots()
+    const unlockedSkills = new Set(useGameUnlockedSkills())
+    const visibleBagGroupFilters = BAG_GROUP_FILTERS.filter(group =>
+        !group.skillId || unlockedSkills.has(group.skillId)
+    )
     const { buyBagSlot, sellItem } = useGameActions()
 
     const inventoryEntries = useMemo(() => Object.entries(inventory)
@@ -166,7 +171,7 @@ function BagModalContent({
                     </Flex>
 
                     <Flex direction="row" wrap gap={6} className="bag-group-filters">
-                        {BAG_GROUP_FILTERS.map(group => (
+                        {visibleBagGroupFilters.map(group => (
                             <Button
                                 key={group.id}
                                 variant={group.variant}

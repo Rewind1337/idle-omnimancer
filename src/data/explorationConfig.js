@@ -64,14 +64,17 @@ export const EXPLORATION_CONFIG = {
         // Exploration action level above level 1. This entry is display-only;
         // the Combat calculation already applies the same progression bonus.
         { levels: 1, type: "mult", effect: "artifactChance", value: 1.01, reach: "skill:combat", displayOnly: true },
-        { levels: 1, type: "mult", effect: "companionChance", value: 1.01, progression: true },
         { levels: 1, type: "mult", effect: "itemOutput", value: 1.01 },
         { levels: 10, type: "mult", effect: "actionTime", value: 1.05 },
         { levels: 25, type: "mult", effect: "xpGain", value: 1.20 },
     ],
 
     actions: WORLD_DATA.areas.map(area => {
-        const companionContainer = area.exploration.produces.find(itemId =>
+        const areaProduces = [
+            ...(area.produces ?? []),
+            ...(area.exploration?.produces ?? []),
+        ]
+        const companionContainer = areaProduces.find(itemId =>
             ITEM_DATA_BY_ID[itemId]?.type === "companionContainer"
         ) ?? null
         const artifactItem = area.combat.produces.find(itemId =>
@@ -85,7 +88,7 @@ export const EXPLORATION_CONFIG = {
             position: area.position,
             tier: area.tier,
             element: area.element,
-            produces: area.exploration.produces.filter(itemId =>
+            produces: areaProduces.filter(itemId =>
                 ITEM_DATA_BY_ID[itemId]?.type !== "companionContainer"
             ),
             companionContainer,

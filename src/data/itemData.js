@@ -192,6 +192,39 @@ const ITEM_DEFINITIONS = [
     { id: "item:origin_wisp_sigil", name: "Origin Key", tier: 10, variant: "air", type: "artifact" },
     { id: "item:eternal_tide_crown", name: "Eternal Key", tier: 10, variant: "water", type: "artifact" },
 
+    // Artifact salvage. Each entry points directly to the identified artifact it replaces.
+    { id: "item:artifact_trash_crossroads", name: "Crossroads Scrap", tier: 1, variant: "neutral", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:crossroads_waystone", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_mossbound_foothills", name: "Leaf Litter", tier: 1, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:mossbound_heartstone", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_whispering_fields", name: "Field Litter", tier: 1, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:whispering_chime", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_stillwater_pools", name: "Silt-Caked Clump", tier: 1, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:stillwater_idol", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_ironroot_ravine", name: "Rusted Shavings", tier: 2, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:ironroot_golem_core", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_zephyr_heights", name: "Torn Canvas", tier: 2, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:zephyr_wisp_chime", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_moonlit_fen", name: "Marsh Silt", tier: 2, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:fenwarden_idol", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_shattered_crags", name: "Loose Scree", tier: 3, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:cragbound_relic", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_tempest_reach", name: "Windworn Flotsam", tier: 3, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:tempest_eye", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_drowned_sanctum", name: "Soaked Rubble", tier: 3, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:drowned_scepter", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_basalt_crown", name: "Coal Fragments", tier: 4, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:basalt_crown_fragment", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_skybreak_summit", name: "Summit Litter", tier: 4, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:skybreak_sigil", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_tidal_abyss", name: "Saltworn Scrap", tier: 4, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:abyssal_crown", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_deepstone_warrens", name: "Cave Gravel", tier: 5, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:deepstone_guardian_core", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_highwind_expanse", name: "Dry Paper", tier: 5, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:highwind_wisp_chime", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_mooncurrent_basin", name: "Silt Pebbles", tier: 5, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:mooncurrent_tide_idol", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_verdant_crucible", name: "Compost Clump", tier: 6, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:verdant_golem_core", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_stormwing_pinnacles", name: "Loose Plumes", tier: 6, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:stormwing_wisp_chime", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_glacial_mirror", name: "Frost Chips", tier: 6, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:glacial_tide_idol", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_obsidian_throne", name: "Black Glass Chips", tier: 7, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:obsidian_golem_relic", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_celestial_rift", name: "Ashen Fragments", tier: 7, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:celestial_wisp_chime", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_leviathan_trench", name: "Trench Silt", tier: 7, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:abyssal_tide_scepter", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_primordial_forge", name: "Forge Cinders", tier: 8, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:primordial_golem_heart", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_starfall_firmament", name: "Old Fabric", tier: 8, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:starfall_wisp_sigil", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_worldtide_sanctum", name: "Sea-Worn Rubble", tier: 8, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:worldtide_tide_crown", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_worldcore_caldera", name: "Caldera Dust", tier: 9, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:worldcore_relic", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_boundless_empyrean", name: "Worn Packing", tier: 9, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:firmament_wisp_chime", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_leviathans_grave", name: "Grave Pebbles", tier: 9, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:leviathan_tide_scepter", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_genesis_bastion", name: "Bastion Chippings", tier: 10, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:genesis_golem_core", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_origin_zenith", name: "Zenith Dust", tier: 10, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:origin_wisp_sigil", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_eternal_deep", name: "Deepwater Sediment", tier: 10, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:eternal_tide_crown", icon: OTHER_ICONS.BOX },
+
     // Transmutation Catalyst placeholders; names and sale tiers can be tuned later.
     { id: "item:earth_catalyst_i", name: "Lesser Earth Catalyst", tier: 2, variant: "earth" },
     { id: "item:earth_catalyst_ii", name: "Weak Earth Catalyst", tier: 3, variant: "earth" },
@@ -223,75 +256,8 @@ const ITEM_DEFINITIONS = [
 // Example: { id: "item:minor_tonic", name: "Minor Tonic", tier: 1, shopPrice: 100, description: "A simple restorative.", variant: "shop", icon: OTHER_ICONS.STAR }
 export const SHOP_ITEM_DEFINITIONS = []
 
-const ARTIFACT_TRASH_NAMES = {
-    crossroads: "Crossroads Scrap",
-    mossbound_foothills: "Leaf Litter",
-    whispering_fields: "Field Litter",
-    stillwater_pools: "Silt-Caked Clump",
-    ironroot_ravine: "Rusted Shavings",
-    zephyr_heights: "Torn Canvas",
-    moonlit_fen: "Marsh Silt",
-    shattered_crags: "Loose Scree",
-    tempest_reach: "Windworn Flotsam",
-    drowned_sanctum: "Soaked Rubble",
-    basalt_crown: "Coal Fragments",
-    skybreak_summit: "Summit Litter",
-    tidal_abyss: "Saltworn Scrap",
-    deepstone_warrens: "Cave Gravel",
-    highwind_expanse: "Dry Paper",
-    mooncurrent_basin: "Silt Pebbles",
-    verdant_crucible: "Compost Clump",
-    stormwing_pinnacles: "Loose Plumes",
-    glacial_mirror: "Frost Chips",
-    obsidian_throne: "Black Glass Chips",
-    celestial_rift: "Ashen Fragments",
-    leviathan_trench: "Trench Silt",
-    primordial_forge: "Forge Cinders",
-    starfall_firmament: "Old Fabric",
-    worldtide_sanctum: "Sea-Worn Rubble",
-    worldcore_caldera: "Caldera Dust",
-    boundless_empyrean: "Worn Packing",
-    leviathans_grave: "Grave Pebbles",
-    genesis_bastion: "Bastion Chippings",
-    origin_zenith: "Zenith Dust",
-    eternal_deep: "Deepwater Sediment",
-}
-
-const getArtifactTrashItemId = unidentifiedItem => {
-    const areaId = unidentifiedItem.id
-        .replace(/^item:unidentified_/, "")
-        .replace(/_artifact$/, "")
-    return "item:artifact_trash_" + areaId
-}
-
-const unidentifiedArtifactDefinitions = ITEM_DEFINITIONS.filter(item =>
-    item.type === "unidentifiedArtifact"
-)
-const ARTIFACT_TRASH_DEFINITIONS = unidentifiedArtifactDefinitions.map(item => {
-    const areaId = item.id.replace(/^item:unidentified_/, "").replace(/_artifact$/, "")
-    const name = ARTIFACT_TRASH_NAMES[areaId]
-    if (!name) throw new Error("Missing artifact trash name for " + item.id)
-
-    return {
-        id: getArtifactTrashItemId(item),
-        name,
-        tier: item.tier,
-        variant: item.variant,
-        baseValue: 250,
-        type: "artifactTrash",
-        icon: OTHER_ICONS.BOX,
-    }
-})
-
-const ITEM_DEFINITIONS_WITH_TRASH = ITEM_DEFINITIONS.map(item =>
-    item.type === "unidentifiedArtifact"
-        ? { ...item, revealsTrashItemId: getArtifactTrashItemId(item) }
-        : item
-)
-
 const ALL_ITEM_DEFINITIONS = [
-    ...ITEM_DEFINITIONS_WITH_TRASH,
-    ...ARTIFACT_TRASH_DEFINITIONS,
+    ...ITEM_DEFINITIONS,
     ...SHOP_ITEM_DEFINITIONS,
 ]
 
@@ -330,6 +296,14 @@ export const ITEM_DATA = ALL_ITEM_DEFINITIONS.map(item => ({
 
 export const ITEM_DATA_BY_ID = Object.fromEntries(
     ITEM_DATA.map(item => [item.id, item])
+)
+
+export const ARTIFACT_DATA = ITEM_DATA.filter(item => item.type === "artifact")
+
+export const ARTIFACT_TRASH_BY_SOURCE_ID = Object.fromEntries(
+    ITEM_DATA
+        .filter(item => item.type === "artifactTrash" && item.sourceArtifactId)
+        .map(item => [item.sourceArtifactId, item])
 )
 
 export const SHOP_ITEM_DATA = ITEM_DATA.filter(item =>

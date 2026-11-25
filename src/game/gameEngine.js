@@ -5,7 +5,7 @@ import {
     getActionXPTable,
     getSkillXPTable,
 } from "../data/skillConfig"
-import { ITEM_DATA, ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID } from "../data/itemData"
+import { ITEM_DATA, ITEM_DATA_BY_ID, SHOP_ITEM_DATA_BY_ID, ARTIFACT_TRASH_BY_SOURCE_ID } from "../data/itemData"
 import { SKILL_NAVIGATION } from "../data/navigationData"
 import { humanize } from "../utility/helpers"
 import { COMPANION_DATA, COMPANION_DATA_BY_ID, COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
@@ -294,10 +294,13 @@ export const getItemActionSources = (itemId, player = null) => {
                     })
                 }
 
-                const artifactTrashSources = ITEM_DATA.filter(candidate =>
-                    candidate.type === "unidentifiedArtifact" &&
-                    candidate.revealsTrashItemId === itemId
-                )
+                const sourceArtifactId = ITEM_DATA_BY_ID[itemId]?.sourceArtifactId
+                const artifactTrashSources = sourceArtifactId
+                    ? ITEM_DATA.filter(candidate =>
+                        candidate.type === "unidentifiedArtifact" &&
+                        candidate.revealsItemId === sourceArtifactId
+                    )
+                    : []
                 for (const sourceItem of artifactTrashSources) {
                     obtainedBy.push({
                         id: "unveil-artifact-trash-" + action.id + "-" + sourceItem.id,
@@ -470,11 +473,14 @@ const canStoreActionOutputs = (player, skill, action) => {
         const itemSlotFreed = (inventory[selectedItem.id] ?? 0) === 1
         const availableSlots = (player.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace) -
             occupiedSlots + (itemSlotFreed ? 1 : 0)
-        const trashItemId = selectedItem.revealsTrashItemId
-        const trashAlreadyOwned = (inventory[trashItemId] ?? 0) > 0
+        const trashItem = ARTIFACT_TRASH_BY_SOURCE_ID[selectedItem.revealsItemId]
+        const trashAlreadyOwned = trashItem?.type === "artifactTrash" && (inventory[trashItem.id] ?? 0) > 0
+        const isFirstDiscovery = !(player.identifiedArtifacts ?? []).includes(selectedItem.revealsItemId)
+        const artifactNeedsSlot = !isFirstDiscovery && !artifactAlreadyOwned
+        const trashNeedsSlot = trashItem?.type === "artifactTrash" && !trashAlreadyOwned
         if (
             identifiedArtifact?.type === "artifact" &&
-            !(artifactAlreadyOwned && trashAlreadyOwned) &&
+            (artifactNeedsSlot || trashNeedsSlot) &&
             availableSlots <= 0
         ) return false
     }
@@ -1081,7 +1087,18 @@ export const getActionCompanionChance = (player, skill, action) => {
     ) return 0
 
     const bonuses = getBonusForEffect(getActionMilestoneBonuses(player, skill, action), "companionChance")
-    const companionMultiplier = Math.max(0, 1 + bonuses.mult + bonuses.flat)
+    const combatAction = skill.id === EXPLORATION_CONFIG.id
+        ? COMBAT_ACTION_BY_AREA_ID[action.areaId]
+        : null
+    const combatActionState = combatAction
+        ? player.skills?.[COMBAT_CONFIG.id]?.actions?.[combatAction.id]
+        : null
+    const combatBonuses = combatActionState?.unlocked
+        ? getBonusForEffect(getActionMilestoneBonuses(player, COMBAT_CONFIG, combatAction), "companionChance")
+        : { flat: 0, mult: 0 }
+    const companionMultiplier = Math.max(0,
+        1 + bonuses.mult + bonuses.flat + combatBonuses.mult + combatBonuses.flat
+    )
     return Math.max(0, Math.min(1,
         baseChance * getActionOutputMultiplier(player, skill, action) * companionMultiplier
     ))
@@ -1311,6 +1328,43 @@ export const getActionEffectStacks = (player, skill, action) => {
                 mode: "milestone",
                 variant: skill.variant
             })
+        }
+
+        if (effect === "companionChance" && skill.id === EXPLORATION_CONFIG.id) {
+            const combatAction = COMBAT_ACTION_BY_AREA_ID[action.areaId]
+            const combatActionState = combatAction
+                ? player.skills?.[COMBAT_CONFIG.id]?.actions?.[combatAction.id]
+                : null
+            const combatActionLevel = combatActionState?.unlocked
+                ? Math.max(0, Math.floor(combatActionState.level ?? 1))
+                : 0
+
+            for (const [milestoneIndex, milestone] of (COMBAT_CONFIG.actionMilestones ?? []).entries()) {
+                if (
+                    milestone.effect !== effect ||
+                    !milestone.progression ||
+                    !Number.isFinite(milestone.levels) ||
+                    milestone.levels <= 0
+                ) continue
+
+                const stacks = getActionMilestoneStacks(combatActionLevel, milestone)
+                if (stacks <= 0) continue
+
+                entries.push({
+                    id: "action-" + COMBAT_CONFIG.id + "-" + combatAction.id + "-companion-chance-" + milestoneIndex,
+                    title: "Each Lv.",
+                    source: (combatAction.name ?? humanize(combatAction.id)) + " Lv. " + combatActionLevel,
+                    sourceVariant: COMBAT_CONFIG.variant,
+                    effect,
+                    type: milestone.type,
+                    value: milestone.value,
+                    stacks,
+                    perStack: true,
+                    showStacks: true,
+                    mode: "milestone",
+                    variant: COMBAT_CONFIG.variant,
+                })
+            }
         }
 
         for (const companionEntry of getCompanionEffectEntries(player, skill.id, effect)) {
@@ -2014,18 +2068,21 @@ const awardActionXP = (player, skill, action, actionState) => {
     if (action.processesUnidentifiedArtifacts && selectedItem?.type === "unidentifiedArtifact") {
         const artifactId = selectedItem.revealsItemId
         const artifact = ITEM_DATA_BY_ID[artifactId]
-        const trashItemId = selectedItem.revealsTrashItemId
-        const trashItem = ITEM_DATA_BY_ID[trashItemId]
+        const trashItem = ARTIFACT_TRASH_BY_SOURCE_ID[artifactId]
         const chance = action.identificationChance ?? 0.1
+        const isFirstDiscovery = !(player.identifiedArtifacts ?? []).includes(artifactId)
 
         if (artifact?.type === "artifact" && Math.random() < chance) {
             player.identifiedArtifacts = [...new Set([
                 ...(player.identifiedArtifacts ?? []),
                 artifactId,
             ])]
-            player.inventory[artifactId] = (player.inventory[artifactId] ?? 0) + 1
+            // The first copy fills the permanent collection instead of taking a Bag slot.
+            if (!isFirstDiscovery) {
+                player.inventory[artifactId] = (player.inventory[artifactId] ?? 0) + 1
+            }
         } else if (trashItem?.type === "artifactTrash") {
-            player.inventory[trashItemId] = (player.inventory[trashItemId] ?? 0) + 1
+            player.inventory[trashItem.id] = (player.inventory[trashItem.id] ?? 0) + 1
         }
     }
 

@@ -31,6 +31,7 @@ const TICK_INTERVAL_MS = 100
 const SAVE_INTERVAL_MS = 1000
 const OFFLINE_CHUNK_DELAY_MS = 20
 const FIRST_OFFLINE_CHUNK_DELAY_MS = 100
+const MAX_OFFLINE_TIME_MS = 24 * 60 * 60 * 1000
 const MAX_OFFLINE_CHUNK_MS = 6 * 60 * 60 * 1000
 const MAX_OFFLINE_CHUNKS = 300
 
@@ -587,13 +588,15 @@ export function GameProvider({ children }) {
         if (!offlineTaskRef.current) {
             const basePlayer = playerRef.current
             const targetAt = Date.now()
-            const totalMs = Math.max(0, targetAt - basePlayer.lastUpdatedAt)
+            const elapsedOfflineMs = Math.max(0, targetAt - basePlayer.lastUpdatedAt)
+            const totalMs = Math.min(MAX_OFFLINE_TIME_MS, elapsedOfflineMs)
             const initialPlayer = structuredClone(basePlayer)
 
             offlineTaskRef.current = {
                 player: structuredClone(initialPlayer),
                 initialPlayer,
                 startAt: basePlayer.lastUpdatedAt,
+                targetAt,
                 totalMs,
                 processedMs: 0,
                 feed: [],
@@ -622,6 +625,7 @@ export function GameProvider({ children }) {
                     task.totalMs,
                     task.startAt + task.totalMs
                 )
+                updatedPlayer.lastUpdatedAt = task.targetAt
                 suppressNotificationsRef.current = true
                 dispatch({ type: "HYDRATE_PLAYER", player: updatedPlayer })
             }
@@ -664,6 +668,7 @@ export function GameProvider({ children }) {
             })
 
             if (completed) {
+                task.player.lastUpdatedAt = task.targetAt
                 task.done = true
                 task.timeoutId = null
                 suppressNotificationsRef.current = true

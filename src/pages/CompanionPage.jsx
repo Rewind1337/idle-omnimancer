@@ -404,7 +404,20 @@ export function CompanionPage() {
                                 <Heading h="2">Passive Learning</Heading>
                                 <Text size="small">One free Tend to Companions action per cycle.</Text>
                             </Flex>
-                            <Badge variant="transparent" icon={OTHER_ICONS.HOURGLASS}>
+                            <Badge
+                                variant="transparent"
+                                interactive
+                                icon={OTHER_ICONS.HOURGLASS}
+                                tooltip={<Flex direction="column" gap={6}>
+                                    <Heading h="4" className="w-100 align-center">Passive Learning</Heading>
+                                    <Text size="small">
+                                        Completes one free Tend to Companions action each cycle, using the action's current speed bonuses.
+                                    </Text>
+                                    <Text size="small">
+                                        No Coins are consumed. The timer pauses while no assigned companion can gain XP.
+                                    </Text>
+                                </Flex>}
+                            >
                                 {formatActionValue(passiveLearningDurationMs / 1000)}s
                             </Badge>
                         </Flex>

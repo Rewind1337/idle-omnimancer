@@ -52,6 +52,7 @@ export const COMBAT_CONFIG = {
         { levels: 5, type: "mult", effect: "combatDamage", value: 1.01 },
         { levels: 10, type: "mult", effect: "combatInterval", value: 0.99 },
         { levels: 20, type: "mult", effect: "artifactChance", value: 1.02 },
+        { levels: 1, type: "mult", effect: "companionChance", value: 1.01, progression: true },
     ],
 
     // The player and enemies use independent five-second attack baselines.
@@ -102,7 +103,10 @@ export const COMBAT_CONFIG = {
         enemyLineup: area.combat?.enemyLineup ?? [{ archetype: "average" }],
         rewards: area.combat?.produces ?? [],
         artifactId: area.combat?.artifactId ?? null,
-        explorationRewards: (area.exploration?.produces ?? []).filter(reward => {
+        explorationRewards: [
+            ...(area.produces ?? []),
+            ...(area.exploration?.produces ?? []),
+        ].filter(reward => {
             const itemId = typeof reward === "string" ? reward : reward?.item
             return itemId && !COMPANION_DATA_BY_CONTAINER_ID[itemId]
         }),

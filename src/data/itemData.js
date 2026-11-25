@@ -193,7 +193,7 @@ const ITEM_DEFINITIONS = [
     { id: "item:eternal_tide_crown", name: "Eternal Key", tier: 10, variant: "water", baseValue: 2500, type: "artifact" },
 
     // Artifact salvage. Each entry points directly to the identified artifact it replaces.
-    { id: "item:artifact_trash_crossroads", name: "Crossroads Scrap", tier: 1, variant: "neutral", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:crossroads_waystone", icon: OTHER_ICONS.BOX },
+    { id: "item:artifact_trash_crossroads", name: "Crossroads Scrap", tier: 1, variant: "exploration", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:crossroads_waystone", icon: OTHER_ICONS.BOX },
     { id: "item:artifact_trash_mossbound_foothills", name: "Leaf Litter", tier: 1, variant: "earth", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:mossbound_heartstone", icon: OTHER_ICONS.BOX },
     { id: "item:artifact_trash_whispering_fields", name: "Field Litter", tier: 1, variant: "air", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:whispering_chime", icon: OTHER_ICONS.BOX },
     { id: "item:artifact_trash_stillwater_pools", name: "Silt-Caked Clump", tier: 1, variant: "water", baseValue: 250, type: "artifactTrash", sourceArtifactId: "item:stillwater_idol", icon: OTHER_ICONS.BOX },

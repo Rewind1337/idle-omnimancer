@@ -149,6 +149,7 @@ body {
 
 /* Text Styles */
 .text {
+  white-space: wrap;
   &[data-size="xsmall"] {font-size: 0.7em;}
   &[data-size="small"] {font-size: 0.95em;}
   &[data-size="medium"] {font-size: 1.15em;}

@@ -93,6 +93,16 @@ export function ItemTooltip({ itemId, name }) {
                 </Flex>
             )}
 
+            {itemData?.type === "artifact" && (
+                <>
+                    <hr />
+                    <Flex direction="column" align="start" gap={4} className="item-tooltip-section">
+                        <Heading h="4" className="w-100 align-center">Artifact Effects</Heading>
+                        <Text size="small">No effects assigned.</Text>
+                    </Flex>
+                </>
+            )}
+
             <hr />
 
             <ItemActionList

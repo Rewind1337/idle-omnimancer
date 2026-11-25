@@ -6,6 +6,7 @@ import { Flex } from "../components/Flex"
 import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
 import { SpellSelectionModal } from "../components/modals/SpellSelectionModal"
+import { ArtifactCollectionModal } from "../components/modals/ArtifactCollectionModal"
 import { Paper } from "../components/Paper"
 import { Progress } from "../components/Progress"
 import { EffectStack } from "../components/EffectStack"
@@ -474,6 +475,7 @@ export function CombatPage() {
     } = useGame()
     const skillId = COMBAT_CONFIG.id
     const skillProgress = getSkillProgress(player, skillId)
+    const [artifactCollectionVisible, setArtifactCollectionVisible] = useState(false)
     const selectedArea = WORLD_AREA_BY_ID[player.combat?.selectedAreaId] ?? WORLD_AREAS[0]
     const selectedAction = COMBAT_ACTION_BY_AREA_ID[selectedArea.id]
     const actionState = player.skills?.[skillId]?.actions?.[selectedAction.id] ?? {
@@ -532,6 +534,16 @@ export function CombatPage() {
                     progressionMilestones={getSkillProgressionDetails(player, COMBAT_CONFIG)}
                     variant="combat"
                     progressEnabled
+                    footerContent={(
+                        <Button
+                            variant="combat"
+                            size="medium"
+                            icon={OTHER_ICONS.ARTIFACT}
+                            onClick={() => setArtifactCollectionVisible(true)}
+                        >
+                            Artifact Collection
+                        </Button>
+                    )}
                     icon={
                         <Icon size={64} variant="combat" outerRunes="solid" outerShape={3}
                             innerRunes="gap" innerShape={5}>
@@ -590,6 +602,11 @@ export function CombatPage() {
                 rotationOptions={rotationOptions}
             />
 
+            <ArtifactCollectionModal
+                visible={artifactCollectionVisible}
+                player={player}
+                onClose={() => setArtifactCollectionVisible(false)}
+            />
         </Flex>
     )
 }

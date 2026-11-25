@@ -21,6 +21,7 @@ export function SkillSummary({
     progressionMilestones = [],
     progressEnabled = true,
     skillXPTooltip = "Skill XP",
+    footerContent = null,
 }) {
     const totalPercentage = progressEnabled && skillProgress?.maxXP > 0
         ? (skillProgress.totalXP / skillProgress.maxXP) * 100
@@ -98,6 +99,11 @@ export function SkillSummary({
                             <hr style={{ marginBlock: 8, borderColor: "transparent" }} />
                             <Heading h="3">Total Skill Progress</Heading>
                             <Progress corners="rounded" variant={variant} percentage={totalPercentage} />
+                        </Flex>
+                    )}
+                    {footerContent && (
+                        <Flex direction="row" justify="end" className="skill-summary-footer">
+                            {footerContent}
                         </Flex>
                     )}
                 </Flex>

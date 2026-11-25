@@ -308,7 +308,9 @@ export const normalizePlayerState = (savedState) => {
         }
         : null
     const pendingRewards = combatSkillUnlocked && Array.isArray(savedCombat.pendingRewards)
-        ? savedCombat.pendingRewards.filter(reward =>
+        ? savedCombat.pendingRewards
+            .map(reward => isRecord(reward) ? { ...reward, item: migrateItemId(reward.item) } : reward)
+            .filter(reward =>
             isRecord(reward) &&
             typeof reward.item === "string" &&
             hasOwn(ITEM_DATA_BY_ID, reward.item) &&
@@ -317,7 +319,9 @@ export const normalizePlayerState = (savedState) => {
         )
         : []
     const lastRewards = combatSkillUnlocked && Array.isArray(savedCombat.lastRewards)
-        ? savedCombat.lastRewards.filter(reward =>
+        ? savedCombat.lastRewards
+            .map(reward => isRecord(reward) ? { ...reward, item: migrateItemId(reward.item) } : reward)
+            .filter(reward =>
             isRecord(reward) &&
             typeof reward.item === "string" &&
             hasOwn(ITEM_DATA_BY_ID, reward.item) &&

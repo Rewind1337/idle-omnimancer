@@ -781,8 +781,8 @@ const getMilestoneTargetLabel = (sourceSkill, reach) => {
     return targetName
 }
 
-// Artifact effect strength is determined by array position. Collected artifacts contribute once,
-// regardless of duplicate copies in the Bag; unscoped effects apply to every skill.
+// Each identified artifact grants its configured permanent effect once, regardless of duplicate
+// Bag copies. Unscoped effects apply globally; targeted effects apply only to their named skill.
 export const getArtifactEffectDefinitionEntries = artifact =>
     (artifact?.effects ?? []).map((effectConfig, index) => {
         const targetSkillId = effectConfig.targetSkillId ?? null

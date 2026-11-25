@@ -85,12 +85,21 @@ function BadgeGlossary() {
 
 function SampleActionDemo({ skillId, variant, action }) {
     const [progress, setProgress] = useState(54)
+    const [isPlaying, setIsPlaying] = useState(true)
     const actionXPTable = getActionXPTable(action.id) ?? []
     const neededXP = actionXPTable[2]?.neededXP ?? actionXPTable[0]?.neededXP ?? 12
     const currentXP = Math.round(neededXP * 0.42)
     const actionName = action.name ?? humanize(action.id.replace(/^action:/, ""))
     const outputItems = action.produces ?? []
     const inputItems = action.consumes ?? []
+
+    useEffect(() => {
+        if (!isPlaying) return undefined
+        const intervalId = window.setInterval(() => {
+            setProgress(value => value >= 100 ? 0 : Math.min(100, value + 1))
+        }, 160)
+        return () => window.clearInterval(intervalId)
+    }, [isPlaying])
 
     return (
         <Paper layer={1} variant={variant} className="intro-guide-action-demo">
@@ -120,11 +129,11 @@ function SampleActionDemo({ skillId, variant, action }) {
                 <Flex direction="column" gap={6}>
                     <Flex direction="row" align="center" justify="space-between">
                         <Heading h="4">Action progress</Heading>
-                        <Text size="small" tabularNums>{progress}%</Text>
+                        <Text size="small">{progress}%</Text>
                     </Flex>
                     <Progress variant={variant} percentage={progress} size="small" corners="rounded" animated label={progress + "%"} />
                     <Flex direction="row" wrap gap={8}>
-                        <Button variant={variant} size="small" onClick={() => setProgress(value => value >= 100 ? 0 : Math.min(100, value + 16))}>Advance sample</Button>
+                        <Button variant={variant} size="small" onClick={() => setIsPlaying(value => !value)}>{isPlaying ? "Pause sample" : "Resume sample"}</Button>
                         <Button variant="secondary" size="small" onClick={() => setProgress(0)}>Reset sample</Button>
                     </Flex>
                 </Flex>
@@ -204,9 +213,9 @@ function WelcomeActions() {
             <Text>Every action card follows the same pattern. Its header identifies the action and tier, badges summarize levels and bonuses, and the progress bar fills as the action cycle completes.</Text>
             <SampleActionDemo skillId="skill:research" variant="research" action={sampleAction} />
             <Paper layer={1} variant="research">
-                <Heading h="3">A later Research action can consume earlier notes</Heading>
-                <Text size="small">The first Research action only produces notes. Higher actions can consume those earlier notes to create advanced records. Hover the items to inspect them.</Text>
-                <ActionResources consumes={[{ item: "item:loose_notes", amount: 100 }]} produces={[{ item: "item:bound_notes", amount: 1 }]} />
+                <Heading h="3">Unlock the next Research action</Heading>
+                <Text size="small">Higher actions are unlocked by meeting their requirements. For example, Study Ancient Notes requires 100 Loose Notes and 10 Coins to unlock. Those are unlock costs, not materials consumed by each action cycle. The action itself then produces Bound Notes.</Text>
+                <ActionResources requires={[{ item: "item:loose_notes", amount: 100 }, { item: "currency:coins", amount: 10 }]} produces={[{ item: "item:bound_notes", amount: 1 }]} />
             </Paper>
         </Flex>
     )

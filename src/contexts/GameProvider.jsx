@@ -65,6 +65,7 @@ const hasVisiblePlayerChanges = (previous, next) => {
         !areSameArray(previous.unlockedCompanionSlots, next.unlockedCompanionSlots) ||
         !areSameArray(previous.completedMissions, next.completedMissions) ||
         !areSameArray(previous.identifiedArtifacts ?? [], next.identifiedArtifacts ?? []) ||
+        !areSameRecord(previous.introGuides ?? {}, next.introGuides ?? {}) ||
         previous.combat?.selectedAreaId !== next.combat?.selectedAreaId ||
         previous.combat?.activeAreaId !== next.combat?.activeAreaId ||
         previous.combat?.rotationSlots !== next.combat?.rotationSlots ||

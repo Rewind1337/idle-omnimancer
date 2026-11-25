@@ -1,6 +1,6 @@
 .modal-backdrop.intro-guide-modal {
     z-index: 1200;
-    padding: 16px;
+    padding: 16px !important;
 
     .modal-wrapper {
         width: min(1120px, calc(100vw - 32px));
@@ -71,7 +71,7 @@
     }
 
     .intro-guide-milestone {
-        padding: 8px;
+        padding: 8px !important;
     }
 
     .intro-guide-two-column {

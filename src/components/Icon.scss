@@ -111,7 +111,7 @@
 
     &[data-inner-shape="dot"],
     &[data-outer-shape="dot"] {
-        scale: 0.4;
+        scale: 0.5;
         top: 6px;
         border-radius: 50%;
     }
@@ -123,9 +123,11 @@
         transform-origin: 50% 66.666%;
         clip-path: polygon(50% 8%, 100% 100%, 0% 100%);
     }
+    &[data-inner-shape="3"] {top: -3px;}
 
     &[data-inner-shape="4"],
     &[data-outer-shape="4"] {scale: 0.75;}
+    &[data-inner-shape="4"] {top: 5px;}
 
     &[data-inner-shape="5"],
     &[data-outer-shape="5"] {
@@ -154,6 +156,7 @@
         scale: 0.93;
         clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
     }
+    &[data-inner-shape="8"] {top: 5px;}
 
     &[data-inner-shape="9"],
     &[data-outer-shape="9"] {

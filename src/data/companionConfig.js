@@ -13,9 +13,9 @@ export const COMPANION_CONFIG = {
     },
     slotDefinitions: {
         any: { name: "Any Element", element: null, unlockedByDefault: true, unlockCost: 0 },
-        earth: { name: "Earth", element: "earth", unlockedByDefault: false, unlockCost: 1000000 },
-        air: { name: "Air", element: "air", unlockedByDefault: false, unlockCost: 2000000 },
-        water: { name: "Water", element: "water", unlockedByDefault: false, unlockCost: 3000000 },
+        earth: { name: "Earth", element: "earth", unlockedByDefault: false, unlockCost: 300000 },
+        air: { name: "Air", element: "air", unlockedByDefault: false, unlockCost: 500000 },
+        water: { name: "Water", element: "water", unlockedByDefault: false, unlockCost: 700000 },
     },
     passiveLearning: {
         baseTimeSeconds: 300,

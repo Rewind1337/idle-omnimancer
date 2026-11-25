@@ -388,16 +388,16 @@ export function CompanionPage() {
                 <Paper layer={1} variant="companions">
                     <Flex direction="column" gap={10}>
                         <Flex direction="row" align="center" gap={12}>
-                            <Paper round layer="0" className="w-min" padding={4}>
+                            <Paper round layer="0" interactive className="w-min" padding={4}>
                                 <Icon
                                     size={48}
                                     variant="companions"
                                     outerRunes="wide"
-                                    outerShape={7}
+                                    outerShape={4}
                                     innerRunes="gap"
-                                    innerShape={8}
+                                    innerShape={4}
                                 >
-                                    {OTHER_ICONS.REPEAT2}
+                                    {cloneElement(OTHER_ICONS.REPEAT2, { size: 48 })}
                                 </Icon>
                             </Paper>
                             <Flex direction="column" gap={4} className="flex-grow">
@@ -415,12 +415,6 @@ export function CompanionPage() {
                             variant="companions"
                             percentage={passiveLearningPercentage}
                         />
-                        <Flex direction="row" align="center" justify="space-between">
-                            <Text size="small">Progress</Text>
-                            <Badge variant="transparent">
-                                {formatActionValue(passiveLearningProgressMs / 1000)} / {formatActionValue(passiveLearningDurationMs / 1000)}s
-                            </Badge>
-                        </Flex>
                     </Flex>
                 </Paper>
             </Paper>
@@ -434,9 +428,9 @@ export function CompanionPage() {
                                     size={48}
                                     variant="companions"
                                     outerRunes="wide"
-                                    outerShape={7}
+                                    outerShape={4}
                                     innerRunes="gap"
-                                    innerShape={8}
+                                    innerShape={3}
                                 >
                                     {cloneElement(SKILL_ICONS.COMPANIONS, { size: 48 })}
                                 </Icon>
@@ -555,7 +549,7 @@ export function CompanionPage() {
                         </Badge>
                     </Flex>
                     {ownedCompanions.length > 0 ? (
-                        <Grid columns={1} className="companion-collection-grid" gap={12}>
+                        <Grid columns={{ xsmall: 1, small: 2, medium: 3, large: 4 }} className="companion-collection-grid" gap={12}>
                             {ownedCompanions.map(companion => (
                                 <CompanionCollectionCard
                                     key={companion.id}

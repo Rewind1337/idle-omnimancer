@@ -142,7 +142,8 @@ export function SpellcraftPage() {
                         skillId={skillId}
                         title={humanize(SPELLCRAFT_CONFIG.id)}
                         skillProgress={skillProgress}
-                        milestones={[...getSkillMilestoneDetails(player, SPELLCRAFT_CONFIG), ...SPELLCRAFT_LEVEL_MILESTONES]}
+                        milestones={getSkillMilestoneDetails(player, SPELLCRAFT_CONFIG)}
+                        progressionMilestones={SPELLCRAFT_LEVEL_MILESTONES}
                         variant={pageVariant}
                         icon={
                             <Icon

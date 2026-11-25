@@ -36,6 +36,10 @@ export const COMBAT_CONFIG = {
         finalMultPerLevel: 0.999,
     },
 
+    skillProgression: [
+        { reach: "skill:exploration", type: "mult", effect: "xpGain", value: 1.01 },
+    ],
+
     milestones: [
         { level: 10, reach: "local", type: "mult", effect: "combatDamage", value: 1.1 },
         { level: 20, reach: "skill:exploration", type: "mult", effect: "actionTime", value: 1.1 },

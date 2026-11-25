@@ -18,6 +18,7 @@ export function SkillSummary({
     variant,
     icon,
     milestones = [],
+    progressionMilestones = [],
     progressEnabled = true,
     skillXPTooltip = "Skill XP",
     totalProgressTooltip = "Skill progression",
@@ -31,7 +32,7 @@ export function SkillSummary({
     const nextSkillLevels = progressEnabled && skillId
         ? (getSkillXPTable(skillId) ?? [])
             .filter(entry => entry.level >= skillProgress.level && entry.neededXP !== null)
-            .slice(0, 3)
+            .slice(0, 1)
         : []
 
     return (
@@ -54,10 +55,10 @@ export function SkillSummary({
                             <Flex direction="column" gap={8}>
                                 {progressEnabled ? (
                                     <>
-                                        <Heading h="4" className="w-100 align-center">{totalProgressTooltip}</Heading>
+                                        <Heading h="4" className="w-100 align-center">Skill Progression</Heading>
                                         {nextSkillLevels.length > 0 && (
                                             <Flex direction="column" gap={4}>
-                                                <Heading h="5">Next Skill Lvls.</Heading>
+                                                <Heading h="5">Next Skill Level</Heading>
                                                 {nextSkillLevels.map(entry => (
                                                     <Text key={entry.level} size="small">
                                                         Lv. {entry.level + 1}: {formatXP(entry.neededXP)} Skill XP
@@ -69,11 +70,17 @@ export function SkillSummary({
                                 ) : (
                                     <Heading h="4" className="w-100 align-center">Skill progression unavailable.</Heading>
                                 )}
+                                {progressionMilestones.length > 0 && (
+                                    <EffectStack
+                                        entries={progressionMilestones}
+                                        showInactive
+                                    />
+                                )}
                                 {milestones.length > 0 && (
                                     <>
                                         <div className="divider tooltip-divider"></div>
                                         <EffectStack
-                                            title="Skill milestones"
+                                            title="Skill Milestones"
                                             icon={OTHER_ICONS.STAR}
                                             entries={milestones}
                                             showInactive

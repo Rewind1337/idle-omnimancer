@@ -30,6 +30,7 @@ import {
     getActionPreservationChance,
     getSkillProgress,
     getSkillMilestoneDetails,
+    getSkillProgressionDetails,
     getActionUnlockCosts,
     getSkillUnlockCosts,
 } from "../game/gameEngine"
@@ -205,6 +206,7 @@ export function ExplorationPage() {
                     title="Exploration"
                     skillProgress={skillProgress}
                     milestones={getSkillMilestoneDetails(player, EXPLORATION_CONFIG)}
+                    progressionMilestones={getSkillProgressionDetails(player, EXPLORATION_CONFIG)}
                     variant="exploration"
                     progressEnabled
                     icon={

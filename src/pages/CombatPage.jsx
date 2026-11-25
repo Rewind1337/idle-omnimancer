@@ -33,6 +33,7 @@ import {
     getActionEffectStacks,
     getActionEffectSummary,
     getSkillMilestoneDetails,
+    getSkillProgressionDetails,
     getActionMilestoneDetails,
     getSkillProgress,
     getSkillUnlockCosts,
@@ -528,6 +529,7 @@ export function CombatPage() {
                     title="Combat"
                     skillProgress={skillProgress}
                     milestones={getSkillMilestoneDetails(player, COMBAT_CONFIG)}
+                    progressionMilestones={getSkillProgressionDetails(player, COMBAT_CONFIG)}
                     variant="combat"
                     progressEnabled
                     icon={

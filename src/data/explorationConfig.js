@@ -47,6 +47,10 @@ export const EXPLORATION_CONFIG = {
         finalMultPerLevel: 0.999,
     },
 
+    skillProgression: [
+        { reach: "skill:combat", type: "mult", effect: "xpGain", value: 1.01 },
+    ],
+
     milestones: [
         { level: 10, reach: "local", type: "mult", effect: "actionTime", value: 1.1 },
         { level: 20, reach: "skill:spellcraft", type: "mult", effect: "manaCapacity", value: 1.1 },
@@ -60,6 +64,7 @@ export const EXPLORATION_CONFIG = {
         // Exploration action level above level 1. This entry is display-only;
         // the Combat calculation already applies the same progression bonus.
         { levels: 1, type: "mult", effect: "artifactChance", value: 1.01, reach: "skill:combat", displayOnly: true },
+        { levels: 1, type: "mult", effect: "companionChance", value: 1.01, progression: true },
         { levels: 1, type: "mult", effect: "itemOutput", value: 1.01 },
         { levels: 10, type: "mult", effect: "actionTime", value: 1.05 },
         { levels: 25, type: "mult", effect: "xpGain", value: 1.20 },

@@ -757,6 +757,18 @@ const getSkillMilestoneBonuses = (player, targetSkillId, effect = null) => {
                 addMilestoneBonus(totals, milestone)
             }
         }
+
+        const progressionStacks = Math.max(0, sourceLevel - 1)
+        if (progressionStacks > 0) {
+            for (const progression of sourceSkill.skillProgression ?? []) {
+                if (
+                    (effect && progression.effect !== effect) ||
+                    !milestoneTargetsSkill(sourceSkill, targetSkillId, progression)
+                ) continue
+
+                addMilestoneBonus(totals, progression, progressionStacks)
+            }
+        }
     }
 
     const companionEffects = effect
@@ -865,6 +877,34 @@ export const getSkillMilestoneDetails = (player, skill) => {
         })
 }
 
+export const getSkillProgressionDetails = (player, skill) => {
+    const skillLevel = getSkillProgress(player, skill.id)?.level ?? 1
+    const skillUnlocked = player.unlockedSkills?.includes(skill.id) ?? false
+    const stacks = Math.max(0, skillLevel - 1)
+
+    return (skill.skillProgression ?? []).map((progression, index) => {
+        const targetSkillId = progression.reach === "local" ? skill.id : progression.reach
+
+        return {
+            id: "skill-" + skill.id + "-progression-" + index,
+            title: "Each Lv.",
+            source: getMilestoneTargetLabel(skill, progression.reach),
+            sourceVariant: progression.reach === "global"
+                ? "rainbow"
+                : SKILL_CONFIG_BY_ID[targetSkillId]?.variant ?? "transparent",
+            effect: progression.effect,
+            type: progression.type,
+            value: progression.value,
+            stacks,
+            perStack: true,
+            showStacks: true,
+            mode: "progression",
+            active: skillUnlocked && stacks > 0,
+            variant: skill.variant,
+        }
+    })
+}
+
 export const getActionMilestoneDetails = (player, skill, action) => {
     const actionState = player.skills?.[skill.id]?.actions?.[action.id]
     const actionLevel = actionState?.unlocked
@@ -895,6 +935,7 @@ export const getActionMilestoneDetails = (player, skill, action) => {
                 showStacks: true,
                 mode: "milestone",
                 active,
+                progression: Boolean(milestone.progression || milestone.displayOnly),
                 variant: skill.variant
             }
         })
@@ -1186,6 +1227,39 @@ export const getActionEffectStacks = (player, skill, action) => {
                     stacks: 1,
                     mode: "milestone",
                     variant: sourceSkill.variant
+                })
+            }
+        }
+
+        const progressionEntries = []
+        for (const sourceSkill of Object.values(SKILL_CONFIG_BY_ID)) {
+            if (!player.unlockedSkills?.includes(sourceSkill.id)) continue
+
+            const sourceLevel = getSkillProgress(player, sourceSkill.id)?.level ?? 1
+            const stacks = Math.max(0, sourceLevel - 1)
+            if (stacks <= 0) continue
+
+            for (const [index, progression] of (sourceSkill.skillProgression ?? []).entries()) {
+                if (
+                    progression.effect !== effect ||
+                    !milestoneTargetsSkill(sourceSkill, skill.id, progression)
+                ) continue
+
+                entries.push({
+                    id: "skill-progression-" + sourceSkill.id + "-" + index + "-" + effect,
+                    title: "Each Lv.",
+                    source: getMilestoneTargetLabel(sourceSkill, progression.reach),
+                    sourceVariant: progression.reach === "global"
+                        ? "rainbow"
+                        : SKILL_CONFIG_BY_ID[progression.reach === "local" ? sourceSkill.id : progression.reach]?.variant ?? "transparent",
+                    effect,
+                    type: progression.type,
+                    value: progression.value,
+                    stacks,
+                    perStack: true,
+                    showStacks: true,
+                    mode: "progression",
+                    variant: sourceSkill.variant,
                 })
             }
         }

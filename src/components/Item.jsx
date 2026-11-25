@@ -1,4 +1,4 @@
-import { memo } from "react"
+import { cloneElement, isValidElement, memo } from "react"
 
 import { Flex } from "./Flex"
 import { Paper } from "./Paper"
@@ -31,6 +31,9 @@ export const Item = memo(function Item({
     const tooltipContent = itemId
         ? <ItemTooltip itemId={itemId} name={name} />
         : <Heading h="5">{name}</Heading>
+    const iconContent = isValidElement(icon)
+        ? cloneElement(icon, { size: iconSize })
+        : icon
 
     if (mode === "compact") {
         return (
@@ -41,7 +44,7 @@ export const Item = memo(function Item({
                     onClick={() => { onClick() }}
                 >
                     <Flex direction="column" padding={0}>
-                        {icon && <Icon size={iconSize} variant={variant} className="item-icon">{icon}</Icon>}
+                        {iconContent && <Icon size={iconSize} variant={variant} className="item-icon">{iconContent}</Icon>}
                         {amount && <Paper className="item-badge" padding={"2px 6px"}><Text>{amount}</Text></Paper>}
                     </Flex>
                 </Paper>
@@ -58,7 +61,7 @@ export const Item = memo(function Item({
                 >
                     <Flex direction="row" padding={0}>
                         <Flex direction="column" padding={0}>
-                            {icon && <Icon size={iconSize} variant={variant} className="item-icon">{icon}</Icon>}
+                            {iconContent && <Icon size={iconSize} variant={variant} className="item-icon">{iconContent}</Icon>}
                             {amount && <Paper className="item-badge" padding={"2px 6px"}><Text>{amount}</Text></Paper>}
                         </Flex>
                         <Paper className="item-name" variant={variant}><Text>{name}</Text></Paper>

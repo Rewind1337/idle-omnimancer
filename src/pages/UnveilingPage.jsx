@@ -12,7 +12,7 @@ import { ActionResources } from "../components/actions/ActionResources"
 import { SelectionModal } from "../components/modals/SelectionModal"
 
 import { UNVEILING_CONFIG } from "../data/unveilingConfig"
-import { ITEM_DATA_BY_ID } from "../data/itemData"
+import { ARTIFACT_TRASH_BY_SOURCE_ID, ITEM_DATA_BY_ID } from "../data/itemData"
 import { COMPANION_DATA_BY_CONTAINER_ID } from "../data/companionData"
 import { OTHER_ICONS, SKILL_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
@@ -74,6 +74,9 @@ function UnveilingActionCard({
     const unidentifiedArtifact = selectedItem?.type === "unidentifiedArtifact"
         ? ITEM_DATA_BY_ID[selectedItem.revealsItemId]
         : null
+    const artifactTrash = selectedItem?.type === "unidentifiedArtifact"
+        ? ARTIFACT_TRASH_BY_SOURCE_ID[selectedItem.revealsItemId]
+        : null
     const identificationChance = action.processesUnidentifiedArtifacts
         ? action.identificationChance ?? 0.1
         : 0
@@ -82,7 +85,7 @@ function UnveilingActionCard({
             item: experienceItem,
             amount: selectedCompanion.duplicateCandyAmount ?? selectedCompanion.tier ?? 1,
         }] : []),
-        ...(unidentifiedArtifact && selectedItem?.revealsTrashItemId && identificationChance > 0 ? [
+        ...(unidentifiedArtifact && artifactTrash && identificationChance > 0 ? [
             {
                 item: unidentifiedArtifact.id,
                 amountLabel: (identificationChance * 100).toLocaleString(undefined, {
@@ -91,7 +94,7 @@ function UnveilingActionCard({
                 }) + "%",
             },
             {
-                item: selectedItem.revealsTrashItemId,
+                item: artifactTrash.id,
                 amountLabel: ((1 - identificationChance) * 100).toLocaleString(undefined, {
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 2,

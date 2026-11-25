@@ -416,6 +416,13 @@ export function CompanionPage() {
                                     <Text size="small">
                                         No Coins are consumed. The timer pauses while no assigned companion can gain XP.
                                     </Text>
+                                    <hr />
+                                    <EffectStack
+                                        title="Action Speed Effects"
+                                        icon={OTHER_ICONS.HOURGLASS}
+                                        entries={actionEffectStacks.actionTime ?? []}
+                                        emptyLabel="No action speed bonuses are active."
+                                    />
                                 </Flex>}
                             >
                                 {formatActionValue(passiveLearningDurationMs / 1000)}s

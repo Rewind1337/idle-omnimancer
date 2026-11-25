@@ -22,9 +22,10 @@ export function CompanionEffectBadge({
 
     const isPermanent = effectKey === "permanentEffect"
     const effectIcon = EFFECT_ICONS[entry.effect] ?? OTHER_ICONS.INFO
+    const targetSkillId = companion[effectKey]?.targetSkillId
     const targetSkillName = SKILL_NAVIGATION.find(entry =>
-        entry.skillId === companion.activeEffect?.targetSkillId
-    )?.name ?? humanize((companion.activeEffect?.targetSkillId ?? "").replace(/^skill:/, ""))
+        entry.skillId === targetSkillId
+    )?.name ?? humanize((targetSkillId ?? "").replace(/^skill:/, ""))
 
     return (
         <Badge
@@ -35,7 +36,7 @@ export function CompanionEffectBadge({
             tooltip={
                 <Flex direction="column" gap={8}>
                     <Heading h="4" className="w-100 align-center">
-                        {isPermanent ? "Permanent effect" : "Active effect · " + targetSkillName}
+                        {isPermanent ? "Permanent effect" + (targetSkillId ? " · " + targetSkillName : "") : "Active effect · " + targetSkillName}
                     </Heading>
                     <hr />
                     <EffectStack
@@ -46,7 +47,7 @@ export function CompanionEffectBadge({
                 </Flex>
             }
         >
-            {showScopeLabel ? (isPermanent ? "Permanent · " : targetSkillName + " - ") : ""}
+            {showScopeLabel ? (isPermanent ? "Permanent" + (targetSkillId ? " · " + targetSkillName : "") + " · " : targetSkillName + " - ") : ""}
             {formatEffectDescription(entry)}
         </Badge>
     )

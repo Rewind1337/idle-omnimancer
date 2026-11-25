@@ -25,6 +25,7 @@ export const Item = memo(function Item({
     layer = 2,
     interactive = true,
     selected = false,
+    iconSize = 32,
     onClick = NOOP
 }) {
     const tooltipContent = itemId
@@ -40,7 +41,7 @@ export const Item = memo(function Item({
                     onClick={() => { onClick() }}
                 >
                     <Flex direction="column" padding={0}>
-                        {icon && <Icon variant={variant} className="item-icon">{icon}</Icon>}
+                        {icon && <Icon size={iconSize} variant={variant} className="item-icon">{icon}</Icon>}
                         {amount && <Paper className="item-badge" padding={"2px 6px"}><Text>{amount}</Text></Paper>}
                     </Flex>
                 </Paper>
@@ -57,7 +58,7 @@ export const Item = memo(function Item({
                 >
                     <Flex direction="row" padding={0}>
                         <Flex direction="column" padding={0}>
-                            {icon && <Icon variant={variant} className="item-icon">{icon}</Icon>}
+                            {icon && <Icon size={iconSize} variant={variant} className="item-icon">{icon}</Icon>}
                             {amount && <Paper className="item-badge" padding={"2px 6px"}><Text>{amount}</Text></Paper>}
                         </Flex>
                         <Paper className="item-name" variant={variant}><Text>{name}</Text></Paper>

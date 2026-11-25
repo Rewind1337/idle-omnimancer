@@ -1,9 +1,10 @@
 import { Flex } from "./Flex"
+import { EffectStack } from "./EffectStack"
 import { Heading } from "./Heading"
 import { Text } from "./Text"
 
 import { ITEM_DATA_BY_ID } from "../data/itemData"
-import { getItemActionSources, getSellValueMultiplier } from "../game/gameEngine"
+import { getArtifactEffectDefinitionEntries, getItemActionSources, getSellValueMultiplier } from "../game/gameEngine"
 import { useGame } from "../hooks/useGame"
 import { Badge } from "./Badge"
 
@@ -57,6 +58,9 @@ export function ItemTooltip({ itemId, name }) {
     const amountHeld = player.inventory?.[itemId] ?? 0
     const sellValue = (itemData?.baseValue ?? 0) * getSellValueMultiplier(player)
     const { obtainedBy, consumedBy } = getCachedItemActionSources(itemId, player)
+    const artifactEffects = itemData?.type === "artifact"
+        ? getArtifactEffectDefinitionEntries(itemData)
+        : []
 
     return (
         <Flex direction="column" align="start" gap={8} className="item-tooltip">
@@ -96,10 +100,11 @@ export function ItemTooltip({ itemId, name }) {
             {itemData?.type === "artifact" && (
                 <>
                     <hr />
-                    <Flex direction="column" align="start" gap={4} className="item-tooltip-section">
-                        <Heading h="4" className="w-100 align-center">Artifact Effects</Heading>
-                        <Text size="small">No effects assigned.</Text>
-                    </Flex>
+                    <EffectStack
+                        title="Artifact Effects"
+                        entries={artifactEffects}
+                        emptyLabel="No effects assigned."
+                    />
                 </>
             )}
 

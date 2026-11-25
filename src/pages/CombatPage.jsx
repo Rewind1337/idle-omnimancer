@@ -20,7 +20,7 @@ import { COMBAT_CONFIG, COMBAT_ACTION_BY_AREA_ID } from "../data/combatConfig"
 import { EXPLORATION_CONFIG } from "../data/explorationConfig"
 import { SPELLCRAFT_CONFIG } from "../data/spellcraftConfig"
 import { WORLD_AREAS, WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
-import { ITEM_DATA_BY_ID } from "../data/itemData"
+import { ARTIFACT_DATA, ITEM_DATA_BY_ID } from "../data/itemData"
 import { OTHER_ICONS, SKILL_ICONS, SPELLCRAFT_ACTION_ICONS } from "../data/iconLibrary"
 import { getActionXPTable } from "../data/skillConfig"
 import {
@@ -475,6 +475,7 @@ export function CombatPage() {
     } = useGame()
     const skillId = COMBAT_CONFIG.id
     const skillProgress = getSkillProgress(player, skillId)
+    const artifactCollectionCount = new Set(player.identifiedArtifacts ?? []).size
     const [artifactCollectionVisible, setArtifactCollectionVisible] = useState(false)
     const selectedArea = WORLD_AREA_BY_ID[player.combat?.selectedAreaId] ?? WORLD_AREAS[0]
     const selectedAction = COMBAT_ACTION_BY_AREA_ID[selectedArea.id]
@@ -539,6 +540,7 @@ export function CombatPage() {
                             variant="combat"
                             size="medium"
                             icon={OTHER_ICONS.ARTIFACT}
+                            badge={artifactCollectionCount + " / " + ARTIFACT_DATA.length}
                             onClick={() => setArtifactCollectionVisible(true)}
                         >
                             Artifact Collection

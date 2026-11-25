@@ -56,7 +56,7 @@ export const ARTIFACT_ICONS = {
     "item:celestial_wisp_chime": <TriangleRight />,
     "item:abyssal_tide_scepter": <Award />,
     "item:primordial_golem_heart": <VectorSquare />,
-    "item:starfall_wisp_sigil": <Square />,
+    "item:starfall_seal": <Square />,
     "item:worldtide_tide_crown": <ShoppingBasket />,
     "item:worldcore_relic": <UtilityPole />,
     "item:firmament_wisp_chime": <HikingStick />,

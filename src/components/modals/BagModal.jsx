@@ -12,6 +12,8 @@ import { Item } from '../Item'
 import { EmptyItem } from '../EmptyItem'
 import { Button } from '../Button'
 import { InputRange } from '../InputRange'
+import { InputRadio } from '../InputRadio'
+import { InputCheckbox } from '../InputCheckbox'
 import { Tooltip } from '../Tooltip'
 import { Icon } from '../Icon'
 
@@ -83,6 +85,8 @@ function BagModalContent({
     onDeselect,
 }) {
     const [activeGroup, setActiveGroup] = useState("all")
+    const [sortBy, setSortBy] = useState("value")
+    const [sortAscending, setSortAscending] = useState(false)
     const inventory = useGameInventory()
     const currencies = useGameCurrencies()
     const storedInventorySlots = useGameInventorySlots()
@@ -99,10 +103,34 @@ function BagModalContent({
 
     const inventoryEntries = useMemo(() => Object.entries(inventory)
         .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0), [inventory])
-    const filteredInventoryEntries = useMemo(() => activeGroup === "all"
-        ? inventoryEntries
-        : inventoryEntries.filter(([itemId]) => ITEM_DATA_BY_ID[itemId]?.group === activeGroup),
-    [activeGroup, inventoryEntries])
+    const filteredInventoryEntries = useMemo(() => {
+        const filtered = activeGroup === "all"
+            ? [...inventoryEntries]
+            : inventoryEntries.filter(([itemId]) => ITEM_DATA_BY_ID[itemId]?.group === activeGroup)
+
+        filtered.sort(([firstId], [secondId]) => {
+            const first = ITEM_DATA_BY_ID[firstId]
+            const second = ITEM_DATA_BY_ID[secondId]
+            let comparison = 0
+
+            if (sortBy === "value") {
+                comparison = (first?.baseValue ?? 0) - (second?.baseValue ?? 0)
+            } else if (sortBy === "tier") {
+                comparison = (first?.tier ?? 0) - (second?.tier ?? 0)
+            } else {
+                comparison = (first?.name ?? firstId).localeCompare(second?.name ?? secondId)
+            }
+
+            // Keep ties deterministic regardless of the selected sort direction.
+            if (comparison === 0) {
+                comparison = (first?.name ?? firstId).localeCompare(second?.name ?? secondId)
+            }
+
+            return comparison * (sortAscending ? 1 : -1)
+        })
+
+        return filtered
+    }, [activeGroup, inventoryEntries, sortAscending, sortBy])
     const totalBagValue = useMemo(() => inventoryEntries.reduce((total, [itemId, amount]) =>
         total + amount * (ITEM_DATA_BY_ID[itemId]?.baseValue ?? 0), 0), [inventoryEntries])
     const occupiedSlots = inventoryEntries.length
@@ -189,6 +217,31 @@ function BagModalContent({
                                 {group.label}
                             </Button>
                         ))}
+                    </Flex>
+
+                    <Flex direction="row" align="center" justify="space-between" wrap gap={8} className="bag-sort-row">
+                        <InputRadio
+                            label="Sort by"
+                            values={[
+                                { value: "value", label: "Value" },
+                                { value: "tier", label: "Tier" },
+                                { value: "name", label: "Name" },
+                            ]}
+                            value={sortBy}
+                            onChange={setSortBy}
+                            renderButtons
+                            variant="primary"
+                            layer={1}
+                        />
+                        <InputCheckbox
+                            label="Order"
+                            checkboxLabel={sortAscending ? "Ascending" : "Descending"}
+                            checked={sortAscending}
+                            onChange={setSortAscending}
+                            renderButtons
+                            variant="primary"
+                            layer={1}
+                        />
                     </Flex>
 
                     <Paper

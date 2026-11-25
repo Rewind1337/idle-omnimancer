@@ -20,6 +20,7 @@ import { ShopButton } from "./components/buttons/ShopButton";
 import { MissionsButton } from "./components/buttons/MissionsButton";
 import { FloatingPanel } from "./components/FloatingPanel";
 import { SettingsModal } from "./components/modals/SettingsModal";
+import { IntroGuideModal } from "./components/modals/IntroGuideModal";
 import { ExplorationPage } from "./pages/ExplorationPage"
 import { CombatPage } from "./pages/CombatPage";
 import { UnveilingPage } from "./pages/UnveilingPage";
@@ -45,13 +46,38 @@ function ResponsivePage({
   const [bagModalVisible, setBagModalVisible] = useState(false)
   const [settingsModalVisible, setSettingsModalVisible] = useState(false)
   const [viewportHeight, setViewportHeight] = useState(() => window.innerHeight)
-  const { resetGame } = useGame()
+  const [activeGuideId, setActiveGuideId] = useState(null)
+  const { resetGame, player, markIntroGuideSeen } = useGame()
+  const currentGuideId = activePage === SHOP_NAVIGATION.id
+    ? "shop"
+    : SKILL_NAVIGATION.find(skill => skill.id === activePage)?.skillId ?? null
 
   useEffect(() => {
     const handleResize = () => setViewportHeight(window.innerHeight)
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
+
+  useEffect(() => {
+    if (activeGuideId) return
+
+    const nextGuideId = player.introGuides?.welcome !== true
+      ? "welcome"
+      : currentGuideId
+
+    if (nextGuideId && player.introGuides?.[nextGuideId] !== true) {
+      setActiveGuideId(nextGuideId)
+    }
+  }, [activeGuideId, currentGuideId, player.introGuides])
+
+  const closeGuide = useCallback(() => {
+    if (activeGuideId) markIntroGuideSeen(activeGuideId)
+    setActiveGuideId(null)
+  }, [activeGuideId, markIntroGuideSeen])
+
+  const openCurrentGuide = useCallback(() => {
+    setActiveGuideId(missionsModalVisible ? "missions" : (currentGuideId ?? "welcome"))
+  }, [currentGuideId, missionsModalVisible])
 
   const handleCloseBag = useCallback(() => setBagModalVisible(false), [])
   const closeBagButton = useMemo(() => (
@@ -75,8 +101,25 @@ function ResponsivePage({
   const missionsButton = (
     <MissionsButton
       active={missionsModalVisible}
-      onClick={() => { setMissionsModalTab("overview"); setMissionsModalVisible(true) }}
+      onClick={() => {
+        setMissionsModalTab("overview")
+        setMissionsModalVisible(true)
+        if (player.introGuides?.missions !== true) setActiveGuideId("missions")
+      }}
     />
+  )
+  const guideButton = (
+    <Button
+      variant="primary"
+      size="medium"
+      className="w-min"
+      icon={OTHER_ICONS.INFO}
+      aria-label="Open guide for the current page"
+      title="Guide"
+      onClick={openCurrentGuide}
+    >
+      Guide
+    </Button>
   )
   const bagButton = (
     <BagButton
@@ -101,6 +144,7 @@ function ResponsivePage({
       {shopButton}
       {missionsButton}
       {bagButton}
+      {guideButton}
     </Flex>
   )
   const sideActionsRight = (
@@ -137,6 +181,7 @@ function ResponsivePage({
       {shopButton}
       {missionsButton}
       {bagButton}
+      {guideButton}
     </FloatingPanel>
   ) : null
 
@@ -161,6 +206,7 @@ function ResponsivePage({
         onChange={onNavigationSettingsChange}
         onResetGame={handleResetGame}
       />
+      <IntroGuideModal guideId={activeGuideId} onClose={closeGuide} />
       {floatingButtons}
       {navigationPosition === "top" && (
         <FloatingPanel position="right" mode={navigationMode}>

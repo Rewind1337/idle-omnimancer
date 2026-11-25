@@ -21,6 +21,20 @@ import { WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
 export const SAVE_KEY = "omnimancer-idle-save"
 export const DEFAULT_INVENTORY_SLOTS = GLOBAL_CONFIG.startingBagSpace
 
+const LEGACY_ITEM_ID_ALIASES = {
+    "item:starfall_wisp_sigil": "item:starfall_seal",
+}
+
+const migrateItemId = itemId =>
+    typeof itemId === "string" ? (LEGACY_ITEM_ID_ALIASES[itemId] ?? itemId) : itemId
+
+const INTRO_GUIDE_IDS = [
+    "welcome",
+    "shop",
+    "missions",
+    ...SKILL_NAVIGATION.map(({ skillId }) => skillId),
+]
+
 // The save contains only serializable player data. Configurations, functions,
 // generated XP tables and derived skill levels are deliberately not stored.
 const createInitialCombatState = () => ({
@@ -83,6 +97,7 @@ export const createInitialPlayerState = () => {
         completedMissions: [],
         unlockedCompanions: [],
         identifiedArtifacts: [],
+        introGuides: Object.fromEntries(INTRO_GUIDE_IDS.map(guideId => [guideId, false])),
         companionPassiveProgressMs: 0,
         companionProgress: Object.fromEntries(COMPANION_DATA.map(companion => [
             companion.id,
@@ -149,7 +164,7 @@ export const normalizePlayerState = (savedState) => {
                 (action.activity ?? skill.activity ?? "active") === "passive"
             const unlocked = unlockedSkills.includes(skill.id) &&
                 (savedAction.unlocked === true || defaultAction.unlocked)
-            const selectedItemId = savedAction.selectedItemId
+            const selectedItemId = migrateItemId(savedAction.selectedItemId)
             const selectedItemData = typeof selectedItemId === "string" &&
                 hasOwn(ITEM_DATA_BY_ID, selectedItemId)
                 ? ITEM_DATA_BY_ID[selectedItemId]
@@ -351,12 +366,15 @@ export const normalizePlayerState = (savedState) => {
 
     const activeAction = isKnownAction(savedState.activeAction, unlockedSkills, skills)
 
-    const inventory = Object.fromEntries(
-        Object.entries(normalizeNumberMap(savedState.inventory))
-            .filter(([itemId]) => hasOwn(ITEM_DATA_BY_ID, itemId))
-    )
+    const inventory = {}
+    for (const [savedItemId, amount] of Object.entries(normalizeNumberMap(savedState.inventory))) {
+        const itemId = migrateItemId(savedItemId)
+        if (!hasOwn(ITEM_DATA_BY_ID, itemId)) continue
+        inventory[itemId] = (inventory[itemId] ?? 0) + amount
+    }
     const identifiedArtifacts = [...new Set([
         ...(Array.isArray(savedState.identifiedArtifacts) ? savedState.identifiedArtifacts : [])
+            .map(migrateItemId)
             .filter(itemId => ITEM_DATA_BY_ID[itemId]?.type === "artifact"),
         ...Object.entries(inventory)
             .filter(([itemId, amount]) => amount > 0 && ITEM_DATA_BY_ID[itemId]?.type === "artifact")
@@ -373,6 +391,13 @@ export const normalizePlayerState = (savedState) => {
             MISSION_DATA.missions.some(mission => mission.id === id)
         ))]
         : initial.completedMissions
+
+    const introGuides = { ...initial.introGuides }
+    if (isRecord(savedState.introGuides)) {
+        for (const guideId of INTRO_GUIDE_IDS) {
+            introGuides[guideId] = savedState.introGuides[guideId] === true
+        }
+    }
 
     const savedCompanionProgress = isRecord(savedState.companionProgress)
         ? savedState.companionProgress
@@ -459,6 +484,7 @@ export const normalizePlayerState = (savedState) => {
         completedMissions,
         unlockedCompanions,
         identifiedArtifacts,
+        introGuides,
         companionPassiveProgressMs: Math.max(0, finiteNumber(savedState.companionPassiveProgressMs, 0)),
         companionProgress,
         unlockedCompanionSlots,

@@ -5,6 +5,20 @@
         min-width: 0;
     }
 
+    .bag-sort-row {
+        align-items: stretch;
+        min-width: 0;
+
+        > .flex {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .input-radio-option {
+            flex: 1 1 auto;
+        }
+    }
+
     .bag-group-filters {
         min-width: 0;
 

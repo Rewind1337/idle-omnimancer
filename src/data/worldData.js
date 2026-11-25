@@ -375,7 +375,7 @@ export const WORLD_DATA = {
                 produces: ["item:air_egg_iv"],
                 unlockCosts: AREA_UNLOCK_COSTS[8],
             },
-            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:unidentified_starfall_firmament_artifact"], artifactId: "item:starfall_wisp_sigil" },
+            combat: { enemyLineup: [{ archetype: "tank" }], produces: ["item:unidentified_starfall_firmament_artifact"], artifactId: "item:starfall_seal" },
         },
         {
             id: "area:worldtide_sanctum",

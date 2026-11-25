@@ -638,6 +638,31 @@ export const gameReducer = (state, action) => {
             }
         }
 
+        case "MARK_INTRO_GUIDE_SEEN": {
+            const validGuideIds = [
+                "welcome",
+                "shop",
+                "missions",
+                "skill:research",
+                "skill:spellcraft",
+                "skill:transmutation",
+                "skill:exploration",
+                "skill:unveiling",
+                "skill:companions",
+                "skill:combat",
+            ]
+            if (!validGuideIds.includes(action.guideId) || state.introGuides?.[action.guideId] === true) {
+                return state
+            }
+            return {
+                ...state,
+                introGuides: {
+                    ...(state.introGuides ?? {}),
+                    [action.guideId]: true,
+                },
+            }
+        }
+
         case "RESET_GAME":
         case "HYDRATE_PLAYER":
             return action.player ?? state

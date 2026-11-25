@@ -843,6 +843,10 @@ export function GameProvider({ children }) {
         dispatch({ type: "SELECT_COMPANION", slotId, companionId })
     }, [])
 
+    const markIntroGuideSeen = useCallback(guideId => {
+        dispatch({ type: "MARK_INTRO_GUIDE_SEEN", guideId })
+    }, [])
+
     const commands = useMemo(() => ({
         resetGame,
         startAction,
@@ -860,7 +864,8 @@ export function GameProvider({ children }) {
         selectActionItem,
         unlockCompanionSlot,
         selectCompanion,
-    }), [resetGame, startAction, selectCombatArea, setCombatRotation, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyResearchBreakthrough, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion])
+        markIntroGuideSeen,
+    }), [resetGame, startAction, selectCombatArea, setCombatRotation, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyResearchBreakthrough, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion, markIntroGuideSeen])
 
     const servicesValue = useMemo(() => ({
         progressStore,

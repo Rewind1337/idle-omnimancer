@@ -1,0 +1,128 @@
+.modal-backdrop.intro-guide-modal {
+    z-index: 1200;
+    padding: 16px;
+
+    .modal-wrapper {
+        width: min(1120px, calc(100vw - 32px));
+        max-width: 1120px;
+        max-height: calc(100dvh - 32px);
+    }
+
+    .modal-flex {
+        width: 100%;
+        max-width: 1120px;
+        max-height: calc(100dvh - 32px);
+        min-width: 0;
+    }
+
+    .modal-header,
+    .modal-footer,
+    .modal-content {
+        min-width: 0;
+    }
+
+    .intro-guide-scroll {
+        max-height: min(66dvh, 760px);
+        min-width: 0;
+        overflow: auto;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
+    }
+
+    .intro-guide-step {
+        min-width: 0;
+        animation: intro-guide-rise 300ms ease-out both;
+    }
+
+    .intro-guide-step-tabs {
+        align-items: stretch;
+
+        .button {
+            flex: 1 1 auto;
+        }
+    }
+
+    .intro-guide-badge-glossary,
+    .intro-guide-action-effects {
+        align-items: stretch;
+    }
+
+    .intro-guide-action-demo {
+        min-width: 0;
+        animation: intro-guide-card 450ms ease-out both;
+    }
+
+    .intro-guide-resource-demo {
+        align-items: stretch;
+
+        > .paper {
+            min-width: 180px;
+            flex: 1 1 220px;
+        }
+
+        .action-resources {
+            min-width: 0;
+        }
+    }
+
+    .intro-guide-resource-note {
+        min-width: 180px;
+        flex: 1 1 220px;
+    }
+
+    .intro-guide-milestone {
+        padding: 8px;
+    }
+
+    .intro-guide-two-column {
+        align-items: stretch;
+
+        .intro-guide-overview-card {
+            min-width: 240px;
+            flex: 1 1 320px;
+        }
+    }
+}
+
+@keyframes intro-guide-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes intro-guide-card {
+    0% { opacity: 0.5; transform: scale(0.985); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 700px) {
+    .modal-backdrop.intro-guide-modal {
+        padding: 8px;
+
+        .modal-wrapper,
+        .modal-flex {
+            width: calc(100vw - 16px);
+            max-width: none;
+            max-height: calc(100dvh - 16px);
+        }
+
+        .intro-guide-header,
+        .modal-footer {
+            padding-inline: 8px;
+        }
+
+        .intro-guide-scroll {
+            max-height: 58dvh;
+        }
+
+        .intro-guide-resource-demo > .paper {
+            flex-basis: 100%;
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal-backdrop.intro-guide-modal .intro-guide-step,
+    .modal-backdrop.intro-guide-modal .intro-guide-action-demo {
+        animation: none;
+    }
+}

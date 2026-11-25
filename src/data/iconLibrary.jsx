@@ -110,6 +110,7 @@ export const EFFECT_ICONS = {
     sellValue: OTHER_ICONS.COINS,
     unlockCostReduction: OTHER_ICONS.COINS,
     companionChance: OTHER_ICONS.COMPANION_EGG,
+    companionEffect: OTHER_ICONS.MERGE,
     artifactChance: OTHER_ICONS.ARTIFACT,
     baseGoldCost: OTHER_ICONS.COINS,
     combatInterval: OTHER_ICONS.HOURGLASS,

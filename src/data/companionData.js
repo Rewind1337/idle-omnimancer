@@ -71,7 +71,7 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 2,
         containerId: "item:water_shell_ii",
         requiredUnveilingLevel: 10,
-        permanentEffect: { effect: "manaCapacity", type: "mult", perLevel: 0.01, targetSkillId: "skill:spellcraft" },
+        permanentEffect: { effect: "manaCapacity", type: "mult", perLevel: 0.01 },
         activeEffect: { effect: "manaCost", type: "mult", perLevel: 0.025, targetSkillId: "skill:spellcraft" },
     },
     {
@@ -83,7 +83,7 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 3,
         containerId: "item:earth_geode_iii",
         requiredUnveilingLevel: 15,
-        permanentEffect: { effect: "manaRegeneration", type: "mult", perLevel: 0.01, targetSkillId: "skill:spellcraft" },
+        permanentEffect: { effect: "manaRegeneration", type: "mult", perLevel: 0.01 },
         activeEffect: { effect: "itemOutput", type: "mult", perLevel: 0.025, targetSkillId: "skill:transmutation" },
     },
     {
@@ -95,7 +95,7 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 3,
         containerId: "item:air_egg_iii",
         requiredUnveilingLevel: 15,
-        permanentEffect: { effect: "manaCost", type: "mult", perLevel: 0.01, targetSkillId: "skill:spellcraft" },
+        permanentEffect: { effect: "manaCost", type: "mult", perLevel: 0.01 },
         activeEffect: { effect: "manaCapacity", type: "mult", perLevel: 0.025, targetSkillId: "skill:spellcraft" },
     },
     {
@@ -143,7 +143,7 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 4,
         containerId: "item:water_shell_iv",
         requiredUnveilingLevel: 20,
-        permanentEffect: { effect: "companionChance", type: "mult", perLevel: 0.01, targetSkillId: "skill:exploration" },
+        permanentEffect: { effect: "companionChance", type: "mult", perLevel: 0.01 },
         activeEffect: { effect: "artifactChance", type: "mult", perLevel: 0.025, targetSkillId: "skill:combat" },
     },
     {
@@ -167,7 +167,7 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 5,
         containerId: "item:air_egg_v",
         requiredUnveilingLevel: 25,
-        permanentEffect: { effect: "artifactChance", type: "mult", perLevel: 0.01, targetSkillId: "skill:combat" },
+        permanentEffect: { effect: "manaRegeneration", type: "mult", perLevel: 0.01 },
         activeEffect: { effect: "itemOutput", type: "mult", perLevel: 0.025, targetSkillId: "skill:spellcraft" },
     },
     {
@@ -179,7 +179,7 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 5,
         containerId: "item:water_shell_v",
         requiredUnveilingLevel: 25,
-        permanentEffect: { effect: "combatHealth", type: "mult", perLevel: 0.01, targetSkillId: "skill:combat" },
+        permanentEffect: { effect: "manaCapacity", type: "mult", perLevel: 0.01 },
         activeEffect: { effect: "xpGain", type: "mult", perLevel: 0.025, targetSkillId: "skill:exploration" },
     },
     {
@@ -191,8 +191,8 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 1,
         containerId: "item:neutral_prism_i",
         requiredUnveilingLevel: 5,
-        permanentEffect: { effect: "companionEffect", type: "mult", perLevel: 0.01 },
-        activeEffect: { effect: "combatDamage", type: "mult", perLevel: 0.025, targetSkillId: "skill:combat" },
+        permanentEffect: { effect: "actionTime", type: "mult", perLevel: 0.01 },
+        activeEffect: { effect: "xpGain", type: "mult", perLevel: 0.025, targetSkillId: "skill:exploration" },
     },
     {
         id: "companion:earth_prism",
@@ -203,8 +203,8 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 2,
         containerId: "item:neutral_prism_ii",
         requiredUnveilingLevel: 10,
-        permanentEffect: { effect: "preservation", type: "mult", perLevel: 0.001 },
-        activeEffect: { effect: "combatShield", type: "mult", perLevel: 0.025, targetSkillId: "skill:combat" },
+        permanentEffect: { effect: "itemOutput", type: "mult", perLevel: 0.01 },
+        activeEffect: { effect: "combatDamage", type: "mult", perLevel: 0.025, targetSkillId: "skill:combat" },
     },
     {
         id: "companion:air_prism",
@@ -215,8 +215,8 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 3,
         containerId: "item:neutral_prism_iii",
         requiredUnveilingLevel: 15,
-        permanentEffect: { effect: "combatShield", type: "mult", perLevel: 0.01, targetSkillId: "skill:combat" },
-        activeEffect: { effect: "xpGain", type: "mult", perLevel: 0.025, targetSkillId: "skill:combat" },
+        permanentEffect: { effect: "actionTime", type: "mult", perLevel: 0.01 },
+        activeEffect: { effect: "combatInterval", type: "mult", perLevel: 0.025, targetSkillId: "skill:combat" },
     },
     {
         id: "companion:water_prism",
@@ -227,8 +227,8 @@ export const COMPANION_DATA = [
         duplicateCandyAmount: 4,
         containerId: "item:neutral_prism_iv",
         requiredUnveilingLevel: 20,
-        permanentEffect: { effect: "combatInterval", type: "mult", perLevel: 0.01, targetSkillId: "skill:combat" },
-        activeEffect: { effect: "companionChance", type: "mult", perLevel: 0.025, targetSkillId: "skill:exploration" },
+        permanentEffect: { effect: "preservation", type: "mult", perLevel: 0.001 },
+        activeEffect: { effect: "combatShield", type: "mult", perLevel: 0.025, targetSkillId: "skill:combat" },
     },
 ]
 

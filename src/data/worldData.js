@@ -41,8 +41,8 @@ export const WORLD_DATA = {
             produces: ["item:crossroads_field_notes"],
 
             exploration: {
-
-                produces: ["item:neutral_prism_i"] },
+                produces: ["item:neutral_prism_i"],
+            },
             combat: { enemyLineup: [{ archetype: "average" }], produces: ["item:unidentified_crossroads_artifact"], artifactId: "item:crossroads_waystone" },
         },
         {
@@ -56,7 +56,6 @@ export const WORLD_DATA = {
             produces: ["item:mossbound_ore"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[1],
             },
@@ -73,7 +72,6 @@ export const WORLD_DATA = {
             produces: ["item:whispering_seeds"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[1],
             },
@@ -90,7 +88,6 @@ export const WORLD_DATA = {
             produces: ["item:stillwater_reeds"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[1],
             },
@@ -107,7 +104,6 @@ export const WORLD_DATA = {
             produces: ["item:ironroot_ore"],
 
             exploration: {
-
                 produces: ["item:earth_geode_i"],
                 unlockCosts: AREA_UNLOCK_COSTS[2],
             },
@@ -124,7 +120,6 @@ export const WORLD_DATA = {
             produces: ["item:zephyr_plumes"],
 
             exploration: {
-
                 produces: ["item:air_egg_i"],
                 unlockCosts: AREA_UNLOCK_COSTS[2],
             },
@@ -141,7 +136,6 @@ export const WORLD_DATA = {
             produces: ["item:moonlit_pearls"],
 
             exploration: {
-
                 produces: ["item:water_shell_i"],
                 unlockCosts: AREA_UNLOCK_COSTS[2],
             },
@@ -158,7 +152,6 @@ export const WORLD_DATA = {
             produces: ["item:shatterstone_fragments"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[3],
             },
@@ -175,7 +168,6 @@ export const WORLD_DATA = {
             produces: ["item:stormglass_shards"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[3],
             },
@@ -192,7 +184,6 @@ export const WORLD_DATA = {
             produces: ["item:abyssal_ink"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[3],
             },
@@ -209,7 +200,6 @@ export const WORLD_DATA = {
             produces: ["item:basalt_heart"],
 
             exploration: {
-
                 produces: ["item:earth_geode_ii"],
                 unlockCosts: AREA_UNLOCK_COSTS[4],
             },
@@ -226,7 +216,6 @@ export const WORLD_DATA = {
             produces: ["item:skybreak_aether"],
 
             exploration: {
-
                 produces: ["item:air_egg_ii"],
                 unlockCosts: AREA_UNLOCK_COSTS[4],
             },
@@ -243,7 +232,6 @@ export const WORLD_DATA = {
             produces: ["item:tidal_heart"],
 
             exploration: {
-
                 produces: ["item:water_shell_ii"],
                 unlockCosts: AREA_UNLOCK_COSTS[4],
             },
@@ -260,7 +248,6 @@ export const WORLD_DATA = {
             produces: ["item:deepstone_crystals"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[5],
             },
@@ -277,7 +264,6 @@ export const WORLD_DATA = {
             produces: ["item:highwind_plumes"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[5],
             },
@@ -294,7 +280,6 @@ export const WORLD_DATA = {
             produces: ["item:mooncurrent_pearls"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[5],
             },
@@ -311,7 +296,6 @@ export const WORLD_DATA = {
             produces: ["item:verdant_heartwood"],
 
             exploration: {
-
                 produces: ["item:earth_geode_iii"],
                 unlockCosts: AREA_UNLOCK_COSTS[6],
             },
@@ -328,7 +312,6 @@ export const WORLD_DATA = {
             produces: ["item:stormwing_feathers"],
 
             exploration: {
-
                 produces: ["item:air_egg_iii"],
                 unlockCosts: AREA_UNLOCK_COSTS[6],
             },
@@ -345,7 +328,6 @@ export const WORLD_DATA = {
             produces: ["item:glacial_pearls"],
 
             exploration: {
-
                 produces: ["item:water_shell_iii"],
                 unlockCosts: AREA_UNLOCK_COSTS[6],
             },
@@ -362,7 +344,6 @@ export const WORLD_DATA = {
             produces: ["item:obsidian_fragments"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[7],
             },
@@ -379,7 +360,6 @@ export const WORLD_DATA = {
             produces: ["item:celestial_aether"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[7],
             },
@@ -396,7 +376,6 @@ export const WORLD_DATA = {
             produces: ["item:abyssal_corals"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[7],
             },
@@ -413,7 +392,6 @@ export const WORLD_DATA = {
             produces: ["item:primordial_ore"],
 
             exploration: {
-
                 produces: ["item:earth_geode_iv"],
                 unlockCosts: AREA_UNLOCK_COSTS[8],
             },
@@ -430,7 +408,6 @@ export const WORLD_DATA = {
             produces: ["item:starfall_aether"],
 
             exploration: {
-
                 produces: ["item:air_egg_iv"],
                 unlockCosts: AREA_UNLOCK_COSTS[8],
             },
@@ -447,7 +424,6 @@ export const WORLD_DATA = {
             produces: ["item:worldtide_pearls"],
 
             exploration: {
-
                 produces: ["item:water_shell_iv"],
                 unlockCosts: AREA_UNLOCK_COSTS[8],
             },
@@ -464,7 +440,6 @@ export const WORLD_DATA = {
             produces: ["item:worldcore_shards"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[9],
             },
@@ -481,7 +456,6 @@ export const WORLD_DATA = {
             produces: ["item:firmament_plumes"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[9],
             },
@@ -498,7 +472,6 @@ export const WORLD_DATA = {
             produces: ["item:leviathan_essence"],
 
             exploration: {
-
                 produces: [],
                 unlockCosts: AREA_UNLOCK_COSTS[9],
             },
@@ -515,7 +488,6 @@ export const WORLD_DATA = {
             produces: ["item:genesis_ore"],
 
             exploration: {
-
                 produces: ["item:earth_geode_v"],
                 unlockCosts: AREA_UNLOCK_COSTS[10],
             },
@@ -532,7 +504,6 @@ export const WORLD_DATA = {
             produces: ["item:origin_aether"],
 
             exploration: {
-
                 produces: ["item:air_egg_v"],
                 unlockCosts: AREA_UNLOCK_COSTS[10],
             },
@@ -549,7 +520,6 @@ export const WORLD_DATA = {
             produces: ["item:eternal_tideheart"],
 
             exploration: {
-
                 produces: ["item:water_shell_v"],
                 unlockCosts: AREA_UNLOCK_COSTS[10],
             },

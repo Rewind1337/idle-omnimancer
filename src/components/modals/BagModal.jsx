@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useState } from "react"
 
 import '../Modal.scss'
 import "./BagModal.scss"
@@ -90,7 +90,12 @@ function BagModalContent({
     const visibleBagGroupFilters = BAG_GROUP_FILTERS.filter(group =>
         !group.skillId || unlockedSkills.has(group.skillId)
     )
+    const activeGroupIsVisible = visibleBagGroupFilters.some(group => group.id === activeGroup)
     const { buyBagSlot, sellItem } = useGameActions()
+
+    useEffect(() => {
+        if (!activeGroupIsVisible) setActiveGroup("all")
+    }, [activeGroupIsVisible])
 
     const inventoryEntries = useMemo(() => Object.entries(inventory)
         .filter(([itemId, amount]) => ITEM_DATA_BY_ID[itemId] && amount > 0), [inventory])

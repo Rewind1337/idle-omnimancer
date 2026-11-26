@@ -17,7 +17,7 @@ export const ZEN_CONFIG = {
     skillXP: { firstLevelXP: 2 },
     time: { base: 360, perTier: 0 },
     actionXP: { base: 5, perTier: 5 },
-    unlockCosts: [
+    improvementCosts: [
         { item: "currency:coins", amount: 5000 },
         { item: "item:bound_notes", amount: 250 },
         { item: "item:translated_scrolls", amount: 250 },

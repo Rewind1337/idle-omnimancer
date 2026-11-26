@@ -9,6 +9,7 @@ export const SKILL_NAVIGATION = [
     { id: 4, skillId: "skill:unveiling", name: "Unveiling", icon: SKILL_ICONS.UNVEILING, variant: "unveiling" },
     { id: 5, skillId: "skill:companions", name: "Companions", icon: SKILL_ICONS.COMPANIONS, variant: "companions" },
     { id: 6, skillId: "skill:combat", name: "Combat", icon: SKILL_ICONS.COMBAT, variant: "combat" },
+    { id: 8, skillId: "skill:zen", name: "Zen", icon: SKILL_ICONS.ZEN, variant: "zen", hiddenUntilUnlocked: true },
 ]
 
 // Opened through the floating panel; intentionally excluded from the top navigation.

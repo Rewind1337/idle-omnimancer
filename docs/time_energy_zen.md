@@ -2,12 +2,13 @@
 
 ## Overview
 
-Time Energy and Zen are two related systems built around qualifying idle time.
+Time Energy and Zen are related systems built around meditation and idle time.
 
-- **Time Energy** is a stored resource. It is generated from qualifying idle time while the player is offline and can be spent while the player is online to accelerate active gameplay.
-- **Zen** is a progression skill unlocked separately after Time Energy. Its primary action, **Meditate**, progresses passively during qualifying idle time and awards XP to a meditation tier selected by the player.
+- **Time Energy** is a stored resource. It is generated during qualifying offline idle time once the Time Energy improvement is purchased. Once Zen is also unlocked, online idle meditation can generate it as well. Time Energy is spent online to accelerate active gameplay.
+- **Zen** is a progression skill unlocked separately after Time Energy. Its primary action, **Meditate**, advances in six-minute cycles and awards XP to the meditation tier selected by the player.
+- Once Zen is unlocked, being idle automatically means the player is meditating. The player can also deliberately select Meditate as an active action; doing so stops other active actions, but does not stop passive Combat or passive companion learning.
 
-The systems share the same underlying idle-time cycle. They must not run separate timers that count the same elapsed time twice.
+The systems share one underlying meditation/idle cycle. They must not run separate timers that count the same elapsed time twice.
 
 ## Unlock progression
 
@@ -30,6 +31,8 @@ Before this improvement is purchased, Time Energy does not exist for the player:
 - It is not displayed anywhere.
 - The player cannot use the Time Energy acceleration toggle.
 
+After this improvement is purchased, qualifying offline idle time can generate Time Energy. Online idle generation is not available until Zen is also unlocked.
+
 ### 2. Zen
 
 Zen is a separate Shop improvement and requires the Time Energy improvement to have been purchased first.
@@ -41,35 +44,43 @@ Zen is a separate Shop improvement and requires the Time Energy improvement to h
 | Research T3 books | 250 |
 | Research T4 books | 250 |
 
-Purchasing this improvement unlocks the Zen skill and its Meditate action. The Zen skill must not be accessible before this purchase.
+Purchasing this improvement unlocks the Zen skill, its meditation tiers, and the Meditate action. It also enables online idle meditation and the associated online Time Energy generation. Zen must not be accessible before this purchase.
 
 ## Time Energy
 
 ### Generation
 
-Time Energy is generated **only while the game is offline**, and only for elapsed time during which no active action is progressing.
+Time Energy generation depends on unlock state and whether the player is meditating:
 
-- Conversion rate: **1 hour of qualifying offline idle time generates 10 minutes of Time Energy**.
-- Equivalent cycle: **6 minutes of qualifying idle time generates 60 seconds of Time Energy**.
+- **Before Time Energy is unlocked:** no Time Energy exists for the player.
+- **After Time Energy but before Zen is unlocked:** qualifying offline idle time generates Time Energy. Online idle time does not.
+- **After both improvements are unlocked:** qualifying idle time generates Time Energy both offline and online. Online idle time automatically progresses Meditate.
+
+The conversion rate is:
+- **6 minutes of qualifying meditation = 60 seconds of Time Energy.**
+- Equivalently, **1 hour of qualifying meditation = 10 minutes of Time Energy.**
+
+Additional rules:
 - Maximum stored amount: **2 hours of Time Energy**.
 - The existing maximum offline-progress duration remains **24 hours**.
-- Generation stops at the 2-hour cap. Excess qualifying idle time is not stored for later.
+- Generation stops at the 2-hour cap. Excess generation is not stored for later.
 - Keep fractional values internally so partial periods and the cap are handled accurately.
+- Reaching the Time Energy cap does not stop meditation or Zen XP progression.
 
-There is no online Time Energy generation in this design. In particular, simply leaving the game open while idle does not generate Time Energy.
+There is no online Time Energy generation before Zen is unlocked. Once Zen is unlocked, online idle time automatically becomes meditation and generates Time Energy at the same cycle rate.
 
 ### What counts as idle?
 
-The relevant distinction is whether an **active action** is progressing, not whether any game system is progressing.
+The relevant distinction is whether an **active action other than Meditate** is progressing, not whether any game system is progressing.
 
-The following do not prevent idle time from counting:
-- Combat progressing. Combat is passive and cannot be switched off in the same way as an active action.
+The following do not prevent idle meditation or Time Energy generation:
+- Combat progressing. Combat is passive.
 - Passive companion learning progressing.
-- No action being selected.
+- No active action being selected.
 - An active action finishing during offline simulation.
 - An active action becoming unable to continue because it has run out of required resources.
 
-When an active action finishes or can no longer continue, the remaining eligible offline time is treated as idle from that exact point onward. Time Energy generation must begin for that remaining interval.
+When an active action finishes or can no longer continue, the remaining eligible time is treated as idle from that exact point onward. After Zen is unlocked, this idle time automatically progresses Meditate. Qualifying offline idle time can generate Time Energy even before Zen is unlocked, once the Time Energy improvement has been purchased.
 
 A skill or action being locked or unavailable does not itself prevent idle time from counting. The player always has access to Research and its first action; if that action is not currently running, the player is idle for this purpose.
 
@@ -79,7 +90,7 @@ The storage cap is currently fixed at **2 hours**.
 
 - Reaching the cap stops further Time Energy generation.
 - Time Energy already stored is retained.
-- Reaching the cap does not stop Zen meditation or Zen XP progression.
+- Reaching the cap does not stop Zen meditation, cycle completion, or Zen XP progression.
 - The cap applies to stored Time Energy, not to the amount of idle time that can be simulated or to skill progression.
 
 ## Spending Time Energy: active 2× acceleration
@@ -111,20 +122,27 @@ When the stored energy reaches zero, the game returns to normal speed automatica
 
 ### Purpose and unlock
 
-Zen is a skill focused on passive meditation during idle periods. It is unlocked only by purchasing the Zen Shop improvement described above, which itself requires Time Energy to have been unlocked first.
+Zen is a skill focused on meditation during idle periods. It is unlocked only by purchasing the Zen Shop improvement described above, which itself requires Time Energy to have been unlocked first.
 
 Zen is not automatically unlocked by purchasing Time Energy.
 
 ### Primary action: Meditate
 
-Meditate is the primary action associated with Zen. It progresses passively whenever the player is idle, using the same qualifying idle-time determination as Time Energy.
+Meditate is the primary action associated with Zen. It advances in six-minute cycles.
+
+There are two ways to meditate after Zen is unlocked:
+
+1. **Automatic idle meditation:** When no other active action is running, the player automatically meditates. This happens online and offline. It does not prevent passive Combat or passive companion learning from progressing.
+2. **Manually selected Meditate action:** The player can deliberately select Meditate as their active action. Starting it stops any other active action that was running. Combat and passive companion learning continue because they are passive systems.
+
+Both forms use the same meditation cycle and progress. They must not create separate or overlapping timers.
 
 The initial meditation cycle is:
 
 | Property | Initial value |
 | --- | --- |
 | Cycle duration | 6 minutes |
-| Time Energy associated with a completed offline cycle | 60 seconds |
+| Time Energy per completed cycle | 60 seconds, subject to the storage cap |
 | Mana cost | None |
 | Preservation | None |
 | Item output multiplier | Not applicable; Meditate does not directly output items |
@@ -139,33 +157,35 @@ The player can choose between different meditation targets/tiers. These are sepa
 - The player selects which meditation tier to work on.
 - Each completed Meditate cycle awards the selected tier its configured XP.
 - A cycle awards XP only when it completes. Partial cycles do not award partial XP.
-- Meditate itself has a base XP value and a cycle duration, and follows the normal skill/action progression conventions where applicable.
+- Meditate has a base XP value and a cycle duration, and follows the normal skill/action progression conventions where applicable.
 - There is no mana cost, no preservation mechanic, and no item output multiplier for Meditate.
+- The same selected meditation tier receives XP whether meditation is automatic or manually selected.
 
 ### Relationship between Zen and Time Energy
 
-The two systems use the same elapsed idle-time cycles, but their rewards are distinct:
+The two systems use the same completed meditation cycles, but their rewards are distinct:
 
-- A completed 6-minute qualifying **offline** idle cycle contributes 60 seconds of Time Energy, subject to the 2-hour storage cap.
-- A completed Meditate cycle awards XP to the currently selected meditation tier, whether the qualifying idle time occurs online or offline.
-- **Online idle time can progress Zen meditation, but does not generate Time Energy.**
-- If Time Energy is already at its cap, Zen meditation continues and awards XP normally. The cap must not block or pause skill progression.
-- If the player has not unlocked Time Energy, neither Time Energy generation nor Zen is available. Zen additionally requires its own separate unlock.
+- Each completed six-minute meditation cycle awards XP to the currently selected meditation tier.
+- Each completed cycle generates 60 seconds of Time Energy, subject to the 2-hour cap, provided the Time Energy improvement is unlocked.
+- Before Zen is unlocked, qualifying **offline** idle time still generates Time Energy after the first improvement is purchased, at the same conversion rate. Online idle time does not generate Time Energy until Zen is unlocked.
+- After Zen is unlocked, automatic online idle meditation also generates Time Energy.
+- If Time Energy is already at its cap, meditation continues and awards Zen XP normally. The cap must not block or pause skill progression.
+- If the player has not unlocked Time Energy, Time Energy generation is unavailable. Zen cannot be unlocked until Time Energy has been purchased.
 
 Combat and passive companion learning can continue alongside Meditate. They are passive progression systems and do not occupy the active-action slot.
 
 ### Partial cycle progress
 
-Meditation progress is persistent and must never be discarded merely because the player stops being idle.
+Meditation progress is persistent and must never be discarded merely because the player stops meditating.
 
-For example, if the player meditates for 4 minutes and then starts an active action:
+For example, if the player meditates for 4 minutes and then starts another active action:
 - The incomplete 4-minute cycle is retained.
 - No meditation-tier XP is awarded yet.
-- The active action progresses normally.
-- The next time the player becomes idle, Meditate resumes from the remaining 2 minutes.
-- On completion, the selected meditation tier receives the XP for one full cycle.
+- The newly selected active action progresses normally.
+- The next time the player becomes idle, automatic Meditate resumes from the remaining 2 minutes.
+- On completion, the selected meditation tier receives the XP for one full cycle, and Time Energy is generated if its unlock requirements are met and storage is available.
 
-The same rule applies across online/offline transitions and across separate idle periods. Partial progress is retained, but partial cycles never award XP.
+The same rule applies across online/offline transitions and across separate idle periods. Partial progress is retained, but partial cycles never award XP or Time Energy. If the selected meditation tier changes before a cycle completes, implementation should ensure the cycle's XP is attributed consistently to the tier selected for that cycle; the intended behavior should be confirmed in the UI/action design rather than allowing XP to be split.
 
 ## Offline simulation and time accounting
 
@@ -179,7 +199,7 @@ At a minimum, the simulation must correctly handle:
 5. Passive Combat and passive companion learning continuing during idle intervals.
 6. Time Energy generation during qualifying offline idle intervals, stopping at the storage cap.
 7. Zen meditation cycle progress and completed-cycle XP during qualifying idle intervals, if Zen is unlocked.
-8. Carrying incomplete meditation progress across active actions and future idle intervals.
+8. Carrying incomplete meditation progress across active actions and future idle periods.
 
 Do not count the same elapsed time twice. Time Energy generation, Zen cycle advancement, Combat, companion learning, and active-action simulation should be coordinated against one consistent elapsed-time timeline.
 
@@ -215,8 +235,8 @@ Zen should appear as a skill only after its separate Shop improvement has been p
 ## Explicit exclusions for the initial implementation
 
 The following are intentionally out of scope:
-- Generating Time Energy while the game is online.
-- Generating Time Energy merely because the game is open and idle.
+- Generating Time Energy online before Zen is unlocked. Once Zen is unlocked, online idle meditation generates Time Energy as described above.
+- Generating Time Energy merely because the game is open while an active action is running.
 - Accelerating offline progression with stored Time Energy.
 - Increasing action rewards or XP directly with a 2× reward multiplier.
 - Increasing the 2-hour Time Energy storage cap.

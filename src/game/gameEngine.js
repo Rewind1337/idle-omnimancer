@@ -13,6 +13,7 @@ import { COMPANION_CONFIG } from "../data/companionConfig"
 import { COMBAT_CONFIG, COMBAT_ACTION_BY_AREA_ID } from "../data/combatConfig"
 import { EXPLORATION_CONFIG } from "../data/explorationConfig"
 import { SPELLCRAFT_CONFIG } from "../data/spellcraftConfig"
+import { TIME_ENERGY_CONFIG, ZEN_CONFIG } from "../data/zenConfig"
 import { WORLD_AREA_BY_ID } from "../data/worldData"
 import {
     RESEARCH_BREAKTHROUGH_CONFIG,
@@ -510,6 +511,23 @@ const canStoreActionOutputs = (player, skill, action) => {
     )
     return occupiedSlots - (selectedInputSlotFreed ? 1 : 0) + newItemIds.length <= inventorySlots
 }
+
+const canAffordUpgradeCosts = (player, costs = []) =>
+    Array.isArray(costs) && costs.length > 0 && costs.every(cost =>
+        typeof cost.item === "string" &&
+        Number.isFinite(cost.amount) &&
+        cost.amount >= 0 &&
+        getUnlockCostBalance(player, cost.item) >= cost.amount
+    )
+
+export const canBuyTimeEnergy = player =>
+    !player.timeEnergy?.unlocked &&
+    canAffordUpgradeCosts(player, TIME_ENERGY_CONFIG.unlockCosts)
+
+export const canBuyZen = player =>
+    Boolean(player.timeEnergy?.unlocked) &&
+    !player.zen?.unlocked &&
+    canAffordUpgradeCosts(player, ZEN_CONFIG.unlockCosts)
 
 export const canUnlockSkill = (player, skillId) => {
     const skill = SKILL_CONFIG_BY_ID[skillId]
@@ -2271,11 +2289,11 @@ const advanceCompanionPassiveTraining = (player, deltaMs) => {
 
 const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive) => {
     let remainingMs = deltaMs
+    let progressedMs = 0
 
     // Passive processes continue producing even after their progression level
     // reaches the cap. Active actions stop at their maximum level.
     while (remainingMs > 0 && (!isActive || action.tracksProgress === false || actionState.level < GLOBAL_CONFIG.maxActionLevel)) {
-        // Check Mana before starting each cycle, including automatic repeats.
         if (actionState.progressMs === 0 && !canPayActionCost(player, skill, action)) break
 
         const durationMs = getActionDurationMs(skill, action, player)
@@ -2284,15 +2302,15 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
 
         actionState.progressMs += consumedMs
         remainingMs -= consumedMs
+        progressedMs += consumedMs
 
         if (actionState.progressMs + 0.0001 < durationMs) break
 
-        // Check Mana and bag capacity before completing the action. If a new
-        // item type would exceed capacity, hold the completed cycle until space
-        // becomes available rather than consuming Mana or discarding output.
+        // A completed cycle that cannot fit in the Bag remains pending and
+        // continues to occupy the active slot; it does not turn into idle time.
         if (!canPayActionCost(player, skill, action) || !canStoreActionOutputs(player, skill, action)) break
-        payActionCost(player, skill, action)
 
+        payActionCost(player, skill, action)
         actionState.progressMs = 0
         awardActionXP(player, skill, action, actionState)
     }
@@ -2300,32 +2318,79 @@ const advanceOneAction = (player, skill, action, actionState, deltaMs, isActive)
     if (actionState.level >= GLOBAL_CONFIG.maxActionLevel && isActive) {
         actionState.progressMs = 0
     }
+
+    return { unusedMs: remainingMs, eligibleMs: progressedMs }
+}
+
+const addTimeEnergy = (player, amountMs) => {
+    if (!player.timeEnergy?.unlocked || !Number.isFinite(amountMs) || amountMs <= 0) return
+    player.timeEnergy.currentMs = Math.min(
+        TIME_ENERGY_CONFIG.capMs,
+        Math.max(0, Number(player.timeEnergy.currentMs) || 0) + amountMs
+    )
+}
+
+// A cycle keeps the target it started with. Switching tiers during a cycle
+// changes the next reward, never splitting XP across two meditation targets.
+const advanceMeditation = (player, deltaMs, requestedTierId) => {
+    if (!player.zen?.unlocked || deltaMs <= 0) return 0
+
+    const durationMs = ZEN_CONFIG.time.base * 1000
+    let remainingMs = deltaMs
+    let progressedMs = 0
+
+    while (remainingMs > 0) {
+        const cycleTierId = player.zen.cycleTierId ?? requestedTierId ?? player.zen.selectedTierId
+        const action = ZEN_CONFIG.actions.find(entry => entry.id === cycleTierId) ?? ZEN_CONFIG.actions[0]
+        if (!action) break
+
+        const actionState = player.skills?.[ZEN_CONFIG.id]?.actions?.[action.id]
+        if (!actionState?.unlocked) break
+
+        player.zen.cycleTierId = action.id
+        const timeLeft = Math.max(0, durationMs - player.zen.progressMs)
+        const consumedMs = Math.min(remainingMs, timeLeft)
+        player.zen.progressMs += consumedMs
+        remainingMs -= consumedMs
+        progressedMs += consumedMs
+
+        if (player.zen.progressMs + 0.0001 < durationMs) break
+
+        player.zen.progressMs = 0
+        player.zen.cycleTierId = null
+        awardActionXP(player, ZEN_CONFIG, action, actionState)
+        // The cap limits storage only; it never pauses Zen progression or XP.
+        addTimeEnergy(player, 60 * 1000)
+    }
+
+    return progressedMs
 }
 
 const advanceRunningActions = (player, deltaMs) => {
-    // The game currently permits one selected active action globally.
-    if (player.activeAction) {
+    let idleMs = player.activeAction ? 0 : deltaMs
+    let eligibleMs = 0
+
+    // Manually selecting Meditate uses the same persisted timer as automatic idle Zen.
+    if (player.activeAction?.skillId === ZEN_CONFIG.id) {
+        eligibleMs = advanceMeditation(player, deltaMs, player.activeAction.actionId)
+    } else if (player.activeAction) {
         const { skillId, actionId } = player.activeAction
         const skill = SKILL_CONFIG_BY_ID[skillId]
         const action = skill?.actions.find(entry => entry.id === actionId)
-        const actionState = player.skills[skillId]?.actions[actionId]
+        const actionState = player.skills?.[skillId]?.actions?.[actionId]
 
         if (skill && action && actionState?.unlocked) {
             const activity = action.activity ?? skill.activity ?? "active"
             if (activity === "active") {
-                advanceOneAction(player, skill, action, actionState, deltaMs, true)
+                const actionProgress = advanceOneAction(player, skill, action, actionState, deltaMs, true)
+                eligibleMs = actionProgress.eligibleMs
 
-                // An active process stops when it reaches its level cap or can no
-                // longer afford the next cycle. In the latter case, discard any
-                // unfinished progress so restarting never grants a free partial cycle.
                 const reachedLevelCap =
                     action.tracksProgress !== false &&
                     actionState.level >= GLOBAL_CONFIG.maxActionLevel
                 const canContinue = canPayActionCost(player, skill, action)
 
                 if (reachedLevelCap || !canContinue) {
-                    // Keep the chosen material while it is still available. Clear it
-                    // only when the completed action consumed the final selected item.
                     if (!canContinue && action.inputSelection) {
                         const selectedItemId = actionState.selectedItemId
                         if (selectedItemId && (player.inventory?.[selectedItemId] ?? 0) <= 0) {
@@ -2335,45 +2400,50 @@ const advanceRunningActions = (player, deltaMs) => {
 
                     actionState.progressMs = 0
                     player.activeAction = null
+                    idleMs = actionProgress.unusedMs
                 }
             }
         }
     }
 
-    // Passive actions are opt-in and run independently of the active slot.
+    // Passive actions continue alongside ordinary actions and Zen meditation.
     for (const skill of Object.values(SKILL_CONFIG_BY_ID)) {
         for (const action of skill.actions) {
             const activity = action.activity ?? skill.activity ?? "active"
             if (activity !== "passive" || skill.id === COMBAT_CONFIG.id) continue
 
-            const actionState = player.skills[skill.id]?.actions[action.id]
+            const actionState = player.skills?.[skill.id]?.actions?.[action.id]
             if (!actionState?.unlocked || !actionState.running) continue
 
-            advanceOneAction(player, skill, action, actionState, deltaMs, false)
+            const passiveProgress = advanceOneAction(player, skill, action, actionState, deltaMs, false)
+            eligibleMs = Math.max(eligibleMs, passiveProgress.eligibleMs)
         }
     }
 
+    const trainableCompanions = getTrainableActiveCompanionIds(player).length > 0 &&
+        player.skills?.[COMPANION_CONFIG.id]?.actions?.[COMPANION_CONFIG.actions[0].id]?.unlocked
+    const combatActionRunning = Boolean(
+        player.combat?.phase !== "inventoryFull" &&
+        Object.values(player.skills?.[COMBAT_CONFIG.id]?.actions ?? {}).some(actionState => actionState?.running)
+    )
+    if (trainableCompanions || combatActionRunning) eligibleMs = deltaMs
+
     advanceCompanionPassiveTraining(player, deltaMs)
     advanceCombat(player, deltaMs)
+
+    return { idleMs, eligibleMs }
 }
 
-// Advance all eligible systems by the actual elapsed time. The 100ms online
-// tick is processed as-is. Long offline intervals are simulated in 1-second
-// slices so regenerated resources become available over time rather than all
-// being granted before every offline action is calculated.
-export const advanceGame = (playerState, deltaMs, now = Date.now()) => {
-    if (!Number.isFinite(deltaMs) || deltaMs <= 0) {
-        return { ...playerState, lastUpdatedAt: now }
-    }
-
+// Advance ordinary time once. Any interval left after an action stops is
+// immediately treated as idle, including inside the same offline slice.
+const advanceGameCore = (playerState, deltaMs, isOffline) => {
     const player = structuredClone(playerState)
-    const maxSliceMs = deltaMs > 1000 ? 1000 : deltaMs
+    const maxSliceMs = isOffline && deltaMs > 1000 ? 1000 : Math.min(100, deltaMs)
     let remainingMs = deltaMs
+    let eligibleMs = 0
 
     while (remainingMs > 0) {
         const sliceMs = Math.min(remainingMs, maxSliceMs)
-
-        // Mana capacity and regeneration are derived from the current Spellcraft level.
         const maxMana = getManaCapacity(player)
         player.mana.max = maxMana
         player.mana.current = Math.min(
@@ -2381,8 +2451,59 @@ export const advanceGame = (playerState, deltaMs, now = Date.now()) => {
             player.mana.current + getManaRegeneration(player) * (sliceMs / 1000)
         )
 
-        advanceRunningActions(player, sliceMs)
+        const activity = advanceRunningActions(player, sliceMs)
+        let sliceEligibleMs = activity.eligibleMs
+
+        if (activity.idleMs > 0) {
+            if (player.zen?.unlocked) {
+                const meditationMs = advanceMeditation(player, activity.idleMs, player.zen.selectedTierId)
+                sliceEligibleMs = Math.max(sliceEligibleMs, meditationMs)
+            } else if (isOffline && player.timeEnergy?.unlocked) {
+                // Before Zen is purchased, only qualifying offline idle generates energy.
+                addTimeEnergy(player, activity.idleMs / TIME_ENERGY_CONFIG.idleGenerationDivisor)
+            }
+        }
+
+        eligibleMs += Math.min(sliceMs, sliceEligibleMs)
         remainingMs -= sliceMs
+    }
+
+    return { player, eligibleMs }
+}
+
+// Extra speed is genuine simulation time, never a reward multiplier. One ms of
+// Time Energy pays for one eligible extra ms; offline simulation is excluded.
+export const advanceGame = (playerState, deltaMs, now = Date.now(), isOffline = false) => {
+    if (!Number.isFinite(deltaMs) || deltaMs <= 0) {
+        return { ...playerState, lastUpdatedAt: now }
+    }
+
+    const base = advanceGameCore(playerState, deltaMs, isOffline)
+    let player = base.player
+
+    if (
+        !isOffline &&
+        base.eligibleMs > 0 &&
+        player.timeEnergy?.unlocked &&
+        player.timeEnergy?.accelerationEnabled === true &&
+        player.timeEnergy.currentMs > 0
+    ) {
+        // Only the balance available after real elapsed time authorizes this tick's
+        // bonus. Energy produced inside the bonus simulation remains stored.
+        let energyBudgetMs = Math.min(deltaMs, player.timeEnergy.currentMs)
+        let extraElapsedMs = 0
+
+        while (energyBudgetMs > 0 && extraElapsedMs < deltaMs) {
+            const stepMs = Math.min(100, energyBudgetMs, deltaMs - extraElapsedMs)
+            const extra = advanceGameCore(player, stepMs, false)
+            player = extra.player
+            const spentMs = Math.min(extra.eligibleMs, player.timeEnergy.currentMs)
+            if (spentMs <= 0) break
+
+            player.timeEnergy.currentMs = Math.max(0, player.timeEnergy.currentMs - spentMs)
+            energyBudgetMs -= spentMs
+            extraElapsedMs += stepMs
+        }
     }
 
     player.lastUpdatedAt = now

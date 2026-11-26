@@ -527,7 +527,7 @@ export const canBuyTimeEnergy = player =>
 export const canBuyZen = player =>
     Boolean(player.timeEnergy?.unlocked) &&
     !player.zen?.unlocked &&
-    canAffordUpgradeCosts(player, ZEN_CONFIG.unlockCosts)
+    canAffordUpgradeCosts(player, ZEN_CONFIG.improvementCosts)
 
 export const canUnlockSkill = (player, skillId) => {
     const skill = SKILL_CONFIG_BY_ID[skillId]

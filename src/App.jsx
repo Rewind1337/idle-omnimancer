@@ -71,13 +71,14 @@ function ResponsivePage({
     const updateNavigationBottom = () => {
       setNavigationBottom(Math.ceil(element.getBoundingClientRect().bottom + 8))
     }
-    updateNavigationBottom()
+    const frameId = window.requestAnimationFrame(updateNavigationBottom)
     const observer = typeof ResizeObserver !== "undefined"
       ? new ResizeObserver(updateNavigationBottom)
       : null
     observer?.observe(element)
     window.addEventListener("resize", updateNavigationBottom)
     return () => {
+      window.cancelAnimationFrame(frameId)
       observer?.disconnect()
       window.removeEventListener("resize", updateNavigationBottom)
     }

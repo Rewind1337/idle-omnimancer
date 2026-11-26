@@ -1,0 +1,31 @@
+.page-flex-zen {
+    .zen-meditation-section,
+    .zen-cycle-panel {
+        width: 100%;
+    }
+
+    .zen-cycle-note {
+        white-space: normal;
+        opacity: 0.9;
+    }
+
+    .zen-tier-card {
+        width: 100%;
+
+        .flex {
+            min-width: 0;
+        }
+
+        .text {
+            white-space: normal;
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .page-flex-zen {
+        .zen-tier-card > .flex {
+            align-items: flex-start;
+        }
+    }
+}

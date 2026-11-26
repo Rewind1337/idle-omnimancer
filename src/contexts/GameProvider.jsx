@@ -56,8 +56,9 @@ const areSameCompanionProgress = (first = {}, second = {}) => {
         )
 }
 
-// Ignore fields that change continuously (Mana.current and action progressMs).
-// Everything else here affects a rendered page, navigation badge, modal, or action.
+// Ignore high-frequency fields (Mana.current, action progressMs, stored Time Energy,
+// and meditation progress); focused store subscriptions publish those without
+// rerendering every page. Discrete changes here affect visible UI or actions.
 const hasVisiblePlayerChanges = (previous, next) => {
     if (
         !areSameArray(previous.unlockedSkills, next.unlockedSkills) ||

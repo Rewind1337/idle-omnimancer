@@ -1,6 +1,6 @@
 /* Color Tokens */
-$button-colors: primary, secondary, neutral, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling, companions;
-$skill-colors: research, spellcraft, shop, transmutation, exploration, combat, unveiling, companions;
+$button-colors: primary, secondary, neutral, earth, air, water, research, spellcraft, transmutation, exploration, combat, unveiling, companions, zen;
+$skill-colors: research, spellcraft, shop, transmutation, exploration, combat, unveiling, companions, zen;
 $resource-colors: mana;
 
 /* Root Definitions - Colors, Fonts, etc */
@@ -140,6 +140,25 @@ $resource-colors: mana;
   --skill-companions-dark: hsla(155, 46%, 16%, 1);
   --skill-companions-text-on-dark: hsla(155, 39%, 84%, 1);
   --skill-companions-text-on-light: hsla(155, 39%, 18%, 1);
+
+  /* Zen: a calm indigo palette shared by buttons, skill pages, and progress bars. */
+  --button-zen: hsla(242, 35%, 27%, 1);
+  --button-zen-hover: hsla(242, 40%, 34%, 1);
+  --button-zen-active: hsla(242, 42%, 21%, 1);
+  --button-zen-toggled: hsla(242, 44%, 38%, 1);
+  --button-zen-border: hsla(242, 48%, 47%, 1);
+  --button-zen-dark: hsla(242, 42%, 15%, 1);
+  --button-zen-text-on-dark: hsla(242, 35%, 87%, 1);
+  --button-zen-text-on-light: hsla(242, 35%, 18%, 1);
+
+  --skill-zen: hsla(242, 35%, 27%, 1);
+  --skill-zen-hover: hsla(242, 40%, 34%, 1);
+  --skill-zen-active: hsla(242, 42%, 21%, 1);
+  --skill-zen-toggled: hsla(242, 44%, 38%, 1);
+  --skill-zen-border: hsla(242, 48%, 47%, 1);
+  --skill-zen-dark: hsla(242, 42%, 15%, 1);
+  --skill-zen-text-on-dark: hsla(242, 35%, 87%, 1);
+  --skill-zen-text-on-light: hsla(242, 35%, 18%, 1);
 
   /* Resource Colors */
   --resource-mana: hsla(205, 78%, 36%, 1);

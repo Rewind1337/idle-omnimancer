@@ -22,10 +22,14 @@ export function Navigation({
 }) {
   const { player } = useGame()
   const unlockedSkills = new Set(player.unlockedSkills)
-  const topSkills = SKILL_NAVIGATION.filter(skill => !skill.floatingPanel)
-  const nextLockedSkill = topSkills.find(
-    skill => !unlockedSkills.has(skill.skillId)
+  const availableTopSkills = SKILL_NAVIGATION.filter(skill =>
+    !skill.floatingPanel && (!skill.hiddenUntilUnlocked || unlockedSkills.has(skill.skillId))
   )
+  const zenSkill = availableTopSkills.find(skill => skill.skillId === "skill:zen")
+  const topSkills = zenSkill && unlockedSkills.has(zenSkill.skillId)
+    ? [zenSkill, ...availableTopSkills.filter(skill => skill !== zenSkill)]
+    : availableTopSkills
+  const nextLockedSkill = topSkills.find(skill => !unlockedSkills.has(skill.skillId))
 
   const tabs = [
     ...topSkills

@@ -432,7 +432,7 @@ export const gameReducer = (state, action) => {
             if (!canBuyZen(state)) return state
             const inventory = { ...state.inventory }
             const currencies = { ...state.currencies }
-            for (const cost of ZEN_CONFIG.unlockCosts) {
+            for (const cost of ZEN_CONFIG.improvementCosts) {
                 if (cost.item.startsWith("currency:")) {
                     const currencyId = cost.item.slice("currency:".length)
                     currencies[currencyId] = (currencies[currencyId] ?? 0) - cost.amount

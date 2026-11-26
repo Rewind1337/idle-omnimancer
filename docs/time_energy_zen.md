@@ -10,6 +10,8 @@ Time Energy and Zen are related systems built around meditation and idle time.
 
 The systems share one underlying meditation/idle cycle. They must not run separate timers that count the same elapsed time twice.
 
+Once Zen is unlocked, it is shown as its own skill button at the start of the top navigation, before Research. The Time Energy display remains a shared resource panel rather than a Research-page feature.
+
 ## Unlock progression
 
 There are two separate, one-time Shop improvements. Both consume their full costs when purchased.
@@ -185,7 +187,7 @@ For example, if the player meditates for 4 minutes and then starts another activ
 - The next time the player becomes idle, automatic Meditate resumes from the remaining 2 minutes.
 - On completion, the selected meditation tier receives the XP for one full cycle, and Time Energy is generated if its unlock requirements are met and storage is available.
 
-The same rule applies across online/offline transitions and across separate idle periods. Partial progress is retained, but partial cycles never award XP or Time Energy. If the selected meditation tier changes before a cycle completes, implementation should ensure the cycle's XP is attributed consistently to the tier selected for that cycle; the intended behavior should be confirmed in the UI/action design rather than allowing XP to be split.
+The same rule applies across online/offline transitions and across separate idle periods. Partial progress is retained, but partial cycles never award XP or Time Energy. If the selected meditation tier changes before a cycle completes, the cycle keeps the tier that was selected when that cycle began. The new selection applies to the next cycle. XP is never split between tiers.
 
 ## Offline simulation and time accounting
 
@@ -198,7 +200,7 @@ At a minimum, the simulation must correctly handle:
 4. The remaining interval becoming idle immediately after either of those events.
 5. Passive Combat and passive companion learning continuing during idle intervals.
 6. Time Energy generation during qualifying offline idle intervals, stopping at the storage cap.
-7. Zen meditation cycle progress and completed-cycle XP during qualifying idle intervals, if Zen is unlocked.
+7. Zen meditation cycle progress and completed-cycle XP during qualifying idle intervals, both online and offline, if Zen is unlocked.
 8. Carrying incomplete meditation progress across active actions and future idle periods.
 
 Do not count the same elapsed time twice. Time Energy generation, Zen cycle advancement, Combat, companion learning, and active-action simulation should be coordinated against one consistent elapsed-time timeline.
@@ -220,17 +222,23 @@ At minimum, account for:
 
 Unlock state must be authoritative: a player who has not purchased an improvement must not gain access to its associated functionality through stale or malformed saved state.
 
-## Research page UI
+## Time Energy panel and Zen navigation UI
 
-Time Energy should initially be displayed in a dedicated area on the **Research page**. Do not add it to the normal Bag or treat it as a regular inventory item.
+Time Energy should be displayed in its own floating panel after the Time Energy improvement is purchased. In the top-navigation layout, anchor it to the upper-right of the page, immediately below the navigation. It should remain available while the player visits any page; do not make it part of the Research page or the Bag.
 
-The dedicated area should provide:
+The panel should provide:
 - Current stored Time Energy and the 2-hour cap.
 - A visual representation of storage.
 - The online 2× acceleration toggle.
 - A concise explanation of how Time Energy is generated and spent.
 
-Zen should appear as a skill only after its separate Shop improvement has been purchased. Its UI should expose the available meditation tiers, the selected tier, its progression/XP, and the current partial cycle progress in a way consistent with the existing skill and action interfaces.
+Once the separate Zen improvement is purchased:
+- Show Zen as its own skill button in the top navigation, positioned before Research.
+- Put the Time Energy panel inside the Meditate section on the Zen page instead of showing the separate floating panel there.
+- The Zen page should use the existing skill summary and action/progression styling where possible.
+- Show the Meditate cycle progress, selected meditation tier, per-tier level and XP progress, and a way to select the tier whose XP should be awarded next.
+- Make the two initial tiers **Grounding** and **Deep Stillness**, each with its own fitting icon.
+- Use distinct Lucide icons for the Zen skill, Meditate, Grounding, and Deep Stillness.
 
 ## Explicit exclusions for the initial implementation
 

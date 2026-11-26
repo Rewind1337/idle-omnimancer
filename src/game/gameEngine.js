@@ -2446,13 +2446,22 @@ const advanceGameCore = (playerState, deltaMs, isOffline) => {
         const sliceMs = Math.min(remainingMs, maxSliceMs)
         const maxMana = getManaCapacity(player)
         player.mana.max = maxMana
+
+        const manaBefore = Math.max(0, Number(player.mana.current) || 0)
+        const manaRegeneration = Math.max(0, getManaRegeneration(player))
+        const manaRoom = Math.max(0, maxMana - manaBefore)
+        const manaEligibleMs = manaRegeneration > 0 && manaRoom > 0
+            ? Math.min(sliceMs, (manaRoom / manaRegeneration) * 1000)
+            : 0
         player.mana.current = Math.min(
             maxMana,
-            player.mana.current + getManaRegeneration(player) * (sliceMs / 1000)
+            manaBefore + manaRegeneration * (sliceMs / 1000)
         )
 
         const activity = advanceRunningActions(player, sliceMs)
-        let sliceEligibleMs = activity.eligibleMs
+        // Mana regeneration is also simulation progress. It may justify
+        // acceleration by itself, but only until the pool reaches capacity.
+        let sliceEligibleMs = Math.max(activity.eligibleMs, manaEligibleMs)
 
         if (activity.idleMs > 0) {
             if (player.zen?.unlocked) {

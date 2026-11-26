@@ -16,6 +16,7 @@ import {
 import { RESEARCH_BREAKTHROUGH_CONFIG } from "../data/researchBreakthroughConfig"
 import { COMBAT_CONFIG, COMBAT_ACTION_BY_AREA_ID } from "../data/combatConfig"
 import { SPELLCRAFT_CONFIG } from "../data/spellcraftConfig"
+import { TIME_ENERGY_CONFIG, ZEN_CONFIG } from "../data/zenConfig"
 import { WORLD_AREA_BY_ID, WORLD_DATA } from "../data/worldData"
 
 export const SAVE_KEY = "omnimancer-idle-save"
@@ -93,6 +94,8 @@ export const createInitialPlayerState = () => {
         inventory: {},
         inventorySlots: DEFAULT_INVENTORY_SLOTS,
         researchBreakthroughTier: 0,
+        timeEnergy: { unlocked: false, currentMs: 0, accelerationEnabled: false },
+        zen: { unlocked: false, selectedTierId: ZEN_CONFIG.actions[0].id, progressMs: 0, cycleTierId: null },
         missionTier: MISSION_DATA.startingTier,
         completedMissions: [],
         unlockedCompanions: [],
@@ -128,6 +131,22 @@ export const normalizePlayerState = (savedState) => {
     if (!isRecord(savedState)) return initial
 
     const validSkillIds = new Set(SKILL_NAVIGATION.map(({ skillId }) => skillId))
+    const savedTimeEnergy = isRecord(savedState.timeEnergy) ? savedState.timeEnergy : {}
+    const timeEnergyUnlocked = savedTimeEnergy.unlocked === true
+    const savedZen = isRecord(savedState.zen) ? savedState.zen : {}
+    // Zen is authoritative only when the prerequisite Time Energy upgrade is owned.
+    const zenUnlocked = timeEnergyUnlocked && savedZen.unlocked === true
+    const validZenActionIds = new Set(ZEN_CONFIG.actions.map(action => action.id))
+    const selectedTierId = validZenActionIds.has(savedZen.selectedTierId)
+        ? savedZen.selectedTierId
+        : ZEN_CONFIG.actions[0].id
+    const meditationDurationMs = ZEN_CONFIG.time.base * 1000
+    const meditationProgressMs = zenUnlocked
+        ? Math.min(meditationDurationMs - 0.001, Math.max(0, finiteNumber(savedZen.progressMs, 0)))
+        : 0
+    const cycleTierId = meditationProgressMs > 0 && validZenActionIds.has(savedZen.cycleTierId)
+        ? savedZen.cycleTierId
+        : meditationProgressMs > 0 ? selectedTierId : null
     const unlockedSkillIds = new Set(initial.unlockedSkills)
     const unlockedCompanions = [...new Set(
         (Array.isArray(savedState.unlockedCompanions) ? savedState.unlockedCompanions : [])
@@ -138,9 +157,11 @@ export const normalizePlayerState = (savedState) => {
 
     if (Array.isArray(savedState.unlockedSkills)) {
         for (const skillId of savedState.unlockedSkills) {
-            if (validSkillIds.has(skillId)) unlockedSkillIds.add(skillId)
+            if (validSkillIds.has(skillId) && (skillId !== ZEN_CONFIG.id || zenUnlocked)) unlockedSkillIds.add(skillId)
         }
     }
+    if (zenUnlocked) unlockedSkillIds.add(ZEN_CONFIG.id)
+    else unlockedSkillIds.delete(ZEN_CONFIG.id)
 
     const unlockedSkills = SKILL_NAVIGATION
         .filter(({ skillId }) => unlockedSkillIds.has(skillId))
@@ -484,6 +505,19 @@ export const normalizePlayerState = (savedState) => {
             RESEARCH_BREAKTHROUGH_CONFIG.maxTier,
             0
         ),
+        timeEnergy: {
+            unlocked: timeEnergyUnlocked,
+            currentMs: timeEnergyUnlocked
+                ? Math.min(TIME_ENERGY_CONFIG.capMs, Math.max(0, finiteNumber(savedTimeEnergy.currentMs, 0)))
+                : 0,
+            accelerationEnabled: timeEnergyUnlocked && savedTimeEnergy.accelerationEnabled === true,
+        },
+        zen: {
+            unlocked: zenUnlocked,
+            selectedTierId,
+            progressMs: meditationProgressMs,
+            cycleTierId,
+        },
         missionTier,
         completedMissions,
         unlockedCompanions,

@@ -36,6 +36,19 @@ const MAX_OFFLINE_CHUNK_MS = 6 * 60 * 60 * 1000
 const MAX_OFFLINE_CHUNKS = 300
 
 const formatGainAmount = amount => Number(amount).toLocaleString()
+const formatTimeEnergyGain = amountMs => {
+    const totalSeconds = Math.floor(amountMs / 1000)
+    const hours = Math.floor(totalSeconds / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    const seconds = totalSeconds % 60
+    const parts = []
+
+    if (hours > 0) parts.push(hours + "h")
+    if (minutes > 0) parts.push(minutes + "m")
+    if (seconds > 0 || parts.length === 0) parts.push(seconds + "s")
+
+    return parts.join(" ")
+}
 const areSameArray = (first = [], second = []) =>
     first.length === second.length && first.every((value, index) => value === second[index])
 
@@ -450,6 +463,15 @@ const getOfflineGains = (previous, next) => {
         gains.push({
             key: "currency:" + currencyId,
             text: "+" + formatGainAmount(gained) + " " + (currency?.name ?? currencyId),
+        })
+    }
+
+    const timeEnergyGained = (next.timeEnergy?.currentMs ?? 0) -
+        (previous.timeEnergy?.currentMs ?? 0)
+    if (next.timeEnergy?.unlocked && timeEnergyGained >= 1000) {
+        gains.push({
+            key: "timeEnergy",
+            text: "+" + formatTimeEnergyGain(timeEnergyGained) + " Time Energy",
         })
     }
 

@@ -6,6 +6,7 @@ import { Heading } from "../components/Heading"
 import { Icon } from "../components/Icon"
 import { Button } from "../components/Button"
 import { Text } from "../components/Text"
+import { Badge } from "../components/Badge"
 import { Tabs } from "../components/Tabs"
 import { ActionResources } from "../components/actions/ActionResources"
 
@@ -16,6 +17,7 @@ import {
     getResearchBreakthroughCost,
 } from "../data/researchBreakthroughConfig"
 import { SKILL_NAVIGATION } from "../data/navigationData"
+import { TIME_ENERGY_CONFIG, ZEN_CONFIG } from "../data/zenConfig"
 import { GLOBAL_CONFIG, SKILL_CONFIG_BY_ID } from "../data/skillConfig"
 import {
     canUnlockAction,
@@ -25,6 +27,8 @@ import {
     getVisibleActions,
     getActionUnlockCosts,
     getSkillUnlockCosts,
+    canBuyTimeEnergy,
+    canBuyZen,
 } from "../game/gameEngine"
 import { humanize } from "../utility/helpers"
 import { useGame } from "../hooks/useGame"
@@ -84,6 +88,54 @@ function ShopUnlockCard({
                 {requirements.length > 0 && (
                     <ActionResources requires={requirements} />
                 )}
+            </Flex>
+        </Paper>
+    )
+}
+
+function TimeEnergyImprovement({ player, buyTimeEnergy }) {
+    const unlocked = player.timeEnergy?.unlocked === true
+    return (
+        <Paper layer={2} variant="zen" className="action action-shop">
+            <Flex direction="column" gap={12}>
+                <Flex direction="row" align="center" gap={16}>
+                    <Icon size={44} variant="zen">
+                        {cloneElement(OTHER_ICONS.HOURGLASS, { size: 40 })}
+                    </Icon>
+                    <Flex direction="column" gap={8}>
+                        <Heading h="3">Time Energy</Heading>
+                        <Text size="small">Store up to two hours of energy from eligible idle time. Spend it online to simulate eligible gameplay at 2× speed.</Text>
+                        <Button variant="zen" size="medium" className="w-100" disabled={unlocked || !canBuyTimeEnergy(player)} onClick={buyTimeEnergy}>
+                            {unlocked ? "Unlocked" : "Unlock Time Energy"}
+                        </Button>
+                    </Flex>
+                </Flex>
+                {!unlocked && <ActionResources requires={TIME_ENERGY_CONFIG.unlockCosts} />}
+            </Flex>
+        </Paper>
+    )
+}
+
+function ZenImprovement({ player, buyZen }) {
+    const unlocked = player.zen?.unlocked === true
+    const prerequisiteMet = player.timeEnergy?.unlocked === true
+    return (
+        <Paper layer={2} variant="zen" className="action action-shop">
+            <Flex direction="column" gap={12}>
+                <Flex direction="row" align="center" gap={16}>
+                    <Icon size={44} variant="zen">
+                        {cloneElement(OTHER_ICONS.MEDITATE, { size: 40 })}
+                    </Icon>
+                    <Flex direction="column" gap={8}>
+                        <Heading h="3">Zen</Heading>
+                        <Text size="small">Unlock meditation. When no other active action is running, you automatically meditate and earn Zen XP and Time Energy.</Text>
+                        {!prerequisiteMet && <Badge variant="transparent" icon={OTHER_ICONS.INFO}>Requires Time Energy</Badge>}
+                        <Button variant="zen" size="medium" className="w-100" disabled={unlocked || !canBuyZen(player)} onClick={buyZen}>
+                            {unlocked ? "Unlocked" : "Unlock Zen"}
+                        </Button>
+                    </Flex>
+                </Flex>
+                {!unlocked && <ActionResources requires={ZEN_CONFIG.unlockCosts} />}
             </Flex>
         </Paper>
     )
@@ -240,7 +292,7 @@ function getAvailableUnlocks(player, unlockSkill, unlockAction) {
 }
 
 export function ShopPage({ onOpenFameShop }) {
-    const { player, unlockSkill, unlockAction, buyBagSlot, buyResearchBreakthrough, buyShopItem } = useGame()
+    const { player, unlockSkill, unlockAction, buyBagSlot, buyResearchBreakthrough, buyTimeEnergy, buyZen, buyShopItem } = useGame()
     const [activeTab, setActiveTab] = useState("improvements")
     const { skills: availableSkills, actions: availableActions } = getAvailableUnlocks(player, unlockSkill, unlockAction)
     const handleTabChange = tabId => {
@@ -283,6 +335,8 @@ export function ShopPage({ onOpenFameShop }) {
                                 player={player}
                                 buyResearchBreakthrough={buyResearchBreakthrough}
                             />
+                            <TimeEnergyImprovement player={player} buyTimeEnergy={buyTimeEnergy} />
+                            <ZenImprovement player={player} buyZen={buyZen} />
                             <BagSlotImprovement player={player} buyBagSlot={buyBagSlot} />
                         </Flex>
                     </ShopSection>

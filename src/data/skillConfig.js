@@ -5,6 +5,7 @@ import { EXPLORATION_CONFIG } from "./explorationConfig"
 import { UNVEILING_CONFIG } from "./unveilingConfig"
 import { COMPANION_CONFIG } from "./companionConfig"
 import { COMBAT_CONFIG } from "./combatConfig"
+import { ZEN_CONFIG } from "./zenConfig"
 
 // Shared progression limits. Keep these in one place so the save state,
 // progression tables and game engine all use the same maximum levels.
@@ -106,6 +107,7 @@ export const SKILL_CONFIGS = [
     UNVEILING_CONFIG,
     COMBAT_CONFIG,
     COMPANION_CONFIG,
+    ZEN_CONFIG,
 ]
 
 export const SKILL_CONFIG_BY_ID = Object.fromEntries(

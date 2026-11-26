@@ -588,7 +588,8 @@ const isKnownAction = (selection, unlockedSkills, skills) => {
     const canonicalActionId = action?.id
     const actionState = skills[skillId]?.actions?.[canonicalActionId]
     const isPassiveAction = (action?.activity ?? skill.activity ?? "active") === "passive"
-    const isMaxLevelActiveAction = action?.tracksProgress !== false &&
+    const isMaxLevelActiveAction = skill.id !== ZEN_CONFIG.id &&
+        action?.tracksProgress !== false &&
         actionState?.level >= GLOBAL_CONFIG.maxActionLevel
 
     return action && !isPassiveAction && !isMaxLevelActiveAction && actionState?.unlocked

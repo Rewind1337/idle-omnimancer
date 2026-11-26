@@ -124,3 +124,9 @@ export const useGameUnlockedSkills = () =>
 
 export const useGameUnlockedCompanions = () =>
     useGameStoreSnapshot("subscribeUnlockedCompanions", "getUnlockedCompanions")
+
+export const useGameTimeEnergy = () =>
+    useGameStoreSnapshot("subscribeTimeEnergy", "getTimeEnergy")
+
+export const useGameZenProgress = () =>
+    useGameStoreSnapshot("subscribeZenProgress", "getZenProgress")

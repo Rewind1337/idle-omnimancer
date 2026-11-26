@@ -2530,7 +2530,10 @@ export const canStartAction = (player, skillId, actionId) => {
     }
 
     const activity = action.activity ?? skill.activity ?? "active"
-    if (activity === "active" && action.tracksProgress !== false && state.level >= GLOBAL_CONFIG.maxActionLevel) {
+    // Meditation remains selectable at level 100 because completed cycles still
+    // restore Time Energy even after this tier has finished gaining XP.
+    if (skillId !== ZEN_CONFIG.id && activity === "active" &&
+        action.tracksProgress !== false && state.level >= GLOBAL_CONFIG.maxActionLevel) {
         return false
     }
 

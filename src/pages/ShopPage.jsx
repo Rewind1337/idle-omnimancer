@@ -104,7 +104,7 @@ function TimeEnergyImprovement({ player, buyTimeEnergy }) {
                     </Icon>
                     <Flex direction="column" gap={8}>
                         <Heading h="3">Time Energy</Heading>
-                        <Text size="small">Store up to two hours of energy from eligible idle time. Spend it online to simulate eligible gameplay at 2× speed.</Text>
+                        <Text size="small">Store up to two hours of energy. Before Zen, it is generated while offline and idle; Zen meditation also restores energy. Spend it online to simulate eligible gameplay at 2× speed.</Text>
                         <Button variant="zen" size="medium" className="w-100" disabled={unlocked || !canBuyTimeEnergy(player)} onClick={buyTimeEnergy}>
                             {unlocked ? "Unlocked" : "Unlock Time Energy"}
                         </Button>

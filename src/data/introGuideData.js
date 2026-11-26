@@ -58,6 +58,14 @@ export const INTRO_GUIDE_DATA = {
             { label: "Actions", title: "Choose who occupies each slot", description: "Active slots are limited and can be unlocked over time. Consider the target skill shown on each active effect, then assign companions to support the activities you are focusing on." },
         ],
     },
+    "skill:zen": {
+        title: "Zen Guide", subtitle: "Meditate while idle, build Zen levels, and store Time Energy", variant: "zen",
+        steps: [
+            { label: "Meditate", title: "Idle time becomes a meditation cycle", description: "After Zen is unlocked, meditation begins automatically whenever no other active action is running. You can also select Meditate manually to replace the current active action. Combat and passive companion learning continue either way." },
+            { label: "Meditation tiers", title: "Choose where each cycle's XP goes", description: "Each tier has its own action level and XP. A cycle keeps the tier it started with, so changing your selection applies to the next cycle rather than splitting the current reward." },
+            { label: "Time Energy", title: "Store time and spend it to accelerate", description: "Time Energy is capped at two hours. Enable 2× acceleration to simulate extra eligible gameplay time while online; one second of energy pays for one additional second of simulation. Offline simulation is never accelerated." },
+        ],
+    },
     "skill:combat": {
         title: "Combat Guide", subtitle: "Fight through explored areas and earn valuable discoveries", variant: "combat",
         steps: [

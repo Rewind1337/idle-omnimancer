@@ -194,8 +194,8 @@ export const createGameProgressStore = () => {
             return () => unlockedCompanionsListeners.delete(listener)
         },
 
-        // Called for every simulation update. This path intentionally handles
-        // only the high-frequency action-progress and Mana snapshots.
+        // Called for every simulation update. Keep action, Mana, Time Energy, and
+        // Zen cycle progress in focused snapshots to avoid global page rerenders.
         updatePlayer(player) {
             const activeAction = player.activeAction
             const nextActionKey = activeAction

@@ -51,7 +51,7 @@ export function TimeEnergyPanel({ inline = false }) {
                         variant="zen"
                         size="small"
                         icon={OTHER_ICONS.SPARKLES}
-                        tooltip="Stored energy is used only while actions, meditation, or passive gameplay can progress."
+                        tooltip="Stored energy is used only while actions, meditation, Mana regeneration, or passive gameplay can progress."
                     >
                         {hasEnergy ? "Stored" : "Empty"}
                     </Badge>

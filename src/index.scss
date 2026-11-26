@@ -66,6 +66,11 @@ svg {
   overflow: hidden;
 }
 
+.top-navigation-anchor {
+  width: 100%;
+  flex: 0 0 auto;
+}
+
 .page {
   display: flex;
   height: 100dvh;

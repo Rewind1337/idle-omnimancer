@@ -76,6 +76,10 @@ const hasVisiblePlayerChanges = (previous, next) => {
         !areSameCompanionProgress(previous.companionProgress, next.companionProgress) ||
         previous.inventorySlots !== next.inventorySlots ||
         previous.researchBreakthroughTier !== next.researchBreakthroughTier ||
+        previous.timeEnergy?.unlocked !== next.timeEnergy?.unlocked ||
+        previous.timeEnergy?.accelerationEnabled !== next.timeEnergy?.accelerationEnabled ||
+        previous.zen?.unlocked !== next.zen?.unlocked ||
+        previous.zen?.selectedTierId !== next.zen?.selectedTierId ||
         previous.missionTier !== next.missionTier ||
         previous.mana?.max !== next.mana?.max ||
         previous.activeAction?.skillId !== next.activeAction?.skillId ||
@@ -624,7 +628,8 @@ export function GameProvider({ children }) {
                 const updatedPlayer = advanceGame(
                     task.player,
                     task.totalMs,
-                    task.startAt + task.totalMs
+                    task.startAt + task.totalMs,
+                    true
                 )
                 updatedPlayer.lastUpdatedAt = task.targetAt
                 suppressNotificationsRef.current = true
@@ -653,7 +658,8 @@ export function GameProvider({ children }) {
             task.player = advanceGame(
                 previousPlayer,
                 deltaMs,
-                task.startAt + nextProcessedMs
+                task.startAt + nextProcessedMs,
+                true
             )
             task.processedMs = nextProcessedMs
 
@@ -820,6 +826,22 @@ export function GameProvider({ children }) {
         dispatch({ type: "BUY_RESEARCH_BREAKTHROUGH" })
     }, [])
 
+    const buyTimeEnergy = useCallback(() => {
+        dispatch({ type: "BUY_TIME_ENERGY" })
+    }, [])
+
+    const buyZen = useCallback(() => {
+        dispatch({ type: "BUY_ZEN" })
+    }, [])
+
+    const toggleTimeAcceleration = useCallback(() => {
+        dispatch({ type: "TOGGLE_TIME_ACCELERATION" })
+    }, [])
+
+    const selectMeditationTier = useCallback(actionId => {
+        dispatch({ type: "SELECT_MEDITATION_TIER", actionId })
+    }, [])
+
     const buyShopItem = useCallback((itemId) => {
         dispatch({ type: "BUY_SHOP_ITEM", itemId })
     }, [])
@@ -859,6 +881,10 @@ export function GameProvider({ children }) {
         unlockSkill,
         buyBagSlot,
         buyResearchBreakthrough,
+        buyTimeEnergy,
+        buyZen,
+        toggleTimeAcceleration,
+        selectMeditationTier,
         buyShopItem,
         sellItem,
         turnInMission,
@@ -866,7 +892,7 @@ export function GameProvider({ children }) {
         unlockCompanionSlot,
         selectCompanion,
         markIntroGuideSeen,
-    }), [resetGame, startAction, selectCombatArea, setCombatRotation, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyResearchBreakthrough, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion, markIntroGuideSeen])
+    }), [resetGame, startAction, selectCombatArea, setCombatRotation, stopAction, togglePassiveAction, unlockAction, unlockSkill, buyBagSlot, buyResearchBreakthrough, buyTimeEnergy, buyZen, toggleTimeAcceleration, selectMeditationTier, buyShopItem, sellItem, turnInMission, selectActionItem, unlockCompanionSlot, selectCompanion, markIntroGuideSeen])
 
     const servicesValue = useMemo(() => ({
         progressStore,

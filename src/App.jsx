@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "./components/Button";
 import { BagModal } from "./components/modals/BagModal"
@@ -25,6 +25,8 @@ import { ExplorationPage } from "./pages/ExplorationPage"
 import { CombatPage } from "./pages/CombatPage";
 import { UnveilingPage } from "./pages/UnveilingPage";
 import { CompanionPage } from "./pages/CompanionPage";
+import { ZenPage } from "./pages/ZenPage";
+import { TimeEnergyPanel } from "./components/TimeEnergyPanel";
 import { OTHER_ICONS } from "./data/iconLibrary";
 import { useGame } from "./hooks/useGame";
 
@@ -46,6 +48,8 @@ function ResponsivePage({
   const [bagModalVisible, setBagModalVisible] = useState(false)
   const [settingsModalVisible, setSettingsModalVisible] = useState(false)
   const [viewportHeight, setViewportHeight] = useState(() => window.innerHeight)
+  const [navigationBottom, setNavigationBottom] = useState(96)
+  const navigationRef = useRef(null)
   const [activeGuideId, setActiveGuideId] = useState(null)
   const { resetGame, player, markIntroGuideSeen } = useGame()
   const currentGuideId = activePage === SHOP_NAVIGATION.id
@@ -57,6 +61,27 @@ function ResponsivePage({
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
+
+  // Measure wrapped navigation instead of relying on a fixed panel offset.
+  useEffect(() => {
+    if (navigationPosition !== "top") return undefined
+    const element = navigationRef.current
+    if (!element) return undefined
+
+    const updateNavigationBottom = () => {
+      setNavigationBottom(Math.ceil(element.getBoundingClientRect().bottom + 8))
+    }
+    updateNavigationBottom()
+    const observer = typeof ResizeObserver !== "undefined"
+      ? new ResizeObserver(updateNavigationBottom)
+      : null
+    observer?.observe(element)
+    window.addEventListener("resize", updateNavigationBottom)
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener("resize", updateNavigationBottom)
+    }
+  }, [navigationPosition, navigationMode])
 
   useEffect(() => {
     if (activeGuideId) return
@@ -155,7 +180,9 @@ function ResponsivePage({
 
   const page = navigationPosition === "top" ? (
     <Flex direction="column" gap={4} className={cx('page', className)}>
-      <Navigation activePage={activePage} setActivePage={setActivePage} position="top" mode={navigationMode} />
+      <div ref={navigationRef} className="top-navigation-anchor">
+        <Navigation activePage={activePage} setActivePage={setActivePage} position="top" mode={navigationMode} />
+      </div>
       <ScrollArea padding={0}>
         {children}
       </ScrollArea>
@@ -211,6 +238,11 @@ function ResponsivePage({
       {navigationPosition === "top" && (
         <FloatingPanel position="right" mode={navigationMode}>
           {settingsButton}
+        </FloatingPanel>
+      )}
+      {player.timeEnergy?.unlocked && activePage !== SKILL_NAVIGATION.find(skill => skill.skillId === "skill:zen")?.id && (
+        <FloatingPanel position="top-right" top={navigationPosition === "top" ? navigationBottom : 8} direction="column" mode={navigationMode}>
+          <TimeEnergyPanel />
         </FloatingPanel>
       )}
     </>
@@ -272,6 +304,7 @@ function App() {
           {activeSkill?.skillId === "skill:combat" && <CombatPage />}
           {activeSkill?.skillId === "skill:unveiling" && <UnveilingPage />}
           {activeSkill?.skillId === "skill:companions" && <CompanionPage />}
+          {activeSkill?.skillId === "skill:zen" && <ZenPage />}
           {activePage === SHOP_NAVIGATION.id && <ShopPage setActivePage={setActivePage} onOpenFameShop={() => { setMissionsModalTab("fame-shop"); setMissionsModalVisible(true) }} />}
         </ResponsivePage>
       </GameProvider>

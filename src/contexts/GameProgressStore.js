@@ -51,7 +51,11 @@ export const createGameProgressStore = () => {
     const inventorySlotsListeners = new Set()
     const unlockedSkillsListeners = new Set()
     const unlockedCompanionsListeners = new Set()
+    const timeEnergyListeners = new Set()
+    const zenProgressListeners = new Set()
 
+    let timeEnergySnapshot = Object.freeze({ currentMs: 0, accelerationEnabled: false })
+    let zenProgressSnapshot = Object.freeze({ progressMs: 0, cycleTierId: null, selectedTierId: null })
     let activeActionKey = null
     let manaCurrent = 0
     let companionPassiveProgressMs = 0
@@ -167,6 +171,24 @@ export const createGameProgressStore = () => {
             return unlockedCompanions
         },
 
+        getTimeEnergy() {
+            return timeEnergySnapshot
+        },
+
+        subscribeTimeEnergy(listener) {
+            timeEnergyListeners.add(listener)
+            return () => timeEnergyListeners.delete(listener)
+        },
+
+        getZenProgress() {
+            return zenProgressSnapshot
+        },
+
+        subscribeZenProgress(listener) {
+            zenProgressListeners.add(listener)
+            return () => zenProgressListeners.delete(listener)
+        },
+
         subscribeUnlockedCompanions(listener) {
             unlockedCompanionsListeners.add(listener)
             return () => unlockedCompanionsListeners.delete(listener)
@@ -235,6 +257,32 @@ export const createGameProgressStore = () => {
             if (nextManaCurrent !== manaCurrent) {
                 manaCurrent = nextManaCurrent
                 notifySet(manaListeners)
+            }
+
+            const nextTimeEnergy = {
+                currentMs: Math.max(0, Number(player.timeEnergy?.currentMs) || 0),
+                accelerationEnabled: player.timeEnergy?.accelerationEnabled === true,
+            }
+            if (
+                nextTimeEnergy.currentMs !== timeEnergySnapshot.currentMs ||
+                nextTimeEnergy.accelerationEnabled !== timeEnergySnapshot.accelerationEnabled
+            ) {
+                timeEnergySnapshot = Object.freeze(nextTimeEnergy)
+                notifySet(timeEnergyListeners)
+            }
+
+            const nextZenProgress = {
+                progressMs: Math.max(0, Number(player.zen?.progressMs) || 0),
+                cycleTierId: player.zen?.cycleTierId ?? null,
+                selectedTierId: player.zen?.selectedTierId ?? null,
+            }
+            if (
+                nextZenProgress.progressMs !== zenProgressSnapshot.progressMs ||
+                nextZenProgress.cycleTierId !== zenProgressSnapshot.cycleTierId ||
+                nextZenProgress.selectedTierId !== zenProgressSnapshot.selectedTierId
+            ) {
+                zenProgressSnapshot = Object.freeze(nextZenProgress)
+                notifySet(zenProgressListeners)
             }
         },
 

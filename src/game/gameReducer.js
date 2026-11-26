@@ -11,6 +11,7 @@ import { SKILL_NAVIGATION } from "../data/navigationData"
 import { RESEARCH_BREAKTHROUGH_CONFIG, getResearchBreakthroughCost } from "../data/researchBreakthroughConfig"
 import { COMBAT_CONFIG, COMBAT_ACTION_BY_AREA_ID } from "../data/combatConfig"
 import { SPELLCRAFT_CONFIG } from "../data/spellcraftConfig"
+import { TIME_ENERGY_CONFIG, ZEN_CONFIG } from "../data/zenConfig"
 import { WORLD_AREA_BY_ID } from "../data/worldData"
 import {
     advanceGame,
@@ -25,6 +26,8 @@ import {
     getSkillUnlockCosts,
     getSellValueMultiplier,
     getCompanionSlotUnlockCost,
+    canBuyTimeEnergy,
+    canBuyZen,
 } from "./gameEngine"
 
 export const gameReducer = (state, action) => {
@@ -404,6 +407,86 @@ export const gameReducer = (state, action) => {
             }
         }
 
+        case "BUY_TIME_ENERGY": {
+            if (!canBuyTimeEnergy(state)) return state
+            const inventory = { ...state.inventory }
+            const currencies = { ...state.currencies }
+            for (const cost of TIME_ENERGY_CONFIG.unlockCosts) {
+                if (cost.item.startsWith("currency:")) {
+                    const currencyId = cost.item.slice("currency:".length)
+                    currencies[currencyId] = (currencies[currencyId] ?? 0) - cost.amount
+                } else {
+                    inventory[cost.item] = (inventory[cost.item] ?? 0) - cost.amount
+                    if (inventory[cost.item] <= 0) delete inventory[cost.item]
+                }
+            }
+            return {
+                ...state,
+                inventory,
+                currencies,
+                timeEnergy: { unlocked: true, currentMs: 0, accelerationEnabled: false },
+            }
+        }
+
+        case "BUY_ZEN": {
+            if (!canBuyZen(state)) return state
+            const inventory = { ...state.inventory }
+            const currencies = { ...state.currencies }
+            for (const cost of ZEN_CONFIG.unlockCosts) {
+                if (cost.item.startsWith("currency:")) {
+                    const currencyId = cost.item.slice("currency:".length)
+                    currencies[currencyId] = (currencies[currencyId] ?? 0) - cost.amount
+                } else {
+                    inventory[cost.item] = (inventory[cost.item] ?? 0) - cost.amount
+                    if (inventory[cost.item] <= 0) delete inventory[cost.item]
+                }
+            }
+            const currentSkill = state.skills[ZEN_CONFIG.id]
+            const actions = Object.fromEntries(ZEN_CONFIG.actions.map(action => [
+                action.id,
+                { ...(currentSkill?.actions?.[action.id] ?? {}), unlocked: true, level: 1, xp: 0, progressMs: 0, running: false, selectedItemId: null },
+            ]))
+            return {
+                ...state,
+                inventory,
+                currencies,
+                unlockedSkills: [...new Set([...(state.unlockedSkills ?? []), ZEN_CONFIG.id])],
+                zen: {
+                    ...(state.zen ?? {}),
+                    unlocked: true,
+                    selectedTierId: ZEN_CONFIG.actions[0].id,
+                    progressMs: 0,
+                    cycleTierId: null,
+                },
+                skills: {
+                    ...state.skills,
+                    [ZEN_CONFIG.id]: { ...currentSkill, actions },
+                },
+            }
+        }
+
+        case "TOGGLE_TIME_ACCELERATION": {
+            if (!state.timeEnergy?.unlocked) return state
+            return {
+                ...state,
+                timeEnergy: {
+                    ...state.timeEnergy,
+                    accelerationEnabled: !state.timeEnergy.accelerationEnabled,
+                },
+            }
+        }
+
+        case "SELECT_MEDITATION_TIER": {
+            if (!state.zen?.unlocked || !ZEN_CONFIG.actions.some(entry => entry.id === action.actionId)) return state
+            return {
+                ...state,
+                zen: { ...state.zen, selectedTierId: action.actionId },
+                activeAction: state.activeAction?.skillId === ZEN_CONFIG.id
+                    ? { skillId: ZEN_CONFIG.id, actionId: action.actionId }
+                    : state.activeAction,
+            }
+        }
+
         case "BUY_BAG_SLOT": {
             const inventorySlots = state.inventorySlots ?? GLOBAL_CONFIG.startingBagSpace
             const cost = getNextBagSlotCost(inventorySlots)
@@ -650,6 +733,7 @@ export const gameReducer = (state, action) => {
                 "skill:unveiling",
                 "skill:companions",
                 "skill:combat",
+                "skill:zen",
             ]
             if (!validGuideIds.includes(action.guideId) || state.introGuides?.[action.guideId] === true) {
                 return state
@@ -671,7 +755,7 @@ export const gameReducer = (state, action) => {
             return advanceGame(state, action.deltaMs, action.now)
 
         case "OFFLINE_PROGRESS":
-            return advanceGame(state, action.deltaMs, action.now)
+            return advanceGame(state, action.deltaMs, action.now, true)
 
         default:
             return state

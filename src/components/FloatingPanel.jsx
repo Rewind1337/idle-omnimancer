@@ -9,8 +9,10 @@ export function FloatingPanel({
   margin = 8,
   position = "left",
   mode = "detailed",
+  top = null,
 }) {
-  const isRight = position === "right"
+  const isTop = position === "top-right"
+  const isRight = position === "right" || isTop
 
   return (
     <Paper layer={0} className={cx("floating-panel", "w-min", `floating-panel-${mode}`, className)} style={{
@@ -18,7 +20,8 @@ export function FloatingPanel({
       position: "fixed",
       left: isRight ? "auto" : margin,
       right: isRight ? margin : "auto",
-      bottom: margin,
+      top: isTop ? (top ?? margin) : "auto",
+      bottom: isTop ? "auto" : margin,
     }}>
       <Flex direction={direction}>
         {children}

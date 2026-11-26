@@ -129,13 +129,13 @@ export function ZenPage() {
                         </Paper>
                         <Flex direction="column" gap={4}>
                             <Heading h="2">Meditate</Heading>
-                            <Text size="small">A six-minute cycle awards Zen XP to its chosen tier and restores one minute of Time Energy.</Text>
+                            <Text size="small">A six-minute cycle awards Zen XP to its chosen tier and restores up to one minute of Time Energy. Reaching the storage cap never pauses meditation or XP.</Text>
                         </Flex>
                     </Flex>
 
                     <Flex direction="row" wrap gap={8}>
                         <Badge variant="transparent" icon={OTHER_ICONS.HOURGLASS}>6-minute cycle</Badge>
-                        <Badge variant="transparent" icon={OTHER_ICONS.SPARKLES}>+60 seconds Time Energy</Badge>
+                        <Badge variant="transparent" icon={OTHER_ICONS.SPARKLES} tooltip="Up to 60 seconds is added per completed cycle. Zen XP is still awarded when the Time Energy cap is full.">Up to +60 seconds Time Energy</Badge>
                         <Badge variant="transparent" icon={OTHER_ICONS.REPEAT2}>Automatic while idle</Badge>
                     </Flex>
 

@@ -1,0 +1,21 @@
+.time-energy-panel {
+    width: 100%;
+    min-width: 220px;
+
+    &.time-energy-panel-floating {
+        width: 264px;
+    }
+
+    .time-energy-caption {
+        opacity: 0.8;
+        text-align: center;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 600px) {
+    .time-energy-panel.time-energy-panel-floating {
+        width: min(250px, calc(100vw - 24px));
+        min-width: 0;
+    }
+}

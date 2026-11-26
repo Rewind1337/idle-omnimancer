@@ -2495,14 +2495,23 @@ export const advanceGame = (playerState, deltaMs, now = Date.now(), isOffline = 
 
         while (energyBudgetMs > 0 && extraElapsedMs < deltaMs) {
             const stepMs = Math.min(100, energyBudgetMs, deltaMs - extraElapsedMs)
-            const extra = advanceGameCore(player, stepMs, false)
-            player = extra.player
-            const spentMs = Math.min(extra.eligibleMs, player.timeEnergy.currentMs)
+            const candidate = advanceGameCore(player, stepMs, false)
+            const eligibleStepMs = Math.min(stepMs, candidate.eligibleMs)
+            if (eligibleStepMs <= 0) break
+
+            // Do not simulate an unproductive tail for free. When an active
+            // action stops partway through this chunk, replay only its eligible
+            // portion so charged energy and additional simulation time match.
+            const extra = eligibleStepMs < stepMs
+                ? advanceGameCore(player, eligibleStepMs, false)
+                : candidate
+            const spentMs = Math.min(eligibleStepMs, extra.eligibleMs, player.timeEnergy.currentMs)
             if (spentMs <= 0) break
 
+            player = extra.player
             player.timeEnergy.currentMs = Math.max(0, player.timeEnergy.currentMs - spentMs)
             energyBudgetMs -= spentMs
-            extraElapsedMs += stepMs
+            extraElapsedMs += spentMs
         }
     }
 

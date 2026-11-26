@@ -135,7 +135,7 @@ function ZenImprovement({ player, buyZen }) {
                         </Button>
                     </Flex>
                 </Flex>
-                {!unlocked && <ActionResources requires={ZEN_CONFIG.unlockCosts} />}
+                {!unlocked && <ActionResources requires={ZEN_CONFIG.improvementCosts} />}
             </Flex>
         </Paper>
     )
